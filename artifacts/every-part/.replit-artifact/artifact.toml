@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Every Part"
+description = "A warm, church-friendly ministry discovery app that helps churches understand how their people are wired and connect them with meaningful places to serve."
+version = "1.0.0"
+id = "artifacts/every-part"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25186
+
+[services.development]
+run = "pnpm --filter @workspace/every-part run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/every-part", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/every-part/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25186"
+BASE_PATH = "/"

@@ -1,6 +1,6 @@
-# [Project name]
+# Every Part
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A multi-tenant ministry discovery app that helps churches understand their people and connect them with meaningful places to serve.
 
 ## Run & Operate
 
@@ -22,15 +22,22 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — source of truth for the API contract
+- `lib/db/src/schema/` — church and Ministry Profile database models
+- `artifacts/api-server/src/routes/` — tenant-aware API endpoints
+- `artifacts/every-part/src/pages/` — landing, assessment, setup, dashboard, and profile pages
+- `artifacts/every-part/src/index.css` — visual theme and print styles
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Clerk authenticates church administrators; members can submit a profile without creating an account.
+- Every pastor-facing query derives the church from the signed-in Clerk user and scopes records by church ID.
+- Future APEST, gifts, personality, and spiritual-health results are stored as nullable structured sections until scoring is defined.
+- The OpenAPI contract generates both browser hooks and server validation schemas.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Church leaders can create an account, complete church setup, share a unique Ministry Profile link, review submissions, filter the member directory, open detailed profiles, and print conversation-ready reports. Members complete a mobile multi-step assessment and immediately receive a Ministry Profile summary.
 
 ## User preferences
 
@@ -38,7 +45,9 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run API code generation after every change to `lib/api-spec/openapi.yaml`.
+- Keep the public home page accessible to signed-out visitors; protected pastor routes redirect through Clerk.
+- Do not query profiles without constraining them to the signed-in administrator's church.
 
 ## Pointers
 
