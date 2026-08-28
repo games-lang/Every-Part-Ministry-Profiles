@@ -1,3 +1,4 @@
 - [Assessment submission gate](assessment-submission-gate.md) — only the final Ministry Profile step may invoke profile creation; native form submit must stay disabled.
 - [Spiritual gift configuration](spiritual-gift-configuration.md) — church selections affect new assessments only; historical profiles retain their submitted gifts and responses.
 - [Ministry assessment language](ministry-assessment-language.md) — keep “How you minister” category-neutral in all member and pastor-facing copy; the legacy internal key is compatibility-only.
+- [Strengths reflection framing](strengths-reflection-framing.md) — use original strengths-based statements and conversation-oriented results, never branded-test claims or placement recommendations.
