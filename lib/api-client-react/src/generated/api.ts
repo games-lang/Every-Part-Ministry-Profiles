@@ -28,7 +28,9 @@ import type {
   MinistryProfile,
   ProfileInput,
   ProfileListItem,
-  PublicChurch
+  PublicChurch,
+  VolunteerMatchInput,
+  VolunteerMatchResponse
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -591,6 +593,77 @@ export const useCreateProfile = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getCreateProfileMutationOptions(options));
+    }
+
+export const getFindVolunteerMatchesUrl = () => {
+
+
+
+
+  return `/api/profiles/matches`
+}
+
+/**
+ * @summary Find same-church Ministry Profiles that may fit a ministry need
+ */
+export const findVolunteerMatches = async (volunteerMatchInput: VolunteerMatchInput, options?: Parameters<typeof customFetch>[1]): Promise<VolunteerMatchResponse> => {
+
+  return customFetch<VolunteerMatchResponse>(getFindVolunteerMatchesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(volunteerMatchInput)
+  }
+);}
+
+
+
+
+
+export const getFindVolunteerMatchesMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof findVolunteerMatches>>, TError,{data: BodyType<VolunteerMatchInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof findVolunteerMatches>>, TError,{data: BodyType<VolunteerMatchInput>}, TContext> => {
+
+const mutationKey = ['findVolunteerMatches'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof findVolunteerMatches>>, {data: BodyType<VolunteerMatchInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  findVolunteerMatches(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type FindVolunteerMatchesMutationResult = NonNullable<Awaited<ReturnType<typeof findVolunteerMatches>>>
+    export type FindVolunteerMatchesMutationBody = BodyType<VolunteerMatchInput>
+    export type FindVolunteerMatchesMutationError = ErrorType<void>
+
+    /**
+ * @summary Find same-church Ministry Profiles that may fit a ministry need
+ */
+export const useFindVolunteerMatches = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof findVolunteerMatches>>, TError,{data: BodyType<VolunteerMatchInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof findVolunteerMatches>>,
+        TError,
+        {data: BodyType<VolunteerMatchInput>},
+        TContext
+      > => {
+      return useMutation(getFindVolunteerMatchesMutationOptions(options));
     }
 
 export const getGetProfileUrl = (id: number,) => {

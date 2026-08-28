@@ -289,6 +289,56 @@ export const CreateProfileResponse = zod.object({
 
 
 /**
+ * @summary Find same-church Ministry Profiles that may fit a ministry need
+ */
+export const findVolunteerMatchesBodyRoleDescriptionMin = 20;
+export const findVolunteerMatchesBodyRoleDescriptionMax = 2000;
+
+export const findVolunteerMatchesBodyMinistryAreaMax = 120;
+
+export const findVolunteerMatchesBodyPreferredExperienceMax = 500;
+
+export const findVolunteerMatchesBodyAvailabilityItemMax = 80;
+
+export const findVolunteerMatchesBodyAvailabilityMax = 8;
+
+
+
+export const FindVolunteerMatchesBody = zod.object({
+  "roleDescription": zod.string().min(findVolunteerMatchesBodyRoleDescriptionMin).max(findVolunteerMatchesBodyRoleDescriptionMax),
+  "ministryArea": zod.string().max(findVolunteerMatchesBodyMinistryAreaMax).optional(),
+  "preferredExperience": zod.string().max(findVolunteerMatchesBodyPreferredExperienceMax).optional(),
+  "availability": zod.array(zod.string().min(1).max(findVolunteerMatchesBodyAvailabilityItemMax)).max(findVolunteerMatchesBodyAvailabilityMax).optional()
+})
+
+export const findVolunteerMatchesResponseCandidatesItemScoreMin = 0;
+export const findVolunteerMatchesResponseCandidatesItemScoreMax = 100;
+
+export const findVolunteerMatchesResponseCandidatesItemReasonsMax = 4;
+
+export const findVolunteerMatchesResponseCandidatesMax = 10;
+
+
+
+export const FindVolunteerMatchesResponse = zod.object({
+  "candidates": zod.array(zod.object({
+  "id": zod.int(),
+  "memberName": zod.string(),
+  "score": zod.int().min(findVolunteerMatchesResponseCandidatesItemScoreMin).max(findVolunteerMatchesResponseCandidatesItemScoreMax),
+  "matchLevel": zod.enum(['Strong fit', 'Potential fit', 'Worth exploring']),
+  "reasons": zod.array(zod.string()).min(1).max(findVolunteerMatchesResponseCandidatesItemReasonsMax),
+  "interests": zod.array(zod.string()),
+  "passions": zod.array(zod.string()),
+  "availability": zod.array(zod.string()),
+  "servingFrequency": zod.string().nullable()
+})).max(findVolunteerMatchesResponseCandidatesMax),
+  "summary": zod.string(),
+  "advisory": zod.string(),
+  "usedAi": zod.boolean()
+})
+
+
+/**
  * @summary View a completed Ministry Profile
  */
 export const GetProfileParams = zod.object({

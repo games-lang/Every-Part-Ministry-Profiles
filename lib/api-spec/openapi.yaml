@@ -157,6 +157,28 @@ paths:
           description: Invalid profile
         "404":
           description: Church not found
+  /profiles/matches:
+    post:
+      operationId: findVolunteerMatches
+      tags: [profiles]
+      summary: Find same-church Ministry Profiles that may fit a ministry need
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VolunteerMatchInput"
+      responses:
+        "200":
+          description: Advisory volunteer matches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolunteerMatchResponse"
+        "400":
+          description: Invalid matching criteria
+        "401":
+          description: Unauthorized
   /profiles/{id}:
     get:
       operationId: getProfile
@@ -308,6 +330,65 @@ components:
           type: array
           items: { type: string }
         servingFrequency: { type: ["string", "null"] }
+    VolunteerMatchInput:
+      type: object
+      required: [roleDescription]
+      properties:
+        roleDescription:
+          type: string
+          minLength: 20
+          maxLength: 2000
+        ministryArea:
+          type: string
+          maxLength: 120
+        preferredExperience:
+          type: string
+          maxLength: 500
+        availability:
+          type: array
+          maxItems: 8
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+    VolunteerMatchCandidate:
+      type: object
+      required: [id, memberName, score, matchLevel, reasons, interests, passions, availability, servingFrequency]
+      properties:
+        id: { type: integer }
+        memberName: { type: string }
+        score: { type: integer, minimum: 0, maximum: 100 }
+        matchLevel:
+          type: string
+          enum: [Strong fit, Potential fit, Worth exploring]
+        reasons:
+          type: array
+          minItems: 1
+          maxItems: 4
+          items: { type: string }
+        interests:
+          type: array
+          items: { type: string }
+        passions:
+          type: array
+          items: { type: string }
+        availability:
+          type: array
+          items: { type: string }
+        servingFrequency: { type: ["string", "null"] }
+    VolunteerMatchResponse:
+      type: object
+      required: [candidates, summary, advisory, usedAi]
+      properties:
+        candidates:
+          type: array
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/VolunteerMatchCandidate"
+        summary: { type: string }
+        advisory: { type: string }
+        usedAi: { type: boolean }
     MinistryProfile:
       allOf:
         - $ref: "#/components/schemas/ProfileListItem"

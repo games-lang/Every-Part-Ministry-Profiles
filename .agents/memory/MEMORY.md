@@ -3,3 +3,4 @@
 - [Ministry assessment language](ministry-assessment-language.md) — keep “How you minister” category-neutral in all member and pastor-facing copy; the legacy internal key is compatibility-only.
 - [Strengths reflection framing](strengths-reflection-framing.md) — use original strengths-based statements and conversation-oriented results, never branded-test claims or placement recommendations.
 - [Personality reflection framing](personality-reflection-framing.md) — show seven flexible ministry-focused spectra; never branded types, rigid labels, or calling limitations.
+- [AI volunteer matching boundaries](ai-volunteer-matching-boundaries.md) — send only structured, evidence-qualified signals; derive displayed reasons locally and keep AI advisory.

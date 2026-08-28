@@ -109,6 +109,62 @@ export interface DashboardSummary {
   topPassions: CountItem[];
 }
 
+export interface VolunteerMatchInput {
+  /**
+     * @minLength 20
+     * @maxLength 2000
+     */
+  roleDescription: string;
+  /** @maxLength 120 */
+  ministryArea?: string;
+  /** @maxLength 500 */
+  preferredExperience?: string;
+  /**
+     * @maxItems 8
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  availability?: string[];
+}
+
+export type VolunteerMatchCandidateMatchLevel = typeof VolunteerMatchCandidateMatchLevel[keyof typeof VolunteerMatchCandidateMatchLevel];
+
+
+export const VolunteerMatchCandidateMatchLevel = {
+  Strong_fit: 'Strong fit',
+  Potential_fit: 'Potential fit',
+  Worth_exploring: 'Worth exploring',
+} as const;
+
+export interface VolunteerMatchCandidate {
+  id: number;
+  memberName: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  score: number;
+  matchLevel: VolunteerMatchCandidateMatchLevel;
+  /**
+     * @minItems 1
+     * @maxItems 4
+     */
+  reasons: string[];
+  interests: string[];
+  passions: string[];
+  availability: string[];
+  /** @nullable */
+  servingFrequency: string | null;
+}
+
+export interface VolunteerMatchResponse {
+  /** @maxItems 10 */
+  candidates: VolunteerMatchCandidate[];
+  summary: string;
+  advisory: string;
+  usedAi: boolean;
+}
+
 /**
  * @nullable
  */

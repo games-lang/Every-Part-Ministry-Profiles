@@ -5,6 +5,8 @@ import {
   CreateProfileResponse,
   GetProfileParams,
   GetProfileResponse,
+  FindVolunteerMatchesBody,
+  FindVolunteerMatchesResponse,
   ListProfilesQueryParams,
   ListProfilesResponse,
 } from "@workspace/api-zod";
@@ -12,6 +14,7 @@ import { churchesTable, db, ministryProfilesTable } from "@workspace/db";
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
+import { findVolunteerMatches } from "../lib/volunteer-matching";
 import {
   activeSpiritualGifts,
   spiritualGiftsSubmissionError,
@@ -28,7 +31,6 @@ router.get("/profiles", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-
   const church = await getOrCreateChurch(userId);
   const profiles = await db
     .select()
@@ -141,6 +143,43 @@ router.post("/profiles", async (req, res): Promise<void> => {
 
   if (!created) throw new Error("Unable to create Ministry Profile");
   res.status(201).json(CreateProfileResponse.parse(profileResponse(created)));
+});
+
+router.post("/profiles/matches", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const parsed = FindVolunteerMatchesBody.safeParse(req.body);
+  if (!parsed.success) {
+    req.log.warn({ errors: parsed.error.message }, "Invalid volunteer matching criteria");
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  if (
+    parsed.data.availability &&
+    new Set(parsed.data.availability).size !== parsed.data.availability.length
+  ) {
+    res.status(400).json({ error: "Availability choices must be unique." });
+    return;
+  }
+
+  const church = await getOrCreateChurch(userId);
+  const profiles = await db
+    .select()
+    .from(ministryProfilesTable)
+    .where(eq(ministryProfilesTable.churchId, church.id))
+    .orderBy(desc(ministryProfilesTable.completedAt));
+
+  const matches = await findVolunteerMatches(profiles, parsed.data);
+  req.log.info(
+    {
+      candidateCount: profiles.length,
+      resultCount: matches.candidates.length,
+      usedAi: matches.usedAi,
+    },
+    "Volunteer matching completed",
+  );
+  res.json(FindVolunteerMatchesResponse.parse(matches));
 });
 
 router.get("/profiles/:id", async (req, res): Promise<void> => {

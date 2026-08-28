@@ -49,3 +49,7 @@ export * from './spiritualGiftName';
 export * from './spiritualGiftsAssessment';
 export * from './spiritualGiftsAssessmentResponses';
 export * from './spiritualGiftsAssessmentResponsesItem';
+export * from './volunteerMatchCandidate';
+export * from './volunteerMatchCandidateMatchLevel';
+export * from './volunteerMatchInput';
+export * from './volunteerMatchResponse';
