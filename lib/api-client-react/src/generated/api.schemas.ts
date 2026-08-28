@@ -325,11 +325,6 @@ export type SpiritualGiftsAssessmentResponsesItem = {
 export type SpiritualGiftsAssessmentResponses = {[key: string]: SpiritualGiftsAssessmentResponsesItem[]};
 
 export interface SpiritualGiftsAssessment {
-  /**
-     * @minItems 3
-     * @maxItems 5
-     */
-  topGifts: string[];
   responses: SpiritualGiftsAssessmentResponses;
 }
 

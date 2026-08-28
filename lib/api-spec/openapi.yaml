@@ -447,13 +447,8 @@ components:
         spiritualHealth: { type: ["object", "null"], additionalProperties: true }
     SpiritualGiftsAssessment:
       type: object
-      required: [topGifts, responses]
+      required: [responses]
       properties:
-        topGifts:
-          type: array
-          minItems: 3
-          maxItems: 5
-          items: { type: string }
         responses:
           type: object
           additionalProperties:

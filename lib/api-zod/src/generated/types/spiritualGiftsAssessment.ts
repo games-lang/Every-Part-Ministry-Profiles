@@ -8,10 +8,5 @@
 import type { SpiritualGiftsAssessmentResponses } from './spiritualGiftsAssessmentResponses';
 
 export interface SpiritualGiftsAssessment {
-  /**
-     * @minItems 3
-     * @maxItems 5
-     */
-  topGifts: string[];
   responses: SpiritualGiftsAssessmentResponses;
 }

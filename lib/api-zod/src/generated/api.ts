@@ -160,9 +160,6 @@ export const createProfileBodyChurchConnectionConnectionLevelMax = 5;
 
 
 
-export const createProfileBodyAssessmentSectionsSpiritualGiftsTopGiftsMin = 3;
-export const createProfileBodyAssessmentSectionsSpiritualGiftsTopGiftsMax = 5;
-
 
 export const createProfileBodyAssessmentSectionsSpiritualGiftsResponsesItemResponseMax = 5;
 
@@ -211,7 +208,6 @@ export const CreateProfileBody = zod.object({
   "assessmentSections": zod.object({
   "apest": zod.record(zod.string(), zod.unknown()).nullish(),
   "spiritualGifts": zod.object({
-  "topGifts": zod.array(zod.string()).min(createProfileBodyAssessmentSectionsSpiritualGiftsTopGiftsMin).max(createProfileBodyAssessmentSectionsSpiritualGiftsTopGiftsMax),
   "responses": zod.record(zod.string(), zod.array(zod.object({
   "prompt": zod.string().min(1),
   "response": zod.int().min(1).max(createProfileBodyAssessmentSectionsSpiritualGiftsResponsesItemResponseMax)

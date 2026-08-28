@@ -36,21 +36,11 @@ export function activeSpiritualGifts(
 
 export function spiritualGiftsSubmissionError(
   spiritualGifts: {
-    topGifts: string[];
     responses: Record<string, { prompt: string; response: number }[]>;
   },
   activeGifts: readonly string[],
 ): string | null {
   const active = new Set(activeGifts);
-  if (
-    spiritualGifts.topGifts.length < 3 ||
-    spiritualGifts.topGifts.length > 5 ||
-    new Set(spiritualGifts.topGifts).size !== spiritualGifts.topGifts.length ||
-    spiritualGifts.topGifts.some((gift) => !active.has(gift))
-  ) {
-    return "Choose three to five distinct enabled spiritual gifts.";
-  }
-
   const responseGifts = Object.keys(spiritualGifts.responses);
   if (
     responseGifts.length !== activeGifts.length ||
