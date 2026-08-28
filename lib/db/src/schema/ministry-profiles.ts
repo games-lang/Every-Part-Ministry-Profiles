@@ -42,6 +42,7 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
   apest: jsonb("apest"),
   spiritualGifts: jsonb("spiritual_gifts"),
   personalityStrengths: jsonb("personality_strengths"),
+  naturalStrengths: jsonb("natural_strengths"),
   spiritualHealth: jsonb("spiritual_health"),
   languages: jsonb("languages"),
   churchDetails: jsonb("church_details"),

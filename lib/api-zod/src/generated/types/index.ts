@@ -18,6 +18,7 @@ export * from './countItem';
 export * from './dashboardSummary';
 export * from './futureAssessmentSections';
 export * from './futureAssessmentSectionsApest';
+export * from './futureAssessmentSectionsNaturalStrengths';
 export * from './futureAssessmentSectionsPersonalityStrengths';
 export * from './futureAssessmentSectionsSpiritualGifts';
 export * from './futureAssessmentSectionsSpiritualHealth';

@@ -61,6 +61,7 @@ export function profileResponse(profile: MinistryProfile) {
       apest: profile.apest,
       spiritualGifts: profile.spiritualGifts,
       personalityStrengths: profile.personalityStrengths,
+      naturalStrengths: profile.naturalStrengths,
       spiritualHealth: profile.spiritualHealth,
     },
     lifeExperiences: profile.lifeExperiences,

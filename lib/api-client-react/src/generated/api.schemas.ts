@@ -167,6 +167,11 @@ export type FutureAssessmentSectionsPersonalityStrengths = { [key: string]: unkn
 /**
  * @nullable
  */
+export type FutureAssessmentSectionsNaturalStrengths = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
 export type FutureAssessmentSectionsSpiritualHealth = { [key: string]: unknown } | null;
 
 export interface FutureAssessmentSections {
@@ -176,6 +181,8 @@ export interface FutureAssessmentSections {
   spiritualGifts: FutureAssessmentSectionsSpiritualGifts;
   /** @nullable */
   personalityStrengths: FutureAssessmentSectionsPersonalityStrengths;
+  /** @nullable */
+  naturalStrengths: FutureAssessmentSectionsNaturalStrengths;
   /** @nullable */
   spiritualHealth: FutureAssessmentSectionsSpiritualHealth;
 }

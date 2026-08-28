@@ -380,10 +380,11 @@ components:
         lifeExperience: { type: ["string", "null"] }
     FutureAssessmentSections:
       type: object
-      required: [apest, spiritualGifts, personalityStrengths, spiritualHealth]
+      required: [apest, spiritualGifts, personalityStrengths, naturalStrengths, spiritualHealth]
       properties:
         apest: { type: ["object", "null"] }
         spiritualGifts: { type: ["object", "null"] }
         personalityStrengths: { type: ["object", "null"] }
+        naturalStrengths: { type: ["object", "null"] }
         spiritualHealth: { type: ["object", "null"] }
 

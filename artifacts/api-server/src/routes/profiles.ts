@@ -112,6 +112,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
       apest: parsed.data.assessmentSections?.apest ?? null,
       spiritualGifts: parsed.data.assessmentSections?.spiritualGifts ?? null,
       personalityStrengths: parsed.data.assessmentSections?.personalityStrengths ?? null,
+      naturalStrengths: parsed.data.assessmentSections?.naturalStrengths ?? null,
       spiritualHealth: parsed.data.assessmentSections?.spiritualHealth ?? null,
     })
     .returning();

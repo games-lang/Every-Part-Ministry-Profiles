@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { FutureAssessmentSectionsApest } from './futureAssessmentSectionsApest';
+import type { FutureAssessmentSectionsNaturalStrengths } from './futureAssessmentSectionsNaturalStrengths';
 import type { FutureAssessmentSectionsPersonalityStrengths } from './futureAssessmentSectionsPersonalityStrengths';
 import type { FutureAssessmentSectionsSpiritualGifts } from './futureAssessmentSectionsSpiritualGifts';
 import type { FutureAssessmentSectionsSpiritualHealth } from './futureAssessmentSectionsSpiritualHealth';
@@ -17,6 +18,8 @@ export interface FutureAssessmentSections {
   spiritualGifts: FutureAssessmentSectionsSpiritualGifts;
   /** @nullable */
   personalityStrengths: FutureAssessmentSectionsPersonalityStrengths;
+  /** @nullable */
+  naturalStrengths: FutureAssessmentSectionsNaturalStrengths;
   /** @nullable */
   spiritualHealth: FutureAssessmentSectionsSpiritualHealth;
 }

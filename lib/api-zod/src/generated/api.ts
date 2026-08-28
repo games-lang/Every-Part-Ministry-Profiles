@@ -198,6 +198,9 @@ export const CreateProfileBody = zod.object({
   "personalityStrengths": zod.looseObject({
 
 }).nullable(),
+  "naturalStrengths": zod.looseObject({
+
+}).nullable(),
   "spiritualHealth": zod.looseObject({
 
 }).nullable()
@@ -257,6 +260,9 @@ export const CreateProfileResponse = zod.object({
 
 }).nullable(),
   "personalityStrengths": zod.looseObject({
+
+}).nullable(),
+  "naturalStrengths": zod.looseObject({
 
 }).nullable(),
   "spiritualHealth": zod.looseObject({
@@ -330,6 +336,9 @@ export const GetProfileResponse = zod.object({
 
 }).nullable(),
   "personalityStrengths": zod.looseObject({
+
+}).nullable(),
+  "naturalStrengths": zod.looseObject({
 
 }).nullable(),
   "spiritualHealth": zod.looseObject({
