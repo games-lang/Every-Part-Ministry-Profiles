@@ -5,9 +5,9 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AssessmentSectionsInput } from './assessmentSectionsInput';
 import type { BasicInformationInput } from './basicInformationInput';
 import type { ChurchConnectionInput } from './churchConnectionInput';
-import type { FutureAssessmentSections } from './futureAssessmentSections';
 import type { ProfileInputAvailabilityDetails } from './profileInputAvailabilityDetails';
 import type { ProfileInputChurchDetails } from './profileInputChurchDetails';
 import type { ProfileInputLanguages } from './profileInputLanguages';
@@ -40,5 +40,5 @@ export interface ProfileInput {
   availabilityDetails?: ProfileInputAvailabilityDetails;
   /** @nullable */
   ministryPreferences?: ProfileInputMinistryPreferences;
-  assessmentSections?: FutureAssessmentSections;
+  assessmentSections?: AssessmentSectionsInput;
 }

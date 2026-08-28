@@ -6,6 +6,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './assessmentSectionsInput';
+export * from './assessmentSectionsInputApest';
+export * from './assessmentSectionsInputNaturalStrengths';
+export * from './assessmentSectionsInputPersonalityStrengths';
+export * from './assessmentSectionsInputSpiritualHealth';
 export * from './basicInformation';
 export * from './basicInformationInput';
 export * from './basicInformationLanguages';
@@ -40,3 +45,6 @@ export * from './publicChurch';
 export * from './skillsAndExperience';
 export * from './skillsAndExperienceDetails';
 export * from './skillsAndExperienceInput';
+export * from './spiritualGiftsAssessment';
+export * from './spiritualGiftsAssessmentResponses';
+export * from './spiritualGiftsAssessmentResponsesItem';

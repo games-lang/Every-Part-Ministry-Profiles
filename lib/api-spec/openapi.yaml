@@ -312,7 +312,7 @@ components:
         availabilityDetails: { type: ["object", "null"], additionalProperties: true }
         ministryPreferences: { type: ["object", "null"], additionalProperties: true }
         assessmentSections:
-          $ref: "#/components/schemas/FutureAssessmentSections"
+          $ref: "#/components/schemas/AssessmentSectionsInput"
     BasicInformation:
       type: object
       required: [firstName, lastName, email, ageRange, preferredContact, familySituation, transportation]
@@ -387,4 +387,35 @@ components:
         personalityStrengths: { type: ["object", "null"] }
         naturalStrengths: { type: ["object", "null"] }
         spiritualHealth: { type: ["object", "null"] }
+    AssessmentSectionsInput:
+      type: object
+      required: [spiritualGifts]
+      properties:
+        apest: { type: ["object", "null"], additionalProperties: true }
+        spiritualGifts:
+          $ref: "#/components/schemas/SpiritualGiftsAssessment"
+        personalityStrengths: { type: ["object", "null"], additionalProperties: true }
+        naturalStrengths: { type: ["object", "null"], additionalProperties: true }
+        spiritualHealth: { type: ["object", "null"], additionalProperties: true }
+    SpiritualGiftsAssessment:
+      type: object
+      required: [topGifts, responses]
+      properties:
+        topGifts:
+          type: array
+          minItems: 3
+          maxItems: 5
+          items: { type: string }
+        responses:
+          type: object
+          additionalProperties:
+            type: array
+            minItems: 3
+            maxItems: 3
+            items:
+              type: object
+              required: [prompt, response]
+              properties:
+                prompt: { type: string, minLength: 1 }
+                response: { type: integer, minimum: 1, maximum: 5 }
 

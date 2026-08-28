@@ -274,6 +274,59 @@ export interface SkillsAndExperienceInput {
   lifeExperience: string | null;
 }
 
+export type SpiritualGiftsAssessmentResponsesItem = {
+  /** @minLength 1 */
+  prompt: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  response: number;
+};
+
+export type SpiritualGiftsAssessmentResponses = {[key: string]: SpiritualGiftsAssessmentResponsesItem[]};
+
+export interface SpiritualGiftsAssessment {
+  /**
+     * @minItems 3
+     * @maxItems 5
+     */
+  topGifts: string[];
+  responses: SpiritualGiftsAssessmentResponses;
+}
+
+/**
+ * @nullable
+ */
+export type AssessmentSectionsInputApest = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type AssessmentSectionsInputPersonalityStrengths = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type AssessmentSectionsInputNaturalStrengths = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type AssessmentSectionsInputSpiritualHealth = { [key: string]: unknown } | null;
+
+export interface AssessmentSectionsInput {
+  /** @nullable */
+  apest?: AssessmentSectionsInputApest;
+  spiritualGifts: SpiritualGiftsAssessment;
+  /** @nullable */
+  personalityStrengths?: AssessmentSectionsInputPersonalityStrengths;
+  /** @nullable */
+  naturalStrengths?: AssessmentSectionsInputNaturalStrengths;
+  /** @nullable */
+  spiritualHealth?: AssessmentSectionsInputSpiritualHealth;
+}
+
 export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
@@ -298,7 +351,7 @@ export interface ProfileInput {
   availabilityDetails?: ProfileInputAvailabilityDetails;
   /** @nullable */
   ministryPreferences?: ProfileInputMinistryPreferences;
-  assessmentSections?: FutureAssessmentSections;
+  assessmentSections?: AssessmentSectionsInput;
 }
 
 export type ListProfilesParams = {
