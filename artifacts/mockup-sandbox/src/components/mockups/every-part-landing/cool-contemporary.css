@@ -1,0 +1,28 @@
+.ep-cool {
+  --cool-ink: #122344;
+  --cool-deep: #0a1834;
+  --cool-ocean: #123e68;
+  --cool-cyan: #d7f1ef;
+  --cool-sky: #edf5f7;
+  --cool-coral: #ee795d;
+  --cool-line: rgba(18, 35, 68, 0.14);
+  font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+  background:
+    radial-gradient(circle at 84% 4%, rgba(113, 193, 199, 0.22), transparent 25rem),
+    #f4f8f8;
+  color: var(--cool-ink);
+}
+
+.ep-cool-display { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; }
+.ep-cool-reveal { animation: ep-cool-rise .7s cubic-bezier(.2,.75,.25,1) both; }
+.ep-cool-reveal-delay { animation-delay: .12s; }
+.ep-cool-reveal-delay-2 { animation-delay: .22s; }
+.ep-cool-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.ep-cool-card:hover { transform: translateY(-5px); box-shadow: 0 20px 44px rgba(20, 55, 82, .12); border-color: rgba(18,62,104,.3); }
+.ep-cool-link { transition: color .2s ease, transform .2s ease; }
+.ep-cool-link:hover { color: var(--cool-coral); transform: translateX(3px); }
+@keyframes ep-cool-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .ep-cool-reveal { animation: none; }
+  .ep-cool-card, .ep-cool-link { transition: none; }
+}

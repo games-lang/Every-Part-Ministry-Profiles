@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --ep-background: #f8f7f3;
+  --ep-foreground: #0d3f2d;
+  --ep-primary: #0f563d;
+  --ep-secondary: #cf5c36;
+  --ep-muted: #e3ebe6;
+  --ep-muted-foreground: #5a8074;
+  --ep-border: #d9dfdb;
+  --ep-card: #fbfaf8;
+}
+
+.ep-font-sans {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.ep-font-serif {
+  font-family: 'Fraunces', serif;
+}
