@@ -30,13 +30,16 @@ export const GetMyChurchResponse = zod.object({
   "adminName": zod.string(),
   "adminEmail": zod.email(),
   "profileUrl": zod.string(),
-  "completedProfileCount": zod.int().optional()
+  "completedProfileCount": zod.int().optional(),
+  "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).nullish()
 })
 
 
 /**
  * @summary Update church setup information
  */
+
+export const updateMyChurchBodyEnabledSpiritualGiftsMin = 3;
 
 
 
@@ -46,7 +49,8 @@ export const UpdateMyChurchBody = zod.object({
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
   "adminName": zod.string().optional(),
-  "adminEmail": zod.email().optional()
+  "adminEmail": zod.email().optional(),
+  "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).min(updateMyChurchBodyEnabledSpiritualGiftsMin).optional()
 })
 
 export const UpdateMyChurchResponse = zod.object({
@@ -59,7 +63,8 @@ export const UpdateMyChurchResponse = zod.object({
   "adminName": zod.string(),
   "adminEmail": zod.email(),
   "profileUrl": zod.string(),
-  "completedProfileCount": zod.int().optional()
+  "completedProfileCount": zod.int().optional(),
+  "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).nullish()
 })
 
 
@@ -70,11 +75,16 @@ export const GetPublicChurchParams = zod.object({
   "slug": zod.coerce.string()
 })
 
+export const getPublicChurchResponseEnabledSpiritualGiftsMin = 3;
+
+
+
 export const GetPublicChurchResponse = zod.object({
   "name": zod.string(),
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
-  "profileUrl": zod.string()
+  "profileUrl": zod.string(),
+  "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).min(getPublicChurchResponseEnabledSpiritualGiftsMin)
 })
 
 
@@ -92,7 +102,8 @@ export const GetDashboardSummaryResponse = zod.object({
   "adminName": zod.string(),
   "adminEmail": zod.email(),
   "profileUrl": zod.string(),
-  "completedProfileCount": zod.int().optional()
+  "completedProfileCount": zod.int().optional(),
+  "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).nullish()
 }),
   "totalProfiles": zod.int(),
   "recentProfiles": zod.array(zod.object({

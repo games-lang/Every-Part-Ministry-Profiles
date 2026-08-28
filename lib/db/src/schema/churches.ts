@@ -1,5 +1,6 @@
 import {
   integer,
+  jsonb,
   pgTable,
   serial,
   text,
@@ -21,6 +22,7 @@ export const churchesTable = pgTable(
     website: text("website"),
     adminName: text("admin_name").notNull(),
     adminEmail: text("admin_email").notNull(),
+    enabledSpiritualGifts: jsonb("enabled_spiritual_gifts").$type<string[]>(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

@@ -83,6 +83,8 @@ paths:
                 $ref: "#/components/schemas/PublicChurch"
         "404":
           description: Church not found
+        "422":
+          description: Church assessment configuration is invalid
   /dashboard/summary:
     get:
       operationId: getDashboardSummary
@@ -200,6 +202,11 @@ components:
         adminEmail: { type: string, format: email }
         profileUrl: { type: string }
         completedProfileCount: { type: integer }
+        enabledSpiritualGifts:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/SpiritualGiftName"
+          uniqueItems: true
     ChurchUpdate:
       type: object
       properties:
@@ -209,14 +216,55 @@ components:
         website: { type: ["string", "null"] }
         adminName: { type: string }
         adminEmail: { type: string, format: email }
+        enabledSpiritualGifts:
+          type: array
+          minItems: 3
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/SpiritualGiftName"
     PublicChurch:
       type: object
-      required: [name, slug, profileUrl]
+      required: [name, slug, profileUrl, enabledSpiritualGifts]
       properties:
         name: { type: string }
         slug: { type: string }
         logoUrl: { type: ["string", "null"] }
         profileUrl: { type: string }
+        enabledSpiritualGifts:
+          type: array
+          minItems: 3
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/SpiritualGiftName"
+    SpiritualGiftName:
+      type: string
+      enum:
+        - Administration
+        - Apostleship
+        - Discernment of Spirits
+        - Evangelism
+        - Exhortation / Encouragement
+        - Faith
+        - Giving
+        - Healing
+        - Helps / Service
+        - Hospitality
+        - Interpretation of Tongues
+        - Knowledge
+        - Leadership
+        - Mercy
+        - Miracles
+        - Pastoring / Shepherding
+        - Prophecy
+        - Teaching
+        - Tongues
+        - Wisdom
+        - Craftsmanship
+        - Intercession
+        - Missionary / Cross-Cultural Ministry
+        - Music / Worship
+        - Celibacy
+        - Voluntary Poverty
     DashboardSummary:
       type: object
       required: [church, totalProfiles, recentProfiles, topInterests, topPassions]

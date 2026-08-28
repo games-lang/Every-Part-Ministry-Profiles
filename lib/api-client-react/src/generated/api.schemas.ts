@@ -9,6 +9,38 @@ export interface HealthStatus {
   status: string;
 }
 
+export type SpiritualGiftName = typeof SpiritualGiftName[keyof typeof SpiritualGiftName];
+
+
+export const SpiritualGiftName = {
+  Administration: 'Administration',
+  Apostleship: 'Apostleship',
+  Discernment_of_Spirits: 'Discernment of Spirits',
+  Evangelism: 'Evangelism',
+  'Exhortation_/_Encouragement': 'Exhortation / Encouragement',
+  Faith: 'Faith',
+  Giving: 'Giving',
+  Healing: 'Healing',
+  'Helps_/_Service': 'Helps / Service',
+  Hospitality: 'Hospitality',
+  Interpretation_of_Tongues: 'Interpretation of Tongues',
+  Knowledge: 'Knowledge',
+  Leadership: 'Leadership',
+  Mercy: 'Mercy',
+  Miracles: 'Miracles',
+  'Pastoring_/_Shepherding': 'Pastoring / Shepherding',
+  Prophecy: 'Prophecy',
+  Teaching: 'Teaching',
+  Tongues: 'Tongues',
+  Wisdom: 'Wisdom',
+  Craftsmanship: 'Craftsmanship',
+  Intercession: 'Intercession',
+  'Missionary_/_Cross-Cultural_Ministry': 'Missionary / Cross-Cultural Ministry',
+  'Music_/_Worship': 'Music / Worship',
+  Celibacy: 'Celibacy',
+  Voluntary_Poverty: 'Voluntary Poverty',
+} as const;
+
 export interface Church {
   id: number;
   name: string;
@@ -23,6 +55,8 @@ export interface Church {
   adminEmail: string;
   profileUrl: string;
   completedProfileCount?: number;
+  /** @nullable */
+  enabledSpiritualGifts?: SpiritualGiftName[] | null;
 }
 
 export interface ChurchUpdate {
@@ -36,6 +70,8 @@ export interface ChurchUpdate {
   website?: string | null;
   adminName?: string;
   adminEmail?: string;
+  /** @minItems 3 */
+  enabledSpiritualGifts?: SpiritualGiftName[];
 }
 
 export interface PublicChurch {
@@ -44,6 +80,8 @@ export interface PublicChurch {
   /** @nullable */
   logoUrl?: string | null;
   profileUrl: string;
+  /** @minItems 3 */
+  enabledSpiritualGifts: SpiritualGiftName[];
 }
 
 export interface ProfileListItem {

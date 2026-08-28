@@ -45,6 +45,7 @@ export * from './publicChurch';
 export * from './skillsAndExperience';
 export * from './skillsAndExperienceDetails';
 export * from './skillsAndExperienceInput';
+export * from './spiritualGiftName';
 export * from './spiritualGiftsAssessment';
 export * from './spiritualGiftsAssessmentResponses';
 export * from './spiritualGiftsAssessmentResponsesItem';

@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface ChurchUpdate {
   /** @minLength 1 */
@@ -17,4 +18,6 @@ export interface ChurchUpdate {
   website?: string | null;
   adminName?: string;
   adminEmail?: string;
+  /** @minItems 3 */
+  enabledSpiritualGifts?: SpiritualGiftName[];
 }

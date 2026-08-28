@@ -9,7 +9,12 @@ import {
 } from "@workspace/api-zod";
 import { churchesTable, db, ministryProfilesTable } from "@workspace/db";
 import { requireUserId } from "../lib/auth";
-import { churchResponse, getOrCreateChurch } from "../lib/churches";
+import {
+  activeSpiritualGifts,
+  churchResponse,
+  getOrCreateChurch,
+  validateEnabledSpiritualGifts,
+} from "../lib/churches";
 
 const router: IRouter = Router();
 
@@ -34,6 +39,15 @@ router.patch("/church", async (req, res): Promise<void> => {
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
     return;
+  }
+  // OpenAPI's uniqueItems is documented and generated, but the generated Zod
+  // validator does not enforce it, so protect the persistence boundary here.
+  if (parsed.data.enabledSpiritualGifts) {
+    const error = validateEnabledSpiritualGifts(parsed.data.enabledSpiritualGifts);
+    if (error) {
+      res.status(400).json({ error });
+      return;
+    }
   }
 
   const church = await getOrCreateChurch(userId);
@@ -78,12 +92,19 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
     return;
   }
 
+  const enabledSpiritualGifts = activeSpiritualGifts(church.enabledSpiritualGifts);
+  if (!enabledSpiritualGifts) {
+    res.status(422).json({ error: "This church's spiritual gifts configuration is invalid. Please contact the church administrator." });
+    return;
+  }
+
   res.json(
     GetPublicChurchResponse.parse({
       name: church.name,
       slug: church.slug,
       logoUrl: church.logoUrl,
       profileUrl: `/profile/${church.slug}`,
+      enabledSpiritualGifts,
     }),
   );
 });

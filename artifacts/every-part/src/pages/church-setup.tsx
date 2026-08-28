@@ -2,11 +2,12 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useGetMyChurch, useUpdateMyChurch, getGetMyChurchQueryKey } from "@workspace/api-client-react";
+import { useGetMyChurch, useUpdateMyChurch, getGetMyChurchQueryKey, type SpiritualGiftName } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,9 +19,14 @@ const churchFormSchema = z.object({
   adminEmail: z.string().email("Valid email is required"),
   website: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   address: z.string().optional(),
+  enabledSpiritualGifts: z.array(z.string()).min(3, "Enable at least three spiritual gifts"),
 });
 
 type ChurchFormValues = z.infer<typeof churchFormSchema>;
+const SPIRITUAL_GIFTS = [
+  ["Administration", "organizing people, resources, and systems effectively"], ["Apostleship", "pioneering, starting, expanding, and establishing new ministries or works"], ["Discernment of Spirits", "recognizing what is from God, human influence, or spiritual deception"], ["Evangelism", "communicating the gospel and helping people respond to Jesus"], ["Exhortation / Encouragement", "strengthening, motivating, comforting, and challenging others"], ["Faith", "unusual confidence in God’s power, promises, and provision"], ["Giving", "generously and joyfully sharing resources to advance God’s work and meet needs"], ["Healing", "being used by God as an instrument of physical, emotional, or spiritual healing"], ["Helps / Service", "meeting practical needs and supporting others so ministry can happen"], ["Hospitality", "welcoming people and creating environments where others feel received and cared for"], ["Interpretation of Tongues", "interpreting a message spoken in tongues"], ["Knowledge", "understanding and communicating spiritual truth or insight"], ["Leadership", "providing direction, motivating others, and helping a group move toward God-given goals"], ["Mercy", "compassionately caring for people who are hurting, struggling, marginalized, or in need"], ["Miracles", "being used by God in extraordinary demonstrations of His power"], ["Pastoring / Shepherding", "caring for, protecting, guiding, and nurturing people spiritually"], ["Prophecy", "communicating a message believed to be prompted by God for strengthening, correction, encouragement, or direction"], ["Teaching", "explaining and applying biblical truth so others understand and grow"], ["Tongues", "speaking in a language or spiritual utterance given through the Holy Spirit"], ["Wisdom", "applying spiritual truth appropriately to real situations"], ["Craftsmanship", "using artistic or practical skill for God’s purposes"], ["Intercession", "persistent, focused prayer for others"], ["Missionary / Cross-Cultural Ministry", "effectively ministering across cultures and communities"], ["Music / Worship", "using musical ability to lead and encourage worship"], ["Celibacy", "a particular grace for remaining unmarried for undivided devotion to ministry"], ["Voluntary Poverty", "willingly living with less in order to serve God and others"],
+] as const;
+const ALL_GIFT_NAMES = SPIRITUAL_GIFTS.map(([name]) => name);
 
 export default function ChurchSetup() {
   const { data: church, isLoading } = useGetMyChurch();
@@ -36,6 +42,7 @@ export default function ChurchSetup() {
       adminEmail: "",
       website: "",
       address: "",
+      enabledSpiritualGifts: ALL_GIFT_NAMES,
     },
   });
 
@@ -48,6 +55,7 @@ export default function ChurchSetup() {
         adminEmail: church.adminEmail,
         website: church.website || "",
         address: church.address || "",
+        enabledSpiritualGifts: church.enabledSpiritualGifts || ALL_GIFT_NAMES,
       });
     }
   }, [church, form]);
@@ -58,6 +66,7 @@ export default function ChurchSetup() {
       ...data,
       website: data.website || null,
       address: data.address || null,
+      enabledSpiritualGifts: data.enabledSpiritualGifts as SpiritualGiftName[],
     };
 
     updateChurch.mutate(
@@ -151,6 +160,31 @@ export default function ChurchSetup() {
                     <FormControl>
                       <Input placeholder="e.g. Grace City Church" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="enabledSpiritualGifts"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <FormLabel>Spiritual gifts included in the public assessment</FormLabel>
+                      <span className="text-sm text-muted-foreground">{field.value.length} enabled</span>
+                    </div>
+                    <FormDescription>
+                      Select at least 3 gifts. Members will answer all three reflections for each enabled gift; gift wording cannot be edited here.
+                    </FormDescription>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {SPIRITUAL_GIFTS.map(([name, meaning]) => {
+                        const checked = field.value.includes(name);
+                        return <label key={name} className="flex cursor-pointer gap-3 rounded-lg border p-3 text-sm hover:bg-muted/40">
+                          <Checkbox checked={checked} onCheckedChange={(next) => field.onChange(next ? [...field.value, name] : field.value.filter((gift) => gift !== name))} />
+                          <span><span className="block font-medium">{name}</span><span className="text-muted-foreground">{meaning}</span></span>
+                        </label>;
+                      })}
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

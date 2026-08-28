@@ -1,5 +1,6 @@
 import { db, churchesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+export { activeSpiritualGifts, validateEnabledSpiritualGifts } from "./spiritual-gifts";
 
 function slugFromUserId(userId: string): string {
   const suffix = userId.replace(/[^a-zA-Z0-9]/g, "").slice(-10).toLowerCase();
@@ -45,5 +46,6 @@ export function churchResponse(
     adminEmail: church.adminEmail,
     profileUrl: `/profile/${church.slug}`,
     completedProfileCount,
+    enabledSpiritualGifts: church.enabledSpiritualGifts,
   };
 }

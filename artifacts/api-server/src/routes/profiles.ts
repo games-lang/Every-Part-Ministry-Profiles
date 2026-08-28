@@ -12,6 +12,10 @@ import { churchesTable, db, ministryProfilesTable } from "@workspace/db";
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
+import {
+  activeSpiritualGifts,
+  spiritualGiftsSubmissionError,
+} from "../lib/spiritual-gifts";
 
 const router: IRouter = Router();
 
@@ -72,6 +76,24 @@ router.post("/profiles", async (req, res): Promise<void> => {
 
   if (!church) {
     res.status(404).json({ error: "Church not found" });
+    return;
+  }
+
+  const activeGifts = activeSpiritualGifts(church.enabledSpiritualGifts);
+  if (!activeGifts) {
+    res.status(400).json({
+      error: "This church's spiritual gifts configuration is invalid. Please contact the church administrator.",
+    });
+    return;
+  }
+  const spiritualGifts = parsed.data.assessmentSections?.spiritualGifts;
+  if (!spiritualGifts) {
+    res.status(400).json({ error: "Spiritual gifts responses are required." });
+    return;
+  }
+  const spiritualGiftsError = spiritualGiftsSubmissionError(spiritualGifts, activeGifts);
+  if (spiritualGiftsError) {
+    res.status(400).json({ error: spiritualGiftsError });
     return;
   }
 

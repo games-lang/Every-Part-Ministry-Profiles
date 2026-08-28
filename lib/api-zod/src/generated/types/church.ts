@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface Church {
   id: number;
@@ -20,4 +21,6 @@ export interface Church {
   adminEmail: string;
   profileUrl: string;
   completedProfileCount?: number;
+  /** @nullable */
+  enabledSpiritualGifts?: SpiritualGiftName[] | null;
 }

@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface PublicChurch {
   name: string;
@@ -12,4 +13,6 @@ export interface PublicChurch {
   /** @nullable */
   logoUrl?: string | null;
   profileUrl: string;
+  /** @minItems 3 */
+  enabledSpiritualGifts: SpiritualGiftName[];
 }

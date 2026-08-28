@@ -1,1 +1,2 @@
 - [Assessment submission gate](assessment-submission-gate.md) — only the final Ministry Profile step may invoke profile creation; native form submit must stay disabled.
+- [Spiritual gift configuration](spiritual-gift-configuration.md) — church selections affect new assessments only; historical profiles retain their submitted gifts and responses.
