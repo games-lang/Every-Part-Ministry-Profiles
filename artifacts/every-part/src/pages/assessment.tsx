@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRoute, Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -100,6 +100,14 @@ export default function Assessment() {
     }
   });
 
+  useEffect(() => {
+    const subscription = form.watch((_, { name }) => {
+      if (name) form.clearErrors(name);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   if (isLoadingChurch) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -118,18 +126,61 @@ export default function Assessment() {
     );
   }
 
-  const nextStep = async () => {
-    // Validate current step fields before proceeding
-    let fieldsToValidate: any[] = [];
-    if (step === 1) fieldsToValidate = ['basicInformation'];
-    if (step === 2) fieldsToValidate = ['churchConnection'];
-    if (step === 3) fieldsToValidate = ['passions', 'interests', 'servingFrequency', 'availability'];
-    
-    if (fieldsToValidate.length > 0) {
-      const isValid = await form.trigger(fieldsToValidate as any);
-      if (!isValid) return;
+  const validateCurrentStep = () => {
+    const stepValidation = {
+      1: {
+        schema: assessmentSchema.shape.basicInformation,
+        value: form.getValues("basicInformation"),
+        fields: ["basicInformation"] as const,
+        prefix: "basicInformation",
+      },
+      2: {
+        schema: assessmentSchema.shape.churchConnection,
+        value: form.getValues("churchConnection"),
+        fields: ["churchConnection"] as const,
+        prefix: "churchConnection",
+      },
+      3: {
+        schema: z.object({
+          passions: assessmentSchema.shape.passions,
+          interests: assessmentSchema.shape.interests,
+          servingFrequency: assessmentSchema.shape.servingFrequency,
+          availability: assessmentSchema.shape.availability,
+        }),
+        value: {
+          passions: form.getValues("passions"),
+          interests: form.getValues("interests"),
+          servingFrequency: form.getValues("servingFrequency"),
+          availability: form.getValues("availability"),
+        },
+        fields: ["passions", "interests", "servingFrequency", "availability"] as const,
+        prefix: "",
+      },
+    }[step as 1 | 2 | 3];
+
+    if (!stepValidation) return true;
+
+    form.clearErrors(stepValidation.fields as any);
+    const result = stepValidation.schema.safeParse(stepValidation.value);
+
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        const fieldPath = [stepValidation.prefix, ...issue.path]
+          .filter(Boolean)
+          .join(".");
+        form.setError(fieldPath as any, {
+          type: "manual",
+          message: issue.message,
+        });
+      });
     }
-    
+
+    return result.success;
+  };
+
+  const nextStep = () => {
+    if (!validateCurrentStep()) return;
+
     setStep(s => s + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
