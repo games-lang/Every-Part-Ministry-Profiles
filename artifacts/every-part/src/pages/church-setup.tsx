@@ -141,29 +141,16 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-xl font-serif">Basic Information</CardTitle>
-          <CardDescription>
-            This information is displayed on your public assessment landing page.
-          </CardDescription>
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Church Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Grace City Church" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Card className="border-primary/20 bg-primary/5 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-xl font-serif">Build or edit your Ministry Profile</CardTitle>
+              <CardDescription>
+                Choose which spiritual gifts to include in your church's public Ministry Profile assessment.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <FormField
                 control={form.control}
                 name="enabledSpiritualGifts"
@@ -185,6 +172,30 @@ export default function ChurchSetup() {
                         </label>;
                       })}
                     </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/60 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-xl font-serif">Basic Information</CardTitle>
+              <CardDescription>
+                This information is displayed on your public assessment landing page.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Church Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Grace City Church" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -258,9 +269,9 @@ export default function ChurchSetup() {
                 )}
               </Button>
             </CardFooter>
-          </form>
-        </Form>
-      </Card>
+          </Card>
+        </form>
+      </Form>
     </div>
   );
 }
