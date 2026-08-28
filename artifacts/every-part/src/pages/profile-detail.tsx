@@ -30,6 +30,22 @@ function ObjectValues({ value }: {value: unknown}) {
   if (!entries.length) return <p className="text-muted-foreground italic">No details shared.</p>;
   return <div className="grid sm:grid-cols-2 gap-3">{entries.map(([key,val]) => <Value key={key} label={key.replace(/([A-Z])/g, " $1").replace(/^./,x=>x.toUpperCase())} value={Array.isArray(val) ? val.join(", ") : typeof val === "object" ? JSON.stringify(val) : val}/>)}</div>;
 }
+function MinistryAssessment({ value }: { value: unknown }) {
+  const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  const legacyLabels: Record<string, string> = {
+    Apostle: "Starting and building new ministry",
+    Prophet: "Noticing what needs attention",
+    Evangelist: "Connecting people with faith",
+    Shepherd: "Caring for people over time",
+    Teacher: "Making ideas clear",
+  };
+  const primaryValue = typeof record.primary === "string" ? record.primary : "";
+  const secondaryValue = typeof record.secondary === "string" ? record.secondary : "";
+  const primary = legacyLabels[primaryValue] || primaryValue;
+  const secondary = legacyLabels[secondaryValue] || secondaryValue;
+  if (!primary && !secondary) return <p className="text-muted-foreground italic">No ministry approach reflection shared.</p>;
+  return <div className="grid sm:grid-cols-2 gap-3"><Value label="Strongest ministry tendency" value={primary}/><Value label="Second ministry tendency" value={secondary}/></div>;
+}
 function Section({title,children}:{title:string;children:React.ReactNode}) { return <section className="space-y-3 print:break-inside-avoid"><h2 className="font-serif text-2xl font-medium">{title}</h2><Card className="border-border/60 shadow-sm"><CardContent className="p-5">{children}</CardContent></Card></section>; }
 export default function ProfileDetail() {
  const [,params]=useRoute("/profiles/:id"); const id=params?.id?Number(params.id):0; const {data:profile,isLoading,error}=useGetProfile(id,{query:{enabled:!!id,queryKey:getGetProfileQueryKey(id)}});
@@ -41,7 +57,7 @@ export default function ProfileDetail() {
   <header className="rounded-2xl border bg-card p-7 md:p-10"><h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p><div className="flex flex-wrap gap-4 mt-5 text-sm"><a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>{basic.phone&&<a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}</div></header>
    <div className="space-y-8">
     <Section title="About You"><div className="space-y-6"><div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age range" value={basic.ageRange}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></div><div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div><div className="mt-3"><ObjectValues value={skills.details}/></div></div><div><h3 className="font-medium mb-2">Life experiences</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div></div></Section>
-    <Section title="How you minister (APEST)"><p className="text-sm text-muted-foreground mb-3">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><ObjectValues value={profile.assessmentSections.apest}/></Section>
+     <Section title="How you minister"><p className="text-sm text-muted-foreground mb-3">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest}/></Section>
     <Section title="How God has gifted you (Spiritual Gifts)"><p className="text-sm text-muted-foreground mb-3">Member self-reflection, not a diagnosis or placement recommendation.</p><SpiritualGifts value={profile.assessmentSections.spiritualGifts}/></Section>
     <Section title="Who and where you are drawn toward (Passions)"><div className="space-y-5"><div><h3 className="font-medium mb-2">Passions</h3><div className="flex flex-wrap gap-2">{profile.passions.length ? profile.passions.map(x=><Badge key={x}>{x}</Badge>) : <span className="italic text-muted-foreground">No passions shared.</span>}</div></div><div><h3 className="font-medium mb-2">Ministry interests</h3><div className="flex flex-wrap gap-2">{profile.interests.length ? profile.interests.map(x=><Badge key={x} variant="outline">{x}</Badge>) : <span className="italic text-muted-foreground">No interests shared.</span>}</div></div></div></Section>
     <Section title="What you naturally do well (Strengths)"><p className="text-sm text-muted-foreground mb-3">Member self-reflection; strengths are not ranked, scored, or used for automatic placement.</p><ObjectValues value={profile.assessmentSections.naturalStrengths}/></Section>
