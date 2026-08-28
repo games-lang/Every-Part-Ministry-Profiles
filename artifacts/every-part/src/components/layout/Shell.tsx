@@ -17,11 +17,11 @@ export function Shell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col">
-      <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur-xl">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/dashboard" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded bg-primary text-primary-foreground flex items-center justify-center font-serif text-lg font-bold group-hover:bg-primary/90 transition-colors">
+              <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-serif text-lg font-bold group-hover:bg-accent transition-colors">
                 E
               </div>
               <span className="font-serif text-xl font-medium tracking-tight text-foreground">
@@ -54,7 +54,7 @@ export function Shell({ children }: { children: ReactNode }) {
           
           <div className="flex items-center gap-4">
             <Button variant="outline" size="sm" className="hidden md:flex font-medium" asChild>
-              <Link href="/profile/demo-church">
+              <Link href="/profile/riverstone-community">
                 Preview Assessment <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
