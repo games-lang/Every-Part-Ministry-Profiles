@@ -1,652 +1,96 @@
 import { useEffect, useState } from "react";
 import { useRoute, Link } from "wouter";
-import { useForm } from "react-hook-form";
+import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useGetPublicChurch, getGetPublicChurchQueryKey, useCreateProfile } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
-import { HeartHandshake, Loader2, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Loader2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
-// Schema mapped from Product Brief Options & Data Types
+const OPTIONS = {
+  passions: ["Children", "Youth", "Young adults", "Families", "New Christians", "People who don't know Jesus", "Immigrants/refugees", "Multicultural ministry", "Missions", "People experiencing poverty", "Addiction recovery", "Grief", "Elderly adults", "Prayer", "Discipleship", "Worship", "Community outreach", "Justice/compassion", "Second-generation ministry"],
+  interests: ["Children", "Preschool", "Youth", "Young adults", "Worship", "Sound/tech", "Hospitality", "Greeting", "Prayer", "Small groups", "Discipleship", "Outreach", "Missions", "Communications", "Office/admin", "Finance", "Event planning", "Translation", "Transportation", "Maintenance", "Care ministry", "Leadership"],
+  gifts: ["Teaching", "Mercy", "Helps", "Administration", "Leadership", "Hospitality", "Giving", "Encouragement", "Faith", "Evangelism", "Discernment", "Wisdom", "Knowledge", "Shepherding", "Service", "Prayer/intercession"],
+  life: ["Grief", "Parenting", "Foster/adoption", "Immigration", "Recovery", "Disability", "Caregiving", "Divorce", "Military service", "Cross-cultural experience", "Mission work", "Financial hardship", "Major career transitions", "Other significant experiences"],
+  apest: ["Apostle", "Prophet", "Evangelist", "Shepherd", "Teacher"],
+  availability: ["Sunday mornings", "Sunday evenings", "Weekday mornings", "Weekday evenings", "Saturdays", "Flexible/varies"],
+} as const;
+const choice = z.string();
 const assessmentSchema = z.object({
-  basicInformation: z.object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Valid email required"),
-    phone: z.string().optional(),
-    ageRange: z.string().min(1, "Please select an age range"),
-    preferredContact: z.string().min(1, "Please select a contact method"),
-    familySituation: z.string().min(1, "Please select a family situation"),
-    transportation: z.string().min(1, "Please indicate transportation"),
-  }),
-  churchConnection: z.object({
-    attendanceLength: z.string().min(1, "Please select attendance length"),
-    connectionLevel: z.coerce.number().min(1).max(5),
-    followingJesusLength: z.string().min(1, "Please indicate how long you've followed Jesus"),
-    servedBefore: z.boolean().default(false),
-    previousService: z.string().optional(),
-  }),
+  basicInformation: z.object({ firstName: z.string().min(1, "First name is required"), lastName: z.string().min(1, "Last name is required"), email: z.string().email("Enter a valid email"), phone: z.string(), ageRange: choice.min(1, "Select an age range"), preferredContact: choice.min(1, "Select a contact method"), familySituation: choice.min(1, "Select a family situation"), transportation: choice.min(1, "Select transportation") }),
+  churchConnection: z.object({ attendanceLength: choice.min(1, "Select attendance length"), connectionLevel: z.coerce.number().min(1).max(5), followingJesusLength: choice.min(1, "Select an answer"), servedBefore: z.boolean(), previousService: z.string() }),
   passions: z.array(z.string()).min(1, "Select at least one passion"),
-  interests: z.array(z.string()).min(1, "Select at least one interest area"),
-  servingFrequency: z.string().min(1, "Please select serving frequency"),
-  availability: z.array(z.string()).min(1, "Select at least one availability time"),
-  skills: z.object({
-    occupation: z.string().optional(),
-    uniqueSkills: z.string().optional(),
-    previousMinistryExperience: z.string().optional(),
-    leadershipExperience: z.string().optional(),
-    missionTripExperience: z.string().optional(),
-    lifeExperience: z.string().optional(),
-  })
+  interests: z.array(z.string()).min(1, "Select at least one ministry interest"),
+  servingFrequency: choice.min(1, "Select a serving frequency"),
+  availability: z.array(z.string()).min(1, "Select at least one time"),
+  languageText: z.string(), languageProficiency: z.string(),
+  churchDetails: z.object({ membership: z.string(), service: z.string(), previousInvolvement: z.string() }),
+  spiritualGifts: z.array(z.string()).min(3, "Choose at least three gifts").max(5, "Choose up to five gifts"), apestPrimary: z.string().min(1, "Select a primary tendency"), apestSecondary: z.string().min(1, "Select a secondary tendency"),
+  workingStyle: z.object({ structure:z.string(), focus:z.string(), expression:z.string(), teamwork:z.string(), perspective:z.string(), pace:z.string() }),
+  occupation: z.string(), skills: z.object({ education:z.string(), certifications:z.string(), skills:z.string(), experience:z.string(), uniqueSkills:z.string() }),
+  lifeSelected: z.array(z.string()), lifeNotes: z.string(),
+  availabilityDetails: z.object({ seasonal:z.string(), specialEvents:z.string(), retreats:z.string(), missionTrips:z.string(), projects:z.string(), commitment:z.string(), responsibility:z.string().min(1, "Share what feels realistic right now") }),
+  spiritualHealth: z.object({ prayer:z.string(), scripture:z.string(), worship:z.string(), relationships:z.string(), community:z.string(), rest:z.string(), motivation:z.string(), wellbeing:z.string(), connection:z.string() }),
+  preferences: z.object({ setting:z.string(), role:z.string(), routine:z.string(), team:z.string(), work:z.string(), rhythm:z.string() }),
+}).superRefine((value, context) => {
+  if (value.apestPrimary === value.apestSecondary) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["apestSecondary"], message: "Choose a different secondary tendency" });
+  }
 });
-
-type AssessmentFormValues = z.infer<typeof assessmentSchema>;
-
-const PASSION_OPTIONS = [
-  "Children", "Youth", "College/Young Adults", "Young Families", "Marriage", 
-  "Seniors", "Special Needs", "Homeless/Marginalized", "Single Parents", 
-  "Hospitalized/Sick", "Grieving", "International/Refugee", "Prisoners"
-];
-
-const INTEREST_OPTIONS = [
-  "Greeting/Hospitality", "Teaching/Leading", "Administration", "Worship/Music",
-  "Tech/Production", "Creative/Arts", "Care/Prayer", "Facilities/Maintenance",
-  "Events/Planning", "Finance/Counting", "Food/Meals", "Small Groups"
-];
-
-const AVAILABILITY_OPTIONS = [
-  "Sunday Mornings", "Sunday Evenings", "Weekday Mornings", "Weekday Evenings",
-  "Saturdays", "Flexible/Varies"
-];
+type Values = z.infer<typeof assessmentSchema>;
+const defaultValues: Values = { basicInformation:{firstName:"",lastName:"",email:"",phone:"",ageRange:"",preferredContact:"email",familySituation:"",transportation:""},churchConnection:{attendanceLength:"",connectionLevel:3,followingJesusLength:"",servedBefore:false,previousService:""},passions:[],interests:[],servingFrequency:"",availability:[],languageText:"",languageProficiency:"",churchDetails:{membership:"",service:"",previousInvolvement:""},spiritualGifts:[],apestPrimary:"",apestSecondary:"",workingStyle:{structure:"",focus:"",expression:"",teamwork:"",perspective:"",pace:""},occupation:"",skills:{education:"",certifications:"",skills:"",experience:"",uniqueSkills:""},lifeSelected:[],lifeNotes:"",availabilityDetails:{seasonal:"",specialEvents:"",retreats:"",missionTrips:"",projects:"",commitment:"",responsibility:""},spiritualHealth:{prayer:"",scripture:"",worship:"",relationships:"",community:"",rest:"",motivation:"",wellbeing:"",connection:""},preferences:{setting:"",role:"",routine:"",team:"",work:"",rhythm:""} };
+type FormProps = { form: ReturnType<typeof useForm<Values>> };
+function TextField({ form, name, label, description, multiline = false }: FormProps & {name:Path<Values>;label:string;description?:string;multiline?:boolean}) {
+ return <FormField control={form.control} name={name} render={({ field }) => <FormItem><FormLabel>{label}</FormLabel>{description && <FormDescription>{description}</FormDescription>}<FormControl>{multiline ? <Textarea name={field.name} value={String(field.value ?? "")} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref} rows={3}/> : <Input name={field.name} value={String(field.value ?? "")} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref}/>}</FormControl><FormMessage/></FormItem>}/>;
+}
+function SelectField({ form, name, label, options, description }: FormProps & {name:Path<Values>;label:string;options:readonly string[];description?:string}) {
+ return <FormField control={form.control} name={name} render={({ field }) => <FormItem><FormLabel>{label}</FormLabel>{description && <FormDescription>{description}</FormDescription>}<Select value={field.value as string} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue placeholder="Select an option"/></SelectTrigger></FormControl><SelectContent>{options.map(option=><SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent></Select><FormMessage/></FormItem>}/>;
+}
+function MultiSelect({form,name,options,limit}:{form:FormProps["form"];name:"passions"|"interests"|"spiritualGifts"|"lifeSelected"|"availability";options:readonly string[];limit?:number}) {
+ return <FormField control={form.control} name={name} render={({field}) => <FormItem><div className="grid sm:grid-cols-2 gap-2">{options.map(option => { const selected=field.value.includes(option); const disabled=!selected && Boolean(limit && field.value.length >= limit); return <label key={option} className={`flex gap-3 rounded-lg border p-3 text-sm ${disabled?"opacity-50":"cursor-pointer hover:bg-muted/40"}`}><Checkbox checked={selected} disabled={disabled} onCheckedChange={checked=>field.onChange(checked?[...field.value,option]:field.value.filter(value=>value!==option))}/>{option}</label>; })}</div><FormMessage/></FormItem>}/>;
+}
+function Heading({children,description}:{children:React.ReactNode;description?:string}) { return <div><h3 className="font-serif text-xl font-medium">{children}</h3>{description&&<p className="text-sm text-muted-foreground mt-1">{description}</p>}</div>; }
 
 export default function Assessment() {
-  const [, params] = useRoute("/profile/:slug");
-  const slug = params?.slug;
-
-  const { data: church, isLoading: isLoadingChurch, error: churchError } = useGetPublicChurch(slug || "", {
-    query: { enabled: !!slug, queryKey: getGetPublicChurchQueryKey(slug || "") }
-  });
-
-  const createProfile = useCreateProfile();
-  
-  const [step, setStep] = useState(0); // 0 = Welcome, 1 = Basic, 2 = Church, 3 = Passions/Interests, 4 = Skills, 5 = Done
-  
-  const form = useForm<AssessmentFormValues>({
-    resolver: zodResolver(assessmentSchema),
-    defaultValues: {
-      basicInformation: {
-        firstName: "", lastName: "", email: "", phone: "",
-        ageRange: "", preferredContact: "email", familySituation: "", transportation: "Yes"
-      },
-      churchConnection: {
-        attendanceLength: "", connectionLevel: 3, followingJesusLength: "",
-        servedBefore: false, previousService: ""
-      },
-      passions: [],
-      interests: [],
-      servingFrequency: "",
-      availability: [],
-      skills: {
-        occupation: "", uniqueSkills: "", previousMinistryExperience: "",
-        leadershipExperience: "", missionTripExperience: "", lifeExperience: ""
-      }
-    }
-  });
-
-  useEffect(() => {
-    const subscription = form.watch((_, { name }) => {
-      if (name) form.clearErrors(name);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [form]);
-
-  if (isLoadingChurch) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (churchError || !church) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
-        <h1 className="font-serif text-3xl font-medium mb-2">Church Not Found</h1>
-        <p className="text-muted-foreground mb-6">The assessment link appears to be invalid.</p>
-        <Button asChild><Link href="/">Return Home</Link></Button>
-      </div>
-    );
-  }
-
-  const validateCurrentStep = () => {
-    const stepValidation = {
-      1: {
-        schema: assessmentSchema.shape.basicInformation,
-        value: form.getValues("basicInformation"),
-        fields: ["basicInformation"] as const,
-        prefix: "basicInformation",
-      },
-      2: {
-        schema: assessmentSchema.shape.churchConnection,
-        value: form.getValues("churchConnection"),
-        fields: ["churchConnection"] as const,
-        prefix: "churchConnection",
-      },
-      3: {
-        schema: z.object({
-          passions: assessmentSchema.shape.passions,
-          interests: assessmentSchema.shape.interests,
-          servingFrequency: assessmentSchema.shape.servingFrequency,
-          availability: assessmentSchema.shape.availability,
-        }),
-        value: {
-          passions: form.getValues("passions"),
-          interests: form.getValues("interests"),
-          servingFrequency: form.getValues("servingFrequency"),
-          availability: form.getValues("availability"),
-        },
-        fields: ["passions", "interests", "servingFrequency", "availability"] as const,
-        prefix: "",
-      },
-    }[step as 1 | 2 | 3];
-
-    if (!stepValidation) return true;
-
-    form.clearErrors(stepValidation.fields as any);
-    const result = stepValidation.schema.safeParse(stepValidation.value);
-
-    if (!result.success) {
-      result.error.issues.forEach((issue) => {
-        const fieldPath = [stepValidation.prefix, ...issue.path]
-          .filter(Boolean)
-          .join(".");
-        form.setError(fieldPath as any, {
-          type: "manual",
-          message: issue.message,
-        });
-      });
-    }
-
-    return result.success;
+ const [, params] = useRoute("/profile/:slug"); const slug=params?.slug ?? "";
+ const {data:church,isLoading,error:churchError}=useGetPublicChurch(slug,{query:{enabled:Boolean(slug),queryKey:getGetPublicChurchQueryKey(slug)}});
+ const createProfile=useCreateProfile(); const [step,setStep]=useState(0); const [submitError,setSubmitError]=useState("");
+ const form=useForm<Values>({resolver:zodResolver(assessmentSchema),defaultValues});
+ useEffect(()=>{const subscription=form.watch((values,info)=>{if(info.name) form.clearErrors(info.name as Path<Values>);if(info.name==="apestPrimary"&&values.apestPrimary===values.apestSecondary) form.setValue("apestSecondary","")});return()=>subscription.unsubscribe()},[form]);
+ const validateStep=() => {
+  const validators: Record<number,{schema:z.ZodType;value:unknown;prefix:string}> = {
+   1:{schema:assessmentSchema.shape.basicInformation,value:form.getValues("basicInformation"),prefix:"basicInformation"},
+   2:{schema:assessmentSchema.shape.churchConnection,value:form.getValues("churchConnection"),prefix:"churchConnection"},
+   3:{schema:z.object({passions:assessmentSchema.shape.passions,interests:assessmentSchema.shape.interests,servingFrequency:assessmentSchema.shape.servingFrequency,availability:assessmentSchema.shape.availability}),value:{passions:form.getValues("passions"),interests:form.getValues("interests"),servingFrequency:form.getValues("servingFrequency"),availability:form.getValues("availability")},prefix:""},
+   4:{schema:z.object({spiritualGifts:assessmentSchema.shape.spiritualGifts,apestPrimary:assessmentSchema.shape.apestPrimary,apestSecondary:assessmentSchema.shape.apestSecondary,workingStyle:assessmentSchema.shape.workingStyle}).superRefine((value,context)=>{if(value.apestPrimary===value.apestSecondary)context.addIssue({code:z.ZodIssueCode.custom,path:["apestSecondary"],message:"Choose a different secondary tendency"})}),value:{spiritualGifts:form.getValues("spiritualGifts"),apestPrimary:form.getValues("apestPrimary"),apestSecondary:form.getValues("apestSecondary"),workingStyle:form.getValues("workingStyle")},prefix:""},
+   5:{schema:z.object({occupation:assessmentSchema.shape.occupation,skills:assessmentSchema.shape.skills,lifeSelected:assessmentSchema.shape.lifeSelected,lifeNotes:assessmentSchema.shape.lifeNotes}),value:{occupation:form.getValues("occupation"),skills:form.getValues("skills"),lifeSelected:form.getValues("lifeSelected"),lifeNotes:form.getValues("lifeNotes")},prefix:""},
+   6:{schema:z.object({availabilityDetails:assessmentSchema.shape.availabilityDetails,spiritualHealth:assessmentSchema.shape.spiritualHealth}),value:{availabilityDetails:form.getValues("availabilityDetails"),spiritualHealth:form.getValues("spiritualHealth")},prefix:""},
+   7:{schema:z.object({preferences:assessmentSchema.shape.preferences}),value:{preferences:form.getValues("preferences")},prefix:""},
   };
-
-  const nextStep = () => {
-    if (!validateCurrentStep()) return;
-
-    setStep(s => s + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const prevStep = () => {
-    setStep(s => s - 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const onSubmit = (data: AssessmentFormValues) => {
-    if (!slug) return;
-    
-    createProfile.mutate({
-      data: {
-        churchSlug: slug,
-        basicInformation: data.basicInformation,
-        churchConnection: {
-          ...data.churchConnection,
-          previousService: data.churchConnection.previousService || null,
-        },
-        passions: data.passions,
-        interests: data.interests,
-        servingFrequency: data.servingFrequency,
-        availability: data.availability,
-        skills: {
-          occupation: data.skills.occupation || null,
-          uniqueSkills: data.skills.uniqueSkills || null,
-          previousMinistryExperience: data.skills.previousMinistryExperience || null,
-          leadershipExperience: data.skills.leadershipExperience || null,
-          missionTripExperience: data.skills.missionTripExperience || null,
-          lifeExperience: data.skills.lifeExperience || null,
-        }
-      }
-    }, {
-      onSuccess: () => {
-        setStep(5);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-  };
-
-  const progress = (step / 4) * 100;
-
-  // Render Welcome Screen
-  if (step === 0) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center py-12 px-4 selection:bg-secondary/20 selection:text-secondary">
-        <Card className="max-w-xl w-full border-none shadow-none bg-transparent">
-          <CardContent className="text-center p-0 space-y-8">
-            <div className="mx-auto w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-              <HeartHandshake className="w-10 h-10" />
-            </div>
-            
-            <div>
-              <h1 className="font-serif text-4xl md:text-5xl font-medium text-foreground tracking-tight mb-4">
-                Welcome to <span className="text-primary">{church.name}</span>'s Ministry Profile
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
-                We believe God has uniquely wired every person. This brief assessment helps us understand your passions, gifts, and experience so we can help you find your place.
-              </p>
-            </div>
-
-            <Button size="lg" onClick={() => setStep(1)} className="rounded-full px-10 h-14 text-lg font-medium bg-primary hover:bg-primary/90">
-              Start Assessment <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Render Success Screen
-  if (step === 5) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center py-12 px-4">
-        <Card className="max-w-md w-full border-border/60 shadow-lg rounded-2xl overflow-hidden text-center">
-          <div className="h-32 bg-primary flex items-center justify-center">
-            <CheckCircle2 className="w-16 h-16 text-primary-foreground" />
-          </div>
-          <CardContent className="p-8 pt-10">
-            <h2 className="font-serif text-3xl font-medium mb-4">Thank You!</h2>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Your profile has been submitted to {church.name}. A team member will be in touch soon to discuss next steps and finding your fit.
-            </p>
-            <Button asChild variant="outline" className="rounded-full font-medium">
-              <a href={church.profileUrl || "/"}>Return to Church Profile</a>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Render Form Steps
-  return (
-    <div className="min-h-screen bg-muted/20">
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-3xl">
-          <div className="font-serif font-medium text-lg text-foreground truncate">{church.name}</div>
-          <div className="w-1/3 max-w-[200px]">
-            <div className="text-xs text-muted-foreground text-right mb-1 font-medium">Step {step} of 4</div>
-            <Progress value={progress} className="h-2 bg-muted [&>div]:bg-primary" />
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8 md:py-12 max-w-3xl">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Card className="border-border/60 shadow-sm rounded-2xl overflow-hidden">
-              <CardContent className="p-6 md:p-10">
-                
-                {/* STEP 1: Basic Info */}
-                {step === 1 && (
-                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div>
-                      <h2 className="font-serif text-3xl font-medium tracking-tight mb-2">About You</h2>
-                      <p className="text-muted-foreground">Let's start with the basics.</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <FormField control={form.control} name="basicInformation.firstName" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>First Name</FormLabel>
-                          <FormControl><Input {...field} /></FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <FormField control={form.control} name="basicInformation.lastName" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last Name</FormLabel>
-                          <FormControl><Input {...field} /></FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <FormField control={form.control} name="basicInformation.email" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email Address</FormLabel>
-                          <FormControl><Input type="email" {...field} /></FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <FormField control={form.control} name="basicInformation.phone" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
-                          <FormControl><Input type="tel" {...field} /></FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <FormField control={form.control} name="basicInformation.ageRange" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Age Range</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger><SelectValue placeholder="Select age range" /></SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {["Under 18", "18-25", "26-35", "36-45", "46-55", "56-65", "66+"].map(o => (
-                                <SelectItem key={o} value={o}>{o}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <FormField control={form.control} name="basicInformation.familySituation" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Family/Life Stage</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger><SelectValue placeholder="Select life stage" /></SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {["Single", "Married", "Empty Nester", "Parent with Kids at Home", "Other"].map(o => (
-                                <SelectItem key={o} value={o}>{o}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 2: Church Connection */}
-                {step === 2 && (
-                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div>
-                      <h2 className="font-serif text-3xl font-medium tracking-tight mb-2">Your Journey</h2>
-                      <p className="text-muted-foreground">Tell us about your faith and connection to the church.</p>
-                    </div>
-
-                    <div className="space-y-6">
-                      <FormField control={form.control} name="churchConnection.followingJesusLength" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>How long have you been following Jesus?</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger><SelectValue placeholder="Select duration" /></SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {["Still exploring", "Less than 1 year", "1-3 years", "3-5 years", "5-10 years", "10+ years"].map(o => (
-                                <SelectItem key={o} value={o}>{o}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-
-                      <FormField control={form.control} name="churchConnection.attendanceLength" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>How long have you been attending {church.name}?</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger><SelectValue placeholder="Select duration" /></SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {["Just visiting", "Less than 6 months", "6 months - 1 year", "1-3 years", "3+ years"].map(o => (
-                                <SelectItem key={o} value={o}>{o}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-
-                      <FormField control={form.control} name="churchConnection.connectionLevel" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>How connected do you feel here right now? (1 = Low, 5 = High)</FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
-                              {[1, 2, 3, 4, 5].map(level => (
-                                <button
-                                  key={level}
-                                  type="button"
-                                  onClick={() => field.onChange(level)}
-                                  className={`w-12 h-12 rounded-full font-medium transition-all ${field.value === level ? 'bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
-                                >
-                                  {level}
-                                </button>
-                              ))}
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-
-                      <FormField control={form.control} name="churchConnection.servedBefore" render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-muted/20">
-                          <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>Have you served on a team here before?</FormLabel>
-                          </div>
-                        </FormItem>
-                      )} />
-
-                      {form.watch('churchConnection.servedBefore') && (
-                        <FormField control={form.control} name="churchConnection.previousService" render={({ field }) => (
-                          <FormItem className="animate-in fade-in slide-in-from-top-2">
-                            <FormLabel>Where did you serve?</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )} />
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 3: Passions & Interests */}
-                {step === 3 && (
-                  <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div>
-                      <h2 className="font-serif text-3xl font-medium tracking-tight mb-2">Passions & Interests</h2>
-                      <p className="text-muted-foreground">What groups of people and types of work energize you?</p>
-                    </div>
-
-                    <FormField control={form.control} name="passions" render={() => (
-                      <FormItem>
-                        <div className="mb-4">
-                          <FormLabel className="text-lg">People Passions</FormLabel>
-                          <p className="text-sm text-muted-foreground">Who do you feel drawn to help? (Select all that apply)</p>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {PASSION_OPTIONS.map((item) => (
-                            <FormField key={item} control={form.control} name="passions" render={({ field }) => {
-                              return (
-                                <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-3 hover:bg-muted/50 cursor-pointer">
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(item)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...field.value, item])
-                                          : field.onChange(field.value?.filter((value) => value !== item))
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormLabel className="font-normal cursor-pointer flex-1">{item}</FormLabel>
-                                </FormItem>
-                              )
-                            }} />
-                          ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-
-                    <FormField control={form.control} name="interests" render={() => (
-                      <FormItem>
-                        <div className="mb-4">
-                          <FormLabel className="text-lg">Role Interests</FormLabel>
-                          <p className="text-sm text-muted-foreground">What types of tasks do you enjoy? (Select all that apply)</p>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {INTEREST_OPTIONS.map((item) => (
-                            <FormField key={item} control={form.control} name="interests" render={({ field }) => {
-                              return (
-                                <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-3 hover:bg-muted/50 cursor-pointer">
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(item)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...field.value, item])
-                                          : field.onChange(field.value?.filter((value) => value !== item))
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormLabel className="font-normal cursor-pointer flex-1">{item}</FormLabel>
-                                </FormItem>
-                              )
-                            }} />
-                          ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    
-                    <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-border">
-                      <FormField control={form.control} name="servingFrequency" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Ideal Serving Frequency</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {["Weekly", "Bi-weekly", "Once a month", "Occasional/Events only"].map(o => (
-                                <SelectItem key={o} value={o}>{o}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-
-                      <FormField control={form.control} name="availability" render={() => (
-                        <FormItem>
-                          <FormLabel>Availability</FormLabel>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {AVAILABILITY_OPTIONS.map((item) => (
-                              <FormField key={item} control={form.control} name="availability" render={({ field }) => {
-                                const isChecked = field.value?.includes(item);
-                                return (
-                                  <Button
-                                    key={item}
-                                    type="button"
-                                    variant={isChecked ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => {
-                                      isChecked 
-                                        ? field.onChange(field.value?.filter(v => v !== item))
-                                        : field.onChange([...field.value, item]);
-                                    }}
-                                    className={`rounded-full ${isChecked ? 'bg-secondary text-secondary-foreground hover:bg-secondary/90 border-transparent' : ''}`}
-                                  >
-                                    {item}
-                                  </Button>
-                                )
-                              }} />
-                            ))}
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                    </div>
-
-                  </div>
-                )}
-
-                {/* STEP 4: Skills */}
-                {step === 4 && (
-                  <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div>
-                      <h2 className="font-serif text-3xl font-medium tracking-tight mb-2">Skills & Experience</h2>
-                      <p className="text-muted-foreground">Optional, but helpful context for leadership.</p>
-                    </div>
-
-                    <FormField control={form.control} name="skills.occupation" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Current Occupation / Field of Study</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
-                      </FormItem>
-                    )} />
-                    
-                    <FormField control={form.control} name="skills.uniqueSkills" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Unique Skills</FormLabel>
-                        <FormDescription>Photography, accounting, woodworking, sign language, etc.</FormDescription>
-                        <FormControl><Textarea {...field} className="resize-none" rows={3} /></FormControl>
-                      </FormItem>
-                    )} />
-
-                    <FormField control={form.control} name="skills.leadershipExperience" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Leadership Experience</FormLabel>
-                        <FormControl><Textarea {...field} className="resize-none" rows={2} /></FormControl>
-                      </FormItem>
-                    )} />
-                  </div>
-                )}
-                
-              </CardContent>
-            </Card>
-
-            {/* Navigation Actions */}
-            <div className="flex items-center justify-between pt-4">
-              <Button 
-                type="button" 
-                variant="ghost" 
-                onClick={prevStep}
-                className="font-medium"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" /> Back
-              </Button>
-              
-              {step < 4 ? (
-                <Button 
-                  type="button" 
-                  onClick={nextStep}
-                  className="font-medium bg-primary hover:bg-primary/90 px-8"
-                >
-                  Continue <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              ) : (
-                <Button 
-                  type="submit" 
-                  disabled={createProfile.isPending}
-                  className="font-medium bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8"
-                >
-                  {createProfile.isPending ? (
-                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting...</>
-                  ) : (
-                    "Submit Profile"
-                  )}
-                </Button>
-              )}
-            </div>
-          </form>
-        </Form>
-      </div>
-    </div>
-  );
+  const current=validators[step]; if(!current)return true; const result=current.schema.safeParse(current.value); if(result.success)return true;
+  result.error.issues.forEach(issue=>form.setError([current.prefix,...issue.path].filter(Boolean).join(".") as Path<Values>,{type:"manual",message:issue.message})); return false;
+ };
+ const next=()=>{if(!validateStep())return;setStep(value=>value+1);window.scrollTo({top:0,behavior:"smooth"})};
+ const submit=(data:Values)=>{setSubmitError("");createProfile.mutate({data:{churchSlug:slug,basicInformation:{...data.basicInformation,phone:data.basicInformation.phone||null},churchConnection:{...data.churchConnection,previousService:data.churchConnection.previousService||null},passions:data.passions,interests:data.interests,servingFrequency:data.servingFrequency,availability:data.availability,skills:{occupation:data.occupation||null,uniqueSkills:data.skills.uniqueSkills||null,previousMinistryExperience:data.skills.experience||null,leadershipExperience:null,missionTripExperience:null,lifeExperience:data.lifeNotes||null},languages:data.languageText?{spoken:data.languageText,proficiency:data.languageProficiency||null}:null,churchDetails:data.churchDetails,skillsDetails:data.skills,lifeExperiences:{selected:data.lifeSelected,notes:data.lifeNotes},availabilityDetails:data.availabilityDetails,ministryPreferences:data.preferences,assessmentSections:{spiritualGifts:{topGifts:data.spiritualGifts},apest:{primary:data.apestPrimary||null,secondary:data.apestSecondary||null},personalityStrengths:data.workingStyle,spiritualHealth:data.spiritualHealth}}},{onSuccess:()=>{setStep(8);window.scrollTo({top:0,behavior:"smooth"})},onError:()=>setSubmitError("We couldn’t submit your profile right now. Please check your connection and try again.")})};
+ if(isLoading)return <div className="min-h-screen grid place-items-center"><Loader2 className="animate-spin text-primary"/></div>;
+ if(churchError||!church)return <div className="min-h-screen grid place-items-center p-4"><Card><CardContent className="p-8">Church not found. <Link href="/">Return home</Link></CardContent></Card></div>;
+ if(step===0)return <div className="min-h-screen grid place-items-center bg-muted/20 p-4"><Card className="max-w-xl text-center"><CardContent className="p-10 space-y-6"><HeartHandshake className="w-12 h-12 mx-auto text-primary"/><h1 className="font-serif text-4xl">Your Ministry Profile</h1><p className="text-muted-foreground">This is a conversation starter, not a test, diagnosis, or automatic placement tool. Share only what feels comfortable.</p><Button onClick={()=>setStep(1)}>Begin <ArrowRight className="w-4 h-4 ml-2"/></Button></CardContent></Card></div>;
+ if(step===8)return <div className="min-h-screen grid place-items-center p-4"><Card className="max-w-md text-center"><CardContent className="p-10 space-y-5"><CheckCircle2 className="w-14 h-14 mx-auto text-primary"/><h1 className="font-serif text-3xl">Thank you</h1><p className="text-muted-foreground">Your profile has been shared with {church.name}. A leader can follow up thoughtfully about next steps.</p><Button asChild><a href={church.profileUrl || "/"}>Return to church profile</a></Button></CardContent></Card></div>;
+ return <div className="min-h-screen bg-muted/20"><header className="sticky top-0 z-10 bg-background border-b"><div className="max-w-3xl mx-auto p-4 flex justify-between"><strong>{church.name}</strong><span className="text-sm text-muted-foreground">Step {step} of 7</span></div><Progress value={step/7*100}/></header><main className="max-w-3xl mx-auto p-4 md:p-10"><Form {...form}><form onSubmit={event=>event.preventDefault()}><Card><CardContent className="p-6 md:p-10 space-y-8">
+ {step===1&&<><Heading description="Keep this simple and ministry-relevant.">Personal Information</Heading><div className="grid md:grid-cols-2 gap-5"><TextField form={form} name="basicInformation.firstName" label="First name"/><TextField form={form} name="basicInformation.lastName" label="Last name"/><TextField form={form} name="basicInformation.email" label="Email"/><TextField form={form} name="basicInformation.phone" label="Phone (optional)"/><SelectField form={form} name="basicInformation.ageRange" label="Age range" options={["Under 18","18–25","26–35","36–45","46–55","56–65","66+"]}/><SelectField form={form} name="basicInformation.preferredContact" label="Preferred contact method" options={["Email","Phone","Text"]}/><SelectField form={form} name="basicInformation.familySituation" label="Family situation" options={["Single","Married","Parent/caregiver","Empty nester","Other"]}/><SelectField form={form} name="basicInformation.transportation" label="Transportation" options={["Reliable transportation","Sometimes need transportation","Would like to discuss"]}/><TextField form={form} name="languageText" label="Languages spoken (optional)"/><SelectField form={form} name="languageProficiency" label="Language proficiency (optional)" options={["Basic conversation","Conversational","Fluent","Native/bilingual"]}/></div></>}
+ {step===2&&<><Heading description="Help pastors understand your relationship with the church.">About Me / Church Connection</Heading><div className="grid md:grid-cols-2 gap-5"><SelectField form={form} name="churchConnection.attendanceLength" label="How long have you attended?" options={["Just visiting","Less than 6 months","6–12 months","1–3 years","3+ years"]}/><SelectField form={form} name="churchConnection.followingJesusLength" label="How long have you followed Jesus?" options={["Still exploring","Less than 1 year","1–3 years","3–5 years","5–10 years","10+ years"]}/><SelectField form={form} name="churchDetails.membership" label="Membership" options={["Member","Not currently a member","Interested in learning more","Prefer not to say"]}/><TextField form={form} name="churchDetails.service" label="Service or congregation you attend (optional)"/><TextField form={form} name="churchDetails.previousInvolvement" label="Previous church involvement (optional)" multiline/></div><FormField control={form.control} name="churchConnection.connectionLevel" render={({field})=><FormItem><FormLabel>How connected do you feel here? (self-reported)</FormLabel><div role="radiogroup" aria-label="Church connection level" className="flex gap-2">{[1,2,3,4,5].map(level=><Button key={level} type="button" role="radio" aria-checked={field.value===level} aria-label={`Connection level ${level} of 5`} variant={field.value===level?"default":"outline"} className="rounded-full w-10 h-10 p-0" onClick={()=>field.onChange(level)}>{level}</Button>)}</div><FormMessage/></FormItem>}/><FormField control={form.control} name="churchConnection.servedBefore" render={({field})=><label className="flex gap-3 rounded-lg border p-4 cursor-pointer"><Checkbox checked={field.value} onCheckedChange={field.onChange}/>Have you served on a team here before?</label>}/><TextField form={form} name="churchConnection.previousService" label="Prior serving experience (optional)" multiline/></>}
+ {step===3&&<><Heading>Passions</Heading><p className="text-sm text-muted-foreground">Who or what has God put on your heart?</p><MultiSelect form={form} name="passions" options={OPTIONS.passions}/><Heading>Ministry Interests</Heading><p className="text-sm text-muted-foreground">Actual ministry areas you would like to explore.</p><MultiSelect form={form} name="interests" options={OPTIONS.interests}/><Heading>Availability & Serving Capacity</Heading><SelectField form={form} name="servingFrequency" label="Serving frequency" options={["Weekly","Every other week","Monthly","Occasional/events only"]}/><MultiSelect form={form} name="availability" options={OPTIONS.availability}/></>}
+ {step===4&&<><Heading description="Choose three to five gifts that you recognize in yourself.">Spiritual Gifts</Heading><MultiSelect form={form} name="spiritualGifts" options={OPTIONS.gifts} limit={5}/><Heading description="Select distinct primary and secondary tendencies. This is not a diagnosis or score.">APEST</Heading><div className="grid md:grid-cols-2 gap-5"><SelectField form={form} name="apestPrimary" label="Primary tendency" options={OPTIONS.apest}/><SelectField form={form} name="apestSecondary" label="Secondary tendency" options={OPTIONS.apest.filter(item=>item!==form.watch("apestPrimary"))}/></div><Heading>Personality / Working Style</Heading><div className="grid md:grid-cols-2 gap-5">{([["structure","Structured","Flexible"],["focus","People-focused","Task-focused"],["expression","Reflective","Expressive"],["teamwork","Independent","Collaborative"],["perspective","Detail-oriented","Big-picture"],["pace","Steady","Fast-paced"]] as const).map(([name,left,right])=><SelectField key={name} form={form} name={`workingStyle.${name}`} label={`${left} or ${right}`} options={[left,right]}/>)}</div></>}
+ {step===5&&<><Heading>Skills & Experience</Heading><div className="space-y-5"><TextField form={form} name="occupation" label="Profession or field of study"/><TextField form={form} name="skills.education" label="Education"/><TextField form={form} name="skills.certifications" label="Certifications"/><TextField form={form} name="skills.skills" label="Technical, creative, language, music, teaching, leadership, financial, trades, healthcare, counseling, technology, cooking, driving, or organization skills" multiline/><TextField form={form} name="skills.experience" label="Relevant experience" multiline/><TextField form={form} name="skills.uniqueSkills" label="What are you good at that the church may not know about?" multiline/></div><Heading description="Optional. Please do not share anything you do not want church leaders to know.">Life Experiences</Heading><MultiSelect form={form} name="lifeSelected" options={OPTIONS.life}/><TextField form={form} name="lifeNotes" label="Optional notes" multiline/></>}
+ {step===6&&<><Heading>Availability & Serving Capacity</Heading><div className="grid md:grid-cols-2 gap-5"><SelectField form={form} name="availabilityDetails.seasonal" label="Seasonal availability" options={["Available year-round","School-year only","Summer only","Varies"]}/>{([["specialEvents","Open to special events?"],["retreats","Open to overnight retreats?"],["missionTrips","Open to mission trips?"],["projects","Open to short-term projects?"]] as const).map(([name,label])=><SelectField key={name} form={form} name={`availabilityDetails.${name}`} label={label} options={["Yes","Maybe / discuss","Not right now"]}/>)}</div><SelectField form={form} name="availabilityDetails.commitment" label="Serving rhythm" options={["Ongoing role","Occasional roles","A mix of both"]}/><TextField form={form} name="availabilityDetails.responsibility" label="What serving responsibility feels realistic right now?" multiline/><Heading description="Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing.">Spiritual Health</Heading><div className="grid md:grid-cols-2 gap-5">{(["prayer","scripture","worship","relationships","community","rest","motivation","wellbeing","connection"] as const).map(name=><SelectField key={name} form={form} name={`spiritualHealth.${name}`} label={name==="worship"?"Worship/church engagement":name==="community"?"Community/accountability":name==="rest"?"Rest/Sabbath":name==="wellbeing"?"Emotional/spiritual well-being":name==="connection"?"Current connection with God":name[0].toUpperCase()+name.slice(1)} options={["Needs attention","Growing","Steady","Feeling strong","Prefer not to say"]}/>)}</div></>}
+ {step===7&&<><Heading>Ministry Preferences & Environment</Heading><p className="text-muted-foreground">Optional preferences help begin a thoughtful conversation, not determine placement.</p><div className="grid md:grid-cols-2 gap-5">{([["setting","Working style","With people","Behind the scenes"],["role","Role preference","Leading","Supporting"],["routine","Environment","Predictable routines","Changing environments"],["team","Team setting","Alone","Small team","Large group"],["work","Ministry expression","Relational","Practical service","Teaching","Administration","Creative work","Outreach"],["rhythm","Role rhythm","Weekly in one role","Occasionally in several roles"]] as const).map(([name,label,...options])=><SelectField key={name} form={form} name={`preferences.${name}`} label={label} options={options}/>)}</div></>}
+ {submitError&&<p role="alert" className="rounded-lg bg-destructive/10 text-destructive p-3">{submitError}</p>}
+ </CardContent></Card><div className="flex justify-between mt-6"><Button type="button" variant="ghost" onClick={()=>setStep(value=>value-1)}><ArrowLeft className="w-4 h-4 mr-2"/>Back</Button>{step===7?<Button type="button" disabled={createProfile.isPending} onClick={()=>void form.handleSubmit(submit)()}>{createProfile.isPending&&<Loader2 className="w-4 h-4 mr-2 animate-spin"/>}Submit profile</Button>:<Button type="button" onClick={next}>Continue <ArrowRight className="w-4 h-4 ml-2"/></Button>}</div></form></Form></main></div>;
 }

@@ -5,9 +5,8 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { SkillsAndExperienceDetails } from './skillsAndExperienceDetails';
 
-export interface SkillsAndExperience {
+export interface SkillsAndExperienceInput {
   /** @nullable */
   occupation: string | null;
   /** @nullable */
@@ -20,6 +19,4 @@ export interface SkillsAndExperience {
   missionTripExperience: string | null;
   /** @nullable */
   lifeExperience: string | null;
-  /** @nullable */
-  details?: SkillsAndExperienceDetails;
 }

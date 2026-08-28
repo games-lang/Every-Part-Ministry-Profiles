@@ -8,6 +8,9 @@
 import type { BasicInformation } from './basicInformation';
 import type { ChurchConnection } from './churchConnection';
 import type { FutureAssessmentSections } from './futureAssessmentSections';
+import type { MinistryProfileAvailabilityDetails } from './ministryProfileAvailabilityDetails';
+import type { MinistryProfileLifeExperiences } from './ministryProfileLifeExperiences';
+import type { MinistryProfileMinistryPreferences } from './ministryProfileMinistryPreferences';
 import type { ProfileListItem } from './profileListItem';
 import type { SkillsAndExperience } from './skillsAndExperience';
 
@@ -18,4 +21,10 @@ export type MinistryProfile = ProfileListItem & {
   experience: string;
   assessmentSections: FutureAssessmentSections;
   conversations: string[];
+  /** @nullable */
+  lifeExperiences?: MinistryProfileLifeExperiences;
+  /** @nullable */
+  availabilityDetails?: MinistryProfileAvailabilityDetails;
+  /** @nullable */
+  ministryPreferences?: MinistryProfileMinistryPreferences;
 };

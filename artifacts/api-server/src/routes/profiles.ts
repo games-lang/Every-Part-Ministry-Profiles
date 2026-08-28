@@ -103,6 +103,16 @@ router.post("/profiles", async (req, res): Promise<void> => {
       leadershipExperience: skills.leadershipExperience,
       missionTripExperience: skills.missionTripExperience,
       lifeExperience: skills.lifeExperience,
+      languages: parsed.data.languages ?? null,
+      churchDetails: parsed.data.churchDetails ?? null,
+      skillsDetails: parsed.data.skillsDetails ?? null,
+      lifeExperiences: parsed.data.lifeExperiences ?? null,
+      availabilityDetails: parsed.data.availabilityDetails ?? null,
+      ministryPreferences: parsed.data.ministryPreferences ?? null,
+      apest: parsed.data.assessmentSections?.apest ?? null,
+      spiritualGifts: parsed.data.assessmentSections?.spiritualGifts ?? null,
+      personalityStrengths: parsed.data.assessmentSections?.personalityStrengths ?? null,
+      spiritualHealth: parsed.data.assessmentSections?.spiritualHealth ?? null,
     })
     .returning();
 

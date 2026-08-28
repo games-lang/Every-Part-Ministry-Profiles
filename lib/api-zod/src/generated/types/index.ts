@@ -7,8 +7,12 @@
  */
 
 export * from './basicInformation';
+export * from './basicInformationInput';
+export * from './basicInformationLanguages';
 export * from './church';
 export * from './churchConnection';
+export * from './churchConnectionDetails';
+export * from './churchConnectionInput';
 export * from './churchUpdate';
 export * from './countItem';
 export * from './dashboardSummary';
@@ -20,7 +24,18 @@ export * from './futureAssessmentSectionsSpiritualHealth';
 export * from './healthStatus';
 export * from './listProfilesParams';
 export * from './ministryProfile';
+export * from './ministryProfileAvailabilityDetails';
+export * from './ministryProfileLifeExperiences';
+export * from './ministryProfileMinistryPreferences';
 export * from './profileInput';
+export * from './profileInputAvailabilityDetails';
+export * from './profileInputChurchDetails';
+export * from './profileInputLanguages';
+export * from './profileInputLifeExperiences';
+export * from './profileInputMinistryPreferences';
+export * from './profileInputSkillsDetails';
 export * from './profileListItem';
 export * from './publicChurch';
 export * from './skillsAndExperience';
+export * from './skillsAndExperienceDetails';
+export * from './skillsAndExperienceInput';

@@ -5,9 +5,8 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { BasicInformationLanguages } from './basicInformationLanguages';
 
-export interface BasicInformation {
+export interface BasicInformationInput {
   /** @minLength 1 */
   firstName: string;
   /** @minLength 1 */
@@ -19,6 +18,4 @@ export interface BasicInformation {
   preferredContact: string;
   familySituation: string;
   transportation: string;
-  /** @nullable */
-  languages?: BasicInformationLanguages;
 }

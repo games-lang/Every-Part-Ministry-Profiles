@@ -71,6 +71,26 @@ export interface DashboardSummary {
   topPassions: CountItem[];
 }
 
+/**
+ * @nullable
+ */
+export type MinistryProfileLifeExperiences = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type MinistryProfileAvailabilityDetails = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type MinistryProfileMinistryPreferences = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type BasicInformationLanguages = { [key: string]: unknown } | null;
+
 export interface BasicInformation {
   /** @minLength 1 */
   firstName: string;
@@ -83,7 +103,14 @@ export interface BasicInformation {
   preferredContact: string;
   familySituation: string;
   transportation: string;
+  /** @nullable */
+  languages?: BasicInformationLanguages;
 }
+
+/**
+ * @nullable
+ */
+export type ChurchConnectionDetails = { [key: string]: unknown } | null;
 
 export interface ChurchConnection {
   attendanceLength: string;
@@ -96,7 +123,14 @@ export interface ChurchConnection {
   servedBefore: boolean;
   /** @nullable */
   previousService: string | null;
+  /** @nullable */
+  details?: ChurchConnectionDetails;
 }
+
+/**
+ * @nullable
+ */
+export type SkillsAndExperienceDetails = { [key: string]: unknown } | null;
 
 export interface SkillsAndExperience {
   /** @nullable */
@@ -111,6 +145,8 @@ export interface SkillsAndExperience {
   missionTripExperience: string | null;
   /** @nullable */
   lifeExperience: string | null;
+  /** @nullable */
+  details?: SkillsAndExperienceDetails;
 }
 
 /**
@@ -151,20 +187,111 @@ export type MinistryProfile = ProfileListItem & {
   experience: string;
   assessmentSections: FutureAssessmentSections;
   conversations: string[];
+  /** @nullable */
+  lifeExperiences?: MinistryProfileLifeExperiences;
+  /** @nullable */
+  availabilityDetails?: MinistryProfileAvailabilityDetails;
+  /** @nullable */
+  ministryPreferences?: MinistryProfileMinistryPreferences;
 };
+
+/**
+ * @nullable
+ */
+export type ProfileInputLanguages = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type ProfileInputChurchDetails = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type ProfileInputSkillsDetails = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type ProfileInputLifeExperiences = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type ProfileInputAvailabilityDetails = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type ProfileInputMinistryPreferences = { [key: string]: unknown } | null;
+
+export interface BasicInformationInput {
+  /** @minLength 1 */
+  firstName: string;
+  /** @minLength 1 */
+  lastName: string;
+  email: string;
+  /** @nullable */
+  phone?: string | null;
+  ageRange: string;
+  preferredContact: string;
+  familySituation: string;
+  transportation: string;
+}
+
+export interface ChurchConnectionInput {
+  attendanceLength: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  connectionLevel: number;
+  followingJesusLength: string;
+  servedBefore: boolean;
+  /** @nullable */
+  previousService: string | null;
+}
+
+export interface SkillsAndExperienceInput {
+  /** @nullable */
+  occupation: string | null;
+  /** @nullable */
+  uniqueSkills: string | null;
+  /** @nullable */
+  previousMinistryExperience: string | null;
+  /** @nullable */
+  leadershipExperience: string | null;
+  /** @nullable */
+  missionTripExperience: string | null;
+  /** @nullable */
+  lifeExperience: string | null;
+}
 
 export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
-  basicInformation: BasicInformation;
-  churchConnection: ChurchConnection;
+  basicInformation: BasicInformationInput;
+  churchConnection: ChurchConnectionInput;
   /** @minItems 1 */
   passions: string[];
   /** @minItems 1 */
   interests: string[];
   servingFrequency?: string;
   availability: string[];
-  skills: SkillsAndExperience;
+  skills: SkillsAndExperienceInput;
+  /** @nullable */
+  languages?: ProfileInputLanguages;
+  /** @nullable */
+  churchDetails?: ProfileInputChurchDetails;
+  /** @nullable */
+  skillsDetails?: ProfileInputSkillsDetails;
+  /** @nullable */
+  lifeExperiences?: ProfileInputLifeExperiences;
+  /** @nullable */
+  availabilityDetails?: ProfileInputAvailabilityDetails;
+  /** @nullable */
+  ministryPreferences?: ProfileInputMinistryPreferences;
+  assessmentSections?: FutureAssessmentSections;
 }
 
 export type ListProfilesParams = {

@@ -1,0 +1,1 @@
+- [Assessment submission gate](assessment-submission-gate.md) — only the final Ministry Profile step may invoke profile creation; native form submit must stay disabled.

@@ -5,20 +5,40 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { BasicInformation } from './basicInformation';
-import type { ChurchConnection } from './churchConnection';
-import type { SkillsAndExperience } from './skillsAndExperience';
+import type { BasicInformationInput } from './basicInformationInput';
+import type { ChurchConnectionInput } from './churchConnectionInput';
+import type { FutureAssessmentSections } from './futureAssessmentSections';
+import type { ProfileInputAvailabilityDetails } from './profileInputAvailabilityDetails';
+import type { ProfileInputChurchDetails } from './profileInputChurchDetails';
+import type { ProfileInputLanguages } from './profileInputLanguages';
+import type { ProfileInputLifeExperiences } from './profileInputLifeExperiences';
+import type { ProfileInputMinistryPreferences } from './profileInputMinistryPreferences';
+import type { ProfileInputSkillsDetails } from './profileInputSkillsDetails';
+import type { SkillsAndExperienceInput } from './skillsAndExperienceInput';
 
 export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
-  basicInformation: BasicInformation;
-  churchConnection: ChurchConnection;
+  basicInformation: BasicInformationInput;
+  churchConnection: ChurchConnectionInput;
   /** @minItems 1 */
   passions: string[];
   /** @minItems 1 */
   interests: string[];
   servingFrequency?: string;
   availability: string[];
-  skills: SkillsAndExperience;
+  skills: SkillsAndExperienceInput;
+  /** @nullable */
+  languages?: ProfileInputLanguages;
+  /** @nullable */
+  churchDetails?: ProfileInputChurchDetails;
+  /** @nullable */
+  skillsDetails?: ProfileInputSkillsDetails;
+  /** @nullable */
+  lifeExperiences?: ProfileInputLifeExperiences;
+  /** @nullable */
+  availabilityDetails?: ProfileInputAvailabilityDetails;
+  /** @nullable */
+  ministryPreferences?: ProfileInputMinistryPreferences;
+  assessmentSections?: FutureAssessmentSections;
 }

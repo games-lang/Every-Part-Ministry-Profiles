@@ -43,6 +43,12 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
   spiritualGifts: jsonb("spiritual_gifts"),
   personalityStrengths: jsonb("personality_strengths"),
   spiritualHealth: jsonb("spiritual_health"),
+  languages: jsonb("languages"),
+  churchDetails: jsonb("church_details"),
+  skillsDetails: jsonb("skills_details"),
+  lifeExperiences: jsonb("life_experiences"),
+  availabilityDetails: jsonb("availability_details"),
+  ministryPreferences: jsonb("ministry_preferences"),
   completedAt: timestamp("completed_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

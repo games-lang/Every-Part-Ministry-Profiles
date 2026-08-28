@@ -5,9 +5,8 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { ChurchConnectionDetails } from './churchConnectionDetails';
 
-export interface ChurchConnection {
+export interface ChurchConnectionInput {
   attendanceLength: string;
   /**
      * @minimum 1
@@ -18,6 +17,4 @@ export interface ChurchConnection {
   servedBefore: boolean;
   /** @nullable */
   previousService: string | null;
-  /** @nullable */
-  details?: ChurchConnectionDetails;
 }

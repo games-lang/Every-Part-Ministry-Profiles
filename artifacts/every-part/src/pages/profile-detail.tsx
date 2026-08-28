@@ -1,211 +1,42 @@
 import { useRoute, Link } from "wouter";
 import { useGetProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
-import { ArrowLeft, Mail, Phone, Calendar, Heart, Map, Clock, Briefcase, Printer, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
+const empty = "Not shared";
+function Value({ label, value }: {label:string;value: unknown}) {
+  const text = typeof value === "string" || typeof value === "number" ? String(value) : "";
+  return <div className="rounded-lg border border-border/60 bg-card p-3 break-words"><div className="text-xs font-medium text-muted-foreground mb-1">{label}</div><div className={text ? "" : "text-muted-foreground italic"}>{text || empty}</div></div>;
+}
+function ObjectValues({ value }: {value: unknown}) {
+  if (!value || typeof value !== "object") return <p className="text-muted-foreground italic">No details shared.</p>;
+  const entries = Object.entries(value as Record<string, unknown>).filter(([,v]) => v !== null && v !== "" && (!Array.isArray(v) || v.length));
+  if (!entries.length) return <p className="text-muted-foreground italic">No details shared.</p>;
+  return <div className="grid sm:grid-cols-2 gap-3">{entries.map(([key,val]) => <Value key={key} label={key.replace(/([A-Z])/g, " $1").replace(/^./,x=>x.toUpperCase())} value={Array.isArray(val) ? val.join(", ") : typeof val === "object" ? JSON.stringify(val) : val}/>)}</div>;
+}
+function Section({title,children}:{title:string;children:React.ReactNode}) { return <section className="space-y-3 print:break-inside-avoid"><h2 className="font-serif text-2xl font-medium">{title}</h2><Card className="border-border/60 shadow-sm"><CardContent className="p-5">{children}</CardContent></Card></section>; }
 export default function ProfileDetail() {
-  const [, params] = useRoute("/profiles/:id");
-  const id = params?.id ? parseInt(params.id, 10) : 0;
-  
-  const { data: profile, isLoading, error } = useGetProfile(id, { query: { enabled: !!id, queryKey: getGetProfileQueryKey(id) } });
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-lg border border-destructive/20">
-          Failed to load profile details.
-        </div>
-        <Button variant="ghost" asChild className="mt-4">
-          <Link href="/profiles"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Profiles</Link>
-        </Button>
-      </div>
-    );
-  }
-
-  if (isLoading || !profile) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4"></div>
-          <div className="h-32 bg-muted rounded w-full"></div>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="h-64 bg-muted rounded"></div>
-            <div className="h-64 bg-muted rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const { basicInformation, churchConnection, skills, passions, interests, availability, servingFrequency } = profile;
-
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8 print:p-0 print:m-0 print:w-full print:max-w-none">
-      
-      {/* Header Actions */}
-      <div className="flex items-center justify-between no-print">
-        <Button variant="ghost" asChild className="font-medium -ml-4">
-          <Link href="/profiles">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back
-          </Link>
-        </Button>
-        <Button onClick={() => window.print()} variant="outline" className="font-medium">
-          <Printer className="w-4 h-4 mr-2" />
-          Print Profile
-        </Button>
-      </div>
-
-      {/* Profile Header */}
-      <div className="bg-card border border-border/60 rounded-2xl p-8 md:p-10 shadow-sm print:border-none print:shadow-none print:p-0 print:mb-8">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="w-24 h-24 rounded-full bg-primary/10 text-primary flex items-center justify-center font-serif text-4xl shrink-0">
-            {profile.memberName.charAt(0)}
-          </div>
-          
-          <div className="flex-1 space-y-4">
-            <div>
-              <h1 className="font-serif text-4xl font-medium tracking-tight mb-2">{profile.memberName}</h1>
-              <p className="text-muted-foreground text-lg">
-                Completed {new Date(profile.completedAt).toLocaleDateString()}
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap gap-4 pt-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <a href={`mailto:${profile.email}`} className="hover:text-primary">{profile.email}</a>
-              </div>
-              {basicInformation.phone && (
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  <Phone className="w-4 h-4 text-muted-foreground" />
-                  <a href={`tel:${basicInformation.phone}`} className="hover:text-primary">{basicInformation.phone}</a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8 print:block print:space-y-8">
-        
-        {/* Passions & Interests (Left Column) */}
-        <div className="space-y-8 print:mb-8">
-          <section>
-            <h2 className="flex items-center gap-2 font-serif text-2xl font-medium mb-4">
-              <Heart className="w-5 h-5 text-secondary" /> Passions
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {passions.map(p => (
-                <Badge key={p} className="bg-secondary/15 text-secondary-foreground hover:bg-secondary/20 text-sm px-3 py-1">
-                  {p}
-                </Badge>
-              ))}
-            </div>
-          </section>
-
-          <Separator className="print:hidden" />
-
-          <section>
-            <h2 className="flex items-center gap-2 font-serif text-2xl font-medium mb-4">
-              <Map className="w-5 h-5 text-primary" /> Interests
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {interests.map(i => (
-                <Badge key={i} variant="outline" className="bg-card text-sm px-3 py-1">
-                  {i}
-                </Badge>
-              ))}
-            </div>
-          </section>
-          
-          <Separator className="print:hidden" />
-
-          <section>
-            <h2 className="flex items-center gap-2 font-serif text-2xl font-medium mb-4">
-              <Clock className="w-5 h-5 text-muted-foreground" /> Availability
-            </h2>
-            <Card className="border-border/60 shadow-none">
-              <CardContent className="p-4 space-y-3">
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium mb-1">Frequency</div>
-                  <div className="font-medium">{servingFrequency || "Not specified"}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium mb-1">Times</div>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {availability.map(a => (
-                      <Badge key={a} variant="secondary" className="bg-muted text-muted-foreground text-xs">
-                        {a}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        </div>
-
-        {/* Experience & Connection (Right Column) */}
-        <div className="space-y-8">
-          <section className="bg-primary text-primary-foreground rounded-2xl p-6 print:border print:border-gray-300 print:text-black print:bg-white">
-            <h2 className="font-serif text-xl font-medium mb-4">Church Connection</h2>
-            <div className="space-y-4">
-              <div>
-                <div className="text-primary-foreground/70 text-sm print:text-gray-500">Following Jesus</div>
-                <div className="font-medium">{churchConnection.followingJesusLength}</div>
-              </div>
-              <div>
-                <div className="text-primary-foreground/70 text-sm print:text-gray-500">Attending</div>
-                <div className="font-medium">{churchConnection.attendanceLength}</div>
-              </div>
-              <div>
-                <div className="text-primary-foreground/70 text-sm print:text-gray-500">Connection Level (1-5)</div>
-                <div className="flex gap-1 mt-1">
-                  {[1, 2, 3, 4, 5].map(level => (
-                    <div key={level} className={`w-8 h-2 rounded-full ${level <= churchConnection.connectionLevel ? 'bg-secondary' : 'bg-primary-foreground/20 print:bg-gray-200'}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="flex items-center gap-2 font-serif text-2xl font-medium mb-4">
-              <Briefcase className="w-5 h-5 text-muted-foreground" /> Skills & Experience
-            </h2>
-            <div className="space-y-4">
-              {skills.occupation && (
-                <div className="bg-card p-4 rounded-xl border border-border/60">
-                  <div className="text-sm font-medium text-muted-foreground mb-1">Occupation</div>
-                  <div>{skills.occupation}</div>
-                </div>
-              )}
-              {skills.uniqueSkills && (
-                <div className="bg-card p-4 rounded-xl border border-border/60">
-                  <div className="text-sm font-medium text-muted-foreground mb-1">Unique Skills</div>
-                  <div>{skills.uniqueSkills}</div>
-                </div>
-              )}
-              {skills.previousMinistryExperience && (
-                <div className="bg-card p-4 rounded-xl border border-border/60">
-                  <div className="text-sm font-medium text-muted-foreground mb-1">Previous Ministry Experience</div>
-                  <div>{skills.previousMinistryExperience}</div>
-                </div>
-              )}
-              {skills.leadershipExperience && (
-                <div className="bg-card p-4 rounded-xl border border-border/60">
-                  <div className="text-sm font-medium text-muted-foreground mb-1">Leadership Experience</div>
-                  <div>{skills.leadershipExperience}</div>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-      </div>
-
-    </div>
-  );
+ const [,params]=useRoute("/profiles/:id"); const id=params?.id?Number(params.id):0; const {data:profile,isLoading,error}=useGetProfile(id,{query:{enabled:!!id,queryKey:getGetProfileQueryKey(id)}});
+ if(error)return <div className="container p-8"><p className="text-destructive">Failed to load profile details.</p><Link href="/profiles">Back to profiles</Link></div>;
+ if(isLoading||!profile)return <div className="container p-8"><div className="h-48 animate-pulse rounded bg-muted"/></div>;
+ const basic=profile.basicInformation; const connection=profile.churchConnection; const skills=profile.skills;
+ return <div className="container max-w-5xl mx-auto px-4 py-8 space-y-8 print:max-w-none print:p-0">
+  <div className="flex justify-between no-print"><Button variant="ghost" asChild><Link href="/profiles"><ArrowLeft className="w-4 h-4 mr-2"/>Back</Link></Button><Button variant="outline" onClick={()=>window.print()}><Printer className="w-4 h-4 mr-2"/>Print profile</Button></div>
+  <header className="rounded-2xl border bg-card p-7 md:p-10"><h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p><div className="flex flex-wrap gap-4 mt-5 text-sm"><a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>{basic.phone&&<a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}</div></header>
+  <div className="grid lg:grid-cols-2 gap-8">
+   <Section title="Personal information"><div className="grid sm:grid-cols-2 gap-3"><Value label="Age range" value={basic.ageRange}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></Section>
+   <Section title="Church connection"><div className="grid sm:grid-cols-2 gap-3"><Value label="Attending" value={connection.attendanceLength}/><Value label="Following Jesus" value={connection.followingJesusLength}/><Value label="Connection level (self-reported)" value={connection.connectionLevel}/><Value label="Served here before" value={connection.servedBefore ? "Yes" : "No"}/><Value label="Prior service" value={connection.previousService}/></div><div className="mt-3"><ObjectValues value={connection.details}/></div></Section>
+   <Section title="Passions"><div className="flex flex-wrap gap-2">{profile.passions.length ? profile.passions.map(x=><Badge key={x}>{x}</Badge>) : <span className="italic text-muted-foreground">No passions shared.</span>}</div></Section>
+   <Section title="Ministry interests"><div className="flex flex-wrap gap-2">{profile.interests.length ? profile.interests.map(x=><Badge key={x} variant="outline">{x}</Badge>) : <span className="italic text-muted-foreground">No interests shared.</span>}</div></Section>
+   <Section title="Availability & serving capacity"><div className="grid sm:grid-cols-2 gap-3"><Value label="Frequency" value={profile.servingFrequency}/><Value label="Times" value={profile.availability.join(", ")}/></div><div className="mt-3"><ObjectValues value={profile.availabilityDetails}/></div></Section>
+   <Section title="Spiritual gifts & APEST"><p className="text-sm text-muted-foreground mb-3">These are member self-reflections, not a diagnosis or placement recommendation.</p><ObjectValues value={profile.assessmentSections.spiritualGifts}/><div className="mt-3"><ObjectValues value={profile.assessmentSections.apest}/></div></Section>
+   <Section title="Working style"><ObjectValues value={profile.assessmentSections.personalityStrengths}/></Section>
+   <Section title="Skills & experience"><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div><div className="mt-3"><ObjectValues value={skills.details}/></div></Section>
+   <Section title="Life experiences"><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></Section>
+   <Section title="Spiritual health"><p className="text-sm text-muted-foreground mb-3">Pastoral self-reflection only, never a pass/fail measure.</p><ObjectValues value={profile.assessmentSections.spiritualHealth}/></Section>
+   <Section title="Ministry preferences & environment"><ObjectValues value={profile.ministryPreferences}/></Section>
+  </div>
+ </div>;
 }

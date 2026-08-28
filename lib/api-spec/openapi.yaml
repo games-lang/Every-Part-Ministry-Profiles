@@ -279,15 +279,18 @@ components:
             conversations:
               type: array
               items: { type: string }
+            lifeExperiences: { type: ["object", "null"], additionalProperties: true }
+            availabilityDetails: { type: ["object", "null"], additionalProperties: true }
+            ministryPreferences: { type: ["object", "null"], additionalProperties: true }
     ProfileInput:
       type: object
       required: [churchSlug, basicInformation, churchConnection, passions, interests, availability, skills]
       properties:
         churchSlug: { type: string, minLength: 1 }
         basicInformation:
-          $ref: "#/components/schemas/BasicInformation"
+          $ref: "#/components/schemas/BasicInformationInput"
         churchConnection:
-          $ref: "#/components/schemas/ChurchConnection"
+          $ref: "#/components/schemas/ChurchConnectionInput"
         passions:
           type: array
           minItems: 1
@@ -301,8 +304,29 @@ components:
           type: array
           items: { type: string }
         skills:
-          $ref: "#/components/schemas/SkillsAndExperience"
+          $ref: "#/components/schemas/SkillsAndExperienceInput"
+        languages: { type: ["object", "null"], additionalProperties: true }
+        churchDetails: { type: ["object", "null"], additionalProperties: true }
+        skillsDetails: { type: ["object", "null"], additionalProperties: true }
+        lifeExperiences: { type: ["object", "null"], additionalProperties: true }
+        availabilityDetails: { type: ["object", "null"], additionalProperties: true }
+        ministryPreferences: { type: ["object", "null"], additionalProperties: true }
+        assessmentSections:
+          $ref: "#/components/schemas/FutureAssessmentSections"
     BasicInformation:
+      type: object
+      required: [firstName, lastName, email, ageRange, preferredContact, familySituation, transportation]
+      properties:
+        firstName: { type: string, minLength: 1 }
+        lastName: { type: string, minLength: 1 }
+        email: { type: string, format: email }
+        phone: { type: ["string", "null"] }
+        ageRange: { type: string }
+        preferredContact: { type: string }
+        familySituation: { type: string }
+        transportation: { type: string }
+        languages: { type: ["object", "null"], additionalProperties: true }
+    BasicInformationInput:
       type: object
       required: [firstName, lastName, email, ageRange, preferredContact, familySituation, transportation]
       properties:
@@ -323,7 +347,28 @@ components:
         followingJesusLength: { type: string }
         servedBefore: { type: boolean }
         previousService: { type: ["string", "null"] }
+        details: { type: ["object", "null"], additionalProperties: true }
+    ChurchConnectionInput:
+      type: object
+      required: [attendanceLength, connectionLevel, followingJesusLength, servedBefore, previousService]
+      properties:
+        attendanceLength: { type: string }
+        connectionLevel: { type: integer, minimum: 1, maximum: 5 }
+        followingJesusLength: { type: string }
+        servedBefore: { type: boolean }
+        previousService: { type: ["string", "null"] }
     SkillsAndExperience:
+      type: object
+      required: [occupation, uniqueSkills, previousMinistryExperience, leadershipExperience, missionTripExperience, lifeExperience]
+      properties:
+        occupation: { type: ["string", "null"] }
+        uniqueSkills: { type: ["string", "null"] }
+        previousMinistryExperience: { type: ["string", "null"] }
+        leadershipExperience: { type: ["string", "null"] }
+        missionTripExperience: { type: ["string", "null"] }
+        lifeExperience: { type: ["string", "null"] }
+        details: { type: ["object", "null"], additionalProperties: true }
+    SkillsAndExperienceInput:
       type: object
       required: [occupation, uniqueSkills, previousMinistryExperience, leadershipExperience, missionTripExperience, lifeExperience]
       properties:

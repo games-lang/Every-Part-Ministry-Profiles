@@ -181,7 +181,27 @@ export const CreateProfileBody = zod.object({
   "leadershipExperience": zod.string().nullable(),
   "missionTripExperience": zod.string().nullable(),
   "lifeExperience": zod.string().nullable()
-})
+}),
+  "languages": zod.record(zod.string(), zod.unknown()).nullish(),
+  "churchDetails": zod.record(zod.string(), zod.unknown()).nullish(),
+  "skillsDetails": zod.record(zod.string(), zod.unknown()).nullish(),
+  "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
+  "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
+  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish(),
+  "assessmentSections": zod.object({
+  "apest": zod.looseObject({
+
+}).nullable(),
+  "spiritualGifts": zod.looseObject({
+
+}).nullable(),
+  "personalityStrengths": zod.looseObject({
+
+}).nullable(),
+  "spiritualHealth": zod.looseObject({
+
+}).nullable()
+}).optional()
 })
 
 
@@ -208,14 +228,16 @@ export const CreateProfileResponse = zod.object({
   "ageRange": zod.string(),
   "preferredContact": zod.string(),
   "familySituation": zod.string(),
-  "transportation": zod.string()
+  "transportation": zod.string(),
+  "languages": zod.record(zod.string(), zod.unknown()).nullish()
 }),
   "churchConnection": zod.object({
   "attendanceLength": zod.string(),
   "connectionLevel": zod.int().min(1).max(createProfileResponseTwoChurchConnectionConnectionLevelMax),
   "followingJesusLength": zod.string(),
   "servedBefore": zod.boolean(),
-  "previousService": zod.string().nullable()
+  "previousService": zod.string().nullable(),
+  "details": zod.record(zod.string(), zod.unknown()).nullish()
 }),
   "skills": zod.object({
   "occupation": zod.string().nullable(),
@@ -223,7 +245,8 @@ export const CreateProfileResponse = zod.object({
   "previousMinistryExperience": zod.string().nullable(),
   "leadershipExperience": zod.string().nullable(),
   "missionTripExperience": zod.string().nullable(),
-  "lifeExperience": zod.string().nullable()
+  "lifeExperience": zod.string().nullable(),
+  "details": zod.record(zod.string(), zod.unknown()).nullish()
 }),
   "experience": zod.string(),
   "assessmentSections": zod.object({
@@ -240,7 +263,10 @@ export const CreateProfileResponse = zod.object({
 
 }).nullable()
 }),
-  "conversations": zod.array(zod.string())
+  "conversations": zod.array(zod.string()),
+  "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
+  "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
+  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish()
 }))
 
 
@@ -275,14 +301,16 @@ export const GetProfileResponse = zod.object({
   "ageRange": zod.string(),
   "preferredContact": zod.string(),
   "familySituation": zod.string(),
-  "transportation": zod.string()
+  "transportation": zod.string(),
+  "languages": zod.record(zod.string(), zod.unknown()).nullish()
 }),
   "churchConnection": zod.object({
   "attendanceLength": zod.string(),
   "connectionLevel": zod.int().min(1).max(getProfileResponseTwoChurchConnectionConnectionLevelMax),
   "followingJesusLength": zod.string(),
   "servedBefore": zod.boolean(),
-  "previousService": zod.string().nullable()
+  "previousService": zod.string().nullable(),
+  "details": zod.record(zod.string(), zod.unknown()).nullish()
 }),
   "skills": zod.object({
   "occupation": zod.string().nullable(),
@@ -290,7 +318,8 @@ export const GetProfileResponse = zod.object({
   "previousMinistryExperience": zod.string().nullable(),
   "leadershipExperience": zod.string().nullable(),
   "missionTripExperience": zod.string().nullable(),
-  "lifeExperience": zod.string().nullable()
+  "lifeExperience": zod.string().nullable(),
+  "details": zod.record(zod.string(), zod.unknown()).nullish()
 }),
   "experience": zod.string(),
   "assessmentSections": zod.object({
@@ -307,7 +336,10 @@ export const GetProfileResponse = zod.object({
 
 }).nullable()
 }),
-  "conversations": zod.array(zod.string())
+  "conversations": zod.array(zod.string()),
+  "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
+  "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
+  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish()
 }))
 
 

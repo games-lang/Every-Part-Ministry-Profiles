@@ -34,6 +34,7 @@ export function profileResponse(profile: MinistryProfile) {
       preferredContact: profile.preferredContact,
       familySituation: profile.familySituation,
       transportation: profile.transportation,
+      languages: profile.languages,
     },
     churchConnection: {
       attendanceLength: profile.attendanceLength,
@@ -41,6 +42,7 @@ export function profileResponse(profile: MinistryProfile) {
       followingJesusLength: profile.followingJesusLength,
       servedBefore: profile.servedBefore,
       previousService: profile.previousService,
+      details: profile.churchDetails,
     },
     skills: {
       occupation: profile.occupation,
@@ -49,6 +51,7 @@ export function profileResponse(profile: MinistryProfile) {
       leadershipExperience: profile.leadershipExperience,
       missionTripExperience: profile.missionTripExperience,
       lifeExperience: profile.lifeExperience,
+      details: profile.skillsDetails,
     },
     experience:
       profile.previousMinistryExperience ??
@@ -60,6 +63,9 @@ export function profileResponse(profile: MinistryProfile) {
       personalityStrengths: profile.personalityStrengths,
       spiritualHealth: profile.spiritualHealth,
     },
+    lifeExperiences: profile.lifeExperiences,
+    availabilityDetails: profile.availabilityDetails,
+    ministryPreferences: profile.ministryPreferences,
     conversations: possibleConversations(profile),
   };
 }
