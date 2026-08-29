@@ -68,10 +68,11 @@ export default function LandingPage() {
                 For church leaders &amp; pastors
               </div>
               <h1 className="landing-reveal landing-reveal-delay max-w-3xl font-serif text-[clamp(3.3rem,8vw,7.7rem)] font-semibold leading-[.93] tracking-[-.075em]">
-                Every person has a <span className="text-accent">place.</span>
+                Every person has a <span className="text-accent">part.</span>{" "}
+                Help them discover it.
               </h1>
               <p className="landing-reveal landing-reveal-delay-2 mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                Every Part is a ministry discovery tool that replaces static volunteer forms with an engaging assessment, helping you see the whole person and start meaningful conversations about serving.
+                Every Part helps churches understand people&apos;s gifts, passions, ministry style, availability, and readiness so leaders can build healthier ministry teams.
               </p>
               <div className="landing-reveal landing-reveal-delay-2 mt-10 flex flex-col gap-3 sm:flex-row">
                 <Link href="/sign-up" className="inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground shadow-[0_12px_24px_hsl(var(--foreground)/.16)] transition hover:-translate-y-0.5 hover:bg-accent">
