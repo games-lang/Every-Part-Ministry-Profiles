@@ -97,8 +97,13 @@ export default function LandingPage() {
         <section id="how-it-works" className="border-y border-border bg-muted px-5 py-20 sm:px-8 lg:py-28">
           <div className="mx-auto max-w-7xl">
             <div className="mb-14 grid gap-6 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-              <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">A better starting point</p>
-              <div><h2 className="max-w-2xl font-serif text-4xl font-semibold leading-tight tracking-[-.055em] sm:text-6xl">Beyond the clipboard</h2><p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">Volunteer forms are transactional. Every Part builds a profile that honors the whole person.</p></div>
+              <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">The challenge churches face</p>
+              <div>
+                <h2 className="max-w-2xl font-serif text-4xl font-semibold leading-tight tracking-[-.055em] sm:text-6xl">From filling gaps to finding a fit.</h2>
+                <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
+                  Many churches know people want to serve, but leaders often don&apos;t know their gifts, interests, capacity, or the ministry environments where they&apos;ll thrive.
+                </p>
+              </div>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {features.map((feature) => (
@@ -108,6 +113,15 @@ export default function LandingPage() {
                   <p className="mt-4 leading-7 text-muted-foreground">{feature.description}</p>
                 </article>
               ))}
+            </div>
+            <div className="mt-4 grid gap-6 rounded-[1.5rem] border border-border bg-card p-7 sm:p-9 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">The Every Part shift</p>
+                <h3 className="mt-4 font-serif text-3xl font-semibold leading-tight tracking-[-.04em]">Everyone has a calling in the church.</h3>
+              </div>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+                Ministry Profiles help people discover that calling by connecting their passions and spiritual gifts with the places, people, and ministry environments where they are ready to contribute. Leaders move from recruiting around urgent needs to building healthier teams of people who are called, equipped, and energized to serve.
+              </p>
             </div>
           </div>
         </section>
