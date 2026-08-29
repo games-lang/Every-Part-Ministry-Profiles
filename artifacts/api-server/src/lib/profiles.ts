@@ -1,4 +1,9 @@
 import type { MinistryProfile } from "@workspace/db";
+import {
+  assessmentConfiguration,
+  defaultAssessmentConfiguration,
+  filterAssessmentSection,
+} from "./assessment-configuration";
 
 export function profileListItem(profile: MinistryProfile) {
   return {
@@ -23,6 +28,9 @@ export function possibleConversations(profile: MinistryProfile): string[] {
 }
 
 export function profileResponse(profile: MinistryProfile) {
+  const configuration =
+    assessmentConfiguration(profile.assessmentConfigurationSnapshot) ??
+    defaultAssessmentConfiguration();
   return {
     ...profileListItem(profile),
     basicInformation: {
@@ -58,12 +66,32 @@ export function profileResponse(profile: MinistryProfile) {
       profile.lifeExperience ??
       "No experience details provided.",
     assessmentSections: {
-      apest: profile.apest,
-      spiritualGifts: profile.spiritualGifts,
-      personalityStrengths: profile.personalityStrengths,
-      naturalStrengths: profile.naturalStrengths,
-      spiritualHealth: profile.spiritualHealth,
+      // Apply the snapshot on reads as well as writes. This protects profiles
+      // created before server-side filtering existed and prevents a crafted
+      // stored JSON value from being exposed.
+      apest: filterAssessmentSection("apest", profile.apest, configuration),
+      spiritualGifts: filterAssessmentSection(
+        "spiritualGifts",
+        profile.spiritualGifts,
+        configuration,
+      ),
+      personalityStrengths: filterAssessmentSection(
+        "personalityStrengths",
+        profile.personalityStrengths,
+        configuration,
+      ),
+      naturalStrengths: filterAssessmentSection(
+        "naturalStrengths",
+        profile.naturalStrengths,
+        configuration,
+      ),
+      spiritualHealth: filterAssessmentSection(
+        "spiritualHealth",
+        profile.spiritualHealth,
+        configuration,
+      ),
     },
+    assessmentConfiguration: configuration,
     lifeExperiences: profile.lifeExperiences,
     availabilityDetails: profile.availabilityDetails,
     ministryPreferences: profile.ministryPreferences,

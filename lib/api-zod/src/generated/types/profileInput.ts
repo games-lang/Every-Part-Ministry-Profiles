@@ -20,14 +20,12 @@ export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
   basicInformation: BasicInformationInput;
-  churchConnection: ChurchConnectionInput;
-  /** @minItems 1 */
-  passions: string[];
-  /** @minItems 1 */
-  interests: string[];
+  churchConnection?: ChurchConnectionInput;
+  passions?: string[];
+  interests?: string[];
   servingFrequency?: string;
-  availability: string[];
-  skills: SkillsAndExperienceInput;
+  availability?: string[];
+  skills?: SkillsAndExperienceInput;
   /** @nullable */
   languages?: ProfileInputLanguages;
   /** @nullable */

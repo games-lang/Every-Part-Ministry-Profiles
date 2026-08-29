@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AssessmentConfiguration } from './assessmentConfiguration';
 import type { BasicInformation } from './basicInformation';
 import type { ChurchConnection } from './churchConnection';
 import type { FutureAssessmentSections } from './futureAssessmentSections';
@@ -20,6 +21,7 @@ export type MinistryProfile = ProfileListItem & {
   skills: SkillsAndExperience;
   experience: string;
   assessmentSections: FutureAssessmentSections;
+  assessmentConfiguration: AssessmentConfiguration;
   conversations: string[];
   /** @nullable */
   lifeExperiences?: MinistryProfileLifeExperiences;

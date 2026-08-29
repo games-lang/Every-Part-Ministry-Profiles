@@ -9,6 +9,8 @@ import {
   useUpdateMyChurch,
   type SpiritualGiftName,
   type UploadUrlRequestContentType,
+  type AssessmentConfigurationSections,
+  type AssessmentConfigurationSubsections,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -16,9 +18,71 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Copy, ExternalLink, ImagePlus, Loader2, Palette, Trash2, Upload } from "lucide-react";
+
+const sectionSchema = z.object({
+  aboutYou: z.boolean(),
+  apest: z.boolean(),
+  spiritualGifts: z.boolean(),
+  passionsInterests: z.boolean(),
+  naturalStrengths: z.boolean(),
+  personalityStrengths: z.boolean(),
+  spiritualHealth: z.boolean(),
+  connectionAvailability: z.boolean(),
+});
+
+const subsectionSchema = z.object({
+  'aboutYou.personalInformation': z.boolean(),
+  'aboutYou.skillsExperience': z.boolean(),
+  'aboutYou.lifeExperiences': z.boolean(),
+  'apest.builder': z.boolean(),
+  'apest.insight': z.boolean(),
+  'apest.connector': z.boolean(),
+  'apest.caregiver': z.boolean(),
+  'apest.teacher': z.boolean(),
+  'passionsInterests.passions': z.boolean(),
+  'passionsInterests.ministryInterests': z.boolean(),
+  'naturalStrengths.relationalConnection': z.boolean(),
+  'naturalStrengths.encouragement': z.boolean(),
+  'naturalStrengths.teachingExplaining': z.boolean(),
+  'naturalStrengths.listening': z.boolean(),
+  'naturalStrengths.leadershipInitiative': z.boolean(),
+  'naturalStrengths.organizing': z.boolean(),
+  'naturalStrengths.creativeExpression': z.boolean(),
+  'naturalStrengths.problemSolving': z.boolean(),
+  'naturalStrengths.practicalHandsOn': z.boolean(),
+  'naturalStrengths.hospitality': z.boolean(),
+  'naturalStrengths.compassionCare': z.boolean(),
+  'naturalStrengths.communicationStorytelling': z.boolean(),
+  'naturalStrengths.discernment': z.boolean(),
+  'naturalStrengths.followThrough': z.boolean(),
+  'naturalStrengths.adaptability': z.boolean(),
+  'naturalStrengths.mentoringDevelopment': z.boolean(),
+  'naturalStrengths.strategicThinking': z.boolean(),
+  'naturalStrengths.advocacyJustice': z.boolean(),
+  'personalityStrengths.socialEnergy': z.boolean(),
+  'personalityStrengths.decisionLens': z.boolean(),
+  'personalityStrengths.planningStyle': z.boolean(),
+  'personalityStrengths.focusStyle': z.boolean(),
+  'personalityStrengths.actionStyle': z.boolean(),
+  'personalityStrengths.pacePreference': z.boolean(),
+  'personalityStrengths.workStyle': z.boolean(),
+  'personalityStrengths.ministryPreferences': z.boolean(),
+  'spiritualHealth.prayer': z.boolean(),
+  'spiritualHealth.scripture': z.boolean(),
+  'spiritualHealth.worship': z.boolean(),
+  'spiritualHealth.relationships': z.boolean(),
+  'spiritualHealth.community': z.boolean(),
+  'spiritualHealth.rest': z.boolean(),
+  'spiritualHealth.motivation': z.boolean(),
+  'spiritualHealth.wellbeing': z.boolean(),
+  'spiritualHealth.connection': z.boolean(),
+  'connectionAvailability.churchConnection': z.boolean(),
+  'connectionAvailability.availability': z.boolean(),
+});
 
 const churchFormSchema = z.object({
   name: z.string().min(1, "Church name is required"),
@@ -29,6 +93,10 @@ const churchFormSchema = z.object({
   primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Use a 6-digit hex color"),
   accentColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Use a 6-digit hex color"),
   enabledSpiritualGifts: z.array(z.string()).min(3, "Enable at least three spiritual gifts"),
+  assessmentConfiguration: z.object({
+    sections: sectionSchema,
+    subsections: subsectionSchema,
+  })
 });
 
 type ChurchFormValues = z.infer<typeof churchFormSchema>;
@@ -38,6 +106,185 @@ const SPIRITUAL_GIFTS = [
 const ALL_GIFT_NAMES = SPIRITUAL_GIFTS.map(([name]) => name);
 const ALLOWED_LOGO_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
+
+const DEFAULT_SECTIONS: AssessmentConfigurationSections = {
+  aboutYou: true,
+  apest: true,
+  spiritualGifts: true,
+  passionsInterests: true,
+  naturalStrengths: true,
+  personalityStrengths: true,
+  spiritualHealth: true,
+  connectionAvailability: true,
+};
+
+const DEFAULT_SUBSECTIONS: AssessmentConfigurationSubsections = {
+  'aboutYou.personalInformation': true,
+  'aboutYou.skillsExperience': true,
+  'aboutYou.lifeExperiences': true,
+  'apest.builder': true,
+  'apest.insight': true,
+  'apest.connector': true,
+  'apest.caregiver': true,
+  'apest.teacher': true,
+  'passionsInterests.passions': true,
+  'passionsInterests.ministryInterests': true,
+  'naturalStrengths.relationalConnection': true,
+  'naturalStrengths.encouragement': true,
+  'naturalStrengths.teachingExplaining': true,
+  'naturalStrengths.listening': true,
+  'naturalStrengths.leadershipInitiative': true,
+  'naturalStrengths.organizing': true,
+  'naturalStrengths.creativeExpression': true,
+  'naturalStrengths.problemSolving': true,
+  'naturalStrengths.practicalHandsOn': true,
+  'naturalStrengths.hospitality': true,
+  'naturalStrengths.compassionCare': true,
+  'naturalStrengths.communicationStorytelling': true,
+  'naturalStrengths.discernment': true,
+  'naturalStrengths.followThrough': true,
+  'naturalStrengths.adaptability': true,
+  'naturalStrengths.mentoringDevelopment': true,
+  'naturalStrengths.strategicThinking': true,
+  'naturalStrengths.advocacyJustice': true,
+  'personalityStrengths.socialEnergy': true,
+  'personalityStrengths.decisionLens': true,
+  'personalityStrengths.planningStyle': true,
+  'personalityStrengths.focusStyle': true,
+  'personalityStrengths.actionStyle': true,
+  'personalityStrengths.pacePreference': true,
+  'personalityStrengths.workStyle': true,
+  'personalityStrengths.ministryPreferences': true,
+  'spiritualHealth.prayer': true,
+  'spiritualHealth.scripture': true,
+  'spiritualHealth.worship': true,
+  'spiritualHealth.relationships': true,
+  'spiritualHealth.community': true,
+  'spiritualHealth.rest': true,
+  'spiritualHealth.motivation': true,
+  'spiritualHealth.wellbeing': true,
+  'spiritualHealth.connection': true,
+  'connectionAvailability.churchConnection': true,
+  'connectionAvailability.availability': true,
+};
+
+type SectionKey = keyof AssessmentConfigurationSections;
+type SubsectionKey = keyof AssessmentConfigurationSubsections;
+
+interface ConfigDef {
+  key: SectionKey;
+  label: string;
+  description: string;
+  subsections?: Array<{
+    key: SubsectionKey;
+    label: string;
+    description?: string;
+  }>;
+}
+
+const CONFIG_SECTIONS: ConfigDef[] = [
+  {
+    key: "aboutYou",
+    label: "Background & Experience",
+    description: "Gather member history, skills, and defining life moments.",
+    subsections: [
+      { key: "aboutYou.personalInformation", label: "Demographics & Preferences", description: "Age range, contact preferences, family situation, languages." },
+      { key: "aboutYou.skillsExperience", label: "Skills & Experience", description: "Occupational background and past ministry involvement." },
+      { key: "aboutYou.lifeExperiences", label: "Life Experiences", description: "Significant events that shape their perspective." }
+    ]
+  },
+  {
+    key: "connectionAvailability",
+    label: "Church Connection & Availability",
+    description: "Understand how members are connected to the church and when they can serve.",
+    subsections: [
+      { key: "connectionAvailability.churchConnection", label: "Church Connection", description: "Length of attendance and engagement level." },
+      { key: "connectionAvailability.availability", label: "Availability", description: "General capacity and preferred times to serve." }
+    ]
+  },
+  {
+    key: "spiritualGifts",
+    label: "Spiritual Gifts",
+    description: "Identify biblical gifts and empowerments for ministry.",
+  },
+  {
+    key: "apest",
+    label: "Fivefold / APEST",
+    description: "Discover Apostolic, Prophetic, Evangelistic, Shepherding, and Teaching expressions.",
+    subsections: [
+      { key: "apest.builder", label: "Apostolic / Builder" },
+      { key: "apest.insight", label: "Prophetic / Insight" },
+      { key: "apest.connector", label: "Evangelistic / Connector" },
+      { key: "apest.caregiver", label: "Shepherding / Caregiver" },
+      { key: "apest.teacher", label: "Teaching / Educator" }
+    ]
+  },
+  {
+    key: "passionsInterests",
+    label: "Passions & Interests",
+    description: "What causes and ministry areas people care most about.",
+    subsections: [
+      { key: "passionsInterests.passions", label: "Passions", description: "Causes, age groups, and demographics." },
+      { key: "passionsInterests.ministryInterests", label: "Ministry Interests", description: "Specific roles or teams they want to explore." }
+    ]
+  },
+  {
+    key: "naturalStrengths",
+    label: "Natural Strengths",
+    description: "Inherent abilities and talents they bring to a team.",
+    subsections: [
+      { key: "naturalStrengths.relationalConnection", label: "Relational Connection" },
+      { key: "naturalStrengths.encouragement", label: "Encouragement" },
+      { key: "naturalStrengths.teachingExplaining", label: "Teaching & Explaining" },
+      { key: "naturalStrengths.listening", label: "Listening" },
+      { key: "naturalStrengths.leadershipInitiative", label: "Leadership & Initiative" },
+      { key: "naturalStrengths.organizing", label: "Organizing" },
+      { key: "naturalStrengths.creativeExpression", label: "Creative Expression" },
+      { key: "naturalStrengths.problemSolving", label: "Problem Solving" },
+      { key: "naturalStrengths.practicalHandsOn", label: "Practical & Hands-On" },
+      { key: "naturalStrengths.hospitality", label: "Hospitality" },
+      { key: "naturalStrengths.compassionCare", label: "Compassion & Care" },
+      { key: "naturalStrengths.communicationStorytelling", label: "Communication & Storytelling" },
+      { key: "naturalStrengths.discernment", label: "Discernment" },
+      { key: "naturalStrengths.followThrough", label: "Follow-Through" },
+      { key: "naturalStrengths.adaptability", label: "Adaptability" },
+      { key: "naturalStrengths.mentoringDevelopment", label: "Mentoring & Development" },
+      { key: "naturalStrengths.strategicThinking", label: "Strategic Thinking" },
+      { key: "naturalStrengths.advocacyJustice", label: "Advocacy & Justice" }
+    ]
+  },
+  {
+    key: "personalityStrengths",
+    label: "Personality & Working Style",
+    description: "How people interact, plan, and approach their work.",
+    subsections: [
+      { key: "personalityStrengths.socialEnergy", label: "Social Energy", description: "Extroversion vs. Introversion" },
+      { key: "personalityStrengths.decisionLens", label: "Decision Lens", description: "Logic vs. Empathy" },
+      { key: "personalityStrengths.planningStyle", label: "Planning Style", description: "Structured vs. Spontaneous" },
+      { key: "personalityStrengths.focusStyle", label: "Focus Style", description: "Big Picture vs. Details" },
+      { key: "personalityStrengths.actionStyle", label: "Action Style", description: "Initiator vs. Responder" },
+      { key: "personalityStrengths.pacePreference", label: "Pace Preference", description: "Fast-Paced vs. Steady" },
+      { key: "personalityStrengths.workStyle", label: "Work Style", description: "Independent vs. Collaborative" },
+      { key: "personalityStrengths.ministryPreferences", label: "Ministry Preferences", description: "Behind-the-scenes vs. Upfront" }
+    ]
+  },
+  {
+    key: "spiritualHealth",
+    label: "Spiritual Health & Rhythms",
+    description: "Self-reflection on current spiritual practices and wellbeing.",
+    subsections: [
+      { key: "spiritualHealth.prayer", label: "Prayer" },
+      { key: "spiritualHealth.scripture", label: "Scripture Engagement" },
+      { key: "spiritualHealth.worship", label: "Worship" },
+      { key: "spiritualHealth.relationships", label: "Relationships" },
+      { key: "spiritualHealth.community", label: "Community" },
+      { key: "spiritualHealth.rest", label: "Rest & Sabbath" },
+      { key: "spiritualHealth.motivation", label: "Motivation" },
+      { key: "spiritualHealth.wellbeing", label: "Wellbeing" },
+      { key: "spiritualHealth.connection", label: "Connection to God" }
+    ]
+  }
+];
 
 function contrastTextColor(hex: string) {
   const channels = [1, 3, 5].map((start) => Number.parseInt(hex.slice(start, start + 2), 16) / 255);
@@ -78,12 +325,20 @@ export default function ChurchSetup() {
       primaryColor: "#122344",
       accentColor: "#ED7A59",
       enabledSpiritualGifts: ALL_GIFT_NAMES,
+      assessmentConfiguration: {
+        sections: DEFAULT_SECTIONS,
+        subsections: DEFAULT_SUBSECTIONS,
+      },
     },
   });
 
   useEffect(() => {
     if (church && initializedForId.current !== church.id) {
       initializedForId.current = church.id;
+
+      const mergedSections = { ...DEFAULT_SECTIONS, ...(church.assessmentConfiguration?.sections || {}) };
+      const mergedSubsections = { ...DEFAULT_SUBSECTIONS, ...(church.assessmentConfiguration?.subsections || {}) };
+
       form.reset({
         name: church.name,
         adminName: church.adminName,
@@ -93,6 +348,10 @@ export default function ChurchSetup() {
         primaryColor: church.primaryColor,
         accentColor: church.accentColor,
         enabledSpiritualGifts: church.enabledSpiritualGifts || ALL_GIFT_NAMES,
+        assessmentConfiguration: {
+          sections: mergedSections,
+          subsections: mergedSubsections,
+        },
       });
       setLogoPath(church.logoUrl || null);
     }
@@ -205,7 +464,7 @@ export default function ChurchSetup() {
   const logoPreview = localLogoPreview || savedLogoSource(logoUrl, church?.slug);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl space-y-8">
+    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
       <div>
         <h1 className="font-serif text-3xl font-medium tracking-tight">Church Setup</h1>
         <p className="text-muted-foreground mt-1">Manage your church details and profile link.</p>
@@ -238,39 +497,117 @@ export default function ChurchSetup() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="border-primary/20 bg-primary/5 shadow-sm">
+          <Card className="border-border/60 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-xl font-serif">Build or edit your Ministry Profile</CardTitle>
+              <CardTitle className="text-xl font-serif">Assessment Content</CardTitle>
               <CardDescription>
-                Choose which spiritual gifts to include in your church's public Ministry Profile assessment.
+                Configure which sections and questions are included in your church's Ministry Profile assessment.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <FormField
-                control={form.control}
-                name="enabledSpiritualGifts"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-baseline justify-between gap-4">
-                      <FormLabel>Spiritual gifts included in the public assessment</FormLabel>
-                      <span className="text-sm text-muted-foreground">{field.value.length} enabled</span>
+            <CardContent className="space-y-6">
+              <div className="flex items-start sm:items-center justify-between gap-4 p-4 bg-muted/40 rounded-lg border border-border/50">
+                <div>
+                  <h4 className="font-medium text-sm">Identity (Always Included)</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">First name, last name, email, and optional phone are always collected to create the profile.</p>
+                </div>
+                <Switch checked disabled />
+              </div>
+
+              {CONFIG_SECTIONS.map(section => {
+                const isEnabled = form.watch(`assessmentConfiguration.sections.${section.key}`);
+                return (
+                  <div key={section.key} className={`rounded-lg border border-border/50 transition-colors ${isEnabled ? 'bg-card' : 'bg-muted/20 opacity-75'}`}>
+                    <div className="flex items-start sm:items-center justify-between gap-4 p-4">
+                      <div className="space-y-1">
+                        <h4 className="font-medium">{section.label}</h4>
+                        <p className="text-sm text-muted-foreground">{section.description}</p>
+                      </div>
+                      <Switch
+                        checked={isEnabled}
+                        onCheckedChange={(val) => {
+                          form.setValue(`assessmentConfiguration.sections.${section.key}`, val, { shouldDirty: true });
+                          if (section.subsections) {
+                            section.subsections.forEach(sub => {
+                              form.setValue(`assessmentConfiguration.subsections.${sub.key}` as any, val, { shouldDirty: true });
+                            });
+                          }
+                        }}
+                      />
                     </div>
-                    <FormDescription>
-                      Select at least 3 gifts. Members will answer all three reflections for each enabled gift; gift wording cannot be edited here.
-                    </FormDescription>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {SPIRITUAL_GIFTS.map(([name, meaning]) => {
-                        const checked = field.value.includes(name);
-                        return <label key={name} className="flex cursor-pointer gap-3 rounded-lg border p-3 text-sm hover:bg-muted/40">
-                          <Checkbox checked={checked} onCheckedChange={(next) => field.onChange(next ? [...field.value, name] : field.value.filter((gift) => gift !== name))} />
-                          <span><span className="block font-medium">{name}</span><span className="text-muted-foreground">{meaning}</span></span>
-                        </label>;
-                      })}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+                    {isEnabled && section.subsections && (
+                      <div className="p-4 pt-0">
+                        <div className="pt-4 border-t grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                          {section.subsections.map(sub => {
+                            return (
+                              <FormField
+                                key={sub.key}
+                                control={form.control}
+                                name={`assessmentConfiguration.subsections.${sub.key}`}
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                      />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                      <FormLabel className="font-normal leading-tight">
+                                        {sub.label}
+                                      </FormLabel>
+                                      {sub.description && (
+                                        <FormDescription className="text-xs">{sub.description}</FormDescription>
+                                      )}
+                                    </div>
+                                  </FormItem>
+                                )}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {isEnabled && section.key === "spiritualGifts" && (
+                      <div className="p-4 pt-0">
+                        <div className="pt-4 border-t space-y-4">
+                          <FormField
+                            control={form.control}
+                            name="enabledSpiritualGifts"
+                            render={({ field }) => (
+                              <FormItem>
+                                <div className="flex items-baseline justify-between gap-4">
+                                  <FormLabel>Included spiritual gifts</FormLabel>
+                                  <span className="text-sm text-muted-foreground">{field.value.length} enabled</span>
+                                </div>
+                                <FormDescription>
+                                  Select at least 3 gifts. Members will answer all three reflections for each enabled gift; gift wording cannot be edited here.
+                                </FormDescription>
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                  {SPIRITUAL_GIFTS.map(([name, meaning]) => {
+                                    const checked = field.value.includes(name);
+                                    return (
+                                      <label key={name} className="flex cursor-pointer gap-3 rounded-lg border p-3 text-sm hover:bg-muted/40">
+                                        <Checkbox
+                                          checked={checked}
+                                          onCheckedChange={(next) => field.onChange(next ? [...field.value, name] : field.value.filter((gift) => gift !== name))}
+                                        />
+                                        <span><span className="block font-medium">{name}</span><span className="text-muted-foreground">{meaning}</span></span>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
 

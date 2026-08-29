@@ -7,14 +7,18 @@
  */
 
 export interface ChurchConnectionInput {
-  attendanceLength: string;
+  /** @nullable */
+  attendanceLength?: string | null;
   /**
      * @minimum 1
      * @maximum 5
+     * @nullable
      */
-  connectionLevel: number;
-  followingJesusLength: string;
-  servedBefore: boolean;
+  connectionLevel?: number | null;
   /** @nullable */
-  previousService: string | null;
+  followingJesusLength?: string | null;
+  /** @nullable */
+  servedBefore?: boolean | null;
+  /** @nullable */
+  previousService?: string | null;
 }

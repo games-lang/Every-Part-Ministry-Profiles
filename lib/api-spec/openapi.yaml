@@ -255,7 +255,7 @@ components:
         - status
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration]
       properties:
         id: { type: integer }
         name: { type: string }
@@ -278,6 +278,8 @@ components:
           items:
             $ref: "#/components/schemas/SpiritualGiftName"
           uniqueItems: true
+        assessmentConfiguration:
+          $ref: "#/components/schemas/AssessmentConfiguration"
     ChurchUpdate:
       type: object
       properties:
@@ -301,9 +303,11 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/SpiritualGiftName"
+        assessmentConfiguration:
+          $ref: "#/components/schemas/AssessmentConfiguration"
     PublicChurch:
       type: object
-      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor]
+      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration]
       properties:
         name: { type: string }
         slug: { type: string }
@@ -321,6 +325,8 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/SpiritualGiftName"
+        assessmentConfiguration:
+          $ref: "#/components/schemas/AssessmentConfiguration"
     UploadUrlRequest:
       type: object
       required: [name, size, contentType]
@@ -479,7 +485,7 @@ components:
       allOf:
         - $ref: "#/components/schemas/ProfileListItem"
         - type: object
-          required: [basicInformation, churchConnection, skills, experience, assessmentSections, conversations]
+          required: [basicInformation, churchConnection, skills, experience, assessmentSections, assessmentConfiguration, conversations]
           properties:
             basicInformation:
               $ref: "#/components/schemas/BasicInformation"
@@ -491,6 +497,8 @@ components:
               { type: string }
             assessmentSections:
               $ref: "#/components/schemas/FutureAssessmentSections"
+            assessmentConfiguration:
+              $ref: "#/components/schemas/AssessmentConfiguration"
             conversations:
               type: array
               items: { type: string }
@@ -499,7 +507,7 @@ components:
             ministryPreferences: { type: ["object", "null"], additionalProperties: true }
     ProfileInput:
       type: object
-      required: [churchSlug, basicInformation, churchConnection, passions, interests, availability, skills]
+      required: [churchSlug, basicInformation]
       properties:
         churchSlug: { type: string, minLength: 1 }
         basicInformation:
@@ -508,11 +516,9 @@ components:
           $ref: "#/components/schemas/ChurchConnectionInput"
         passions:
           type: array
-          minItems: 1
           items: { type: string }
         interests:
           type: array
-          minItems: 1
           items: { type: string }
         servingFrequency: { type: string }
         availability:
@@ -536,41 +542,40 @@ components:
         lastName: { type: string, minLength: 1 }
         email: { type: string, format: email }
         phone: { type: ["string", "null"] }
-        ageRange: { type: string }
-        preferredContact: { type: string }
-        familySituation: { type: string }
-        transportation: { type: string }
+        ageRange: { type: ["string", "null"] }
+        preferredContact: { type: ["string", "null"] }
+        familySituation: { type: ["string", "null"] }
+        transportation: { type: ["string", "null"] }
         languages: { type: ["object", "null"], additionalProperties: true }
     BasicInformationInput:
       type: object
-      required: [firstName, lastName, email, ageRange, preferredContact, familySituation, transportation]
+      required: [firstName, lastName, email]
       properties:
         firstName: { type: string, minLength: 1 }
         lastName: { type: string, minLength: 1 }
         email: { type: string, format: email }
         phone: { type: ["string", "null"] }
-        ageRange: { type: string }
-        preferredContact: { type: string }
-        familySituation: { type: string }
-        transportation: { type: string }
+        ageRange: { type: ["string", "null"] }
+        preferredContact: { type: ["string", "null"] }
+        familySituation: { type: ["string", "null"] }
+        transportation: { type: ["string", "null"] }
     ChurchConnection:
       type: object
       required: [attendanceLength, connectionLevel, followingJesusLength, servedBefore, previousService]
       properties:
-        attendanceLength: { type: string }
-        connectionLevel: { type: integer, minimum: 1, maximum: 5 }
-        followingJesusLength: { type: string }
-        servedBefore: { type: boolean }
+        attendanceLength: { type: ["string", "null"] }
+        connectionLevel: { type: ["integer", "null"], minimum: 1, maximum: 5 }
+        followingJesusLength: { type: ["string", "null"] }
+        servedBefore: { type: ["boolean", "null"] }
         previousService: { type: ["string", "null"] }
         details: { type: ["object", "null"], additionalProperties: true }
     ChurchConnectionInput:
       type: object
-      required: [attendanceLength, connectionLevel, followingJesusLength, servedBefore, previousService]
       properties:
-        attendanceLength: { type: string }
-        connectionLevel: { type: integer, minimum: 1, maximum: 5 }
-        followingJesusLength: { type: string }
-        servedBefore: { type: boolean }
+        attendanceLength: { type: ["string", "null"] }
+        connectionLevel: { type: ["integer", "null"], minimum: 1, maximum: 5 }
+        followingJesusLength: { type: ["string", "null"] }
+        servedBefore: { type: ["boolean", "null"] }
         previousService: { type: ["string", "null"] }
     SkillsAndExperience:
       type: object
@@ -585,7 +590,6 @@ components:
         details: { type: ["object", "null"], additionalProperties: true }
     SkillsAndExperienceInput:
       type: object
-      required: [occupation, uniqueSkills, previousMinistryExperience, leadershipExperience, missionTripExperience, lifeExperience]
       properties:
         occupation: { type: ["string", "null"] }
         uniqueSkills: { type: ["string", "null"] }
@@ -604,7 +608,6 @@ components:
         spiritualHealth: { type: ["object", "null"] }
     AssessmentSectionsInput:
       type: object
-      required: [spiritualGifts]
       properties:
         apest: { type: ["object", "null"], additionalProperties: true }
         spiritualGifts:
@@ -628,4 +631,78 @@ components:
               properties:
                 prompt: { type: string, minLength: 1 }
                 response: { type: integer, minimum: 1, maximum: 5 }
+    AssessmentConfiguration:
+      type: object
+      required: [sections, subsections]
+      additionalProperties: false
+      properties:
+        sections:
+          $ref: "#/components/schemas/AssessmentConfigurationSections"
+        subsections:
+          $ref: "#/components/schemas/AssessmentConfigurationSubsections"
+    AssessmentConfigurationSections:
+      type: object
+      additionalProperties: false
+      required: [aboutYou, apest, spiritualGifts, passionsInterests, naturalStrengths, personalityStrengths, spiritualHealth, connectionAvailability]
+      properties:
+        aboutYou: { type: boolean }
+        apest: { type: boolean }
+        spiritualGifts: { type: boolean }
+        passionsInterests: { type: boolean }
+        naturalStrengths: { type: boolean }
+        personalityStrengths: { type: boolean }
+        spiritualHealth: { type: boolean }
+        connectionAvailability: { type: boolean }
+    AssessmentConfigurationSubsections:
+      type: object
+      additionalProperties: false
+      required: [aboutYou.personalInformation, aboutYou.skillsExperience, aboutYou.lifeExperiences, apest.builder, apest.insight, apest.connector, apest.caregiver, apest.teacher, passionsInterests.passions, passionsInterests.ministryInterests, naturalStrengths.relationalConnection, naturalStrengths.encouragement, naturalStrengths.teachingExplaining, naturalStrengths.listening, naturalStrengths.leadershipInitiative, naturalStrengths.organizing, naturalStrengths.creativeExpression, naturalStrengths.problemSolving, naturalStrengths.practicalHandsOn, naturalStrengths.hospitality, naturalStrengths.compassionCare, naturalStrengths.communicationStorytelling, naturalStrengths.discernment, naturalStrengths.followThrough, naturalStrengths.adaptability, naturalStrengths.mentoringDevelopment, naturalStrengths.strategicThinking, naturalStrengths.advocacyJustice, personalityStrengths.socialEnergy, personalityStrengths.decisionLens, personalityStrengths.planningStyle, personalityStrengths.focusStyle, personalityStrengths.actionStyle, personalityStrengths.pacePreference, personalityStrengths.workStyle, personalityStrengths.ministryPreferences, spiritualHealth.prayer, spiritualHealth.scripture, spiritualHealth.worship, spiritualHealth.relationships, spiritualHealth.community, spiritualHealth.rest, spiritualHealth.motivation, spiritualHealth.wellbeing, spiritualHealth.connection, connectionAvailability.churchConnection, connectionAvailability.availability]
+      properties:
+        aboutYou.personalInformation: { type: boolean }
+        aboutYou.skillsExperience: { type: boolean }
+        aboutYou.lifeExperiences: { type: boolean }
+        apest.builder: { type: boolean }
+        apest.insight: { type: boolean }
+        apest.connector: { type: boolean }
+        apest.caregiver: { type: boolean }
+        apest.teacher: { type: boolean }
+        passionsInterests.passions: { type: boolean }
+        passionsInterests.ministryInterests: { type: boolean }
+        naturalStrengths.relationalConnection: { type: boolean }
+        naturalStrengths.encouragement: { type: boolean }
+        naturalStrengths.teachingExplaining: { type: boolean }
+        naturalStrengths.listening: { type: boolean }
+        naturalStrengths.leadershipInitiative: { type: boolean }
+        naturalStrengths.organizing: { type: boolean }
+        naturalStrengths.creativeExpression: { type: boolean }
+        naturalStrengths.problemSolving: { type: boolean }
+        naturalStrengths.practicalHandsOn: { type: boolean }
+        naturalStrengths.hospitality: { type: boolean }
+        naturalStrengths.compassionCare: { type: boolean }
+        naturalStrengths.communicationStorytelling: { type: boolean }
+        naturalStrengths.discernment: { type: boolean }
+        naturalStrengths.followThrough: { type: boolean }
+        naturalStrengths.adaptability: { type: boolean }
+        naturalStrengths.mentoringDevelopment: { type: boolean }
+        naturalStrengths.strategicThinking: { type: boolean }
+        naturalStrengths.advocacyJustice: { type: boolean }
+        personalityStrengths.socialEnergy: { type: boolean }
+        personalityStrengths.decisionLens: { type: boolean }
+        personalityStrengths.planningStyle: { type: boolean }
+        personalityStrengths.focusStyle: { type: boolean }
+        personalityStrengths.actionStyle: { type: boolean }
+        personalityStrengths.pacePreference: { type: boolean }
+        personalityStrengths.workStyle: { type: boolean }
+        personalityStrengths.ministryPreferences: { type: boolean }
+        spiritualHealth.prayer: { type: boolean }
+        spiritualHealth.scripture: { type: boolean }
+        spiritualHealth.worship: { type: boolean }
+        spiritualHealth.relationships: { type: boolean }
+        spiritualHealth.community: { type: boolean }
+        spiritualHealth.rest: { type: boolean }
+        spiritualHealth.motivation: { type: boolean }
+        spiritualHealth.wellbeing: { type: boolean }
+        spiritualHealth.connection: { type: boolean }
+        connectionAvailability.churchConnection: { type: boolean }
+        connectionAvailability.availability: { type: boolean }
 

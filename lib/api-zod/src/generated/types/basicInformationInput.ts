@@ -14,8 +14,12 @@ export interface BasicInformationInput {
   email: string;
   /** @nullable */
   phone?: string | null;
-  ageRange: string;
-  preferredContact: string;
-  familySituation: string;
-  transportation: string;
+  /** @nullable */
+  ageRange?: string | null;
+  /** @nullable */
+  preferredContact?: string | null;
+  /** @nullable */
+  familySituation?: string | null;
+  /** @nullable */
+  transportation?: string | null;
 }

@@ -1,5 +1,9 @@
 import { db, churchesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import {
+  assessmentConfiguration,
+  defaultAssessmentConfiguration,
+} from "./assessment-configuration";
 export { activeSpiritualGifts, validateEnabledSpiritualGifts } from "./spiritual-gifts";
 
 function slugFromUserId(userId: string): string {
@@ -35,6 +39,9 @@ export function churchResponse(
   church: Awaited<ReturnType<typeof getOrCreateChurch>>,
   completedProfileCount = 0,
 ) {
+  const configuration =
+    assessmentConfiguration(church.assessmentConfiguration) ??
+    defaultAssessmentConfiguration();
   return {
     id: church.id,
     name: church.name,
@@ -49,5 +56,6 @@ export function churchResponse(
     profileUrl: `/profile/${church.slug}`,
     completedProfileCount,
     enabledSpiritualGifts: church.enabledSpiritualGifts,
+    assessmentConfiguration: configuration,
   };
 }

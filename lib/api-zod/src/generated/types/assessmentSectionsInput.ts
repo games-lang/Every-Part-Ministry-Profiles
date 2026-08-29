@@ -14,7 +14,7 @@ import type { SpiritualGiftsAssessment } from './spiritualGiftsAssessment';
 export interface AssessmentSectionsInput {
   /** @nullable */
   apest?: AssessmentSectionsInputApest;
-  spiritualGifts: SpiritualGiftsAssessment;
+  spiritualGifts?: SpiritualGiftsAssessment;
   /** @nullable */
   personalityStrengths?: AssessmentSectionsInputPersonalityStrengths;
   /** @nullable */

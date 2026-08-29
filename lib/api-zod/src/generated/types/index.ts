@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './assessmentConfiguration';
+export * from './assessmentConfigurationSections';
+export * from './assessmentConfigurationSubsections';
 export * from './assessmentSectionsInput';
 export * from './assessmentSectionsInputApest';
 export * from './assessmentSectionsInputNaturalStrengths';

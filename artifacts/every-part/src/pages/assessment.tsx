@@ -1,17 +1,50 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRoute, Link } from "wouter";
 import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useGetPublicChurch, getGetPublicChurchQueryKey, useCreateProfile } from "@workspace/api-client-react";
+import {
+  useGetPublicChurch,
+  getGetPublicChurchQueryKey,
+  useCreateProfile,
+  type AssessmentConfiguration,
+  type ProfileInput,
+} from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, CheckCircle2, HeartHandshake, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  HeartHandshake,
+  Loader2,
+} from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 function hexToHsl(hex: string) {
@@ -37,7 +70,9 @@ function hexToHsl(hex: string) {
 
 function colorForeground(hex: string) {
   const value = hex.replace("#", "");
-  const channels = [0, 2, 4].map((start) => Number.parseInt(value.slice(start, start + 2), 16) / 255);
+  const channels = [0, 2, 4].map(
+    (start) => Number.parseInt(value.slice(start, start + 2), 16) / 255,
+  );
   const [red, green, blue] = channels.map((channel) =>
     channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
   );
@@ -52,55 +87,351 @@ function brandLogoSource(path: string | null | undefined) {
 }
 
 const OPTIONS = {
-  passions: ["Children", "Youth", "Young adults", "Families", "New Christians", "People who don't know Jesus", "Immigrants/refugees", "Multicultural ministry", "Missions", "People experiencing poverty", "Addiction recovery", "Grief", "Elderly adults", "Prayer", "Discipleship", "Worship", "Community outreach", "Justice/compassion", "Second-generation ministry"],
-  interests: ["Children", "Preschool", "Youth", "Young adults", "Worship", "Sound/tech", "Hospitality", "Greeting", "Prayer", "Small groups", "Discipleship", "Outreach", "Missions", "Communications", "Office/admin", "Finance", "Event planning", "Translation", "Transportation", "Maintenance", "Care ministry", "Leadership"],
-  life: ["Grief", "Parenting", "Foster/adoption", "Immigration", "Recovery", "Disability", "Caregiving", "Divorce", "Military service", "Cross-cultural experience", "Mission work", "Financial hardship", "Major career transitions", "Other significant experiences"],
-  availability: ["Sunday mornings", "Sunday evenings", "Weekday mornings", "Weekday evenings", "Saturdays", "Flexible/varies"],
+  passions: [
+    "Children",
+    "Youth",
+    "Young adults",
+    "Families",
+    "New Christians",
+    "People who don't know Jesus",
+    "Immigrants/refugees",
+    "Multicultural ministry",
+    "Missions",
+    "People experiencing poverty",
+    "Addiction recovery",
+    "Grief",
+    "Elderly adults",
+    "Prayer",
+    "Discipleship",
+    "Worship",
+    "Community outreach",
+    "Justice/compassion",
+    "Second-generation ministry",
+  ],
+  interests: [
+    "Children",
+    "Preschool",
+    "Youth",
+    "Young adults",
+    "Worship",
+    "Sound/tech",
+    "Hospitality",
+    "Greeting",
+    "Prayer",
+    "Small groups",
+    "Discipleship",
+    "Outreach",
+    "Missions",
+    "Communications",
+    "Office/admin",
+    "Finance",
+    "Event planning",
+    "Translation",
+    "Transportation",
+    "Maintenance",
+    "Care ministry",
+    "Leadership",
+  ],
+  life: [
+    "Grief",
+    "Parenting",
+    "Foster/adoption",
+    "Immigration",
+    "Recovery",
+    "Disability",
+    "Caregiving",
+    "Divorce",
+    "Military service",
+    "Cross-cultural experience",
+    "Mission work",
+    "Financial hardship",
+    "Major career transitions",
+    "Other significant experiences",
+  ],
+  availability: [
+    "Sunday mornings",
+    "Sunday evenings",
+    "Weekday mornings",
+    "Weekday evenings",
+    "Saturdays",
+    "Flexible/varies",
+  ],
 } as const;
 const SPIRITUAL_GIFTS = [
-  ["Administration", "organizing people, resources, and systems effectively", ["I help bring order to people, resources, or systems so a shared work can move forward.", "People benefit from the way I organize work and create follow-through.", "Creating clarity and structure for a shared effort gives me energy."]],
-  ["Apostleship", "pioneering, starting, expanding, and establishing new ministries or works", ["I help begin, expand, or establish a new work when the path is not yet clear.", "I help new ministries or initiatives take root and grow.", "I feel drawn to explore faithful next steps in new places or communities."]],
-  ["Discernment of Spirits", "recognizing what is from God, human influence, or spiritual deception", ["I prayerfully distinguish what may be from God, human influence, or spiritual deception.", "My careful listening helps others consider spiritual impressions or concerns wisely.", "I pause, pray, and seek wise counsel before naming what I sense."]],
-  ["Evangelism", "communicating the gospel and helping people respond to Jesus", ["I communicate the gospel or accompany someone taking a step toward Jesus.", "People respond positively when I share my faith with care.", "I feel drawn to build relationships with people who are exploring Jesus."]],
-  ["Exhortation / Encouragement", "strengthening, motivating, comforting, and challenging others", ["My words help people feel strengthened, comforted, motivated, or thoughtfully challenged.", "People tell me that my encouragement makes a positive difference.", "I notice opportunities to speak hope or courage into another person's situation."]],
-  ["Faith", "unusual confidence in God’s power, promises, and provision", ["I experience confidence in God's power, promises, or provision during uncertainty.", "My trust in God strengthens others during difficult circumstances.", "I continue praying and acting faithfully when outcomes remain unclear."]],
-  ["Giving", "generously and joyfully sharing resources to advance God’s work and meet needs", ["I share time, money, or other resources to meet needs or support God's work.", "I see meaningful fruit when I give generously and thoughtfully.", "I feel joy and freedom when I look for ways to share resources."]],
-  ["Healing", "being used by God as an instrument of physical, emotional, or spiritual healing", ["I offer care or prayer when people experience physical, emotional, or spiritual hurt.", "My care or prayer brings comfort or encouragement to people who are hurting.", "I feel drawn to be present with people seeking healing while leaving outcomes with God."]],
-  ["Helps / Service", "meeting practical needs and supporting others so ministry can happen", ["I notice and meet practical needs that support people or ministry.", "People value the practical support I offer.", "Behind-the-scenes tasks that help a shared work happen give me energy."]],
-  ["Hospitality", "welcoming people and creating environments where others feel received and cared for", ["I help create settings where people feel welcomed, received, and cared for.", "Guests and others feel included when I welcome them.", "I feel drawn to make room for people who may feel new, overlooked, or uncertain."]],
-  ["Interpretation of Tongues", "interpreting a message spoken in tongues", ["I experience or sense a grace to interpret a message spoken in tongues.", "I welcome careful confirmation, accountability, and feedback when discerning this grace.", "I approach this practice prayerfully, humbly, and in appropriate community order."]],
-  ["Knowledge", "understanding and communicating spiritual truth or insight", ["I understand and communicate spiritual truth or insight that helps someone.", "People find my spiritual insight clear and helpful.", "I want to keep learning and share insight with humility."]],
-  ["Leadership", "providing direction, motivating others, and helping a group move toward God-given goals", ["I provide direction or momentum for a group working toward a shared goal.", "People value the way I guide, listen to, and motivate them.", "Taking responsibility for helping a group move forward gives me energy."]],
-  ["Mercy", "compassionately caring for people who are hurting, struggling, marginalized, or in need", ["I stay present with people who are hurting, struggling, marginalized, or in need.", "People experience care and dignity through the way I treat them.", "I stay compassionate when another person's needs are complex or ongoing."]],
-  ["Miracles", "being used by God in extraordinary demonstrations of His power", ["I experience or sense God working in an extraordinary way through situations involving me.", "I seek wise confirmation and feedback about extraordinary experiences.", "I pray expectantly while remaining humble about outcomes."]],
-  ["Pastoring / Shepherding", "caring for, protecting, guiding, and nurturing people spiritually", ["I care for, guide, protect, or nurture people in their spiritual lives.", "People value my ability to listen and walk patiently with them.", "Consistent, relational care over time gives me energy."]],
-  ["Prophecy", "communicating a message believed to be prompted by God for strengthening, correction, encouragement, or direction", ["I share messages I believe God has prompted for another person's strengthening, correction, encouragement, or direction.", "I seek discernment, confirmation, and feedback when sharing such impressions.", "I hold spiritual impressions humbly and submit them to wise discernment."]],
-  ["Teaching", "explaining and applying biblical truth so others understand and grow", ["I explain or apply biblical truth in ways that help people understand or grow.", "People value the clarity and care of my teaching.", "Preparing, learning, and adapting so others can engage Scripture gives me energy."]],
-  ["Tongues", "speaking in a language or spiritual utterance given through the Holy Spirit", ["I experience or sense a grace for speaking in a language or spiritual utterance given through the Holy Spirit.", "Pastoral guidance, confirmation, or feedback helps me understand these experiences.", "I practice this prayerfully and with care for the gathered community."]],
-  ["Wisdom", "applying spiritual truth appropriately to real situations", ["I apply spiritual truth thoughtfully to real situations.", "People value the timing, care, or practicality of my counsel.", "I listen carefully before offering perspective in a complex situation."]],
-  ["Craftsmanship", "using artistic or practical skill for God’s purposes", ["I use artistic or practical skill in ways that serve God's purposes or people.", "My creative or practical work contributes meaningful value to others.", "I offer my craft carefully for a shared ministry need."]],
-  ["Intercession", "persistent, focused prayer for others", ["I stay in focused prayer for people, needs, or situations.", "I follow up with people I have prayed for and notice how God is at work.", "I feel drawn to carry other people's needs in persistent prayer."]],
-  ["Missionary / Cross-Cultural Ministry", "effectively ministering across cultures and communities", ["I serve, learn, or build relationships across cultures or communities different from my own.", "People experience respect, listening, and adaptability from me across cultural differences.", "I want to keep learning from and serving with people across cultural differences."]],
-  ["Music / Worship", "using musical ability to lead and encourage worship", ["I use musical ability to lead or encourage worship.", "My musical contribution helps the worshiping community participate.", "Preparing and collaborating so music serves worship gives me energy."]],
-  ["Celibacy", "a particular grace for remaining unmarried for undivided devotion to ministry", ["My singleness connects meaningfully with my devotion, relationships, and service.", "I seek wise feedback and support as I discern this part of my life.", "I presently experience peace or freedom in remaining unmarried for undivided devotion to ministry."]],
-  ["Voluntary Poverty", "willingly living with less in order to serve God and others", ["I willingly choose to live with less in order to serve God or others.", "I notice meaningful fruit or challenges when I simplify or share.", "I feel drawn to consider a simpler way of life for service and generosity."]],
+  [
+    "Administration",
+    "organizing people, resources, and systems effectively",
+    [
+      "I help bring order to people, resources, or systems so a shared work can move forward.",
+      "People benefit from the way I organize work and create follow-through.",
+      "Creating clarity and structure for a shared effort gives me energy.",
+    ],
+  ],
+  [
+    "Apostleship",
+    "pioneering, starting, expanding, and establishing new ministries or works",
+    [
+      "I help begin, expand, or establish a new work when the path is not yet clear.",
+      "I help new ministries or initiatives take root and grow.",
+      "I feel drawn to explore faithful next steps in new places or communities.",
+    ],
+  ],
+  [
+    "Discernment of Spirits",
+    "recognizing what is from God, human influence, or spiritual deception",
+    [
+      "I prayerfully distinguish what may be from God, human influence, or spiritual deception.",
+      "My careful listening helps others consider spiritual impressions or concerns wisely.",
+      "I pause, pray, and seek wise counsel before naming what I sense.",
+    ],
+  ],
+  [
+    "Evangelism",
+    "communicating the gospel and helping people respond to Jesus",
+    [
+      "I communicate the gospel or accompany someone taking a step toward Jesus.",
+      "People respond positively when I share my faith with care.",
+      "I feel drawn to build relationships with people who are exploring Jesus.",
+    ],
+  ],
+  [
+    "Exhortation / Encouragement",
+    "strengthening, motivating, comforting, and challenging others",
+    [
+      "My words help people feel strengthened, comforted, motivated, or thoughtfully challenged.",
+      "People tell me that my encouragement makes a positive difference.",
+      "I notice opportunities to speak hope or courage into another person's situation.",
+    ],
+  ],
+  [
+    "Faith",
+    "unusual confidence in God’s power, promises, and provision",
+    [
+      "I experience confidence in God's power, promises, or provision during uncertainty.",
+      "My trust in God strengthens others during difficult circumstances.",
+      "I continue praying and acting faithfully when outcomes remain unclear.",
+    ],
+  ],
+  [
+    "Giving",
+    "generously and joyfully sharing resources to advance God’s work and meet needs",
+    [
+      "I share time, money, or other resources to meet needs or support God's work.",
+      "I see meaningful fruit when I give generously and thoughtfully.",
+      "I feel joy and freedom when I look for ways to share resources.",
+    ],
+  ],
+  [
+    "Healing",
+    "being used by God as an instrument of physical, emotional, or spiritual healing",
+    [
+      "I offer care or prayer when people experience physical, emotional, or spiritual hurt.",
+      "My care or prayer brings comfort or encouragement to people who are hurting.",
+      "I feel drawn to be present with people seeking healing while leaving outcomes with God.",
+    ],
+  ],
+  [
+    "Helps / Service",
+    "meeting practical needs and supporting others so ministry can happen",
+    [
+      "I notice and meet practical needs that support people or ministry.",
+      "People value the practical support I offer.",
+      "Behind-the-scenes tasks that help a shared work happen give me energy.",
+    ],
+  ],
+  [
+    "Hospitality",
+    "welcoming people and creating environments where others feel received and cared for",
+    [
+      "I help create settings where people feel welcomed, received, and cared for.",
+      "Guests and others feel included when I welcome them.",
+      "I feel drawn to make room for people who may feel new, overlooked, or uncertain.",
+    ],
+  ],
+  [
+    "Interpretation of Tongues",
+    "interpreting a message spoken in tongues",
+    [
+      "I experience or sense a grace to interpret a message spoken in tongues.",
+      "I welcome careful confirmation, accountability, and feedback when discerning this grace.",
+      "I approach this practice prayerfully, humbly, and in appropriate community order.",
+    ],
+  ],
+  [
+    "Knowledge",
+    "understanding and communicating spiritual truth or insight",
+    [
+      "I understand and communicate spiritual truth or insight that helps someone.",
+      "People find my spiritual insight clear and helpful.",
+      "I want to keep learning and share insight with humility.",
+    ],
+  ],
+  [
+    "Leadership",
+    "providing direction, motivating others, and helping a group move toward God-given goals",
+    [
+      "I provide direction or momentum for a group working toward a shared goal.",
+      "People value the way I guide, listen to, and motivate them.",
+      "Taking responsibility for helping a group move forward gives me energy.",
+    ],
+  ],
+  [
+    "Mercy",
+    "compassionately caring for people who are hurting, struggling, marginalized, or in need",
+    [
+      "I stay present with people who are hurting, struggling, marginalized, or in need.",
+      "People experience care and dignity through the way I treat them.",
+      "I stay compassionate when another person's needs are complex or ongoing.",
+    ],
+  ],
+  [
+    "Miracles",
+    "being used by God in extraordinary demonstrations of His power",
+    [
+      "I experience or sense God working in an extraordinary way through situations involving me.",
+      "I seek wise confirmation and feedback about extraordinary experiences.",
+      "I pray expectantly while remaining humble about outcomes.",
+    ],
+  ],
+  [
+    "Pastoring / Shepherding",
+    "caring for, protecting, guiding, and nurturing people spiritually",
+    [
+      "I care for, guide, protect, or nurture people in their spiritual lives.",
+      "People value my ability to listen and walk patiently with them.",
+      "Consistent, relational care over time gives me energy.",
+    ],
+  ],
+  [
+    "Prophecy",
+    "communicating a message believed to be prompted by God for strengthening, correction, encouragement, or direction",
+    [
+      "I share messages I believe God has prompted for another person's strengthening, correction, encouragement, or direction.",
+      "I seek discernment, confirmation, and feedback when sharing such impressions.",
+      "I hold spiritual impressions humbly and submit them to wise discernment.",
+    ],
+  ],
+  [
+    "Teaching",
+    "explaining and applying biblical truth so others understand and grow",
+    [
+      "I explain or apply biblical truth in ways that help people understand or grow.",
+      "People value the clarity and care of my teaching.",
+      "Preparing, learning, and adapting so others can engage Scripture gives me energy.",
+    ],
+  ],
+  [
+    "Tongues",
+    "speaking in a language or spiritual utterance given through the Holy Spirit",
+    [
+      "I experience or sense a grace for speaking in a language or spiritual utterance given through the Holy Spirit.",
+      "Pastoral guidance, confirmation, or feedback helps me understand these experiences.",
+      "I practice this prayerfully and with care for the gathered community.",
+    ],
+  ],
+  [
+    "Wisdom",
+    "applying spiritual truth appropriately to real situations",
+    [
+      "I apply spiritual truth thoughtfully to real situations.",
+      "People value the timing, care, or practicality of my counsel.",
+      "I listen carefully before offering perspective in a complex situation.",
+    ],
+  ],
+  [
+    "Craftsmanship",
+    "using artistic or practical skill for God’s purposes",
+    [
+      "I use artistic or practical skill in ways that serve God's purposes or people.",
+      "My creative or practical work contributes meaningful value to others.",
+      "I offer my craft carefully for a shared ministry need.",
+    ],
+  ],
+  [
+    "Intercession",
+    "persistent, focused prayer for others",
+    [
+      "I stay in focused prayer for people, needs, or situations.",
+      "I follow up with people I have prayed for and notice how God is at work.",
+      "I feel drawn to carry other people's needs in persistent prayer.",
+    ],
+  ],
+  [
+    "Missionary / Cross-Cultural Ministry",
+    "effectively ministering across cultures and communities",
+    [
+      "I serve, learn, or build relationships across cultures or communities different from my own.",
+      "People experience respect, listening, and adaptability from me across cultural differences.",
+      "I want to keep learning from and serving with people across cultural differences.",
+    ],
+  ],
+  [
+    "Music / Worship",
+    "using musical ability to lead and encourage worship",
+    [
+      "I use musical ability to lead or encourage worship.",
+      "My musical contribution helps the worshiping community participate.",
+      "Preparing and collaborating so music serves worship gives me energy.",
+    ],
+  ],
+  [
+    "Celibacy",
+    "a particular grace for remaining unmarried for undivided devotion to ministry",
+    [
+      "My singleness connects meaningfully with my devotion, relationships, and service.",
+      "I seek wise feedback and support as I discern this part of my life.",
+      "I presently experience peace or freedom in remaining unmarried for undivided devotion to ministry.",
+    ],
+  ],
+  [
+    "Voluntary Poverty",
+    "willingly living with less in order to serve God and others",
+    [
+      "I willingly choose to live with less in order to serve God or others.",
+      "I notice meaningful fruit or challenges when I simplify or share.",
+      "I feel drawn to consider a simpler way of life for service and generosity.",
+    ],
+  ],
 ] as const;
-const RESPONSE_OPTIONS = ["Not at all", "A little", "Sometimes", "Often", "Very much"] as const;
-type SpiritualGiftQuestion = { gift: string; meaning: string; questionIndex: number; prompt: string };
+const RESPONSE_OPTIONS = [
+  "Not at all",
+  "A little",
+  "Sometimes",
+  "Often",
+  "Very much",
+] as const;
+type SpiritualGiftQuestion = {
+  gift: string;
+  meaning: string;
+  questionIndex: number;
+  prompt: string;
+};
 function shuffleQuestions(questions: SpiritualGiftQuestion[]) {
   const result: SpiritualGiftQuestion[] = [];
-  const rounds = [...new Set(questions.map(question => question.questionIndex))].sort();
+  const rounds = [
+    ...new Set(questions.map((question) => question.questionIndex)),
+  ].sort();
   for (const round of rounds) {
-    const shuffledRound = questions.filter(question => question.questionIndex === round);
+    const shuffledRound = questions.filter(
+      (question) => question.questionIndex === round,
+    );
     for (let index = shuffledRound.length - 1; index > 0; index -= 1) {
       const swapIndex = Math.floor(Math.random() * (index + 1));
-      [shuffledRound[index], shuffledRound[swapIndex]] = [shuffledRound[swapIndex], shuffledRound[index]];
+      [shuffledRound[index], shuffledRound[swapIndex]] = [
+        shuffledRound[swapIndex],
+        shuffledRound[index],
+      ];
     }
     const previousGift = result.at(-1)?.gift;
     if (previousGift && shuffledRound[0]?.gift === previousGift) {
-      const differentGiftIndex = shuffledRound.findIndex(question => question.gift !== previousGift);
+      const differentGiftIndex = shuffledRound.findIndex(
+        (question) => question.gift !== previousGift,
+      );
       if (differentGiftIndex > 0) {
-        [shuffledRound[0], shuffledRound[differentGiftIndex]] = [shuffledRound[differentGiftIndex], shuffledRound[0]];
+        [shuffledRound[0], shuffledRound[differentGiftIndex]] = [
+          shuffledRound[differentGiftIndex],
+          shuffledRound[0],
+        ];
       }
     }
     result.push(...shuffledRound);
@@ -108,154 +439,1768 @@ function shuffleQuestions(questions: SpiritualGiftQuestion[]) {
   return result;
 }
 const MINISTRY_APPROACHES = [
-  { label: "Starting and building new ministry", key: "builder", prompts: ["I enjoy imagining new possibilities and helping turn them into something others can join.", "I am energized by helping a new ministry take shape when no clear path exists.", "I am comfortable taking a first step and helping others move from an idea toward action."] },
-  { label: "Noticing what needs attention", key: "insight", prompts: ["I notice patterns, tensions, or needs that others may be overlooking.", "I am willing to name difficult truths when doing so can help people or a ministry move toward health.", "I pay attention to whether a ministry's direction reflects its values and purpose."] },
-  { label: "Connecting people with faith", key: "connector", prompts: ["I naturally build relationships with people who are curious about faith or far from church.", "I enjoy explaining the good news in a way that connects with someone's story.", "I look for natural opportunities to welcome people into meaningful conversations about faith."] },
-  { label: "Caring for people over time", key: "caregiver", prompts: ["People often come to me for patient care, encouragement, and guidance over time.", "I feel responsible for helping people feel known, supported, and connected.", "I stay engaged with people through seasons of growth, difficulty, and change."] },
-  { label: "Making ideas clear", key: "teacher", prompts: ["I enjoy making complex ideas clear and helping people understand what they believe.", "I like studying, organizing, and communicating ideas so others can grow.", "I adjust the way I explain something when people need a different path to understanding."] },
+  {
+    label: "Starting and building new ministry",
+    key: "builder",
+    prompts: [
+      "I enjoy imagining new possibilities and helping turn them into something others can join.",
+      "I am energized by helping a new ministry take shape when no clear path exists.",
+      "I am comfortable taking a first step and helping others move from an idea toward action.",
+    ],
+  },
+  {
+    label: "Noticing what needs attention",
+    key: "insight",
+    prompts: [
+      "I notice patterns, tensions, or needs that others may be overlooking.",
+      "I am willing to name difficult truths when doing so can help people or a ministry move toward health.",
+      "I pay attention to whether a ministry's direction reflects its values and purpose.",
+    ],
+  },
+  {
+    label: "Connecting people with faith",
+    key: "connector",
+    prompts: [
+      "I naturally build relationships with people who are curious about faith or far from church.",
+      "I enjoy explaining the good news in a way that connects with someone's story.",
+      "I look for natural opportunities to welcome people into meaningful conversations about faith.",
+    ],
+  },
+  {
+    label: "Caring for people over time",
+    key: "caregiver",
+    prompts: [
+      "People often come to me for patient care, encouragement, and guidance over time.",
+      "I feel responsible for helping people feel known, supported, and connected.",
+      "I stay engaged with people through seasons of growth, difficulty, and change.",
+    ],
+  },
+  {
+    label: "Making ideas clear",
+    key: "teacher",
+    prompts: [
+      "I enjoy making complex ideas clear and helping people understand what they believe.",
+      "I like studying, organizing, and communicating ideas so others can grow.",
+      "I adjust the way I explain something when people need a different path to understanding.",
+    ],
+  },
 ] as const;
-const MINISTRY_QUESTIONS = MINISTRY_APPROACHES.flatMap(({ key, prompts }) => prompts.map((prompt, questionIndex) => ({ key, questionIndex, prompt })));
+const MINISTRY_QUESTIONS = MINISTRY_APPROACHES.flatMap(({ key, prompts }) =>
+  prompts.map((prompt, questionIndex) => ({ key, questionIndex, prompt })),
+);
 const STRENGTH_APPROACHES = [
-  { label: "Relational connection", key: "relationalConnection", prompts: ["I quickly notice what helps people feel seen and included.", "I naturally build trust across different kinds of people.", "I remember personal details that help relationships grow."] },
-  { label: "Encouragement", key: "encouragement", prompts: ["I notice progress or potential in people, even when they cannot see it yet.", "I help people regain courage when they feel discouraged.", "My words often help others take a hopeful next step."] },
-  { label: "Teaching and explaining", key: "teachingExplaining", prompts: ["I enjoy breaking complex ideas into clear, understandable parts.", "I check whether people are following and adjust how I explain something.", "I like helping people connect what they learn with everyday life."] },
-  { label: "Listening", key: "listening", prompts: ["I give people my full attention before deciding what to say.", "People often feel safe sharing honestly with me.", "I can stay present with a story without rushing to fix it."] },
-  { label: "Leadership and initiative", key: "leadershipInitiative", prompts: ["I notice a needed next step and am willing to help begin it.", "I take responsibility when a group needs direction or momentum.", "I am comfortable making a thoughtful decision when no option is perfect."] },
-  { label: "Organizing", key: "organizing", prompts: ["I create structure that helps people know what needs to happen next.", "I enjoy coordinating details, schedules, people, or resources.", "I can make a complicated project feel more manageable."] },
-  { label: "Creative expression", key: "creativeExpression", prompts: ["I see fresh ways to communicate an idea or invite participation.", "I enjoy turning imagination into something people can experience.", "I bring originality to projects, conversations, or ministry environments."] },
-  { label: "Problem-solving", key: "problemSolving", prompts: ["I look for practical options when a situation feels stuck.", "I enjoy understanding why something is not working and finding a better approach.", "I stay curious and resourceful when circumstances change."] },
-  { label: "Practical hands-on work", key: "practicalHandsOn", prompts: ["I learn well by working with real materials, tools, or physical tasks.", "I notice practical needs and can often figure out how to meet them.", "I take satisfaction in making something useful, functional, or well-built."] },
-  { label: "Hospitality", key: "hospitality", prompts: ["I notice what helps people feel comfortable in an unfamiliar setting.", "I naturally make room for people who might otherwise be overlooked.", "I enjoy creating welcoming experiences through details, food, space, or conversation."] },
-  { label: "Compassion and care", key: "compassionCare", prompts: ["I pay attention to how people are doing beneath the surface.", "I am willing to stay close when someone is hurting or needs ongoing support.", "I look for ways to protect another person's dignity while offering practical care."] },
-  { label: "Communication and storytelling", key: "communicationStorytelling", prompts: ["I can express an idea in a way that people remember.", "I use examples, stories, or images to help people connect with a message.", "I enjoy finding the right words for different people and situations."] },
-  { label: "Discernment", key: "discernment", prompts: ["I notice important differences between what is being said and what may be happening underneath.", "I weigh information carefully before forming a conclusion.", "I can sense when a plan, message, or situation needs a closer look."] },
-  { label: "Follow-through", key: "followThrough", prompts: ["I keep track of commitments and make sure important details do not get lost.", "People can depend on me to finish what I have agreed to do.", "I find satisfaction in bringing a project or responsibility to completion."] },
-  { label: "Adaptability", key: "adaptability", prompts: ["I can adjust my approach when people, plans, or circumstances change.", "I stay useful even when I have to work with an unfamiliar process or group.", "I can hold a plan lightly while still moving toward the larger goal."] },
-  { label: "Mentoring and development", key: "mentoringDevelopment", prompts: ["I enjoy helping people recognize their next area of growth.", "I give thoughtful feedback that helps others build confidence and skill.", "I am willing to invest consistently in someone's development over time."] },
-  { label: "Strategic thinking", key: "strategicThinking", prompts: ["I naturally connect present decisions with longer-term goals.", "I can identify which priorities will make the greatest difference.", "I enjoy seeing how people, resources, and ideas can work together toward a shared purpose."] },
-  { label: "Advocacy and justice", key: "advocacyJustice", prompts: ["I notice when people are being overlooked, excluded, or treated unfairly.", "I am willing to speak up when someone needs support or protection.", "I look for constructive ways to make a group or community more equitable and welcoming."] },
+  {
+    label: "Relational connection",
+    key: "relationalConnection",
+    prompts: [
+      "I quickly notice what helps people feel seen and included.",
+      "I naturally build trust across different kinds of people.",
+      "I remember personal details that help relationships grow.",
+    ],
+  },
+  {
+    label: "Encouragement",
+    key: "encouragement",
+    prompts: [
+      "I notice progress or potential in people, even when they cannot see it yet.",
+      "I help people regain courage when they feel discouraged.",
+      "My words often help others take a hopeful next step.",
+    ],
+  },
+  {
+    label: "Teaching and explaining",
+    key: "teachingExplaining",
+    prompts: [
+      "I enjoy breaking complex ideas into clear, understandable parts.",
+      "I check whether people are following and adjust how I explain something.",
+      "I like helping people connect what they learn with everyday life.",
+    ],
+  },
+  {
+    label: "Listening",
+    key: "listening",
+    prompts: [
+      "I give people my full attention before deciding what to say.",
+      "People often feel safe sharing honestly with me.",
+      "I can stay present with a story without rushing to fix it.",
+    ],
+  },
+  {
+    label: "Leadership and initiative",
+    key: "leadershipInitiative",
+    prompts: [
+      "I notice a needed next step and am willing to help begin it.",
+      "I take responsibility when a group needs direction or momentum.",
+      "I am comfortable making a thoughtful decision when no option is perfect.",
+    ],
+  },
+  {
+    label: "Organizing",
+    key: "organizing",
+    prompts: [
+      "I create structure that helps people know what needs to happen next.",
+      "I enjoy coordinating details, schedules, people, or resources.",
+      "I can make a complicated project feel more manageable.",
+    ],
+  },
+  {
+    label: "Creative expression",
+    key: "creativeExpression",
+    prompts: [
+      "I see fresh ways to communicate an idea or invite participation.",
+      "I enjoy turning imagination into something people can experience.",
+      "I bring originality to projects, conversations, or ministry environments.",
+    ],
+  },
+  {
+    label: "Problem-solving",
+    key: "problemSolving",
+    prompts: [
+      "I look for practical options when a situation feels stuck.",
+      "I enjoy understanding why something is not working and finding a better approach.",
+      "I stay curious and resourceful when circumstances change.",
+    ],
+  },
+  {
+    label: "Practical hands-on work",
+    key: "practicalHandsOn",
+    prompts: [
+      "I learn well by working with real materials, tools, or physical tasks.",
+      "I notice practical needs and can often figure out how to meet them.",
+      "I take satisfaction in making something useful, functional, or well-built.",
+    ],
+  },
+  {
+    label: "Hospitality",
+    key: "hospitality",
+    prompts: [
+      "I notice what helps people feel comfortable in an unfamiliar setting.",
+      "I naturally make room for people who might otherwise be overlooked.",
+      "I enjoy creating welcoming experiences through details, food, space, or conversation.",
+    ],
+  },
+  {
+    label: "Compassion and care",
+    key: "compassionCare",
+    prompts: [
+      "I pay attention to how people are doing beneath the surface.",
+      "I am willing to stay close when someone is hurting or needs ongoing support.",
+      "I look for ways to protect another person's dignity while offering practical care.",
+    ],
+  },
+  {
+    label: "Communication and storytelling",
+    key: "communicationStorytelling",
+    prompts: [
+      "I can express an idea in a way that people remember.",
+      "I use examples, stories, or images to help people connect with a message.",
+      "I enjoy finding the right words for different people and situations.",
+    ],
+  },
+  {
+    label: "Discernment",
+    key: "discernment",
+    prompts: [
+      "I notice important differences between what is being said and what may be happening underneath.",
+      "I weigh information carefully before forming a conclusion.",
+      "I can sense when a plan, message, or situation needs a closer look.",
+    ],
+  },
+  {
+    label: "Follow-through",
+    key: "followThrough",
+    prompts: [
+      "I keep track of commitments and make sure important details do not get lost.",
+      "People can depend on me to finish what I have agreed to do.",
+      "I find satisfaction in bringing a project or responsibility to completion.",
+    ],
+  },
+  {
+    label: "Adaptability",
+    key: "adaptability",
+    prompts: [
+      "I can adjust my approach when people, plans, or circumstances change.",
+      "I stay useful even when I have to work with an unfamiliar process or group.",
+      "I can hold a plan lightly while still moving toward the larger goal.",
+    ],
+  },
+  {
+    label: "Mentoring and development",
+    key: "mentoringDevelopment",
+    prompts: [
+      "I enjoy helping people recognize their next area of growth.",
+      "I give thoughtful feedback that helps others build confidence and skill.",
+      "I am willing to invest consistently in someone's development over time.",
+    ],
+  },
+  {
+    label: "Strategic thinking",
+    key: "strategicThinking",
+    prompts: [
+      "I naturally connect present decisions with longer-term goals.",
+      "I can identify which priorities will make the greatest difference.",
+      "I enjoy seeing how people, resources, and ideas can work together toward a shared purpose.",
+    ],
+  },
+  {
+    label: "Advocacy and justice",
+    key: "advocacyJustice",
+    prompts: [
+      "I notice when people are being overlooked, excluded, or treated unfairly.",
+      "I am willing to speak up when someone needs support or protection.",
+      "I look for constructive ways to make a group or community more equitable and welcoming.",
+    ],
+  },
 ] as const;
-const STRENGTH_QUESTIONS = STRENGTH_APPROACHES.flatMap(({ key, prompts }) => prompts.map((prompt, questionIndex) => ({ key, questionIndex, prompt })));
+const STRENGTH_QUESTIONS = STRENGTH_APPROACHES.flatMap(({ key, prompts }) =>
+  prompts.map((prompt, questionIndex) => ({ key, questionIndex, prompt })),
+);
 const PERSONALITY_DIMENSIONS = [
-  { label: "Social Energy", key: "socialEnergy", left: "Reflective", right: "Interactive", description: "How you tend to gain and spend social energy.", leftExplanation: "You tend to process internally and may recharge through quieter environments, deeper conversations, or time alone.", rightExplanation: "You tend to process through interaction and may gain energy through conversation, activity, and being around others.", leftSummary: "thoughtful and reflective", rightSummary: "energized by interaction", ministry: "how you connect with people and communicate in groups" },
-  { label: "Decision Lens", key: "decisionLens", left: "Relational", right: "Principled", description: "What you tend to consider first when making decisions.", leftExplanation: "You naturally consider people, relationships, compassion, emotional impact, and how others will be affected.", rightExplanation: "You naturally consider logic, consistency, fairness, standards, facts, and what solution makes the most sense.", leftSummary: "relationship-aware", rightSummary: "principled and consistent", ministry: "how you weigh people, compassion, fairness, and consistency when making decisions" },
-  { label: "Planning Style", key: "planningStyle", left: "Adaptive", right: "Settled", description: "How you tend to approach plans and decisions.", leftExplanation: "You may enjoy flexibility, keeping options open, adjusting as you go, and responding to changing circumstances.", rightExplanation: "You may prefer clear expectations, schedules, deadlines, decisions, and knowing what comes next.", leftSummary: "flexible and adaptive", rightSummary: "prepared and settled", ministry: "how you respond to change and how much structure helps you serve well" },
-  { label: "Focus Style", key: "focusStyle", left: "Detail", right: "Big Picture", description: "What you naturally tend to notice.", leftExplanation: "You tend to notice practical needs, specific information, logistics, steps, and what needs attention right now.", rightExplanation: "You tend to notice patterns, possibilities, future direction, ideas, connections, and what something could become.", leftSummary: "attentive to detail", rightSummary: "big-picture oriented", ministry: "whether you naturally begin with practical details or broader direction" },
-  { label: "Action Style", key: "actionStyle", left: "Support", right: "Initiate", description: "How you tend to respond when work needs to be done.", leftExplanation: "You may naturally strengthen, improve, assist, maintain, and help existing efforts succeed.", rightExplanation: "You may naturally start things, suggest new approaches, create momentum, and move ideas into action.", leftSummary: "supportive and strengthening", rightSummary: "initiative-taking", ministry: "whether you are most energized by strengthening existing work or starting something new" },
-  { label: "Pace Preference", key: "pacePreference", left: "Steady", right: "Dynamic", description: "What type of pace tends to feel most natural.", leftExplanation: "You may thrive with consistency, predictable rhythms, focused responsibilities, and sustainable routines.", rightExplanation: "You may enjoy variety, change, multiple responsibilities, urgency, and fast-moving environments.", leftSummary: "steady and sustainable", rightSummary: "dynamic and responsive", ministry: "what rhythms, pace, and level of change help you remain engaged" },
-  { label: "Work Style", key: "workStyle", left: "Independent", right: "Collaborative", description: "How you tend to work most naturally.", leftExplanation: "You may enjoy autonomy, focused responsibility, personal ownership, and being trusted to complete a task.", rightExplanation: "You may enjoy shared responsibility, brainstorming, interaction, feedback, and accomplishing things together.", leftSummary: "self-directed", rightSummary: "collaborative", ministry: "how you handle responsibility, feedback, teamwork, and shared ownership" },
-] as const;
+  {
+    label: "Social Energy",
+    key: "socialEnergy",
+    left: "Reflective",
+    right: "Interactive",
+    description: "How you tend to gain and spend social energy.",
+    leftExplanation:
+      "You tend to process internally and may recharge through quieter environments, deeper conversations, or time alone.",
+    rightExplanation:
+      "You tend to process through interaction and may gain energy through conversation, activity, and being around others.",
+    leftSummary: "thoughtful and reflective",
+    rightSummary: "energized by interaction",
+    ministry: "how you connect with people and communicate in groups",
+  },
+  {
+    label: "Decision Lens",
+    key: "decisionLens",
+    left: "Relational",
+    right: "Principled",
+    description: "What you tend to consider first when making decisions.",
+    leftExplanation:
+      "You naturally consider people, relationships, compassion, emotional impact, and how others will be affected.",
+    rightExplanation:
+      "You naturally consider logic, consistency, fairness, standards, facts, and what solution makes the most sense.",
+    leftSummary: "relationship-aware",
+    rightSummary: "principled and consistent",
+    ministry:
+      "how you weigh people, compassion, fairness, and consistency when making decisions",
+  },
+  {
+    label: "Planning Style",
+    key: "planningStyle",
+    left: "Adaptive",
+    right: "Settled",
+    description: "How you tend to approach plans and decisions.",
+    leftExplanation:
+      "You may enjoy flexibility, keeping options open, adjusting as you go, and responding to changing circumstances.",
+    rightExplanation:
+      "You may prefer clear expectations, schedules, deadlines, decisions, and knowing what comes next.",
+    leftSummary: "flexible and adaptive",
+    rightSummary: "prepared and settled",
+    ministry:
+      "how you respond to change and how much structure helps you serve well",
+  },
+  {
+    label: "Focus Style",
+    key: "focusStyle",
+    left: "Detail",
+    right: "Big Picture",
+    description: "What you naturally tend to notice.",
+    leftExplanation:
+      "You tend to notice practical needs, specific information, logistics, steps, and what needs attention right now.",
+    rightExplanation:
+      "You tend to notice patterns, possibilities, future direction, ideas, connections, and what something could become.",
+    leftSummary: "attentive to detail",
+    rightSummary: "big-picture oriented",
+    ministry:
+      "whether you naturally begin with practical details or broader direction",
+  },
+  {
+    label: "Action Style",
+    key: "actionStyle",
+    left: "Support",
+    right: "Initiate",
+    description: "How you tend to respond when work needs to be done.",
+    leftExplanation:
+      "You may naturally strengthen, improve, assist, maintain, and help existing efforts succeed.",
+    rightExplanation:
+      "You may naturally start things, suggest new approaches, create momentum, and move ideas into action.",
+    leftSummary: "supportive and strengthening",
+    rightSummary: "initiative-taking",
+    ministry:
+      "whether you are most energized by strengthening existing work or starting something new",
+  },
+  {
+    label: "Pace Preference",
+    key: "pacePreference",
+    left: "Steady",
+    right: "Dynamic",
+    description: "What type of pace tends to feel most natural.",
+    leftExplanation:
+      "You may thrive with consistency, predictable rhythms, focused responsibilities, and sustainable routines.",
+    rightExplanation:
+      "You may enjoy variety, change, multiple responsibilities, urgency, and fast-moving environments.",
+    leftSummary: "steady and sustainable",
+    rightSummary: "dynamic and responsive",
+    ministry: "what rhythms, pace, and level of change help you remain engaged",
+  },
+  {
+    label: "Work Style",
+    key: "workStyle",
+    left: "Independent",
+    right: "Collaborative",
+    description: "How you tend to work most naturally.",
+    leftExplanation:
+      "You may enjoy autonomy, focused responsibility, personal ownership, and being trusted to complete a task.",
+    rightExplanation:
+      "You may enjoy shared responsibility, brainstorming, interaction, feedback, and accomplishing things together.",
+    leftSummary: "self-directed",
+    rightSummary: "collaborative",
+    ministry:
+      "how you handle responsibility, feedback, teamwork, and shared ownership",
+  },
+] as {
+  label: string;
+  key: string;
+  left: string;
+  right: string;
+  description: string;
+  leftExplanation: string;
+  rightExplanation: string;
+  leftSummary: string;
+  rightSummary: string;
+  ministry: string;
+}[];
 const PERSONALITY_QUESTIONS = [
-  ["socialEnergy", ["After a full week, I feel most restored by how much quiet or interaction I choose.", "In a new group, I tend to process my experience privately or through conversation.", "When I need to work through an idea, I am more likely to think first or talk it through."]],
-  ["decisionLens", ["When choosing between good options, I first consider people and impact or principles and consistency.", "A decision feels sound to me when it honors relationships or makes the most sense by a clear standard.", "When a decision affects people differently, I first weigh compassion or fairness and consistency."]],
-  ["planningStyle", ["When beginning a project, I prefer to keep options open or settle the plan early.", "If circumstances change, I naturally adjust as I go or return to a clear plan.", "I feel most comfortable when the next steps can remain flexible or are already decided."]],
-  ["focusStyle", ["When looking at a situation, I first notice immediate details or broader patterns.", "I am most likely to ask what needs attention now or what this could become.", "I naturally contribute by clarifying practical steps or connecting ideas and possibilities."]],
-  ["actionStyle", ["When a team already has momentum, I am most energized by strengthening the work or starting a new direction.", "When work needs to begin, I am more likely to support an existing effort or create the first movement.", "I feel most useful when I improve what is already working or turn an idea into action."]],
-  ["pacePreference", ["My ideal ministry rhythm includes consistency and focus or variety and change.", "When several needs appear at once, I prefer a sustainable pace or a fast-moving response.", "I sustain my best work through predictable rhythms or a changing mix of responsibilities."]],
-  ["workStyle", ["I do my best work with personal ownership and autonomy or shared responsibility and interaction.", "When developing an idea, I prefer focused time alone or brainstorming with others.", "Responsibility feels healthiest when I am trusted to own a task or have feedback and shared ownership."]],
+  [
+    "socialEnergy",
+    [
+      "After a full week, I feel most restored by how much quiet or interaction I choose.",
+      "In a new group, I tend to process my experience privately or through conversation.",
+      "When I need to work through an idea, I am more likely to think first or talk it through.",
+    ],
+  ],
+  [
+    "decisionLens",
+    [
+      "When choosing between good options, I first consider people and impact or principles and consistency.",
+      "A decision feels sound to me when it honors relationships or makes the most sense by a clear standard.",
+      "When a decision affects people differently, I first weigh compassion or fairness and consistency.",
+    ],
+  ],
+  [
+    "planningStyle",
+    [
+      "When beginning a project, I prefer to keep options open or settle the plan early.",
+      "If circumstances change, I naturally adjust as I go or return to a clear plan.",
+      "I feel most comfortable when the next steps can remain flexible or are already decided.",
+    ],
+  ],
+  [
+    "focusStyle",
+    [
+      "When looking at a situation, I first notice immediate details or broader patterns.",
+      "I am most likely to ask what needs attention now or what this could become.",
+      "I naturally contribute by clarifying practical steps or connecting ideas and possibilities.",
+    ],
+  ],
+  [
+    "actionStyle",
+    [
+      "When a team already has momentum, I am most energized by strengthening the work or starting a new direction.",
+      "When work needs to begin, I am more likely to support an existing effort or create the first movement.",
+      "I feel most useful when I improve what is already working or turn an idea into action.",
+    ],
+  ],
+  [
+    "pacePreference",
+    [
+      "My ideal ministry rhythm includes consistency and focus or variety and change.",
+      "When several needs appear at once, I prefer a sustainable pace or a fast-moving response.",
+      "I sustain my best work through predictable rhythms or a changing mix of responsibilities.",
+    ],
+  ],
+  [
+    "workStyle",
+    [
+      "I do my best work with personal ownership and autonomy or shared responsibility and interaction.",
+      "When developing an idea, I prefer focused time alone or brainstorming with others.",
+      "Responsibility feels healthiest when I am trusted to own a task or have feedback and shared ownership.",
+    ],
+  ],
 ] as const;
-const PERSONALITY_QUESTIONS_FLAT = PERSONALITY_QUESTIONS.flatMap(([key, prompts]) => prompts.map((prompt, questionIndex) => ({ key, prompt, questionIndex })));
-const personalityResponseOptions = (left: string, right: string) => [`Strongly ${left}`, `Slightly ${left}`, "Balanced", `Slightly ${right}`, `Strongly ${right}`];
-function personalityResults(responses: Record<string, number>) {
-  return PERSONALITY_DIMENSIONS.map(dimension => {
-    const scores = PERSONALITY_QUESTIONS_FLAT.filter(question => question.key === dimension.key).map(question => responses[`${dimension.key}-${question.questionIndex}`] ?? 3);
-    const average = scores.reduce((total, score) => total + score, 0) / scores.length;
+const PERSONALITY_QUESTIONS_FLAT = PERSONALITY_QUESTIONS.flatMap(
+  ([key, prompts]) =>
+    prompts.map((prompt, questionIndex) => ({ key, prompt, questionIndex })),
+);
+const personalityResponseOptions = (left: string, right: string) => [
+  `Strongly ${left}`,
+  `Slightly ${left}`,
+  "Balanced",
+  `Slightly ${right}`,
+  `Strongly ${right}`,
+];
+function personalityResults(
+  responses: Record<string, number>,
+  dimensions = PERSONALITY_DIMENSIONS,
+) {
+  return dimensions.map((dimension) => {
+    const scores = PERSONALITY_QUESTIONS_FLAT.filter(
+      (question) => question.key === dimension.key,
+    ).map(
+      (question) =>
+        responses[`${dimension.key}-${question.questionIndex}`] ?? 3,
+    );
+    const average =
+      scores.reduce((total, score) => total + score, 0) / scores.length;
     const rightPercentage = Math.round(((average - 1) / 4) * 100);
     const leftPercentage = 100 - rightPercentage;
-    const dominant = leftPercentage === rightPercentage ? "balanced" : leftPercentage > rightPercentage ? "left" : "right";
+    const dominant =
+      leftPercentage === rightPercentage
+        ? "balanced"
+        : leftPercentage > rightPercentage
+          ? "left"
+          : "right";
     const dominantPercentage = Math.max(leftPercentage, rightPercentage);
-    const tendency = dominant === "balanced" || dominantPercentage <= 55 ? "Balanced" : dominantPercentage <= 65 ? "Slight tendency" : dominantPercentage <= 79 ? "Moderate tendency" : dominantPercentage <= 91 ? "Strong tendency" : "Very strong tendency";
-    return { ...dimension, leftPercentage, rightPercentage, dominant, tendency, explanation: dominant === "left" ? dimension.leftExplanation : dominant === "right" ? dimension.rightExplanation : `You draw from both ${dimension.left.toLowerCase()} and ${dimension.right.toLowerCase()} approaches, adapting to what the situation requires.` };
+    const tendency =
+      dominant === "balanced" || dominantPercentage <= 55
+        ? "Balanced"
+        : dominantPercentage <= 65
+          ? "Slight tendency"
+          : dominantPercentage <= 79
+            ? "Moderate tendency"
+            : dominantPercentage <= 91
+              ? "Strong tendency"
+              : "Very strong tendency";
+    return {
+      ...dimension,
+      leftPercentage,
+      rightPercentage,
+      dominant,
+      tendency,
+      explanation:
+        dominant === "left"
+          ? dimension.leftExplanation
+          : dominant === "right"
+            ? dimension.rightExplanation
+            : `You draw from both ${dimension.left.toLowerCase()} and ${dimension.right.toLowerCase()} approaches, adapting to what the situation requires.`,
+    };
   });
 }
 function personalitySummary(results: ReturnType<typeof personalityResults>) {
-  const descriptors = results.filter(result => result.dominant !== "balanced").sort((a, b) => Math.max(b.leftPercentage, b.rightPercentage) - Math.max(a.leftPercentage, a.rightPercentage)).slice(0, 3).map(result => result.dominant === "left" ? result.leftSummary : result.rightSummary);
-  return descriptors.length ? `You tend to operate as a ${descriptors.join(", ")} person. These tendencies may shape ${results.filter(result => result.dominant !== "balanced").slice(0, 2).map(result => result.ministry).join(" and ")}.` : "You tend to draw from both sides of these dimensions, adapting your approach to the people and situations around you.";
+  const descriptors = results
+    .filter((result) => result.dominant !== "balanced")
+    .sort(
+      (a, b) =>
+        Math.max(b.leftPercentage, b.rightPercentage) -
+        Math.max(a.leftPercentage, a.rightPercentage),
+    )
+    .slice(0, 3)
+    .map((result) =>
+      result.dominant === "left" ? result.leftSummary : result.rightSummary,
+    );
+  return descriptors.length
+    ? `You tend to operate as a ${descriptors.join(", ")} person. These tendencies may shape ${results
+        .filter((result) => result.dominant !== "balanced")
+        .slice(0, 2)
+        .map((result) => result.ministry)
+        .join(" and ")}.`
+    : "You tend to draw from both sides of these dimensions, adapting your approach to the people and situations around you.";
 }
-function personalityMinistryConnection(results: ReturnType<typeof personalityResults>) {
-  const tendencies = results.filter(result => result.dominant !== "balanced").slice(0, 3).map(result => result.dominant === "left" ? result.leftSummary : result.rightSummary);
-  return tendencies.length ? `In ministry, your ${tendencies.join(", ")} tendencies may influence how you interact with people, communicate, respond to change, make decisions, and handle responsibility. You may feel most energized in environments that fit your natural rhythms while also leaving room for God to stretch you.` : "In ministry, your balanced tendencies may help you adapt across different people, teams, rhythms, and responsibilities.";
+function personalityMinistryConnection(
+  results: ReturnType<typeof personalityResults>,
+) {
+  const tendencies = results
+    .filter((result) => result.dominant !== "balanced")
+    .slice(0, 3)
+    .map((result) =>
+      result.dominant === "left" ? result.leftSummary : result.rightSummary,
+    );
+  return tendencies.length
+    ? `In ministry, your ${tendencies.join(", ")} tendencies may influence how you interact with people, communicate, respond to change, make decisions, and handle responsibility. You may feel most energized in environments that fit your natural rhythms while also leaving room for God to stretch you.`
+    : "In ministry, your balanced tendencies may help you adapt across different people, teams, rhythms, and responsibilities.";
 }
 const choice = z.string();
 const assessmentSchema = z.object({
-  basicInformation: z.object({ firstName: z.string().min(1, "First name is required"), lastName: z.string().min(1, "Last name is required"), email: z.string().email("Enter a valid email"), phone: z.string(), ageRange: choice.min(1, "Select an age range"), preferredContact: choice.min(1, "Select a contact method"), familySituation: choice.min(1, "Select a family situation"), transportation: choice.min(1, "Select transportation") }),
-  churchConnection: z.object({ attendanceLength: choice.min(1, "Select attendance length"), connectionLevel: z.coerce.number().min(1).max(5), followingJesusLength: choice.min(1, "Select an answer"), servedBefore: z.boolean(), previousService: z.string() }),
-  passions: z.array(z.string()).min(1, "Select at least one passion"),
-  interests: z.array(z.string()).min(1, "Select at least one ministry interest"),
-  servingFrequency: choice.min(1, "Select a serving frequency"),
-  availability: z.array(z.string()).min(1, "Select at least one time"),
-  languageText: z.string(), languageProficiency: z.string(),
-  churchDetails: z.object({ membership: z.string(), service: z.string(), previousInvolvement: z.string() }),
-  spiritualGifts: z.object({ responses: z.record(z.string(), z.array(z.object({ prompt: z.string(), response: z.number().int().min(1).max(5) })).length(3)) }),
-  ministryResponses: z.record(z.string(), z.number().int().min(1).max(5)).superRefine((responses, context) => { if (Object.keys(responses).length !== MINISTRY_QUESTIONS.length || MINISTRY_QUESTIONS.some(({ key, questionIndex }) => !Object.hasOwn(responses, `${key}-${questionIndex}`))) context.addIssue({ code: z.ZodIssueCode.custom, message: "Please answer every ministry reflection." }); }),
-  personalityResponses: z.record(z.string(), z.number().int().min(1).max(5)).superRefine((responses, context) => { if (Object.keys(responses).length !== PERSONALITY_QUESTIONS_FLAT.length || PERSONALITY_QUESTIONS_FLAT.some(({ key, questionIndex }) => !Object.hasOwn(responses, `${key}-${questionIndex}`))) context.addIssue({ code: z.ZodIssueCode.custom, message: "Please answer every personality reflection." }); }),
-  strengthResponses: z.record(z.string(), z.number().int().min(1).max(5)).superRefine((responses, context) => { if (Object.keys(responses).length !== STRENGTH_QUESTIONS.length || STRENGTH_QUESTIONS.some(({ key, questionIndex }) => !Object.hasOwn(responses, `${key}-${questionIndex}`))) context.addIssue({ code: z.ZodIssueCode.custom, message: "Please answer every strengths reflection." }); }),
+  basicInformation: z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string(),
+    phone: z.string(),
+    ageRange: choice,
+    preferredContact: choice,
+    familySituation: choice,
+    transportation: choice,
+  }),
+  churchConnection: z.object({
+    attendanceLength: choice,
+    connectionLevel: z.coerce.number(),
+    followingJesusLength: choice,
+    servedBefore: z.boolean(),
+    previousService: z.string(),
+  }),
+  passions: z.array(z.string()),
+  interests: z.array(z.string()),
+  servingFrequency: choice,
+  availability: z.array(z.string()),
+  languageText: z.string(),
+  languageProficiency: z.string(),
+  churchDetails: z.object({
+    membership: z.string(),
+    service: z.string(),
+    previousInvolvement: z.string(),
+  }),
+  spiritualGifts: z.object({
+    responses: z.record(
+      z.string(),
+      z
+        .array(
+          z.object({
+            prompt: z.string(),
+            response: z.number().int().min(1).max(5),
+          }),
+        )
+        .length(3),
+    ),
+  }),
+  ministryResponses: z.record(z.string(), z.number()),
+  personalityResponses: z.record(z.string(), z.number()),
+  strengthResponses: z.record(z.string(), z.number()),
   strengthNotes: z.string(),
-  occupation: z.string(), skills: z.object({ education:z.string(), certifications:z.string(), skills:z.string(), experience:z.string(), uniqueSkills:z.string() }),
-  lifeSelected: z.array(z.string()), lifeNotes: z.string(),
-  availabilityDetails: z.object({ seasonal:z.string(), specialEvents:z.string(), retreats:z.string(), missionTrips:z.string(), projects:z.string(), commitment:z.string(), responsibility:z.string().min(1, "Share what feels realistic right now") }),
-  spiritualHealth: z.object({ prayer:z.string(), scripture:z.string(), worship:z.string(), relationships:z.string(), community:z.string(), rest:z.string(), motivation:z.string(), wellbeing:z.string(), connection:z.string() }),
-  preferences: z.object({ setting:z.string(), role:z.string(), routine:z.string(), team:z.string(), work:z.string(), rhythm:z.string() }),
+  occupation: z.string(),
+  skills: z.object({
+    education: z.string(),
+    certifications: z.string(),
+    skills: z.string(),
+    experience: z.string(),
+    uniqueSkills: z.string(),
+  }),
+  lifeSelected: z.array(z.string()),
+  lifeNotes: z.string(),
+  availabilityDetails: z.object({
+    seasonal: z.string(),
+    specialEvents: z.string(),
+    retreats: z.string(),
+    missionTrips: z.string(),
+    projects: z.string(),
+    commitment: z.string(),
+    responsibility: z.string(),
+  }),
+  spiritualHealth: z.object({
+    prayer: z.string(),
+    scripture: z.string(),
+    worship: z.string(),
+    relationships: z.string(),
+    community: z.string(),
+    rest: z.string(),
+    motivation: z.string(),
+    wellbeing: z.string(),
+    connection: z.string(),
+  }),
+  preferences: z.object({
+    setting: z.string(),
+    role: z.string(),
+    routine: z.string(),
+    team: z.string(),
+    work: z.string(),
+    rhythm: z.string(),
+  }),
 });
 type Values = z.infer<typeof assessmentSchema>;
- const defaultValues: Values = { basicInformation:{firstName:"",lastName:"",email:"",phone:"",ageRange:"",preferredContact:"email",familySituation:"",transportation:""},churchConnection:{attendanceLength:"",connectionLevel:3,followingJesusLength:"",servedBefore:false,previousService:""},passions:[],interests:[],servingFrequency:"",availability:[],languageText:"",languageProficiency:"",churchDetails:{membership:"",service:"",previousInvolvement:""},spiritualGifts:{responses:Object.fromEntries(SPIRITUAL_GIFTS.map(([gift,,prompts])=>[gift,prompts.map(prompt=>({prompt,response:0}))]))},ministryResponses:Object.fromEntries(MINISTRY_QUESTIONS.map(({key,questionIndex})=>[`${key}-${questionIndex}`,0])),strengthResponses:Object.fromEntries(STRENGTH_QUESTIONS.map(({key,questionIndex})=>[`${key}-${questionIndex}`,0])),strengthNotes:"",personalityResponses:Object.fromEntries(PERSONALITY_QUESTIONS_FLAT.map(({key,questionIndex})=>[`${key}-${questionIndex}`,0])),occupation:"",skills:{education:"",certifications:"",skills:"",experience:"",uniqueSkills:""},lifeSelected:[],lifeNotes:"",availabilityDetails:{seasonal:"",specialEvents:"",retreats:"",missionTrips:"",projects:"",commitment:"",responsibility:""},spiritualHealth:{prayer:"",scripture:"",worship:"",relationships:"",community:"",rest:"",motivation:"",wellbeing:"",connection:""},preferences:{setting:"",role:"",routine:"",team:"",work:"",rhythm:""} };
+type PublicAssessmentConfiguration = AssessmentConfiguration;
+type AssessmentRenderContext = {
+  configuration: PublicAssessmentConfiguration;
+  step: string;
+};
+const AssessmentConfigurationContext = createContext<
+  AssessmentRenderContext | undefined
+>(undefined);
+function fieldIsEnabled(
+  name: string,
+  context: AssessmentRenderContext | undefined,
+) {
+  const configuration = context?.configuration;
+  if (
+    [
+      "basicInformation.firstName",
+      "basicInformation.lastName",
+      "basicInformation.email",
+      "basicInformation.phone",
+    ].includes(name)
+  )
+    return context?.step === "identity";
+  const enabled = (key: keyof PublicAssessmentConfiguration["subsections"]) =>
+    configuration?.subsections[key] ?? true;
+  if (
+    [
+      "basicInformation.ageRange",
+      "basicInformation.preferredContact",
+      "basicInformation.familySituation",
+      "basicInformation.transportation",
+      "languageText",
+      "languageProficiency",
+    ].includes(name)
+  )
+    return (
+      context?.step === "aboutYou" && enabled("aboutYou.personalInformation")
+    );
+  if (name === "occupation" || name.startsWith("skills."))
+    return context?.step === "aboutYou" && enabled("aboutYou.skillsExperience");
+  if (name === "lifeSelected" || name === "lifeNotes")
+    return context?.step === "aboutYou" && enabled("aboutYou.lifeExperiences");
+  if (name === "passions")
+    return (
+      context?.step === "passionsInterests" &&
+      enabled("passionsInterests.passions")
+    );
+  if (name === "interests")
+    return (
+      context?.step === "passionsInterests" &&
+      enabled("passionsInterests.ministryInterests")
+    );
+  if (name.startsWith("preferences."))
+    return (
+      context?.step === "personalityStrengths" &&
+      enabled("personalityStrengths.ministryPreferences")
+    );
+  if (name.startsWith("spiritualHealth."))
+    return (
+      context?.step === "spiritualHealth" &&
+      enabled(
+        `spiritualHealth.${name.split(".")[1]}` as keyof PublicAssessmentConfiguration["subsections"],
+      )
+    );
+  if (name.startsWith("churchConnection.") || name.startsWith("churchDetails."))
+    return (
+      context?.step === "connectionAvailability" &&
+      enabled("connectionAvailability.churchConnection")
+    );
+  if (
+    name === "servingFrequency" ||
+    name === "availability" ||
+    name.startsWith("availabilityDetails.")
+  )
+    return (
+      context?.step === "connectionAvailability" &&
+      enabled("connectionAvailability.availability")
+    );
+  return true;
+}
+const defaultValues: Values = {
+  basicInformation: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    ageRange: "",
+    preferredContact: "email",
+    familySituation: "",
+    transportation: "",
+  },
+  churchConnection: {
+    attendanceLength: "",
+    connectionLevel: 3,
+    followingJesusLength: "",
+    servedBefore: false,
+    previousService: "",
+  },
+  passions: [],
+  interests: [],
+  servingFrequency: "",
+  availability: [],
+  languageText: "",
+  languageProficiency: "",
+  churchDetails: { membership: "", service: "", previousInvolvement: "" },
+  spiritualGifts: {
+    responses: Object.fromEntries(
+      SPIRITUAL_GIFTS.map(([gift, , prompts]) => [
+        gift,
+        prompts.map((prompt) => ({ prompt, response: 0 })),
+      ]),
+    ),
+  },
+  ministryResponses: Object.fromEntries(
+    MINISTRY_QUESTIONS.map(({ key, questionIndex }) => [
+      `${key}-${questionIndex}`,
+      0,
+    ]),
+  ),
+  strengthResponses: Object.fromEntries(
+    STRENGTH_QUESTIONS.map(({ key, questionIndex }) => [
+      `${key}-${questionIndex}`,
+      0,
+    ]),
+  ),
+  strengthNotes: "",
+  personalityResponses: Object.fromEntries(
+    PERSONALITY_QUESTIONS_FLAT.map(({ key, questionIndex }) => [
+      `${key}-${questionIndex}`,
+      0,
+    ]),
+  ),
+  occupation: "",
+  skills: {
+    education: "",
+    certifications: "",
+    skills: "",
+    experience: "",
+    uniqueSkills: "",
+  },
+  lifeSelected: [],
+  lifeNotes: "",
+  availabilityDetails: {
+    seasonal: "",
+    specialEvents: "",
+    retreats: "",
+    missionTrips: "",
+    projects: "",
+    commitment: "",
+    responsibility: "",
+  },
+  spiritualHealth: {
+    prayer: "",
+    scripture: "",
+    worship: "",
+    relationships: "",
+    community: "",
+    rest: "",
+    motivation: "",
+    wellbeing: "",
+    connection: "",
+  },
+  preferences: {
+    setting: "",
+    role: "",
+    routine: "",
+    team: "",
+    work: "",
+    rhythm: "",
+  },
+};
 type FormProps = { form: ReturnType<typeof useForm<Values>> };
-function TextField({ form, name, label, description, multiline = false }: FormProps & {name:Path<Values>;label:string;description?:string;multiline?:boolean}) {
- return <FormField control={form.control} name={name} render={({ field }) => <FormItem><FormLabel>{label}</FormLabel>{description && <FormDescription>{description}</FormDescription>}<FormControl>{multiline ? <Textarea name={field.name} value={String(field.value ?? "")} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref} rows={3}/> : <Input name={field.name} value={String(field.value ?? "")} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref}/>}</FormControl><FormMessage/></FormItem>}/>;
+function TextField({
+  form,
+  name,
+  label,
+  description,
+  multiline = false,
+}: FormProps & {
+  name: Path<Values>;
+  label: string;
+  description?: string;
+  multiline?: boolean;
+}) {
+  const context = useContext(AssessmentConfigurationContext);
+  if (!fieldIsEnabled(name, context)) return null;
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormControl>
+            {multiline ? (
+              <Textarea
+                name={field.name}
+                value={String(field.value ?? "")}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
+                rows={3}
+              />
+            ) : (
+              <Input
+                name={field.name}
+                value={String(field.value ?? "")}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
+              />
+            )}
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }
-function SelectField({ form, name, label, options, description }: FormProps & {name:Path<Values>;label:string;options:readonly string[];description?:string}) {
- return <FormField control={form.control} name={name} render={({ field }) => <FormItem><FormLabel>{label}</FormLabel>{description && <FormDescription>{description}</FormDescription>}<Select value={field.value as string} onValueChange={field.onChange}><FormControl><SelectTrigger><SelectValue placeholder="Select an option"/></SelectTrigger></FormControl><SelectContent>{options.map(option=><SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent></Select><FormMessage/></FormItem>}/>;
+function SelectField({
+  form,
+  name,
+  label,
+  options,
+  description,
+}: FormProps & {
+  name: Path<Values>;
+  label: string;
+  options: readonly string[];
+  description?: string;
+}) {
+  const context = useContext(AssessmentConfigurationContext);
+  if (!fieldIsEnabled(name, context)) return null;
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          {description && <FormDescription>{description}</FormDescription>}
+          <Select value={field.value as string} onValueChange={field.onChange}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select an option" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {options.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }
- function MultiSelect({form,name,options,limit}:{form:FormProps["form"];name:"passions"|"interests"|"lifeSelected"|"availability";options:readonly string[];limit?:number}) {
- return <FormField control={form.control} name={name} render={({field}) => <FormItem><div className="grid sm:grid-cols-2 gap-2">{options.map(option => { const selected=field.value.includes(option); const disabled=!selected && Boolean(limit && field.value.length >= limit); return <label key={option} className={`flex gap-3 rounded-lg border p-3 text-sm ${disabled?"opacity-50":"cursor-pointer hover:bg-muted/40"}`}><Checkbox checked={selected} disabled={disabled} onCheckedChange={checked=>field.onChange(checked?[...field.value,option]:field.value.filter(value=>value!==option))}/>{option}</label>; })}</div><FormMessage/></FormItem>}/>;
+function MultiSelect({
+  form,
+  name,
+  options,
+  limit,
+}: {
+  form: FormProps["form"];
+  name: "passions" | "interests" | "lifeSelected" | "availability";
+  options: readonly string[];
+  limit?: number;
+}) {
+  const context = useContext(AssessmentConfigurationContext);
+  if (!fieldIsEnabled(name, context)) return null;
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {options.map((option) => {
+              const selected = field.value.includes(option);
+              const disabled =
+                !selected && Boolean(limit && field.value.length >= limit);
+              return (
+                <label
+                  key={option}
+                  className={`flex gap-3 rounded-lg border p-3 text-sm ${disabled ? "opacity-50" : "cursor-pointer hover:bg-muted/40"}`}
+                >
+                  <Checkbox
+                    checked={selected}
+                    disabled={disabled}
+                    onCheckedChange={(checked) =>
+                      field.onChange(
+                        checked
+                          ? [...field.value, option]
+                          : field.value.filter((value) => value !== option),
+                      )
+                    }
+                  />
+                  {option}
+                </label>
+              );
+            })}
+          </div>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }
-function Heading({children,description}:{children:React.ReactNode;description?:string}) { return <div><h3 className="font-serif text-xl font-medium">{children}</h3>{description&&<p className="text-sm text-muted-foreground mt-1">{description}</p>}</div>; }
-function PersonalityResultsView({ results }: { results: ReturnType<typeof personalityResults> }) {
-  return <div className="space-y-6 rounded-xl border bg-muted/20 p-5"><div><h4 className="font-serif text-lg font-medium">How You Tend to Operate</h4><p className="text-sm text-muted-foreground mt-1">These percentages describe tendencies, not a fixed personality type.</p></div><div className="space-y-4">{results.map(result=><div key={result.key} className="rounded-lg border bg-card p-4"><div className="flex items-center justify-between gap-4"><h5 className="font-medium">{result.label}</h5><span className="text-xs text-muted-foreground">{result.tendency}</span></div><div className="flex justify-between gap-3 text-xs text-muted-foreground mt-3"><span>{result.left} — {result.leftPercentage}%</span><span className="text-right">{result.right} — {result.rightPercentage}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-primary/15"><div className="h-full rounded-full bg-primary transition-all" style={{width:`${result.rightPercentage}%`}}/></div><p className="text-sm leading-6 mt-3">{result.explanation}</p></div>)}</div><div className="space-y-2"><h4 className="font-serif text-lg font-medium">Your Personality at a Glance</h4><p className="text-sm leading-6">{personalitySummary(results)}</p></div><div className="space-y-2"><h4 className="font-serif text-lg font-medium">What This May Mean in Ministry</h4><p className="text-sm leading-6">{personalityMinistryConnection(results)}</p><p className="text-sm text-muted-foreground leading-6">Personality helps describe how you tend to operate, not what God can or cannot call you to do. God often uses both our natural strengths and the areas where He is stretching us.</p></div></div>;
+function Heading({
+  children,
+  description,
+}: {
+  children: React.ReactNode;
+  description?: string;
+}) {
+  const context = useContext(AssessmentConfigurationContext);
+  const title = typeof children === "string" ? children : "";
+  const visible =
+    title === "About You"
+      ? context?.step === "identity" || context?.step === "aboutYou"
+      : title === "Skills & Experience"
+        ? context?.step === "aboutYou" &&
+          (context.configuration.subsections["aboutYou.skillsExperience"] ??
+            true)
+        : title === "Life Experiences"
+          ? context?.step === "aboutYou" &&
+            (context.configuration.subsections["aboutYou.lifeExperiences"] ??
+              true)
+          : title === "Who and where you are drawn toward (Passions)"
+            ? (context?.configuration.subsections[
+                "passionsInterests.passions"
+              ] ?? true)
+            : title === "Ministry Interests"
+              ? (context?.configuration.subsections[
+                  "passionsInterests.ministryInterests"
+                ] ?? true)
+              : title === "Ministry Preferences & Environment"
+                ? (context?.configuration.subsections[
+                    "personalityStrengths.ministryPreferences"
+                  ] ?? true)
+                : title === "How you are connected"
+                  ? (context?.configuration.subsections[
+                      "connectionAvailability.churchConnection"
+                    ] ?? true)
+                  : title === "Current availability and serving"
+                    ? (context?.configuration.subsections[
+                        "connectionAvailability.availability"
+                      ] ?? true)
+                    : true;
+  return visible ? (
+    <div>
+      <h3 className="font-serif text-xl font-medium">{children}</h3>
+      {description && (
+        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+      )}
+    </div>
+  ) : null;
+}
+function PersonalityResultsView({
+  results,
+}: {
+  results: ReturnType<typeof personalityResults>;
+}) {
+  return (
+    <div className="space-y-6 rounded-xl border bg-muted/20 p-5">
+      <div>
+        <h4 className="font-serif text-lg font-medium">
+          How You Tend to Operate
+        </h4>
+        <p className="text-sm text-muted-foreground mt-1">
+          These percentages describe tendencies, not a fixed personality type.
+        </p>
+      </div>
+      <div className="space-y-4">
+        {results.map((result) => (
+          <div key={result.key} className="rounded-lg border bg-card p-4">
+            <div className="flex items-center justify-between gap-4">
+              <h5 className="font-medium">{result.label}</h5>
+              <span className="text-xs text-muted-foreground">
+                {result.tendency}
+              </span>
+            </div>
+            <div className="flex justify-between gap-3 text-xs text-muted-foreground mt-3">
+              <span>
+                {result.left} — {result.leftPercentage}%
+              </span>
+              <span className="text-right">
+                {result.right} — {result.rightPercentage}%
+              </span>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-primary/15">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${result.rightPercentage}%` }}
+              />
+            </div>
+            <p className="text-sm leading-6 mt-3">{result.explanation}</p>
+          </div>
+        ))}
+      </div>
+      <div className="space-y-2">
+        <h4 className="font-serif text-lg font-medium">
+          Your Personality at a Glance
+        </h4>
+        <p className="text-sm leading-6">{personalitySummary(results)}</p>
+      </div>
+      <div className="space-y-2">
+        <h4 className="font-serif text-lg font-medium">
+          What This May Mean in Ministry
+        </h4>
+        <p className="text-sm leading-6">
+          {personalityMinistryConnection(results)}
+        </p>
+        <p className="text-sm text-muted-foreground leading-6">
+          Personality helps describe how you tend to operate, not what God can
+          or cannot call you to do. God often uses both our natural strengths
+          and the areas where He is stretching us.
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default function Assessment() {
- const [, params] = useRoute("/profile/:slug"); const slug=params?.slug ?? "";
- const {data:church,isLoading,error:churchError}=useGetPublicChurch(slug,{query:{enabled:Boolean(slug),queryKey:getGetPublicChurchQueryKey(slug)}});
- const createProfile=useCreateProfile(); const [step,setStep]=useState(0); const [submitError,setSubmitError]=useState(""); const [reflectionValidationError,setReflectionValidationError]=useState("");
- const giftGroupRefs=useRef<Record<string, HTMLDivElement|null>>({});
- const initializedGiftConfig=useRef<string | null>(null);
- const form=useForm<Values>({resolver:zodResolver(assessmentSchema),defaultValues});
- const activeSpiritualGifts=SPIRITUAL_GIFTS.filter(([gift])=>church?.enabledSpiritualGifts?.includes(gift) ?? true);
-  const activeGiftConfigKey=church?.enabledSpiritualGifts?.join("|") ?? "all";
-  const randomizedGiftQuestions=useMemo(() => shuffleQuestions(activeSpiritualGifts.flatMap(([gift,meaning,prompts]) => prompts.map((prompt,questionIndex) => ({gift,meaning,questionIndex,prompt})))), [activeGiftConfigKey]);
- const spiritualGiftQuestionCount=activeSpiritualGifts.length * 3;
- const answeredGiftQuestionCount=activeSpiritualGifts.reduce((count,[gift])=>count+((form.watch(`spiritualGifts.responses.${gift}` as Path<Values>) as {response:number}[]|undefined)?.filter(item=>item.response>0).length ?? 0),0);
- const answeredMinistryQuestionCount=Object.values(form.watch("ministryResponses")).filter(response=>response>0).length;
- const randomizedMinistryQuestions=useMemo(() => shuffleQuestions(MINISTRY_QUESTIONS.map(({key,questionIndex,prompt}) => ({gift:key,meaning:"",questionIndex,prompt}))), []);
-  const answeredStrengthQuestionCount=Object.values(form.watch("strengthResponses")).filter(response=>response>0).length;
-  const randomizedStrengthQuestions=useMemo(() => shuffleQuestions(STRENGTH_QUESTIONS.map(({key,questionIndex,prompt}) => ({gift:key,meaning:"",questionIndex,prompt}))), []);
-  const answeredPersonalityQuestionCount=Object.values(form.watch("personalityResponses")).filter(response=>response>0).length;
-  const currentPersonalityResults=personalityResults(form.watch("personalityResponses"));
-  useEffect(()=>{const configKey=activeSpiritualGifts.map(([gift])=>gift).join("|");if(church&&initializedGiftConfig.current!==configKey){initializedGiftConfig.current=configKey;form.setValue("spiritualGifts",{responses:Object.fromEntries(activeSpiritualGifts.map(([gift,,prompts])=>[gift,prompts.map(prompt=>({prompt,response:0}))]))});}},[church,form,activeSpiritualGifts]);
-  useEffect(()=>{const subscription=form.watch((values,info)=>{if(info.name) form.clearErrors(info.name as Path<Values>);if(info.name?.startsWith("spiritualGifts.responses.")&&Object.values(values.spiritualGifts?.responses ?? {}).flat().every(item=>(item?.response ?? 0)>0))setReflectionValidationError("");if(info.name?.startsWith("ministryResponses.")&&Object.values(values.ministryResponses ?? {}).every(response=>(response ?? 0)>0))setReflectionValidationError("");if(info.name?.startsWith("strengthResponses.")&&Object.values(values.strengthResponses ?? {}).every(response=>(response ?? 0)>0))setReflectionValidationError("");if(info.name?.startsWith("personalityResponses.")&&Object.values(values.personalityResponses ?? {}).every(response=>(response ?? 0)>0))setReflectionValidationError("");});return()=>subscription.unsubscribe()},[form]);
- const validateStep=() => {
-  const validators: Record<number,{schema:z.ZodType;value:unknown;prefix:string}> = {
-    1:{schema:z.object({basicInformation:assessmentSchema.shape.basicInformation,occupation:assessmentSchema.shape.occupation,skills:assessmentSchema.shape.skills,lifeSelected:assessmentSchema.shape.lifeSelected,lifeNotes:assessmentSchema.shape.lifeNotes}),value:{basicInformation:form.getValues("basicInformation"),occupation:form.getValues("occupation"),skills:form.getValues("skills"),lifeSelected:form.getValues("lifeSelected"),lifeNotes:form.getValues("lifeNotes")},prefix:""},
-    2:{schema:z.object({ministryResponses:assessmentSchema.shape.ministryResponses}),value:{ministryResponses:form.getValues("ministryResponses")},prefix:""},
-    3:{schema:z.object({spiritualGifts:assessmentSchema.shape.spiritualGifts}),value:{spiritualGifts:form.getValues("spiritualGifts")},prefix:""},
-    4:{schema:z.object({passions:assessmentSchema.shape.passions,interests:assessmentSchema.shape.interests}),value:{passions:form.getValues("passions"),interests:form.getValues("interests")},prefix:""},
-     5:{schema:z.object({strengthResponses:assessmentSchema.shape.strengthResponses}),value:{strengthResponses:form.getValues("strengthResponses")},prefix:""},
-     6:{schema:z.object({personalityResponses:assessmentSchema.shape.personalityResponses,preferences:assessmentSchema.shape.preferences}),value:{personalityResponses:form.getValues("personalityResponses"),preferences:form.getValues("preferences")},prefix:""},
-    7:{schema:z.object({spiritualHealth:assessmentSchema.shape.spiritualHealth}),value:{spiritualHealth:form.getValues("spiritualHealth")},prefix:""},
-    8:{schema:z.object({churchConnection:assessmentSchema.shape.churchConnection,churchDetails:assessmentSchema.shape.churchDetails,servingFrequency:assessmentSchema.shape.servingFrequency,availability:assessmentSchema.shape.availability,availabilityDetails:assessmentSchema.shape.availabilityDetails}),value:{churchConnection:form.getValues("churchConnection"),churchDetails:form.getValues("churchDetails"),servingFrequency:form.getValues("servingFrequency"),availability:form.getValues("availability"),availabilityDetails:form.getValues("availabilityDetails")},prefix:""},
+  const [, params] = useRoute("/profile/:slug");
+  const slug = params?.slug ?? "";
+  const {
+    data: church,
+    isLoading,
+    error: churchError,
+  } = useGetPublicChurch(slug, {
+    query: {
+      enabled: Boolean(slug),
+      queryKey: getGetPublicChurchQueryKey(slug),
+    },
+  });
+  const createProfile = useCreateProfile();
+  const [started, setStarted] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [submitError, setSubmitError] = useState("");
+  const [reflectionValidationError, setReflectionValidationError] =
+    useState("");
+  const setStep = (updater: number | ((current: number) => number)) =>
+    setStepIndex((current) => {
+      const next = typeof updater === "function" ? updater(current) : updater;
+      if (next < 0) {
+        setStarted(false);
+        return 0;
+      }
+      return next;
+    });
+  const giftGroupRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const submissionStarted = useRef(false);
+  const initializedGiftConfig = useRef<string | null>(null);
+  const form = useForm<Values>({ defaultValues });
+  const configuration = church?.assessmentConfiguration;
+  const sectionEnabled = (
+    section: keyof NonNullable<typeof configuration>["sections"],
+  ) => configuration?.sections[section] ?? true;
+  const subsectionEnabled = (
+    key: keyof NonNullable<typeof configuration>["subsections"],
+  ) => configuration?.subsections[key] ?? true;
+  const hasEnabledSubsections = (section: string) =>
+    configuration
+      ? Object.entries(configuration.subsections).some(
+          ([key, value]) => key.startsWith(`${section}.`) && value,
+        )
+      : true;
+  const activeSpiritualGifts = SPIRITUAL_GIFTS.filter(
+    ([gift]) => church?.enabledSpiritualGifts?.includes(gift) ?? true,
+  );
+  const stepKeys = [
+    "identity",
+    ...(
+      [
+        "aboutYou",
+        "apest",
+        "spiritualGifts",
+        "passionsInterests",
+        "naturalStrengths",
+        "personalityStrengths",
+        "spiritualHealth",
+        "connectionAvailability",
+      ] as const
+    ).filter(
+      (section) =>
+        sectionEnabled(section) &&
+        (section === "spiritualGifts"
+          ? activeSpiritualGifts.length > 0
+          : hasEnabledSubsections(section)),
+    ),
+  ];
+  const currentStep = stepKeys[stepIndex] ?? "identity";
+  // Kept solely while rendering the existing assessment copy below; navigation is keyed by currentStep.
+  const step = (
+    {
+      identity: 1,
+      aboutYou: 1,
+      apest: 2,
+      spiritualGifts: 3,
+      passionsInterests: 4,
+      naturalStrengths: 5,
+      personalityStrengths: 6,
+      spiritualHealth: 7,
+      connectionAvailability: 8,
+    } as const
+  )[currentStep];
+  const activeMinistryQuestions = MINISTRY_QUESTIONS.filter((question) =>
+    subsectionEnabled(
+      `apest.${question.key}` as keyof NonNullable<
+        typeof configuration
+      >["subsections"],
+    ),
+  );
+  const activeStrengthQuestions = STRENGTH_QUESTIONS.filter((question) =>
+    subsectionEnabled(
+      `naturalStrengths.${question.key}` as keyof NonNullable<
+        typeof configuration
+      >["subsections"],
+    ),
+  );
+  const activePersonalityDimensions = PERSONALITY_DIMENSIONS.filter(
+    (dimension) =>
+      subsectionEnabled(
+        `personalityStrengths.${dimension.key}` as keyof NonNullable<
+          typeof configuration
+        >["subsections"],
+      ),
+  );
+  const activePersonalityQuestions = PERSONALITY_QUESTIONS_FLAT.filter(
+    (question) =>
+      activePersonalityDimensions.some(
+        (dimension) => dimension.key === question.key,
+      ),
+  );
+  const activeGiftConfigKey = church?.enabledSpiritualGifts?.join("|") ?? "all";
+  const randomizedGiftQuestions = useMemo(
+    () =>
+      shuffleQuestions(
+        activeSpiritualGifts.flatMap(([gift, meaning, prompts]) =>
+          prompts.map((prompt, questionIndex) => ({
+            gift,
+            meaning,
+            questionIndex,
+            prompt,
+          })),
+        ),
+      ),
+    [activeGiftConfigKey],
+  );
+  const spiritualGiftQuestionCount = activeSpiritualGifts.length * 3;
+  const answeredGiftQuestionCount = activeSpiritualGifts.reduce(
+    (count, [gift]) =>
+      count +
+      ((
+        form.watch(`spiritualGifts.responses.${gift}` as Path<Values>) as
+          { response: number }[] | undefined
+      )?.filter((item) => item.response > 0).length ?? 0),
+    0,
+  );
+  const answeredMinistryQuestionCount = activeMinistryQuestions.filter(
+    ({ key, questionIndex }) =>
+      (form.watch("ministryResponses")[`${key}-${questionIndex}`] ?? 0) > 0,
+  ).length;
+  const randomizedMinistryQuestions = useMemo(
+    () =>
+      shuffleQuestions(
+        activeMinistryQuestions.map(({ key, questionIndex, prompt }) => ({
+          gift: key,
+          meaning: "",
+          questionIndex,
+          prompt,
+        })),
+      ),
+    [configuration],
+  );
+  const answeredStrengthQuestionCount = activeStrengthQuestions.filter(
+    ({ key, questionIndex }) =>
+      (form.watch("strengthResponses")[`${key}-${questionIndex}`] ?? 0) > 0,
+  ).length;
+  const randomizedStrengthQuestions = useMemo(
+    () =>
+      shuffleQuestions(
+        activeStrengthQuestions.map(({ key, questionIndex, prompt }) => ({
+          gift: key,
+          meaning: "",
+          questionIndex,
+          prompt,
+        })),
+      ),
+    [configuration],
+  );
+  const answeredPersonalityQuestionCount = activePersonalityQuestions.filter(
+    ({ key, questionIndex }) =>
+      (form.watch("personalityResponses")[`${key}-${questionIndex}`] ?? 0) > 0,
+  ).length;
+  const currentPersonalityResults = personalityResults(
+    Object.fromEntries(
+      activePersonalityQuestions.map(({ key, questionIndex }) => [
+        `${key}-${questionIndex}`,
+        form.watch("personalityResponses")[`${key}-${questionIndex}`],
+      ]),
+    ),
+    activePersonalityDimensions,
+  );
+  useEffect(() => {
+    const configKey = activeSpiritualGifts.map(([gift]) => gift).join("|");
+    if (church && initializedGiftConfig.current !== configKey) {
+      initializedGiftConfig.current = configKey;
+      form.setValue("spiritualGifts", {
+        responses: Object.fromEntries(
+          activeSpiritualGifts.map(([gift, , prompts]) => [
+            gift,
+            prompts.map((prompt) => ({ prompt, response: 0 })),
+          ]),
+        ),
+      });
+    }
+  }, [church, form, activeSpiritualGifts]);
+  useEffect(() => {
+    if (!configuration) return;
+    const hidden: string[] = [];
+    const add = (enabled: boolean, ...names: string[]) => {
+      if (!enabled) hidden.push(...names);
+    };
+    const enabled = (key: keyof typeof configuration.subsections) =>
+      configuration.subsections[key];
+    add(
+      enabled("aboutYou.personalInformation"),
+      "basicInformation.ageRange",
+      "basicInformation.preferredContact",
+      "basicInformation.familySituation",
+      "basicInformation.transportation",
+      "languageText",
+      "languageProficiency",
+    );
+    add(
+      enabled("aboutYou.skillsExperience"),
+      "occupation",
+      "skills.education",
+      "skills.certifications",
+      "skills.skills",
+      "skills.experience",
+      "skills.uniqueSkills",
+    );
+    add(enabled("aboutYou.lifeExperiences"), "lifeSelected", "lifeNotes");
+    add(enabled("passionsInterests.passions"), "passions");
+    add(enabled("passionsInterests.ministryInterests"), "interests");
+    add(
+      enabled("personalityStrengths.ministryPreferences"),
+      "preferences.setting",
+      "preferences.role",
+      "preferences.routine",
+      "preferences.team",
+      "preferences.work",
+      "preferences.rhythm",
+    );
+    add(
+      enabled("connectionAvailability.churchConnection"),
+      "churchConnection.attendanceLength",
+      "churchConnection.connectionLevel",
+      "churchConnection.followingJesusLength",
+      "churchConnection.servedBefore",
+      "churchConnection.previousService",
+      "churchDetails.membership",
+      "churchDetails.service",
+      "churchDetails.previousInvolvement",
+    );
+    add(
+      enabled("connectionAvailability.availability"),
+      "servingFrequency",
+      "availability",
+      "availabilityDetails.seasonal",
+      "availabilityDetails.specialEvents",
+      "availabilityDetails.retreats",
+      "availabilityDetails.missionTrips",
+      "availabilityDetails.projects",
+      "availabilityDetails.commitment",
+      "availabilityDetails.responsibility",
+    );
+    (
+      [
+        "prayer",
+        "scripture",
+        "worship",
+        "relationships",
+        "community",
+        "rest",
+        "motivation",
+        "wellbeing",
+        "connection",
+      ] as const
+    ).forEach((key) =>
+      add(enabled(`spiritualHealth.${key}`), `spiritualHealth.${key}`),
+    );
+    MINISTRY_QUESTIONS.filter(
+      (question) =>
+        !enabled(
+          `apest.${question.key}` as keyof typeof configuration.subsections,
+        ),
+    ).forEach((question) =>
+      hidden.push(
+        `ministryResponses.${question.key}-${question.questionIndex}`,
+      ),
+    );
+    STRENGTH_QUESTIONS.filter(
+      (question) =>
+        !enabled(
+          `naturalStrengths.${question.key}` as keyof typeof configuration.subsections,
+        ),
+    ).forEach((question) =>
+      hidden.push(
+        `strengthResponses.${question.key}-${question.questionIndex}`,
+      ),
+    );
+    PERSONALITY_QUESTIONS_FLAT.filter(
+      (question) =>
+        !enabled(
+          `personalityStrengths.${question.key}` as keyof typeof configuration.subsections,
+        ),
+    ).forEach((question) =>
+      hidden.push(
+        `personalityResponses.${question.key}-${question.questionIndex}`,
+      ),
+    );
+    form.unregister(hidden as Path<Values>[]);
+  }, [configuration, form]);
+  useEffect(() => {
+    const subscription = form.watch((values, info) => {
+      if (info.name) form.clearErrors(info.name as Path<Values>);
+      if (
+        info.name?.startsWith("spiritualGifts.responses.") &&
+        Object.values(values.spiritualGifts?.responses ?? {})
+          .flat()
+          .every((item) => (item?.response ?? 0) > 0)
+      )
+        setReflectionValidationError("");
+      if (
+        info.name?.startsWith("ministryResponses.") &&
+        Object.values(values.ministryResponses ?? {}).every(
+          (response) => (response ?? 0) > 0,
+        )
+      )
+        setReflectionValidationError("");
+      if (
+        info.name?.startsWith("strengthResponses.") &&
+        Object.values(values.strengthResponses ?? {}).every(
+          (response) => (response ?? 0) > 0,
+        )
+      )
+        setReflectionValidationError("");
+      if (
+        info.name?.startsWith("personalityResponses.") &&
+        Object.values(values.personalityResponses ?? {}).every(
+          (response) => (response ?? 0) > 0,
+        )
+      )
+        setReflectionValidationError("");
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+  const validateStep = () => {
+    if (currentStep === "identity") {
+      const identity = form.getValues("basicInformation");
+      const errors: [keyof typeof identity, string][] = [];
+      if (!identity.firstName)
+        errors.push(["firstName", "First name is required"]);
+      if (!identity.lastName)
+        errors.push(["lastName", "Last name is required"]);
+      if (!z.string().email().safeParse(identity.email).success)
+        errors.push(["email", "Enter a valid email"]);
+      if (errors.length) {
+        errors.forEach(([name, message]) =>
+          form.setError(`basicInformation.${name}` as Path<Values>, {
+            type: "manual",
+            message,
+          }),
+        );
+        return false;
+      }
+      return true;
+    }
+    const unanswered =
+      currentStep === "apest"
+        ? randomizedMinistryQuestions.some(
+            ({ gift, questionIndex }) =>
+              !(form.getValues(
+                `ministryResponses.${gift}-${questionIndex}` as Path<Values>,
+              ) as number),
+          )
+        : currentStep === "spiritualGifts"
+          ? randomizedGiftQuestions.some(
+              ({ gift, questionIndex }) =>
+                !(form.getValues(
+                  `spiritualGifts.responses.${gift}.${questionIndex}.response` as Path<Values>,
+                ) as number),
+            )
+          : currentStep === "naturalStrengths"
+            ? randomizedStrengthQuestions.some(
+                ({ gift, questionIndex }) =>
+                  !(form.getValues(
+                    `strengthResponses.${gift}-${questionIndex}` as Path<Values>,
+                  ) as number),
+              )
+            : currentStep === "personalityStrengths"
+              ? activePersonalityQuestions.some(
+                  ({ key, questionIndex }) =>
+                    !(form.getValues(
+                      `personalityResponses.${key}-${questionIndex}` as Path<Values>,
+                    ) as number),
+                )
+              : false;
+    if (unanswered) {
+      setReflectionValidationError(
+        "Please answer every reflection before continuing.",
+      );
+    }
+    const required: Path<Values>[] = [];
+    if (
+      currentStep === "aboutYou" &&
+      subsectionEnabled("aboutYou.personalInformation")
+    ) {
+      [
+        "basicInformation.ageRange",
+        "basicInformation.preferredContact",
+        "basicInformation.familySituation",
+        "basicInformation.transportation",
+      ].forEach((name) => {
+        if (!form.getValues(name as Path<Values>))
+          required.push(name as Path<Values>);
+      });
+    }
+    if (currentStep === "passionsInterests") {
+      if (
+        subsectionEnabled("passionsInterests.passions") &&
+        !form.getValues("passions").length
+      )
+        required.push("passions");
+      if (
+        subsectionEnabled("passionsInterests.ministryInterests") &&
+        !form.getValues("interests").length
+      )
+        required.push("interests");
+    }
+    if (currentStep === "connectionAvailability") {
+      if (subsectionEnabled("connectionAvailability.churchConnection"))
+        [
+          "churchConnection.attendanceLength",
+          "churchConnection.followingJesusLength",
+        ].forEach((name) => {
+          if (!form.getValues(name as Path<Values>))
+            required.push(name as Path<Values>);
+        });
+      if (subsectionEnabled("connectionAvailability.availability")) {
+        if (!form.getValues("servingFrequency"))
+          required.push("servingFrequency");
+        if (!form.getValues("availability").length)
+          required.push("availability");
+        if (!form.getValues("availabilityDetails.responsibility"))
+          required.push("availabilityDetails.responsibility");
+      }
+    }
+    if (required.length) {
+      required.forEach((name) =>
+        form.setError(name, {
+          type: "manual",
+          message:
+            name === "passions"
+              ? "Select at least one passion"
+              : name === "interests"
+                ? "Select at least one ministry interest"
+                : "This field is required",
+        }),
+      );
+      return false;
+    }
+    if (!unanswered) return true;
+    if (currentStep === "apest") {
+      const firstUnansweredIndex = randomizedMinistryQuestions.findIndex(
+        ({ gift, questionIndex }) =>
+          !form.getValues(
+            `ministryResponses.${gift}-${questionIndex}` as Path<Values>,
+          ),
+      );
+      if (firstUnansweredIndex >= 0) {
+        setReflectionValidationError(
+          `Please answer all ${activeMinistryQuestions.length} ministry reflections before continuing. The first unanswered reflection is question ${firstUnansweredIndex + 1}.`,
+        );
+        requestAnimationFrame(() =>
+          giftGroupRefs.current[
+            `ministry-${randomizedMinistryQuestions[firstUnansweredIndex].gift}-${randomizedMinistryQuestions[firstUnansweredIndex].questionIndex}`
+          ]?.focus(),
+        );
+      }
+    }
+    if (currentStep === "spiritualGifts") {
+      const firstUnanswered = randomizedGiftQuestions.find(
+        ({ gift, questionIndex }) =>
+          !form.getValues(
+            `spiritualGifts.responses.${gift}.${questionIndex}.response` as Path<Values>,
+          ),
+      );
+      if (firstUnanswered) {
+        setReflectionValidationError(
+          `Please answer all ${spiritualGiftQuestionCount} spiritual gifts reflections before continuing. The first unanswered reflection is question ${randomizedGiftQuestions.findIndex((question) => question.gift === firstUnanswered.gift && question.questionIndex === firstUnanswered.questionIndex) + 1}.`,
+        );
+        requestAnimationFrame(() =>
+          giftGroupRefs.current[
+            `${firstUnanswered.gift}-${firstUnanswered.questionIndex}`
+          ]?.focus(),
+        );
+      }
+    }
+    if (currentStep === "naturalStrengths") {
+      const firstUnansweredIndex = randomizedStrengthQuestions.findIndex(
+        ({ gift, questionIndex }) =>
+          !form.getValues(
+            `strengthResponses.${gift}-${questionIndex}` as Path<Values>,
+          ),
+      );
+      if (firstUnansweredIndex >= 0) {
+        setReflectionValidationError(
+          `Please answer all ${activeStrengthQuestions.length} strengths reflections before continuing. The first unanswered reflection is question ${firstUnansweredIndex + 1}.`,
+        );
+        requestAnimationFrame(() =>
+          giftGroupRefs.current[
+            `strength-${randomizedStrengthQuestions[firstUnansweredIndex].gift}-${randomizedStrengthQuestions[firstUnansweredIndex].questionIndex}`
+          ]?.focus(),
+        );
+      }
+    }
+    if (currentStep === "personalityStrengths") {
+      const firstUnansweredIndex = activePersonalityQuestions.findIndex(
+        ({ key, questionIndex }) =>
+          !form.getValues(
+            `personalityResponses.${key}-${questionIndex}` as Path<Values>,
+          ),
+      );
+      if (firstUnansweredIndex >= 0) {
+        setReflectionValidationError(
+          `Please answer all ${activePersonalityQuestions.length} personality reflections before continuing. The first unanswered reflection is question ${firstUnansweredIndex + 1}.`,
+        );
+        requestAnimationFrame(() =>
+          giftGroupRefs.current[
+            `personality-${activePersonalityQuestions[firstUnansweredIndex].key}-${activePersonalityQuestions[firstUnansweredIndex].questionIndex}`
+          ]?.focus(),
+        );
+      }
+    }
+    return false;
   };
-  const current=validators[step]; if(!current)return true; const result=current.schema.safeParse(current.value); if(result.success)return true;
-   if(step===2) { const firstUnansweredIndex=randomizedMinistryQuestions.findIndex(({gift,questionIndex})=>!form.getValues(`ministryResponses.${gift}-${questionIndex}` as Path<Values>)); if(firstUnansweredIndex >= 0) { setReflectionValidationError(`Please answer all ${MINISTRY_QUESTIONS.length} ministry reflections before continuing. The first unanswered reflection is question ${firstUnansweredIndex + 1}.`); requestAnimationFrame(()=>giftGroupRefs.current[`ministry-${randomizedMinistryQuestions[firstUnansweredIndex].gift}-${randomizedMinistryQuestions[firstUnansweredIndex].questionIndex}`]?.focus()); } }
-   if(step===3) { const firstUnanswered=randomizedGiftQuestions.find(({gift,questionIndex})=>!form.getValues(`spiritualGifts.responses.${gift}.${questionIndex}.response` as Path<Values>)); if(firstUnanswered) { setReflectionValidationError(`Please answer all ${spiritualGiftQuestionCount} spiritual gifts reflections before continuing. The first unanswered reflection is question ${randomizedGiftQuestions.findIndex(question=>question.gift===firstUnanswered.gift&&question.questionIndex===firstUnanswered.questionIndex) + 1}.`); requestAnimationFrame(()=>giftGroupRefs.current[`${firstUnanswered.gift}-${firstUnanswered.questionIndex}`]?.focus()); } }
-   if(step===5) { const firstUnansweredIndex=randomizedStrengthQuestions.findIndex(({gift,questionIndex})=>!form.getValues(`strengthResponses.${gift}-${questionIndex}` as Path<Values>)); if(firstUnansweredIndex >= 0) { setReflectionValidationError(`Please answer all ${STRENGTH_QUESTIONS.length} strengths reflections before continuing. The first unanswered reflection is question ${firstUnansweredIndex + 1}.`); requestAnimationFrame(()=>giftGroupRefs.current[`strength-${randomizedStrengthQuestions[firstUnansweredIndex].gift}-${randomizedStrengthQuestions[firstUnansweredIndex].questionIndex}`]?.focus()); } }
-   if(step===6) { const firstUnansweredIndex=PERSONALITY_QUESTIONS_FLAT.findIndex(({key,questionIndex})=>!form.getValues(`personalityResponses.${key}-${questionIndex}` as Path<Values>)); if(firstUnansweredIndex >= 0) { setReflectionValidationError(`Please answer all ${PERSONALITY_QUESTIONS_FLAT.length} personality reflections before continuing. The first unanswered reflection is question ${firstUnansweredIndex + 1}.`); requestAnimationFrame(()=>giftGroupRefs.current[`personality-${PERSONALITY_QUESTIONS_FLAT[firstUnansweredIndex].key}-${PERSONALITY_QUESTIONS_FLAT[firstUnansweredIndex].questionIndex}`]?.focus()); } }
-  result.error.issues.forEach(issue=>form.setError([current.prefix,...issue.path].filter(Boolean).join(".") as Path<Values>,{type:"manual",message:issue.message})); return false;
- };
- const next=()=>{if(!validateStep())return;setStep(value=>value+1);window.scrollTo({top:0,behavior:"smooth"})};
-   const submit=(data:Values)=>{setSubmitError("");const activeGiftNames: Set<string>=new Set(activeSpiritualGifts.map(([gift])=>gift));const spiritualGifts={responses:Object.fromEntries(Object.entries(data.spiritualGifts.responses).filter(([gift])=>activeGiftNames.has(gift)))};const ministryResults=MINISTRY_APPROACHES.map(({label,key,prompts})=>({label,score:prompts.reduce((total,_prompt,questionIndex)=>total+(data.ministryResponses[`${key}-${questionIndex}`] ?? 0),0)})).sort((a,b)=>b.score-a.score);const ministryAssessment={primary:ministryResults[0]?.label||null,secondary:ministryResults[1]?.label||null,responses:data.ministryResponses};const strengthResults=STRENGTH_APPROACHES.map(({label,key,prompts})=>({label,score:prompts.reduce((total,_prompt,questionIndex)=>total+(data.strengthResponses[`${key}-${questionIndex}`] ?? 0),0)})).sort((a,b)=>b.score-a.score);const strengthsAssessment={selected:strengthResults.slice(0,5).map(({label})=>label),notes:data.strengthNotes||null,responses:data.strengthResponses};const personalityAssessment={dimensions:personalityResults(data.personalityResponses),summary:personalitySummary(personalityResults(data.personalityResponses)),ministryConnection:personalityMinistryConnection(personalityResults(data.personalityResponses)),responses:data.personalityResponses};createProfile.mutate({data:{churchSlug:slug,basicInformation:{...data.basicInformation,phone:data.basicInformation.phone||null},churchConnection:{...data.churchConnection,previousService:data.churchConnection.previousService||null},passions:data.passions,interests:data.interests,servingFrequency:data.servingFrequency,availability:data.availability,skills:{occupation:data.occupation||null,uniqueSkills:data.skills.uniqueSkills||null,previousMinistryExperience:data.skills.experience||null,leadershipExperience:null,missionTripExperience:null,lifeExperience:data.lifeNotes||null},languages:data.languageText?{spoken:data.languageText,proficiency:data.languageProficiency||null}:null,churchDetails:data.churchDetails,skillsDetails:data.skills,lifeExperiences:{selected:data.lifeSelected,notes:data.lifeNotes},availabilityDetails:data.availabilityDetails,ministryPreferences:data.preferences,assessmentSections:{spiritualGifts,apest:ministryAssessment,personalityStrengths:personalityAssessment,naturalStrengths:strengthsAssessment,spiritualHealth:data.spiritualHealth}}},{onSuccess:()=>{setStep(9);window.scrollTo({top:0,behavior:"smooth"})},onError:()=>setSubmitError("We couldn’t submit your profile right now. Please check your connection and try again.")})};
- if(isLoading)return <div className="min-h-screen grid place-items-center"><Loader2 className="animate-spin text-primary"/></div>;
- if(churchError||!church)return <div className="min-h-screen grid place-items-center p-4"><Card><CardContent className="p-8">Church not found. <Link href="/">Return home</Link></CardContent></Card></div>;
+  const next = () => {
+    if (!validateStep()) return;
+    setStepIndex((value) => Math.min(value + 1, stepKeys.length - 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const submit = (data: Values) => {
+    if (submissionStarted.current) return;
+    submissionStarted.current = true;
+    setSubmitError("");
+    const activeMinistryKeys = new Set(
+      activeMinistryQuestions.map(
+        ({ key, questionIndex }) => `${key}-${questionIndex}`,
+      ),
+    );
+    const activeStrengthKeys = new Set(
+      activeStrengthQuestions.map(
+        ({ key, questionIndex }) => `${key}-${questionIndex}`,
+      ),
+    );
+    const activePersonalityKeys = new Set(
+      activePersonalityQuestions.map(
+        ({ key, questionIndex }) => `${key}-${questionIndex}`,
+      ),
+    );
+    const ministryResponses = Object.fromEntries(
+      Object.entries(data.ministryResponses).filter(([key]) =>
+        activeMinistryKeys.has(key),
+      ),
+    );
+    const strengthResponses = Object.fromEntries(
+      Object.entries(data.strengthResponses).filter(([key]) =>
+        activeStrengthKeys.has(key),
+      ),
+    );
+    const personalityResponses = Object.fromEntries(
+      Object.entries(data.personalityResponses).filter(([key]) =>
+        activePersonalityKeys.has(key),
+      ),
+    );
+    const enabledMinistry = MINISTRY_APPROACHES.filter(({ key }) =>
+      subsectionEnabled(
+        `apest.${key}` as keyof NonNullable<
+          typeof configuration
+        >["subsections"],
+      ),
+    );
+    const ministryResults = enabledMinistry
+      .map(({ label, key, prompts }) => ({
+        label,
+        score: prompts.reduce(
+          (total, _prompt, questionIndex) =>
+            total + (ministryResponses[`${key}-${questionIndex}`] ?? 0),
+          0,
+        ),
+      }))
+      .sort((a, b) => b.score - a.score);
+    const enabledStrengths = STRENGTH_APPROACHES.filter(({ key }) =>
+      subsectionEnabled(
+        `naturalStrengths.${key}` as keyof NonNullable<
+          typeof configuration
+        >["subsections"],
+      ),
+    );
+    const strengthResults = enabledStrengths
+      .map(({ label, key, prompts }) => ({
+        label,
+        score: prompts.reduce(
+          (total, _prompt, questionIndex) =>
+            total + (strengthResponses[`${key}-${questionIndex}`] ?? 0),
+          0,
+        ),
+      }))
+      .sort((a, b) => b.score - a.score);
+    const results = personalityResults(
+      personalityResponses,
+      activePersonalityDimensions,
+    );
+    const payload: ProfileInput = {
+      churchSlug: slug,
+      basicInformation: {
+        firstName: data.basicInformation.firstName,
+        lastName: data.basicInformation.lastName,
+        email: data.basicInformation.email,
+        phone: data.basicInformation.phone || null,
+        ...(subsectionEnabled("aboutYou.personalInformation")
+          ? {
+              ageRange: data.basicInformation.ageRange || null,
+              preferredContact: data.basicInformation.preferredContact || null,
+              familySituation: data.basicInformation.familySituation || null,
+              transportation: data.basicInformation.transportation || null,
+            }
+          : {}),
+      },
+      ...(subsectionEnabled("connectionAvailability.churchConnection")
+        ? {
+            churchConnection: {
+              ...data.churchConnection,
+              previousService: data.churchConnection.previousService || null,
+            },
+          }
+        : {}),
+      ...(subsectionEnabled("passionsInterests.passions")
+        ? { passions: data.passions }
+        : {}),
+      ...(subsectionEnabled("passionsInterests.ministryInterests")
+        ? { interests: data.interests }
+        : {}),
+      ...(subsectionEnabled("connectionAvailability.availability")
+        ? {
+            servingFrequency: data.servingFrequency,
+            availability: data.availability,
+            availabilityDetails: data.availabilityDetails,
+          }
+        : {}),
+      ...(subsectionEnabled("aboutYou.skillsExperience")
+        ? {
+            skills: {
+              occupation: data.occupation || null,
+              uniqueSkills: data.skills.uniqueSkills || null,
+              previousMinistryExperience: data.skills.experience || null,
+              leadershipExperience: null,
+              missionTripExperience: null,
+              lifeExperience: null,
+            },
+            skillsDetails: data.skills,
+          }
+        : {}),
+      ...(subsectionEnabled("aboutYou.personalInformation") && data.languageText
+        ? {
+            languages: {
+              spoken: data.languageText,
+              proficiency: data.languageProficiency || null,
+            },
+          }
+        : {}),
+      ...(subsectionEnabled("connectionAvailability.churchConnection")
+        ? { churchDetails: data.churchDetails }
+        : {}),
+      ...(subsectionEnabled("aboutYou.lifeExperiences")
+        ? {
+            lifeExperiences: {
+              selected: data.lifeSelected,
+              notes: data.lifeNotes,
+            },
+          }
+        : {}),
+      ...(subsectionEnabled("personalityStrengths.ministryPreferences")
+        ? { ministryPreferences: data.preferences }
+        : {}),
+      assessmentSections: {
+        ...(sectionEnabled("spiritualGifts") && activeSpiritualGifts.length
+          ? {
+              spiritualGifts: {
+                responses: Object.fromEntries(
+                  activeSpiritualGifts.map(([gift]) => [
+                    gift,
+                    data.spiritualGifts.responses[gift],
+                  ]),
+                ),
+              },
+            }
+          : {}),
+        ...(sectionEnabled("apest") && activeMinistryQuestions.length
+          ? {
+              apest: {
+                primary: ministryResults[0]?.label || null,
+                secondary: ministryResults[1]?.label || null,
+                responses: ministryResponses,
+              },
+            }
+          : {}),
+        ...(sectionEnabled("naturalStrengths") && activeStrengthQuestions.length
+          ? {
+              naturalStrengths: {
+                selected: strengthResults.slice(0, 5).map(({ label }) => label),
+                notes: data.strengthNotes || null,
+                responses: strengthResponses,
+              },
+            }
+          : {}),
+        ...(sectionEnabled("personalityStrengths") &&
+        activePersonalityQuestions.length
+          ? {
+              personalityStrengths: {
+                dimensions: results,
+                summary: personalitySummary(results),
+                ministryConnection: personalityMinistryConnection(results),
+                responses: personalityResponses,
+              },
+            }
+          : {}),
+        ...(sectionEnabled("spiritualHealth") &&
+        hasEnabledSubsections("spiritualHealth")
+          ? {
+              spiritualHealth: Object.fromEntries(
+                Object.entries(data.spiritualHealth).filter(([key]) =>
+                  subsectionEnabled(
+                    `spiritualHealth.${key}` as keyof NonNullable<
+                      typeof configuration
+                    >["subsections"],
+                  ),
+                ),
+              ),
+            }
+          : {}),
+      },
+    };
+    createProfile.mutate(
+      { data: payload },
+      {
+        onSuccess: () => {
+          setStepIndex(stepKeys.length);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        },
+        onError: () => {
+          submissionStarted.current = false;
+          setSubmitError(
+            "We couldn’t submit your profile right now. Please check your connection and try again.",
+          );
+        },
+      },
+    );
+  };
+  if (isLoading)
+    return (
+      <div className="min-h-screen grid place-items-center">
+        <Loader2 className="animate-spin text-primary" />
+      </div>
+    );
+  if (churchError || !church)
+    return (
+      <div className="min-h-screen grid place-items-center p-4">
+        <Card>
+          <CardContent className="p-8">
+            Church not found. <Link href="/">Return home</Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
   const brandStyle = {
     "--primary": hexToHsl(church.primaryColor),
     "--primary-foreground": colorForeground(church.primaryColor),
@@ -266,17 +2211,1099 @@ export default function Assessment() {
     "--accent-foreground": colorForeground(church.accentColor),
   } as React.CSSProperties;
   const churchLogo = brandLogoSource(church.logoUrl);
-  if(step===0)return <div style={brandStyle} className="min-h-screen grid place-items-center bg-muted/20 p-4"><Card className="max-w-xl text-center"><CardContent className="p-10 space-y-6">{churchLogo?<img src={churchLogo} alt={`${church.name} logo`} className="mx-auto max-h-24 max-w-[240px] object-contain"/>:<HeartHandshake className="w-12 h-12 mx-auto text-primary"/>}<div><p className="mb-2 text-sm font-medium text-primary">{church.name}</p><h1 className="font-serif text-4xl">Your Ministry Profile</h1></div><p className="text-muted-foreground">This is a conversation starter, not a test, diagnosis, or automatic placement tool. Share only what feels comfortable.</p><Button onClick={()=>setStep(1)}>Begin <ArrowRight className="w-4 h-4 ml-2"/></Button></CardContent></Card></div>;
-   if(step===9)return <div style={brandStyle} className="min-h-screen grid place-items-center p-4"><Card className="max-w-md text-center"><CardContent className="p-10 space-y-5">{churchLogo&&<img src={churchLogo} alt={`${church.name} logo`} className="mx-auto max-h-20 max-w-[220px] object-contain"/>}<CheckCircle2 className="w-14 h-14 mx-auto text-primary"/><h1 className="font-serif text-3xl">Thank you</h1><p className="text-muted-foreground">Your profile has been shared with {church.name}. A leader can follow up thoughtfully about next steps.</p><Button asChild><a href={church.profileUrl || "/"}>Return to church profile</a></Button></CardContent></Card></div>;
-   return <div style={brandStyle} className="min-h-screen bg-muted/20"><header className="sticky top-0 z-10 bg-background border-b"><div className="max-w-3xl mx-auto p-4 flex items-center justify-between gap-4"><div className="flex min-w-0 items-center gap-3">{churchLogo&&<img src={churchLogo} alt="" className="h-9 w-9 shrink-0 object-contain"/>}<strong className="truncate">{church.name}</strong></div><span className="shrink-0 text-sm text-muted-foreground">Step {step} of 8</span></div><Progress value={step/8*100}/></header><main className="max-w-3xl mx-auto p-4 md:p-10"><Form {...form}><form onSubmit={event=>event.preventDefault()}><Card><CardContent className="p-6 md:p-10 space-y-8">
-  {step===1&&<><Heading description="Share the parts of your story that help your church know you.">About You</Heading><div className="grid md:grid-cols-2 gap-5"><TextField form={form} name="basicInformation.firstName" label="First name"/><TextField form={form} name="basicInformation.lastName" label="Last name"/><TextField form={form} name="basicInformation.email" label="Email"/><TextField form={form} name="basicInformation.phone" label="Phone (optional)"/><SelectField form={form} name="basicInformation.ageRange" label="Age range" options={["Under 18","18–25","26–35","36–45","46–55","56–65","66+"]}/><SelectField form={form} name="basicInformation.preferredContact" label="Preferred contact method" options={["Email","Phone","Text"]}/><SelectField form={form} name="basicInformation.familySituation" label="Family situation" options={["Single","Married","Parent/caregiver","Empty nester","Other"]}/><SelectField form={form} name="basicInformation.transportation" label="Transportation" options={["Reliable transportation","Sometimes need transportation","Would like to discuss"]}/><TextField form={form} name="languageText" label="Languages spoken (optional)"/><SelectField form={form} name="languageProficiency" label="Language proficiency (optional)" options={["Basic conversation","Conversational","Fluent","Native/bilingual"]}/></div><Heading description="Optional details about your work, education, and experience.">Skills & Experience</Heading><div className="space-y-5"><TextField form={form} name="occupation" label="Profession or field of study"/><TextField form={form} name="skills.education" label="Education"/><TextField form={form} name="skills.certifications" label="Certifications"/><TextField form={form} name="skills.skills" label="Technical, creative, language, music, teaching, leadership, financial, trades, healthcare, counseling, technology, cooking, driving, or organization skills" multiline/><TextField form={form} name="skills.experience" label="Relevant experience" multiline/><TextField form={form} name="skills.uniqueSkills" label="What are you good at that the church may not know about?" multiline/></div><Heading description="Optional. Please do not share anything you do not want church leaders to know.">Life Experiences</Heading><MultiSelect form={form} name="lifeSelected" options={OPTIONS.life}/><TextField form={form} name="lifeNotes" label="Optional notes" multiline/></>}
-   {step===2&&<><Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">How you minister</Heading><p className="text-sm text-muted-foreground" aria-live="polite">{answeredMinistryQuestionCount} of {MINISTRY_QUESTIONS.length} reflections answered</p>{reflectionValidationError&&<p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{reflectionValidationError}</p>}<div className="space-y-4">{randomizedMinistryQuestions.map(({gift,questionIndex,prompt},displayIndex)=>{const responseKey=`${gift}-${questionIndex}`;const questionId=`ministry-reflection-${displayIndex}`;return <section key={responseKey} className="rounded-xl border bg-card p-4"><FormField control={form.control} name={`ministryResponses.${responseKey}` as Path<Values>} render={({field})=>{const unanswered=Boolean(reflectionValidationError&&!field.value);const errorId=`ministry-reflection-error-${displayIndex}`;return <FormItem><p id={questionId} className="text-sm leading-6">{prompt}</p><div ref={element=>{giftGroupRefs.current[`ministry-${responseKey}`]=element}} tabIndex={-1} role="radiogroup" aria-labelledby={questionId} aria-invalid={unanswered} aria-describedby={unanswered?errorId:undefined} className="mt-3 flex flex-wrap gap-2 outline-none">{RESPONSE_OPTIONS.map((option,optionIndex)=><Button key={option} type="button" role="radio" aria-checked={field.value===optionIndex+1} variant={field.value===optionIndex+1?"default":"outline"} className="text-xs" onClick={()=>field.onChange(optionIndex+1)}>{option}</Button>)}</div>{unanswered&&<p id={errorId} className="mt-2 text-sm text-destructive">Please choose a response for this reflection.</p>}</FormItem>}}/></section>})}</div></>}
-   {step===3&&<><Heading description="Read each statement and choose how well it fits your lived experience. This is a conversation starter, not a test of spiritual maturity or a placement decision. Choose “Not at all” when a statement does not fit.">How God has gifted you (Spiritual Gifts)</Heading><p className="text-sm text-muted-foreground" aria-live="polite">{answeredGiftQuestionCount} of {spiritualGiftQuestionCount} reflections answered</p>{reflectionValidationError&&<p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{reflectionValidationError}</p>}<div className="space-y-4">{randomizedGiftQuestions.map(({gift,questionIndex,prompt},displayIndex)=>{const questionId=`gift-reflection-${displayIndex}`; return <section key={`${gift}-${questionIndex}`} className="rounded-xl border bg-card p-4"><FormField control={form.control} name={`spiritualGifts.responses.${gift}.${questionIndex}.response` as Path<Values>} render={({field})=>{const unanswered=Boolean(reflectionValidationError&&!field.value); const errorId=`gift-reflection-error-${displayIndex}`; return <FormItem><p id={questionId} className="text-sm leading-6">{prompt}</p><div ref={element=>{giftGroupRefs.current[`${gift}-${questionIndex}`]=element}} tabIndex={-1} role="radiogroup" aria-labelledby={questionId} aria-invalid={unanswered} aria-describedby={unanswered?errorId:undefined} className="mt-3 flex flex-wrap gap-2 outline-none">{RESPONSE_OPTIONS.map((option,optionIndex)=><Button key={option} type="button" role="radio" aria-checked={field.value===optionIndex+1} variant={field.value===optionIndex+1?"default":"outline"} className="text-xs" onClick={()=>field.onChange(optionIndex+1)}>{option}</Button>)}</div>{unanswered&&<p id={errorId} className="mt-2 text-sm text-destructive">Please choose a response for this reflection.</p>}</FormItem>}}/></section>})}</div><FormField control={form.control} name="spiritualGifts.responses" render={()=><FormItem><FormMessage/></FormItem>}/></>}
-  {step===4&&<><Heading description="Who or what has God put on your heart?">Who and where you are drawn toward (Passions)</Heading><p className="text-sm text-muted-foreground">Share the people, communities, and ministry areas you feel drawn to explore.</p><MultiSelect form={form} name="passions" options={OPTIONS.passions}/><Heading>Ministry Interests</Heading><p className="text-sm text-muted-foreground">Actual ministry areas you would like to explore.</p><MultiSelect form={form} name="interests" options={OPTIONS.interests}/></>}
-   {step===5&&<><Heading description="This strengths-based reflection looks for recurring ways you contribute, learn, relate, and solve problems. It is not a branded strengths test, diagnosis, or placement decision.">What you naturally do well (Strengths)</Heading><p className="text-sm text-muted-foreground">Read each statement and choose how well it fits your experience in ministry, work, home, or community.</p><p className="text-sm text-muted-foreground" aria-live="polite">{answeredStrengthQuestionCount} of {STRENGTH_QUESTIONS.length} reflections answered</p>{reflectionValidationError&&<p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{reflectionValidationError}</p>}<div className="space-y-4">{randomizedStrengthQuestions.map(({gift,questionIndex,prompt},displayIndex)=>{const responseKey=`${gift}-${questionIndex}`;const questionId=`strength-reflection-${displayIndex}`;return <section key={responseKey} className="rounded-xl border bg-card p-4"><FormField control={form.control} name={`strengthResponses.${responseKey}` as Path<Values>} render={({field})=>{const unanswered=Boolean(reflectionValidationError&&!field.value);const errorId=`strength-reflection-error-${displayIndex}`;return <FormItem><p id={questionId} className="text-sm leading-6">{prompt}</p><div ref={element=>{giftGroupRefs.current[`strength-${responseKey}`]=element}} tabIndex={-1} role="radiogroup" aria-labelledby={questionId} aria-invalid={unanswered} aria-describedby={unanswered?errorId:undefined} className="mt-3 flex flex-wrap gap-2 outline-none">{RESPONSE_OPTIONS.map((option,optionIndex)=><Button key={option} type="button" role="radio" aria-checked={field.value===optionIndex+1} variant={field.value===optionIndex+1?"default":"outline"} className="text-xs" onClick={()=>field.onChange(optionIndex+1)}>{option}</Button>)}</div>{unanswered&&<p id={errorId} className="mt-2 text-sm text-destructive">Please choose a response for this reflection.</p>}</FormItem>}}/></section>})}</div><TextField form={form} name="strengthNotes" label="Where do you see these strengths in action? (optional)" description="Share examples from ministry, work, home, or community." multiline/></>}
-   {step===6&&<><Heading description="How You Tend to Operate">Personality</Heading><div className="space-y-3 text-sm leading-6"><p>God has created each person with a unique personality. This section is designed to help you understand how you naturally tend to operate — how you gain energy, make decisions, approach plans, process information, work with others, and respond to different environments.</p><p>There are no good or bad personality results. Every style brings strengths to the Body of Christ, and God can also grow and stretch us beyond what feels most natural.</p><p className="text-muted-foreground">Your personality does not determine your calling, spiritual gifts, or value. It is simply one part of understanding how you may naturally approach life and ministry.</p></div><p className="text-sm text-muted-foreground" aria-live="polite">{answeredPersonalityQuestionCount} of {PERSONALITY_QUESTIONS_FLAT.length} reflections answered</p>{reflectionValidationError&&<p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{reflectionValidationError}</p>}<div className="space-y-5">{PERSONALITY_DIMENSIONS.map(dimension=><section key={dimension.key} className="rounded-xl border bg-card p-5"><div className="flex items-start justify-between gap-4"><div><h4 className="font-medium">{dimension.label}</h4><p className="text-sm text-muted-foreground mt-1">{dimension.description}</p></div><span className="hidden sm:block text-xs text-muted-foreground">{dimension.left} ↔ {dimension.right}</span></div><div className="mt-4 space-y-4">{PERSONALITY_QUESTIONS_FLAT.filter(question=>question.key===dimension.key).map(({prompt,questionIndex})=><FormField key={`${dimension.key}-${questionIndex}`} control={form.control} name={`personalityResponses.${dimension.key}-${questionIndex}` as Path<Values>} render={({field})=>{const unanswered=Boolean(reflectionValidationError&&!field.value);const errorId=`personality-reflection-error-${dimension.key}-${questionIndex}`;const questionId=`personality-reflection-${dimension.key}-${questionIndex}`;return <FormItem><p id={questionId} className="text-sm leading-6">{prompt}</p><div ref={element=>{giftGroupRefs.current[`personality-${dimension.key}-${questionIndex}`]=element}} tabIndex={-1} role="radiogroup" aria-labelledby={questionId} aria-invalid={unanswered} aria-describedby={unanswered?errorId:undefined} className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2 outline-none">{personalityResponseOptions(dimension.left,dimension.right).map((option,optionIndex)=><Button key={option} type="button" role="radio" aria-checked={field.value===optionIndex+1} variant={field.value===optionIndex+1?"default":"outline"} className="h-auto min-h-10 px-2 text-xs" onClick={()=>field.onChange(optionIndex+1)}>{option}</Button>)}</div>{unanswered&&<p id={errorId} className="mt-2 text-sm text-destructive">Please choose a response for this reflection.</p>}</FormItem>}}/>)}</div></section>)}</div>{answeredPersonalityQuestionCount===PERSONALITY_QUESTIONS_FLAT.length&&<PersonalityResultsView results={currentPersonalityResults}/>}<Heading description="Optional preferences help begin a thoughtful conversation, not determine placement.">Ministry Preferences & Environment</Heading><div className="grid md:grid-cols-2 gap-5">{([["setting","Working style","With people","Behind the scenes"],["role","Role preference","Leading","Supporting"],["routine","Environment","Predictable routines","Changing environments"],["team","Team setting","Alone","Small team","Large group"],["work","Ministry expression","Relational","Practical service","Teaching","Administration","Creative work","Outreach"],["rhythm","Role rhythm","Weekly in one role","Occasionally in several roles"]] as const).map(([name,label,...options])=><SelectField key={name} form={form} name={`preferences.${name}`} label={label} options={options}/>)}</div></>}
-  {step===7&&<><Heading description="Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing.">How you are doing (Spiritual Health)</Heading><div className="grid md:grid-cols-2 gap-5">{(["prayer","scripture","worship","relationships","community","rest","motivation","wellbeing","connection"] as const).map(name=><SelectField key={name} form={form} name={`spiritualHealth.${name}`} label={name==="worship"?"Worship/church engagement":name==="community"?"Community/accountability":name==="rest"?"Rest/Sabbath":name==="wellbeing"?"Emotional/spiritual well-being":name==="connection"?"Current connection with God":name[0].toUpperCase()+name.slice(1)} options={["Needs attention","Growing","Steady","Feeling strong","Prefer not to say"]}/>)}</div></>}
-  {step===8&&<><Heading description="Tell us how you experience church life and where you are currently connected or serving.">How you are connected</Heading><div className="grid md:grid-cols-2 gap-5"><SelectField form={form} name="churchConnection.attendanceLength" label="How long have you attended?" options={["Just visiting","Less than 6 months","6–12 months","1–3 years","3+ years"]}/><SelectField form={form} name="churchConnection.followingJesusLength" label="How long have you followed Jesus?" options={["Still exploring","Less than 1 year","1–3 years","3–5 years","5–10 years","10+ years"]}/><SelectField form={form} name="churchDetails.membership" label="Membership" options={["Member","Not currently a member","Interested in learning more","Prefer not to say"]}/><TextField form={form} name="churchDetails.service" label="Service or congregation you attend (optional)"/><TextField form={form} name="churchDetails.previousInvolvement" label="Previous church involvement (optional)" multiline/></div><FormField control={form.control} name="churchConnection.connectionLevel" render={({field})=><FormItem><FormLabel>How connected do you feel here? (self-reported)</FormLabel><div role="radiogroup" aria-label="Church connection level" className="flex gap-2">{[1,2,3,4,5].map(level=><Button key={level} type="button" role="radio" aria-checked={field.value===level} aria-label={`Connection level ${level} of 5`} variant={field.value===level?"default":"outline"} className="rounded-full w-10 h-10 p-0" onClick={()=>field.onChange(level)}>{level}</Button>)}</div><FormMessage/></FormItem>}/><FormField control={form.control} name="churchConnection.servedBefore" render={({field})=><label className="flex gap-3 rounded-lg border p-4 cursor-pointer"><Checkbox checked={field.value} onCheckedChange={field.onChange}/>Have you served on a team here before?</label>}/><TextField form={form} name="churchConnection.previousService" label="Prior serving experience (optional)" multiline/><Heading description="Share your current availability and the kind of serving commitment that feels realistic right now.">Current availability and serving</Heading><div className="grid md:grid-cols-2 gap-5"><SelectField form={form} name="servingFrequency" label="Serving frequency" options={["Weekly","Every other week","Monthly","Occasional/events only"]}/><SelectField form={form} name="availabilityDetails.seasonal" label="Seasonal availability" options={["Available year-round","School-year only","Summer only","Varies"]}/>{([["specialEvents","Open to special events?"],["retreats","Open to overnight retreats?"],["missionTrips","Open to mission trips?"],["projects","Open to short-term projects?"]] as const).map(([name,label])=><SelectField key={name} form={form} name={`availabilityDetails.${name}`} label={label} options={["Yes","Maybe / discuss","Not right now"]}/>)}</div><MultiSelect form={form} name="availability" options={OPTIONS.availability}/><SelectField form={form} name="availabilityDetails.commitment" label="Serving rhythm" options={["Ongoing role","Occasional roles","A mix of both"]}/><TextField form={form} name="availabilityDetails.responsibility" label="What serving responsibility feels realistic right now?" multiline/></>}
- {submitError&&<p role="alert" className="rounded-lg bg-destructive/10 text-destructive p-3">{submitError}</p>}
-  </CardContent></Card><div className="flex justify-between mt-6"><Button type="button" variant="ghost" onClick={()=>setStep(value=>value-1)}><ArrowLeft className="w-4 h-4 mr-2"/>Back</Button>{step===8?<Button type="button" disabled={createProfile.isPending} onClick={()=>void form.handleSubmit(submit)()}>{createProfile.isPending&&<Loader2 className="w-4 h-4 mr-2 animate-spin"/>}Submit profile</Button>:<Button type="button" onClick={next}>Continue <ArrowRight className="w-4 h-4 ml-2"/></Button>}</div></form></Form></main></div>;
+  if (!started)
+    return (
+      <div
+        style={brandStyle}
+        className="min-h-screen grid place-items-center bg-muted/20 p-4"
+      >
+        <Card className="max-w-xl text-center">
+          <CardContent className="p-10 space-y-6">
+            {churchLogo ? (
+              <img
+                src={churchLogo}
+                alt={`${church.name} logo`}
+                className="mx-auto max-h-24 max-w-[240px] object-contain"
+              />
+            ) : (
+              <HeartHandshake className="w-12 h-12 mx-auto text-primary" />
+            )}
+            <div>
+              <p className="mb-2 text-sm font-medium text-primary">
+                {church.name}
+              </p>
+              <h1 className="font-serif text-4xl">Your Ministry Profile</h1>
+            </div>
+            <p className="text-muted-foreground">
+              This is a conversation starter, not a test, diagnosis, or
+              automatic placement tool. Share only what feels comfortable.
+            </p>
+            <Button
+              onClick={() => {
+                setStep(0);
+                setStarted(true);
+              }}
+            >
+              Begin <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  if (stepIndex === stepKeys.length || createProfile.isSuccess)
+    return (
+      <div
+        style={brandStyle}
+        className="min-h-screen grid place-items-center p-4"
+      >
+        <Card className="max-w-md text-center">
+          <CardContent className="p-10 space-y-5">
+            {churchLogo && (
+              <img
+                src={churchLogo}
+                alt={`${church.name} logo`}
+                className="mx-auto max-h-20 max-w-[220px] object-contain"
+              />
+            )}
+            <CheckCircle2 className="w-14 h-14 mx-auto text-primary" />
+            <h1 className="font-serif text-3xl">Thank you</h1>
+            <p className="text-muted-foreground">
+              Your profile has been shared with {church.name}. A leader can
+              follow up thoughtfully about next steps.
+            </p>
+            <Button asChild>
+              <a href={church.profileUrl || "/"}>Return to church profile</a>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  return (
+    <div style={brandStyle} className="min-h-screen bg-muted/20">
+      <header className="sticky top-0 z-10 bg-background border-b">
+        <div className="max-w-3xl mx-auto p-4 flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            {churchLogo && (
+              <img
+                src={churchLogo}
+                alt=""
+                className="h-9 w-9 shrink-0 object-contain"
+              />
+            )}
+            <strong className="truncate">{church.name}</strong>
+          </div>
+          <span className="shrink-0 text-sm text-muted-foreground">
+            Step {stepIndex + 1} of {stepKeys.length}
+          </span>
+        </div>
+        <Progress value={((stepIndex + 1) / stepKeys.length) * 100} />
+      </header>
+      <main className="max-w-3xl mx-auto p-4 md:p-10">
+        <AssessmentConfigurationContext.Provider
+          value={{ configuration: configuration!, step: currentStep }}
+        >
+          <Form {...form}>
+            <form onSubmit={(event) => event.preventDefault()}>
+              <Card>
+                <CardContent className="p-6 md:p-10 space-y-8">
+                  {step === 1 && (
+                    <>
+                      <Heading description="Share the parts of your story that help your church know you.">
+                        About You
+                      </Heading>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        <TextField
+                          form={form}
+                          name="basicInformation.firstName"
+                          label="First name"
+                        />
+                        <TextField
+                          form={form}
+                          name="basicInformation.lastName"
+                          label="Last name"
+                        />
+                        <TextField
+                          form={form}
+                          name="basicInformation.email"
+                          label="Email"
+                        />
+                        <TextField
+                          form={form}
+                          name="basicInformation.phone"
+                          label="Phone (optional)"
+                        />
+                        <SelectField
+                          form={form}
+                          name="basicInformation.ageRange"
+                          label="Age range"
+                          options={[
+                            "Under 18",
+                            "18–25",
+                            "26–35",
+                            "36–45",
+                            "46–55",
+                            "56–65",
+                            "66+",
+                          ]}
+                        />
+                        <SelectField
+                          form={form}
+                          name="basicInformation.preferredContact"
+                          label="Preferred contact method"
+                          options={["Email", "Phone", "Text"]}
+                        />
+                        <SelectField
+                          form={form}
+                          name="basicInformation.familySituation"
+                          label="Family situation"
+                          options={[
+                            "Single",
+                            "Married",
+                            "Parent/caregiver",
+                            "Empty nester",
+                            "Other",
+                          ]}
+                        />
+                        <SelectField
+                          form={form}
+                          name="basicInformation.transportation"
+                          label="Transportation"
+                          options={[
+                            "Reliable transportation",
+                            "Sometimes need transportation",
+                            "Would like to discuss",
+                          ]}
+                        />
+                        <TextField
+                          form={form}
+                          name="languageText"
+                          label="Languages spoken (optional)"
+                        />
+                        <SelectField
+                          form={form}
+                          name="languageProficiency"
+                          label="Language proficiency (optional)"
+                          options={[
+                            "Basic conversation",
+                            "Conversational",
+                            "Fluent",
+                            "Native/bilingual",
+                          ]}
+                        />
+                      </div>
+                      <Heading description="Optional details about your work, education, and experience.">
+                        Skills & Experience
+                      </Heading>
+                      <div className="space-y-5">
+                        <TextField
+                          form={form}
+                          name="occupation"
+                          label="Profession or field of study"
+                        />
+                        <TextField
+                          form={form}
+                          name="skills.education"
+                          label="Education"
+                        />
+                        <TextField
+                          form={form}
+                          name="skills.certifications"
+                          label="Certifications"
+                        />
+                        <TextField
+                          form={form}
+                          name="skills.skills"
+                          label="Technical, creative, language, music, teaching, leadership, financial, trades, healthcare, counseling, technology, cooking, driving, or organization skills"
+                          multiline
+                        />
+                        <TextField
+                          form={form}
+                          name="skills.experience"
+                          label="Relevant experience"
+                          multiline
+                        />
+                        <TextField
+                          form={form}
+                          name="skills.uniqueSkills"
+                          label="What are you good at that the church may not know about?"
+                          multiline
+                        />
+                      </div>
+                      <Heading description="Optional. Please do not share anything you do not want church leaders to know.">
+                        Life Experiences
+                      </Heading>
+                      <MultiSelect
+                        form={form}
+                        name="lifeSelected"
+                        options={OPTIONS.life}
+                      />
+                      <TextField
+                        form={form}
+                        name="lifeNotes"
+                        label="Optional notes"
+                        multiline
+                      />
+                    </>
+                  )}
+                  {step === 2 && (
+                    <>
+                      <Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">
+                        How you minister
+                      </Heading>
+                      <p
+                        className="text-sm text-muted-foreground"
+                        aria-live="polite"
+                      >
+                        {answeredMinistryQuestionCount} of{" "}
+                        {activeMinistryQuestions.length} reflections answered
+                      </p>
+                      {reflectionValidationError && (
+                        <p
+                          role="alert"
+                          className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive"
+                        >
+                          {reflectionValidationError}
+                        </p>
+                      )}
+                      <div className="space-y-4">
+                        {randomizedMinistryQuestions.map(
+                          ({ gift, questionIndex, prompt }, displayIndex) => {
+                            const responseKey = `${gift}-${questionIndex}`;
+                            const questionId = `ministry-reflection-${displayIndex}`;
+                            return (
+                              <section
+                                key={responseKey}
+                                className="rounded-xl border bg-card p-4"
+                              >
+                                <FormField
+                                  control={form.control}
+                                  name={
+                                    `ministryResponses.${responseKey}` as Path<Values>
+                                  }
+                                  render={({ field }) => {
+                                    const unanswered = Boolean(
+                                      reflectionValidationError && !field.value,
+                                    );
+                                    const errorId = `ministry-reflection-error-${displayIndex}`;
+                                    return (
+                                      <FormItem>
+                                        <p
+                                          id={questionId}
+                                          className="text-sm leading-6"
+                                        >
+                                          {prompt}
+                                        </p>
+                                        <div
+                                          ref={(element) => {
+                                            giftGroupRefs.current[
+                                              `ministry-${responseKey}`
+                                            ] = element;
+                                          }}
+                                          tabIndex={-1}
+                                          role="radiogroup"
+                                          aria-labelledby={questionId}
+                                          aria-invalid={unanswered}
+                                          aria-describedby={
+                                            unanswered ? errorId : undefined
+                                          }
+                                          className="mt-3 flex flex-wrap gap-2 outline-none"
+                                        >
+                                          {RESPONSE_OPTIONS.map(
+                                            (option, optionIndex) => (
+                                              <Button
+                                                key={option}
+                                                type="button"
+                                                role="radio"
+                                                aria-checked={
+                                                  field.value ===
+                                                  optionIndex + 1
+                                                }
+                                                variant={
+                                                  field.value ===
+                                                  optionIndex + 1
+                                                    ? "default"
+                                                    : "outline"
+                                                }
+                                                className="text-xs"
+                                                onClick={() =>
+                                                  field.onChange(
+                                                    optionIndex + 1,
+                                                  )
+                                                }
+                                              >
+                                                {option}
+                                              </Button>
+                                            ),
+                                          )}
+                                        </div>
+                                        {unanswered && (
+                                          <p
+                                            id={errorId}
+                                            className="mt-2 text-sm text-destructive"
+                                          >
+                                            Please choose a response for this
+                                            reflection.
+                                          </p>
+                                        )}
+                                      </FormItem>
+                                    );
+                                  }}
+                                />
+                              </section>
+                            );
+                          },
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {step === 3 && (
+                    <>
+                      <Heading description="Read each statement and choose how well it fits your lived experience. This is a conversation starter, not a test of spiritual maturity or a placement decision. Choose “Not at all” when a statement does not fit.">
+                        How God has gifted you (Spiritual Gifts)
+                      </Heading>
+                      <p
+                        className="text-sm text-muted-foreground"
+                        aria-live="polite"
+                      >
+                        {answeredGiftQuestionCount} of{" "}
+                        {spiritualGiftQuestionCount} reflections answered
+                      </p>
+                      {reflectionValidationError && (
+                        <p
+                          role="alert"
+                          className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive"
+                        >
+                          {reflectionValidationError}
+                        </p>
+                      )}
+                      <div className="space-y-4">
+                        {randomizedGiftQuestions.map(
+                          ({ gift, questionIndex, prompt }, displayIndex) => {
+                            const questionId = `gift-reflection-${displayIndex}`;
+                            return (
+                              <section
+                                key={`${gift}-${questionIndex}`}
+                                className="rounded-xl border bg-card p-4"
+                              >
+                                <FormField
+                                  control={form.control}
+                                  name={
+                                    `spiritualGifts.responses.${gift}.${questionIndex}.response` as Path<Values>
+                                  }
+                                  render={({ field }) => {
+                                    const unanswered = Boolean(
+                                      reflectionValidationError && !field.value,
+                                    );
+                                    const errorId = `gift-reflection-error-${displayIndex}`;
+                                    return (
+                                      <FormItem>
+                                        <p
+                                          id={questionId}
+                                          className="text-sm leading-6"
+                                        >
+                                          {prompt}
+                                        </p>
+                                        <div
+                                          ref={(element) => {
+                                            giftGroupRefs.current[
+                                              `${gift}-${questionIndex}`
+                                            ] = element;
+                                          }}
+                                          tabIndex={-1}
+                                          role="radiogroup"
+                                          aria-labelledby={questionId}
+                                          aria-invalid={unanswered}
+                                          aria-describedby={
+                                            unanswered ? errorId : undefined
+                                          }
+                                          className="mt-3 flex flex-wrap gap-2 outline-none"
+                                        >
+                                          {RESPONSE_OPTIONS.map(
+                                            (option, optionIndex) => (
+                                              <Button
+                                                key={option}
+                                                type="button"
+                                                role="radio"
+                                                aria-checked={
+                                                  field.value ===
+                                                  optionIndex + 1
+                                                }
+                                                variant={
+                                                  field.value ===
+                                                  optionIndex + 1
+                                                    ? "default"
+                                                    : "outline"
+                                                }
+                                                className="text-xs"
+                                                onClick={() =>
+                                                  field.onChange(
+                                                    optionIndex + 1,
+                                                  )
+                                                }
+                                              >
+                                                {option}
+                                              </Button>
+                                            ),
+                                          )}
+                                        </div>
+                                        {unanswered && (
+                                          <p
+                                            id={errorId}
+                                            className="mt-2 text-sm text-destructive"
+                                          >
+                                            Please choose a response for this
+                                            reflection.
+                                          </p>
+                                        )}
+                                      </FormItem>
+                                    );
+                                  }}
+                                />
+                              </section>
+                            );
+                          },
+                        )}
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="spiritualGifts.responses"
+                        render={() => (
+                          <FormItem>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+                  {step === 4 && (
+                    <>
+                      <Heading description="Who or what has God put on your heart?">
+                        Who and where you are drawn toward (Passions)
+                      </Heading>
+                      <p className="text-sm text-muted-foreground">
+                        Share the people, communities, and ministry areas you
+                        feel drawn to explore.
+                      </p>
+                      <MultiSelect
+                        form={form}
+                        name="passions"
+                        options={OPTIONS.passions}
+                      />
+                      <Heading>Ministry Interests</Heading>
+                      <p className="text-sm text-muted-foreground">
+                        Actual ministry areas you would like to explore.
+                      </p>
+                      <MultiSelect
+                        form={form}
+                        name="interests"
+                        options={OPTIONS.interests}
+                      />
+                    </>
+                  )}
+                  {step === 5 && (
+                    <>
+                      <Heading description="This strengths-based reflection looks for recurring ways you contribute, learn, relate, and solve problems. It is not a branded strengths test, diagnosis, or placement decision.">
+                        What you naturally do well (Strengths)
+                      </Heading>
+                      <p className="text-sm text-muted-foreground">
+                        Read each statement and choose how well it fits your
+                        experience in ministry, work, home, or community.
+                      </p>
+                      <p
+                        className="text-sm text-muted-foreground"
+                        aria-live="polite"
+                      >
+                        {answeredStrengthQuestionCount} of{" "}
+                        {activeStrengthQuestions.length} reflections answered
+                      </p>
+                      {reflectionValidationError && (
+                        <p
+                          role="alert"
+                          className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive"
+                        >
+                          {reflectionValidationError}
+                        </p>
+                      )}
+                      <div className="space-y-4">
+                        {randomizedStrengthQuestions.map(
+                          ({ gift, questionIndex, prompt }, displayIndex) => {
+                            const responseKey = `${gift}-${questionIndex}`;
+                            const questionId = `strength-reflection-${displayIndex}`;
+                            return (
+                              <section
+                                key={responseKey}
+                                className="rounded-xl border bg-card p-4"
+                              >
+                                <FormField
+                                  control={form.control}
+                                  name={
+                                    `strengthResponses.${responseKey}` as Path<Values>
+                                  }
+                                  render={({ field }) => {
+                                    const unanswered = Boolean(
+                                      reflectionValidationError && !field.value,
+                                    );
+                                    const errorId = `strength-reflection-error-${displayIndex}`;
+                                    return (
+                                      <FormItem>
+                                        <p
+                                          id={questionId}
+                                          className="text-sm leading-6"
+                                        >
+                                          {prompt}
+                                        </p>
+                                        <div
+                                          ref={(element) => {
+                                            giftGroupRefs.current[
+                                              `strength-${responseKey}`
+                                            ] = element;
+                                          }}
+                                          tabIndex={-1}
+                                          role="radiogroup"
+                                          aria-labelledby={questionId}
+                                          aria-invalid={unanswered}
+                                          aria-describedby={
+                                            unanswered ? errorId : undefined
+                                          }
+                                          className="mt-3 flex flex-wrap gap-2 outline-none"
+                                        >
+                                          {RESPONSE_OPTIONS.map(
+                                            (option, optionIndex) => (
+                                              <Button
+                                                key={option}
+                                                type="button"
+                                                role="radio"
+                                                aria-checked={
+                                                  field.value ===
+                                                  optionIndex + 1
+                                                }
+                                                variant={
+                                                  field.value ===
+                                                  optionIndex + 1
+                                                    ? "default"
+                                                    : "outline"
+                                                }
+                                                className="text-xs"
+                                                onClick={() =>
+                                                  field.onChange(
+                                                    optionIndex + 1,
+                                                  )
+                                                }
+                                              >
+                                                {option}
+                                              </Button>
+                                            ),
+                                          )}
+                                        </div>
+                                        {unanswered && (
+                                          <p
+                                            id={errorId}
+                                            className="mt-2 text-sm text-destructive"
+                                          >
+                                            Please choose a response for this
+                                            reflection.
+                                          </p>
+                                        )}
+                                      </FormItem>
+                                    );
+                                  }}
+                                />
+                              </section>
+                            );
+                          },
+                        )}
+                      </div>
+                      <TextField
+                        form={form}
+                        name="strengthNotes"
+                        label="Where do you see these strengths in action? (optional)"
+                        description="Share examples from ministry, work, home, or community."
+                        multiline
+                      />
+                    </>
+                  )}
+                  {step === 6 && (
+                    <>
+                      <Heading description="How You Tend to Operate">
+                        Personality
+                      </Heading>
+                      <div className="space-y-3 text-sm leading-6">
+                        <p>
+                          God has created each person with a unique personality.
+                          This section is designed to help you understand how
+                          you naturally tend to operate — how you gain energy,
+                          make decisions, approach plans, process information,
+                          work with others, and respond to different
+                          environments.
+                        </p>
+                        <p>
+                          There are no good or bad personality results. Every
+                          style brings strengths to the Body of Christ, and God
+                          can also grow and stretch us beyond what feels most
+                          natural.
+                        </p>
+                        <p className="text-muted-foreground">
+                          Your personality does not determine your calling,
+                          spiritual gifts, or value. It is simply one part of
+                          understanding how you may naturally approach life and
+                          ministry.
+                        </p>
+                      </div>
+                      <p
+                        className="text-sm text-muted-foreground"
+                        aria-live="polite"
+                      >
+                        {answeredPersonalityQuestionCount} of{" "}
+                        {activePersonalityQuestions.length} reflections answered
+                      </p>
+                      {reflectionValidationError && (
+                        <p
+                          role="alert"
+                          className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive"
+                        >
+                          {reflectionValidationError}
+                        </p>
+                      )}
+                      <div className="space-y-5">
+                        {activePersonalityDimensions.map((dimension) => (
+                          <section
+                            key={dimension.key}
+                            className="rounded-xl border bg-card p-5"
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <h4 className="font-medium">
+                                  {dimension.label}
+                                </h4>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {dimension.description}
+                                </p>
+                              </div>
+                              <span className="hidden sm:block text-xs text-muted-foreground">
+                                {dimension.left} ↔ {dimension.right}
+                              </span>
+                            </div>
+                            <div className="mt-4 space-y-4">
+                              {activePersonalityQuestions.filter(
+                                (question) => question.key === dimension.key,
+                              ).map(({ prompt, questionIndex }) => (
+                                <FormField
+                                  key={`${dimension.key}-${questionIndex}`}
+                                  control={form.control}
+                                  name={
+                                    `personalityResponses.${dimension.key}-${questionIndex}` as Path<Values>
+                                  }
+                                  render={({ field }) => {
+                                    const unanswered = Boolean(
+                                      reflectionValidationError && !field.value,
+                                    );
+                                    const errorId = `personality-reflection-error-${dimension.key}-${questionIndex}`;
+                                    const questionId = `personality-reflection-${dimension.key}-${questionIndex}`;
+                                    return (
+                                      <FormItem>
+                                        <p
+                                          id={questionId}
+                                          className="text-sm leading-6"
+                                        >
+                                          {prompt}
+                                        </p>
+                                        <div
+                                          ref={(element) => {
+                                            giftGroupRefs.current[
+                                              `personality-${dimension.key}-${questionIndex}`
+                                            ] = element;
+                                          }}
+                                          tabIndex={-1}
+                                          role="radiogroup"
+                                          aria-labelledby={questionId}
+                                          aria-invalid={unanswered}
+                                          aria-describedby={
+                                            unanswered ? errorId : undefined
+                                          }
+                                          className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2 outline-none"
+                                        >
+                                          {personalityResponseOptions(
+                                            dimension.left,
+                                            dimension.right,
+                                          ).map((option, optionIndex) => (
+                                            <Button
+                                              key={option}
+                                              type="button"
+                                              role="radio"
+                                              aria-checked={
+                                                field.value === optionIndex + 1
+                                              }
+                                              variant={
+                                                field.value === optionIndex + 1
+                                                  ? "default"
+                                                  : "outline"
+                                              }
+                                              className="h-auto min-h-10 px-2 text-xs"
+                                              onClick={() =>
+                                                field.onChange(optionIndex + 1)
+                                              }
+                                            >
+                                              {option}
+                                            </Button>
+                                          ))}
+                                        </div>
+                                        {unanswered && (
+                                          <p
+                                            id={errorId}
+                                            className="mt-2 text-sm text-destructive"
+                                          >
+                                            Please choose a response for this
+                                            reflection.
+                                          </p>
+                                        )}
+                                      </FormItem>
+                                    );
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </section>
+                        ))}
+                      </div>
+                      {answeredPersonalityQuestionCount ===
+                        activePersonalityQuestions.length && (
+                        <PersonalityResultsView
+                          results={currentPersonalityResults}
+                        />
+                      )}
+                      <Heading description="Optional preferences help begin a thoughtful conversation, not determine placement.">
+                        Ministry Preferences & Environment
+                      </Heading>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        {(
+                          [
+                            [
+                              "setting",
+                              "Working style",
+                              "With people",
+                              "Behind the scenes",
+                            ],
+                            [
+                              "role",
+                              "Role preference",
+                              "Leading",
+                              "Supporting",
+                            ],
+                            [
+                              "routine",
+                              "Environment",
+                              "Predictable routines",
+                              "Changing environments",
+                            ],
+                            [
+                              "team",
+                              "Team setting",
+                              "Alone",
+                              "Small team",
+                              "Large group",
+                            ],
+                            [
+                              "work",
+                              "Ministry expression",
+                              "Relational",
+                              "Practical service",
+                              "Teaching",
+                              "Administration",
+                              "Creative work",
+                              "Outreach",
+                            ],
+                            [
+                              "rhythm",
+                              "Role rhythm",
+                              "Weekly in one role",
+                              "Occasionally in several roles",
+                            ],
+                          ] as const
+                        ).map(([name, label, ...options]) => (
+                          <SelectField
+                            key={name}
+                            form={form}
+                            name={`preferences.${name}`}
+                            label={label}
+                            options={options}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {step === 7 && (
+                    <>
+                      <Heading description="Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing.">
+                        How you are doing (Spiritual Health)
+                      </Heading>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        {(
+                          [
+                            "prayer",
+                            "scripture",
+                            "worship",
+                            "relationships",
+                            "community",
+                            "rest",
+                            "motivation",
+                            "wellbeing",
+                            "connection",
+                          ] as const
+                        ).map((name) => (
+                          <SelectField
+                            key={name}
+                            form={form}
+                            name={`spiritualHealth.${name}`}
+                            label={
+                              name === "worship"
+                                ? "Worship/church engagement"
+                                : name === "community"
+                                  ? "Community/accountability"
+                                  : name === "rest"
+                                    ? "Rest/Sabbath"
+                                    : name === "wellbeing"
+                                      ? "Emotional/spiritual well-being"
+                                      : name === "connection"
+                                        ? "Current connection with God"
+                                        : name[0].toUpperCase() + name.slice(1)
+                            }
+                            options={[
+                              "Needs attention",
+                              "Growing",
+                              "Steady",
+                              "Feeling strong",
+                              "Prefer not to say",
+                            ]}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {step === 8 && (
+                    <>
+                      <Heading description="Tell us how you experience church life and where you are currently connected or serving.">
+                        How you are connected
+                      </Heading>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        <SelectField
+                          form={form}
+                          name="churchConnection.attendanceLength"
+                          label="How long have you attended?"
+                          options={[
+                            "Just visiting",
+                            "Less than 6 months",
+                            "6–12 months",
+                            "1–3 years",
+                            "3+ years",
+                          ]}
+                        />
+                        <SelectField
+                          form={form}
+                          name="churchConnection.followingJesusLength"
+                          label="How long have you followed Jesus?"
+                          options={[
+                            "Still exploring",
+                            "Less than 1 year",
+                            "1–3 years",
+                            "3–5 years",
+                            "5–10 years",
+                            "10+ years",
+                          ]}
+                        />
+                        <SelectField
+                          form={form}
+                          name="churchDetails.membership"
+                          label="Membership"
+                          options={[
+                            "Member",
+                            "Not currently a member",
+                            "Interested in learning more",
+                            "Prefer not to say",
+                          ]}
+                        />
+                        <TextField
+                          form={form}
+                          name="churchDetails.service"
+                          label="Service or congregation you attend (optional)"
+                        />
+                        <TextField
+                          form={form}
+                          name="churchDetails.previousInvolvement"
+                          label="Previous church involvement (optional)"
+                          multiline
+                        />
+                      </div>
+                      {subsectionEnabled(
+                        "connectionAvailability.churchConnection",
+                      ) && (
+                        <>
+                          <FormField
+                            control={form.control}
+                            name="churchConnection.connectionLevel"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
+                                  How connected do you feel here? (self-reported)
+                                </FormLabel>
+                                <div
+                                  role="radiogroup"
+                                  aria-label="Church connection level"
+                                  className="flex gap-2"
+                                >
+                                  {[1, 2, 3, 4, 5].map((level) => (
+                                    <Button
+                                      key={level}
+                                      type="button"
+                                      role="radio"
+                                      aria-checked={field.value === level}
+                                      aria-label={`Connection level ${level} of 5`}
+                                      variant={
+                                        field.value === level
+                                          ? "default"
+                                          : "outline"
+                                      }
+                                      className="rounded-full w-10 h-10 p-0"
+                                      onClick={() => field.onChange(level)}
+                                    >
+                                      {level}
+                                    </Button>
+                                  ))}
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="churchConnection.servedBefore"
+                            render={({ field }) => (
+                              <label className="flex gap-3 rounded-lg border p-4 cursor-pointer">
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                                Have you served on a team here before?
+                              </label>
+                            )}
+                          />
+                        </>
+                      )}
+                      <TextField
+                        form={form}
+                        name="churchConnection.previousService"
+                        label="Prior serving experience (optional)"
+                        multiline
+                      />
+                      <Heading description="Share your current availability and the kind of serving commitment that feels realistic right now.">
+                        Current availability and serving
+                      </Heading>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        <SelectField
+                          form={form}
+                          name="servingFrequency"
+                          label="Serving frequency"
+                          options={[
+                            "Weekly",
+                            "Every other week",
+                            "Monthly",
+                            "Occasional/events only",
+                          ]}
+                        />
+                        <SelectField
+                          form={form}
+                          name="availabilityDetails.seasonal"
+                          label="Seasonal availability"
+                          options={[
+                            "Available year-round",
+                            "School-year only",
+                            "Summer only",
+                            "Varies",
+                          ]}
+                        />
+                        {(
+                          [
+                            ["specialEvents", "Open to special events?"],
+                            ["retreats", "Open to overnight retreats?"],
+                            ["missionTrips", "Open to mission trips?"],
+                            ["projects", "Open to short-term projects?"],
+                          ] as const
+                        ).map(([name, label]) => (
+                          <SelectField
+                            key={name}
+                            form={form}
+                            name={`availabilityDetails.${name}`}
+                            label={label}
+                            options={[
+                              "Yes",
+                              "Maybe / discuss",
+                              "Not right now",
+                            ]}
+                          />
+                        ))}
+                      </div>
+                      <MultiSelect
+                        form={form}
+                        name="availability"
+                        options={OPTIONS.availability}
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.commitment"
+                        label="Serving rhythm"
+                        options={[
+                          "Ongoing role",
+                          "Occasional roles",
+                          "A mix of both",
+                        ]}
+                      />
+                      <TextField
+                        form={form}
+                        name="availabilityDetails.responsibility"
+                        label="What serving responsibility feels realistic right now?"
+                        multiline
+                      />
+                    </>
+                  )}
+                  {submitError && (
+                    <p
+                      role="alert"
+                      className="rounded-lg bg-destructive/10 text-destructive p-3"
+                    >
+                      {submitError}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+              <div className="flex justify-between mt-6">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setStep((value) => value - 1)}
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+                {stepIndex === stepKeys.length - 1 ? (
+                  <Button
+                    type="button"
+                    disabled={createProfile.isPending}
+                    onClick={() => void form.handleSubmit(submit)()}
+                  >
+                    {createProfile.isPending && (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    )}
+                    Submit profile
+                  </Button>
+                ) : (
+                  <Button type="button" onClick={next}>
+                    Continue <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
+        </AssessmentConfigurationContext.Provider>
+      </main>
+    </div>
+  );
 }

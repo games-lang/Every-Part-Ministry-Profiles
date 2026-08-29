@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AssessmentConfiguration } from './assessmentConfiguration';
 import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface ChurchUpdate {
@@ -27,4 +28,5 @@ export interface ChurchUpdate {
   adminEmail?: string;
   /** @minItems 3 */
   enabledSpiritualGifts?: SpiritualGiftName[];
+  assessmentConfiguration?: AssessmentConfiguration;
 }

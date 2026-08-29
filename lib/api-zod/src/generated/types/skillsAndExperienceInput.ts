@@ -8,15 +8,15 @@
 
 export interface SkillsAndExperienceInput {
   /** @nullable */
-  occupation: string | null;
+  occupation?: string | null;
   /** @nullable */
-  uniqueSkills: string | null;
+  uniqueSkills?: string | null;
   /** @nullable */
-  previousMinistryExperience: string | null;
+  previousMinistryExperience?: string | null;
   /** @nullable */
-  leadershipExperience: string | null;
+  leadershipExperience?: string | null;
   /** @nullable */
-  missionTripExperience: string | null;
+  missionTripExperience?: string | null;
   /** @nullable */
-  lifeExperience: string | null;
+  lifeExperience?: string | null;
 }

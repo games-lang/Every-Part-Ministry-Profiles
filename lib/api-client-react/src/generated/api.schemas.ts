@@ -41,6 +41,72 @@ export const SpiritualGiftName = {
   Voluntary_Poverty: 'Voluntary Poverty',
 } as const;
 
+export interface AssessmentConfigurationSections {
+  aboutYou: boolean;
+  apest: boolean;
+  spiritualGifts: boolean;
+  passionsInterests: boolean;
+  naturalStrengths: boolean;
+  personalityStrengths: boolean;
+  spiritualHealth: boolean;
+  connectionAvailability: boolean;
+}
+
+export interface AssessmentConfigurationSubsections {
+  'aboutYou.personalInformation': boolean;
+  'aboutYou.skillsExperience': boolean;
+  'aboutYou.lifeExperiences': boolean;
+  'apest.builder': boolean;
+  'apest.insight': boolean;
+  'apest.connector': boolean;
+  'apest.caregiver': boolean;
+  'apest.teacher': boolean;
+  'passionsInterests.passions': boolean;
+  'passionsInterests.ministryInterests': boolean;
+  'naturalStrengths.relationalConnection': boolean;
+  'naturalStrengths.encouragement': boolean;
+  'naturalStrengths.teachingExplaining': boolean;
+  'naturalStrengths.listening': boolean;
+  'naturalStrengths.leadershipInitiative': boolean;
+  'naturalStrengths.organizing': boolean;
+  'naturalStrengths.creativeExpression': boolean;
+  'naturalStrengths.problemSolving': boolean;
+  'naturalStrengths.practicalHandsOn': boolean;
+  'naturalStrengths.hospitality': boolean;
+  'naturalStrengths.compassionCare': boolean;
+  'naturalStrengths.communicationStorytelling': boolean;
+  'naturalStrengths.discernment': boolean;
+  'naturalStrengths.followThrough': boolean;
+  'naturalStrengths.adaptability': boolean;
+  'naturalStrengths.mentoringDevelopment': boolean;
+  'naturalStrengths.strategicThinking': boolean;
+  'naturalStrengths.advocacyJustice': boolean;
+  'personalityStrengths.socialEnergy': boolean;
+  'personalityStrengths.decisionLens': boolean;
+  'personalityStrengths.planningStyle': boolean;
+  'personalityStrengths.focusStyle': boolean;
+  'personalityStrengths.actionStyle': boolean;
+  'personalityStrengths.pacePreference': boolean;
+  'personalityStrengths.workStyle': boolean;
+  'personalityStrengths.ministryPreferences': boolean;
+  'spiritualHealth.prayer': boolean;
+  'spiritualHealth.scripture': boolean;
+  'spiritualHealth.worship': boolean;
+  'spiritualHealth.relationships': boolean;
+  'spiritualHealth.community': boolean;
+  'spiritualHealth.rest': boolean;
+  'spiritualHealth.motivation': boolean;
+  'spiritualHealth.wellbeing': boolean;
+  'spiritualHealth.connection': boolean;
+  'connectionAvailability.churchConnection': boolean;
+  'connectionAvailability.availability': boolean;
+}
+
+export interface AssessmentConfiguration {
+  sections: AssessmentConfigurationSections;
+  subsections: AssessmentConfigurationSubsections;
+}
+
 export interface Church {
   id: number;
   name: string;
@@ -61,6 +127,7 @@ export interface Church {
   completedProfileCount?: number;
   /** @nullable */
   enabledSpiritualGifts?: SpiritualGiftName[] | null;
+  assessmentConfiguration: AssessmentConfiguration;
 }
 
 export interface ChurchUpdate {
@@ -83,6 +150,7 @@ export interface ChurchUpdate {
   adminEmail?: string;
   /** @minItems 3 */
   enabledSpiritualGifts?: SpiritualGiftName[];
+  assessmentConfiguration?: AssessmentConfiguration;
 }
 
 export interface PublicChurch {
@@ -97,6 +165,7 @@ export interface PublicChurch {
   profileUrl: string;
   /** @minItems 3 */
   enabledSpiritualGifts: SpiritualGiftName[];
+  assessmentConfiguration: AssessmentConfiguration;
 }
 
 export type UploadUrlRequestContentType = typeof UploadUrlRequestContentType[keyof typeof UploadUrlRequestContentType];
@@ -237,10 +306,14 @@ export interface BasicInformation {
   email: string;
   /** @nullable */
   phone?: string | null;
-  ageRange: string;
-  preferredContact: string;
-  familySituation: string;
-  transportation: string;
+  /** @nullable */
+  ageRange: string | null;
+  /** @nullable */
+  preferredContact: string | null;
+  /** @nullable */
+  familySituation: string | null;
+  /** @nullable */
+  transportation: string | null;
   /** @nullable */
   languages?: BasicInformationLanguages;
 }
@@ -251,14 +324,18 @@ export interface BasicInformation {
 export type ChurchConnectionDetails = { [key: string]: unknown } | null;
 
 export interface ChurchConnection {
-  attendanceLength: string;
+  /** @nullable */
+  attendanceLength: string | null;
   /**
      * @minimum 1
      * @maximum 5
+     * @nullable
      */
-  connectionLevel: number;
-  followingJesusLength: string;
-  servedBefore: boolean;
+  connectionLevel: number | null;
+  /** @nullable */
+  followingJesusLength: string | null;
+  /** @nullable */
+  servedBefore: boolean | null;
   /** @nullable */
   previousService: string | null;
   /** @nullable */
@@ -331,6 +408,7 @@ export type MinistryProfile = ProfileListItem & {
   skills: SkillsAndExperience;
   experience: string;
   assessmentSections: FutureAssessmentSections;
+  assessmentConfiguration: AssessmentConfiguration;
   conversations: string[];
   /** @nullable */
   lifeExperiences?: MinistryProfileLifeExperiences;
@@ -378,38 +456,46 @@ export interface BasicInformationInput {
   email: string;
   /** @nullable */
   phone?: string | null;
-  ageRange: string;
-  preferredContact: string;
-  familySituation: string;
-  transportation: string;
+  /** @nullable */
+  ageRange?: string | null;
+  /** @nullable */
+  preferredContact?: string | null;
+  /** @nullable */
+  familySituation?: string | null;
+  /** @nullable */
+  transportation?: string | null;
 }
 
 export interface ChurchConnectionInput {
-  attendanceLength: string;
+  /** @nullable */
+  attendanceLength?: string | null;
   /**
      * @minimum 1
      * @maximum 5
+     * @nullable
      */
-  connectionLevel: number;
-  followingJesusLength: string;
-  servedBefore: boolean;
+  connectionLevel?: number | null;
   /** @nullable */
-  previousService: string | null;
+  followingJesusLength?: string | null;
+  /** @nullable */
+  servedBefore?: boolean | null;
+  /** @nullable */
+  previousService?: string | null;
 }
 
 export interface SkillsAndExperienceInput {
   /** @nullable */
-  occupation: string | null;
+  occupation?: string | null;
   /** @nullable */
-  uniqueSkills: string | null;
+  uniqueSkills?: string | null;
   /** @nullable */
-  previousMinistryExperience: string | null;
+  previousMinistryExperience?: string | null;
   /** @nullable */
-  leadershipExperience: string | null;
+  leadershipExperience?: string | null;
   /** @nullable */
-  missionTripExperience: string | null;
+  missionTripExperience?: string | null;
   /** @nullable */
-  lifeExperience: string | null;
+  lifeExperience?: string | null;
 }
 
 export type SpiritualGiftsAssessmentResponsesItem = {
@@ -451,7 +537,7 @@ export type AssessmentSectionsInputSpiritualHealth = { [key: string]: unknown } 
 export interface AssessmentSectionsInput {
   /** @nullable */
   apest?: AssessmentSectionsInputApest;
-  spiritualGifts: SpiritualGiftsAssessment;
+  spiritualGifts?: SpiritualGiftsAssessment;
   /** @nullable */
   personalityStrengths?: AssessmentSectionsInputPersonalityStrengths;
   /** @nullable */
@@ -464,14 +550,12 @@ export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
   basicInformation: BasicInformationInput;
-  churchConnection: ChurchConnectionInput;
-  /** @minItems 1 */
-  passions: string[];
-  /** @minItems 1 */
-  interests: string[];
+  churchConnection?: ChurchConnectionInput;
+  passions?: string[];
+  interests?: string[];
   servingFrequency?: string;
-  availability: string[];
-  skills: SkillsAndExperienceInput;
+  availability?: string[];
+  skills?: SkillsAndExperienceInput;
   /** @nullable */
   languages?: ProfileInputLanguages;
   /** @nullable */

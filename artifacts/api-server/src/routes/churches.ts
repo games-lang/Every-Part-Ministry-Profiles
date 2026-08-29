@@ -16,6 +16,7 @@ import {
   getOrCreateChurch,
   validateEnabledSpiritualGifts,
 } from "../lib/churches";
+import { assessmentConfiguration } from "../lib/assessment-configuration";
 import {
   ObjectNotFoundError,
   ObjectStorageService,
@@ -54,6 +55,15 @@ router.patch("/church", async (req, res): Promise<void> => {
       res.status(400).json({ error });
       return;
     }
+  }
+  if (
+    parsed.data.assessmentConfiguration !== undefined &&
+    !assessmentConfiguration(parsed.data.assessmentConfiguration)
+  ) {
+    res.status(400).json({
+      error: "Assessment configuration contains unsupported keys or enables a subsection whose section is disabled.",
+    });
+    return;
   }
 
   const church = await getOrCreateChurch(userId);
@@ -157,8 +167,13 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
     return;
   }
 
+  const configuration = assessmentConfiguration(church.assessmentConfiguration);
+  if (!configuration) {
+    res.status(422).json({ error: "This church's assessment configuration is invalid. Please contact the church administrator." });
+    return;
+  }
   const enabledSpiritualGifts = activeSpiritualGifts(church.enabledSpiritualGifts);
-  if (!enabledSpiritualGifts) {
+  if (!enabledSpiritualGifts && configuration.sections.spiritualGifts) {
     res.status(422).json({ error: "This church's spiritual gifts configuration is invalid. Please contact the church administrator." });
     return;
   }
@@ -173,7 +188,8 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
       primaryColor: church.primaryColor,
       accentColor: church.accentColor,
       profileUrl: `/profile/${church.slug}`,
-      enabledSpiritualGifts,
+       enabledSpiritualGifts: enabledSpiritualGifts ?? activeSpiritualGifts(null)!,
+       assessmentConfiguration: configuration,
     }),
   );
 });
