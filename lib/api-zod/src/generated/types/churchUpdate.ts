@@ -10,8 +10,15 @@ import type { SpiritualGiftName } from './spiritualGiftName';
 export interface ChurchUpdate {
   /** @minLength 1 */
   name?: string;
-  /** @nullable */
+  /**
+     * @nullable
+     * @pattern ^/objects/logos/[0-9]+/[0-9a-fA-F-]+$
+     */
   logoUrl?: string | null;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  primaryColor?: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  accentColor?: string;
   /** @nullable */
   address?: string | null;
   /** @nullable */

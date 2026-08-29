@@ -47,6 +47,10 @@ export interface Church {
   slug: string;
   /** @nullable */
   logoUrl?: string | null;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  primaryColor: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  accentColor: string;
   /** @nullable */
   address?: string | null;
   /** @nullable */
@@ -62,8 +66,15 @@ export interface Church {
 export interface ChurchUpdate {
   /** @minLength 1 */
   name?: string;
-  /** @nullable */
+  /**
+     * @nullable
+     * @pattern ^/objects/logos/[0-9]+/[0-9a-fA-F-]+$
+     */
   logoUrl?: string | null;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  primaryColor?: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  accentColor?: string;
   /** @nullable */
   address?: string | null;
   /** @nullable */
@@ -79,9 +90,42 @@ export interface PublicChurch {
   slug: string;
   /** @nullable */
   logoUrl?: string | null;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  primaryColor: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  accentColor: string;
   profileUrl: string;
   /** @minItems 3 */
   enabledSpiritualGifts: SpiritualGiftName[];
+}
+
+export type UploadUrlRequestContentType = typeof UploadUrlRequestContentType[keyof typeof UploadUrlRequestContentType];
+
+
+export const UploadUrlRequestContentType = {
+  'image/png': 'image/png',
+  'image/jpeg': 'image/jpeg',
+  'image/webp': 'image/webp',
+} as const;
+
+export interface UploadUrlRequest {
+  /**
+     * @minLength 1
+     * @maxLength 255
+     */
+  name: string;
+  /**
+     * @minimum 1
+     * @maximum 5242880
+     */
+  size: number;
+  contentType: UploadUrlRequestContentType;
+}
+
+export interface UploadUrlResponse {
+  uploadURL: string;
+  objectPath: string;
+  metadata: UploadUrlRequest;
 }
 
 export interface ProfileListItem {

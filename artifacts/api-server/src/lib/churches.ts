@@ -40,6 +40,8 @@ export function churchResponse(
     name: church.name,
     slug: church.slug,
     logoUrl: church.logoUrl,
+    primaryColor: church.primaryColor,
+    accentColor: church.accentColor,
     address: church.address,
     website: church.website,
     adminName: church.adminName,

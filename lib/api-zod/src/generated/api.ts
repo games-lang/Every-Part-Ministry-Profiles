@@ -20,11 +20,17 @@ export const HealthCheckResponse = zod.object({
 /**
  * @summary Get the signed-in administrator's church
  */
+export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+
+
 export const GetMyChurchResponse = zod.object({
   "id": zod.int(),
   "name": zod.string(),
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
+  "primaryColor": zod.string().regex(getMyChurchResponsePrimaryColorRegExp),
+  "accentColor": zod.string().regex(getMyChurchResponseAccentColorRegExp),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
   "adminName": zod.string(),
@@ -39,13 +45,18 @@ export const GetMyChurchResponse = zod.object({
  * @summary Update church setup information
  */
 
+export const updateMyChurchBodyLogoUrlRegExp = new RegExp('^/objects/logos/[0-9]+/[0-9a-fA-F-]+$');
+export const updateMyChurchBodyPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const updateMyChurchBodyAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchBodyEnabledSpiritualGiftsMin = 3;
 
 
 
 export const UpdateMyChurchBody = zod.object({
   "name": zod.string().min(1).optional(),
-  "logoUrl": zod.string().nullish(),
+  "logoUrl": zod.string().regex(updateMyChurchBodyLogoUrlRegExp).nullish(),
+  "primaryColor": zod.string().regex(updateMyChurchBodyPrimaryColorRegExp).optional(),
+  "accentColor": zod.string().regex(updateMyChurchBodyAccentColorRegExp).optional(),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
   "adminName": zod.string().optional(),
@@ -53,11 +64,17 @@ export const UpdateMyChurchBody = zod.object({
   "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).min(updateMyChurchBodyEnabledSpiritualGiftsMin).optional()
 })
 
+export const updateMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const updateMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+
+
 export const UpdateMyChurchResponse = zod.object({
   "id": zod.int(),
   "name": zod.string(),
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
+  "primaryColor": zod.string().regex(updateMyChurchResponsePrimaryColorRegExp),
+  "accentColor": zod.string().regex(updateMyChurchResponseAccentColorRegExp),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
   "adminName": zod.string(),
@@ -75,6 +92,8 @@ export const GetPublicChurchParams = zod.object({
   "slug": zod.coerce.string()
 })
 
+export const getPublicChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getPublicChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseEnabledSpiritualGiftsMin = 3;
 
 
@@ -83,20 +102,70 @@ export const GetPublicChurchResponse = zod.object({
   "name": zod.string(),
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
+  "primaryColor": zod.string().regex(getPublicChurchResponsePrimaryColorRegExp),
+  "accentColor": zod.string().regex(getPublicChurchResponseAccentColorRegExp),
   "profileUrl": zod.string(),
   "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).min(getPublicChurchResponseEnabledSpiritualGiftsMin)
 })
 
 
 /**
+ * @summary Get the approved public logo for a church
+ */
+export const GetPublicChurchLogoParams = zod.object({
+  "slug": zod.coerce.string()
+})
+
+export const GetPublicChurchLogoResponse = zod.unknown()
+
+
+/**
+ * @summary Request an authenticated image upload URL
+ */
+export const requestUploadUrlBodyNameMax = 255;
+
+export const requestUploadUrlBodySizeMax = 5242880;
+
+
+
+export const RequestUploadUrlBody = zod.object({
+  "name": zod.string().min(1).max(requestUploadUrlBodyNameMax),
+  "size": zod.int().min(1).max(requestUploadUrlBodySizeMax),
+  "contentType": zod.enum(['image/png', 'image/jpeg', 'image/webp'])
+})
+
+export const requestUploadUrlResponseMetadataNameMax = 255;
+
+export const requestUploadUrlResponseMetadataSizeMax = 5242880;
+
+
+
+export const RequestUploadUrlResponse = zod.object({
+  "uploadURL": zod.string(),
+  "objectPath": zod.string(),
+  "metadata": zod.object({
+  "name": zod.string().min(1).max(requestUploadUrlResponseMetadataNameMax),
+  "size": zod.int().min(1).max(requestUploadUrlResponseMetadataSizeMax),
+  "contentType": zod.enum(['image/png', 'image/jpeg', 'image/webp'])
+})
+})
+
+
+/**
  * @summary Get dashboard totals and recent profile activity
  */
+export const getDashboardSummaryResponseChurchPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getDashboardSummaryResponseChurchAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+
+
 export const GetDashboardSummaryResponse = zod.object({
   "church": zod.object({
   "id": zod.int(),
   "name": zod.string(),
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
+  "primaryColor": zod.string().regex(getDashboardSummaryResponseChurchPrimaryColorRegExp),
+  "accentColor": zod.string().regex(getDashboardSummaryResponseChurchAccentColorRegExp),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
   "adminName": zod.string(),

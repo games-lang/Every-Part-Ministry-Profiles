@@ -4,3 +4,4 @@
 - [Strengths reflection framing](strengths-reflection-framing.md) — use original strengths-based statements and conversation-oriented results, never branded-test claims or placement recommendations.
 - [Personality reflection framing](personality-reflection-framing.md) — show seven flexible ministry-focused spectra; never branded types, rigid labels, or calling limitations.
 - [AI volunteer matching boundaries](ai-volunteer-matching-boundaries.md) — send only structured, evidence-qualified signals; derive displayed reasons locally and keep AI advisory.
+- [Object storage upload validation](object-storage-upload-validation.md) — treat signed-upload metadata as untrusted; validate owned bytes before purpose-specific public serving.

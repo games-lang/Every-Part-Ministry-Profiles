@@ -18,6 +18,8 @@ export const churchesTable = pgTable(
     name: text("name").notNull(),
     slug: text("slug").notNull(),
     logoUrl: text("logo_url"),
+    primaryColor: text("primary_color").notNull().default("#122344"),
+    accentColor: text("accent_color").notNull().default("#ED7A59"),
     address: text("address"),
     website: text("website"),
     adminName: text("admin_name").notNull(),

@@ -12,6 +12,10 @@ export interface PublicChurch {
   slug: string;
   /** @nullable */
   logoUrl?: string | null;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  primaryColor: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  accentColor: string;
   profileUrl: string;
   /** @minItems 3 */
   enabledSpiritualGifts: SpiritualGiftName[];

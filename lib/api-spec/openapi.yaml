@@ -85,6 +85,49 @@ paths:
           description: Church not found
         "422":
           description: Church assessment configuration is invalid
+  /churches/{slug}/logo:
+    get:
+      operationId: getPublicChurchLogo
+      tags: [churches]
+      summary: Get the approved public logo for a church
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Church logo image
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Logo not found
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [churches]
+      summary: Request an authenticated image upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlRequest"
+      responses:
+        "200":
+          description: Presigned upload URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        "400":
+          description: Invalid image metadata
+        "401":
+          description: Unauthorized
   /dashboard/summary:
     get:
       operationId: getDashboardSummary
@@ -212,12 +255,18 @@ components:
         - status
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor]
       properties:
         id: { type: integer }
         name: { type: string }
         slug: { type: string }
         logoUrl: { type: ["string", "null"] }
+        primaryColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        accentColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
         address: { type: ["string", "null"] }
         website: { type: ["string", "null"] }
         adminName: { type: string }
@@ -233,7 +282,15 @@ components:
       type: object
       properties:
         name: { type: string, minLength: 1 }
-        logoUrl: { type: ["string", "null"] }
+        logoUrl:
+          type: ["string", "null"]
+          pattern: "^/objects/logos/[0-9]+/[0-9a-fA-F-]+$"
+        primaryColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        accentColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
         address: { type: ["string", "null"] }
         website: { type: ["string", "null"] }
         adminName: { type: string }
@@ -246,11 +303,17 @@ components:
             $ref: "#/components/schemas/SpiritualGiftName"
     PublicChurch:
       type: object
-      required: [name, slug, profileUrl, enabledSpiritualGifts]
+      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor]
       properties:
         name: { type: string }
         slug: { type: string }
         logoUrl: { type: ["string", "null"] }
+        primaryColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        accentColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
         profileUrl: { type: string }
         enabledSpiritualGifts:
           type: array
@@ -258,6 +321,29 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/SpiritualGiftName"
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        size:
+          type: integer
+          minimum: 1
+          maximum: 5242880
+        contentType:
+          type: string
+          enum: [image/png, image/jpeg, image/webp]
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath, metadata]
+      properties:
+        uploadURL: { type: string }
+        objectPath: { type: string }
+        metadata:
+          $ref: "#/components/schemas/UploadUrlRequest"
     SpiritualGiftName:
       type: string
       enum:
