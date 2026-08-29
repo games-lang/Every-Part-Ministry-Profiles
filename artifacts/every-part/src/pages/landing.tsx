@@ -11,27 +11,41 @@ import {
   Users,
 } from "lucide-react";
 
-const features = [
+const steps = [
   {
-    icon: HeartHandshake,
+    icon: Settings2,
     number: "01",
-    title: "Meaningful Discovery",
+    title: "Set Up Your Church’s Ministry Profile",
     description:
-      "Guide members through a thoughtful assessment covering their story, gifts, strengths, passions, spiritual rhythms, and availability.",
-  },
-  {
-    icon: Map,
-    number: "02",
-    title: "Clear Pathways",
-    description:
-      "Review comprehensive profiles that make it obvious where someone might thrive, not just where there is a gap.",
+      "Customize the profile around your church, ministry teams, and serving opportunities.",
   },
   {
     icon: Users,
-    number: "03",
-    title: "Better Conversations",
+    number: "02",
+    title: "Invite Members to Complete Their Profile",
     description:
-      "Generate beautiful, print-ready profiles to guide your pastoral and leadership conversations.",
+      "Members reflect on their gifts, passions, ministry style, experience, availability, spiritual health, and calling.",
+  },
+  {
+    icon: HeartHandshake,
+    number: "03",
+    title: "Meet and Discern Together",
+    description:
+      "A leader meets with each person to hear their story, discuss the profile, and prayerfully discern next steps.",
+  },
+  {
+    icon: Map,
+    number: "04",
+    title: "Connect Them to Their Part",
+    description:
+      "Help each person join a ministry team that fits their gifting, calling, passions, and current season.",
+  },
+  {
+    icon: Sparkles,
+    number: "05",
+    title: "Follow Up and Develop",
+    description:
+      "Check in after they begin serving. Make sure the fit is healthy, help them grow, and adjust their ministry role when needed.",
   },
 ];
 
@@ -105,12 +119,18 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
+            <div className="mb-8">
+              <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">How it works</p>
+              <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
+                A simple path takes people from discovery to meaningful service—and gives leaders a way to keep walking with them.
+              </p>
+            </div>
             <div className="grid gap-4 md:grid-cols-3">
-              {features.map((feature) => (
-                <article key={feature.title} className="landing-card rounded-[1.5rem] border border-border bg-card p-7 sm:p-8">
-                  <div className="mb-16 flex items-start justify-between"><span className="text-xs font-bold tracking-[.15em] text-muted-foreground">{feature.number}</span><feature.icon className="h-6 w-6 text-secondary" /></div>
-                  <h3 className="font-serif text-2xl font-semibold tracking-[-.04em]">{feature.title}</h3>
-                  <p className="mt-4 leading-7 text-muted-foreground">{feature.description}</p>
+              {steps.map((step, index) => (
+                <article key={step.title} className={`landing-card rounded-[1.5rem] border border-border bg-card p-7 sm:p-8 ${index >= 3 ? "lg:col-span-3" : "lg:col-span-2"}`}>
+                  <div className="mb-16 flex items-start justify-between"><span className="text-xs font-bold tracking-[.15em] text-muted-foreground">{step.number}</span><step.icon className="h-6 w-6 text-secondary" /></div>
+                  <h3 className="font-serif text-2xl font-semibold tracking-[-.04em]">{step.title}</h3>
+                  <p className="mt-4 leading-7 text-muted-foreground">{step.description}</p>
                 </article>
               ))}
             </div>
