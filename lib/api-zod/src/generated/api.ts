@@ -22,6 +22,14 @@ export const HealthCheckResponse = zod.object({
  */
 export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getMyChurchResponseAssessmentConfigurationPassionsItemMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationPassionsMax = 100;
+
+export const getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
+
 
 
 export const GetMyChurchResponse = zod.object({
@@ -97,7 +105,9 @@ export const GetMyChurchResponse = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(getMyChurchResponseAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
 })
 })
 
@@ -110,6 +120,14 @@ export const updateMyChurchBodyLogoUrlRegExp = new RegExp('^/objects/logos/[0-9]
 export const updateMyChurchBodyPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchBodyAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchBodyEnabledSpiritualGiftsMin = 3;
+
+export const updateMyChurchBodyAssessmentConfigurationPassionsItemMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationPassionsMax = 100;
+
+export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax = 100;
 
 
 
@@ -182,12 +200,22 @@ export const UpdateMyChurchBody = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationPassionsItemMax)).max(updateMyChurchBodyAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax)
 }).optional()
 })
 
 export const updateMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const updateMyChurchResponseAssessmentConfigurationPassionsItemMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationPassionsMax = 100;
+
+export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
+
 
 
 export const UpdateMyChurchResponse = zod.object({
@@ -263,7 +291,9 @@ export const UpdateMyChurchResponse = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(updateMyChurchResponseAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
 })
 })
 
@@ -278,6 +308,14 @@ export const GetPublicChurchParams = zod.object({
 export const getPublicChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseEnabledSpiritualGiftsMin = 3;
+
+export const getPublicChurchResponseAssessmentConfigurationPassionsItemMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationPassionsMax = 100;
+
+export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
 
 
 
@@ -348,7 +386,9 @@ export const GetPublicChurchResponse = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationPassionsItemMax)).max(getPublicChurchResponseAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax)
 })
 })
 
@@ -400,6 +440,14 @@ export const RequestUploadUrlResponse = zod.object({
  */
 export const getDashboardSummaryResponseChurchPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDashboardSummaryResponseChurchAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax = 100;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax = 100;
+
 
 
 export const GetDashboardSummaryResponse = zod.object({
@@ -476,7 +524,9 @@ export const GetDashboardSummaryResponse = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax)
 })
 }),
   "totalProfiles": zod.int(),
@@ -595,6 +645,14 @@ export const CreateProfileBody = zod.object({
 
 export const createProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
 
+export const createProfileResponseTwoAssessmentConfigurationPassionsItemMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationPassionsMax = 100;
+
+export const createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax = 100;
+
 
 
 export const CreateProfileResponse = zod.object({
@@ -712,7 +770,9 @@ export const CreateProfileResponse = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationPassionsItemMax)).max(createProfileResponseTwoAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
 }),
   "conversations": zod.array(zod.string()),
   "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
@@ -781,6 +841,14 @@ export const GetProfileParams = zod.object({
 
 
 export const getProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
+
+export const getProfileResponseTwoAssessmentConfigurationPassionsItemMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationPassionsMax = 100;
+
+export const getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax = 100;
 
 
 
@@ -899,7 +967,9 @@ export const GetProfileResponse = zod.object({
   "spiritualHealth.connection": zod.boolean(),
   "connectionAvailability.churchConnection": zod.boolean(),
   "connectionAvailability.availability": zod.boolean()
-})
+}),
+  "passions": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationPassionsItemMax)).max(getProfileResponseTwoAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
 }),
   "conversations": zod.array(zod.string()),
   "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),

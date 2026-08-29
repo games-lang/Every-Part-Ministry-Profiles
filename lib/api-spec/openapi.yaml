@@ -633,13 +633,21 @@ components:
                 response: { type: integer, minimum: 1, maximum: 5 }
     AssessmentConfiguration:
       type: object
-      required: [sections, subsections]
+      required: [sections, subsections, passions, ministryInterests]
       additionalProperties: false
       properties:
         sections:
           $ref: "#/components/schemas/AssessmentConfigurationSections"
         subsections:
           $ref: "#/components/schemas/AssessmentConfigurationSubsections"
+        passions:
+          type: array
+          maxItems: 100
+          items: { type: string, minLength: 1, maxLength: 80 }
+        ministryInterests:
+          type: array
+          maxItems: 100
+          items: { type: string, minLength: 1, maxLength: 80 }
     AssessmentConfigurationSections:
       type: object
       additionalProperties: false

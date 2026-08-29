@@ -1467,6 +1467,9 @@ export default function Assessment() {
   const initializedGiftConfig = useRef<string | null>(null);
   const form = useForm<Values>({ defaultValues });
   const configuration = church?.assessmentConfiguration;
+  const passionOptions = configuration?.passions ?? OPTIONS.passions;
+  const ministryInterestOptions =
+    configuration?.ministryInterests ?? OPTIONS.interests;
   const sectionEnabled = (
     section: keyof NonNullable<typeof configuration>["sections"],
   ) => configuration?.sections[section] ?? true;
@@ -2687,7 +2690,7 @@ export default function Assessment() {
                       <MultiSelect
                         form={form}
                         name="passions"
-                        options={OPTIONS.passions}
+                        options={passionOptions}
                       />
                       <Heading>Ministry Interests</Heading>
                       <p className="text-sm text-muted-foreground">
@@ -2696,7 +2699,7 @@ export default function Assessment() {
                       <MultiSelect
                         form={form}
                         name="interests"
-                        options={OPTIONS.interests}
+                        options={ministryInterestOptions}
                       />
                     </>
                   )}

@@ -11,4 +11,16 @@ import type { AssessmentConfigurationSubsections } from './assessmentConfigurati
 export interface AssessmentConfiguration {
   sections: AssessmentConfigurationSections;
   subsections: AssessmentConfigurationSubsections;
+  /**
+     * @maxItems 100
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  passions: string[];
+  /**
+     * @maxItems 100
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  ministryInterests: string[];
 }

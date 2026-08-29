@@ -9,6 +9,53 @@ export const ASSESSMENT_SECTION_KEYS = [
   "connectionAvailability",
 ] as const;
 
+export const DEFAULT_PASSIONS = [
+  "Children",
+  "Youth",
+  "Young adults",
+  "Families",
+  "New Christians",
+  "People who don't know Jesus",
+  "Immigrants/refugees",
+  "Multicultural ministry",
+  "Missions",
+  "People experiencing poverty",
+  "Addiction recovery",
+  "Grief",
+  "Elderly adults",
+  "Prayer",
+  "Discipleship",
+  "Worship",
+  "Community outreach",
+  "Justice/compassion",
+  "Second-generation ministry",
+] as const;
+
+export const DEFAULT_MINISTRY_INTERESTS = [
+  "Children",
+  "Preschool",
+  "Youth",
+  "Young adults",
+  "Worship",
+  "Sound/tech",
+  "Hospitality",
+  "Greeting",
+  "Prayer",
+  "Small groups",
+  "Discipleship",
+  "Outreach",
+  "Missions",
+  "Communications",
+  "Office/admin",
+  "Finance",
+  "Event planning",
+  "Translation",
+  "Transportation",
+  "Maintenance",
+  "Care ministry",
+  "Leadership",
+] as const;
+
 export const ASSESSMENT_SUBSECTION_KEYS = [
   "aboutYou.personalInformation",
   "aboutYou.skillsExperience",
@@ -104,6 +151,8 @@ const RESPONSE_SUBSECTION_PREFIXES = {
 export type AssessmentConfiguration = {
   sections: Record<SectionKey, boolean>;
   subsections: Record<SubsectionKey, boolean>;
+  passions: string[];
+  ministryInterests: string[];
 };
 
 function enabled<T extends readonly string[]>(keys: T): Record<T[number], boolean> {
@@ -114,6 +163,8 @@ export function defaultAssessmentConfiguration(): AssessmentConfiguration {
   return {
     sections: enabled(ASSESSMENT_SECTION_KEYS),
     subsections: enabled(ASSESSMENT_SUBSECTION_KEYS),
+    passions: [...DEFAULT_PASSIONS],
+    ministryInterests: [...DEFAULT_MINISTRY_INTERESTS],
   };
 }
 
@@ -125,6 +176,8 @@ export function assessmentConfiguration(
   const candidate = value as {
     sections?: Record<string, unknown>;
     subsections?: Record<string, unknown>;
+    passions?: unknown;
+    ministryInterests?: unknown;
   };
   if (!candidate.sections || !candidate.subsections) return null;
   if (
@@ -148,6 +201,36 @@ export function assessmentConfiguration(
     const parent = key.split(".")[0] as SectionKey;
     if (candidate.subsections[key] && !configuration.sections[parent]) return null;
     configuration.subsections[key] = candidate.subsections[key];
+  }
+  for (const [key, defaults] of [
+    ["passions", DEFAULT_PASSIONS],
+    ["ministryInterests", DEFAULT_MINISTRY_INTERESTS],
+  ] as const) {
+    const options = candidate[key];
+    if (options !== undefined) {
+      if (
+        !Array.isArray(options) ||
+        options.length > 100 ||
+        options.some(
+          (option) =>
+            typeof option !== "string" ||
+            option.trim().length < 1 ||
+            option.trim().length > 80,
+        ) ||
+        new Set(options.map((option) => option.trim().toLocaleLowerCase())).size !==
+          options.length
+      ) {
+        return null;
+      }
+    }
+    configuration[key] = Array.from(
+      new Map(
+        [...defaults, ...(Array.isArray(options) ? options : [])].map((option) => [
+          option.trim().toLocaleLowerCase(),
+          option.trim(),
+        ]),
+      ).values(),
+    );
   }
   return configuration;
 }

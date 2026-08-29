@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  assessmentConfiguration,
   defaultAssessmentConfiguration,
+  DEFAULT_MINISTRY_INTERESTS,
+  DEFAULT_PASSIONS,
   filterAssessmentSection,
 } from "./assessment-configuration.ts";
 
@@ -98,4 +101,23 @@ test("all-enabled assessment payloads retain safe derived values", () => {
       "teacher-0": 4,
     },
   });
+});
+
+test("church-specific options extend protected generic defaults", () => {
+  const defaults = defaultAssessmentConfiguration();
+  const configuration = assessmentConfiguration({
+    ...defaults,
+    passions: ["Local school families"],
+    ministryInterests: ["Community garden team"],
+  });
+
+  assert.ok(configuration);
+  assert.deepEqual(configuration.passions, [
+    ...DEFAULT_PASSIONS,
+    "Local school families",
+  ]);
+  assert.deepEqual(configuration.ministryInterests, [
+    ...DEFAULT_MINISTRY_INTERESTS,
+    "Community garden team",
+  ]);
 });

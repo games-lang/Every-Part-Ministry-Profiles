@@ -84,6 +84,21 @@ const subsectionSchema = z.object({
   'connectionAvailability.availability': z.boolean(),
 });
 
+const GENERIC_PASSIONS = [
+  "Children", "Youth", "Young adults", "Families", "New Christians",
+  "People who don't know Jesus", "Immigrants/refugees", "Multicultural ministry",
+  "Missions", "People experiencing poverty", "Addiction recovery", "Grief",
+  "Elderly adults", "Prayer", "Discipleship", "Worship", "Community outreach",
+  "Justice/compassion", "Second-generation ministry",
+] as const;
+const GENERIC_MINISTRY_INTERESTS = [
+  "Children", "Preschool", "Youth", "Young adults", "Worship", "Sound/tech",
+  "Hospitality", "Greeting", "Prayer", "Small groups", "Discipleship",
+  "Outreach", "Missions", "Communications", "Office/admin", "Finance",
+  "Event planning", "Translation", "Transportation", "Maintenance",
+  "Care ministry", "Leadership",
+] as const;
+
 const churchFormSchema = z.object({
   name: z.string().min(1, "Church name is required"),
   adminName: z.string().min(1, "Admin name is required"),
@@ -96,6 +111,8 @@ const churchFormSchema = z.object({
   assessmentConfiguration: z.object({
     sections: sectionSchema,
     subsections: subsectionSchema,
+    passions: z.array(z.string().min(1).max(80)).max(100),
+    ministryInterests: z.array(z.string().min(1).max(80)).max(100),
   })
 });
 
@@ -328,6 +345,8 @@ export default function ChurchSetup() {
       assessmentConfiguration: {
         sections: DEFAULT_SECTIONS,
         subsections: DEFAULT_SUBSECTIONS,
+        passions: [...GENERIC_PASSIONS],
+        ministryInterests: [...GENERIC_MINISTRY_INTERESTS],
       },
     },
   });
@@ -351,6 +370,8 @@ export default function ChurchSetup() {
         assessmentConfiguration: {
           sections: mergedSections,
           subsections: mergedSubsections,
+          passions: church.assessmentConfiguration?.passions || [...GENERIC_PASSIONS],
+          ministryInterests: church.assessmentConfiguration?.ministryInterests || [...GENERIC_MINISTRY_INTERESTS],
         },
       });
       setLogoPath(church.logoUrl || null);
@@ -393,6 +414,21 @@ export default function ChurchSetup() {
         },
       }
     );
+  };
+
+  const [passionDraft, setPassionDraft] = useState("");
+  const [interestDraft, setInterestDraft] = useState("");
+  const addCustomOption = (field: "passions" | "ministryInterests", draft: string, clear: () => void) => {
+    const value = draft.trim();
+    const current = form.getValues(`assessmentConfiguration.${field}`);
+    if (!value || current.some(option => option.toLocaleLowerCase() === value.toLocaleLowerCase())) return;
+    form.setValue(`assessmentConfiguration.${field}`, [...current, value], { shouldDirty: true });
+    clear();
+  };
+  const removeCustomOption = (field: "passions" | "ministryInterests", value: string) => {
+    if ((field === "passions" ? GENERIC_PASSIONS : GENERIC_MINISTRY_INTERESTS).includes(value as never)) return;
+    const current = form.getValues(`assessmentConfiguration.${field}`);
+    form.setValue(`assessmentConfiguration.${field}`, current.filter(option => option !== value), { shouldDirty: true });
   };
 
   const handleLogoUpload = async (file: File | undefined) => {
@@ -608,6 +644,67 @@ export default function ChurchSetup() {
                   </div>
                 );
               })}
+
+              <div className="rounded-lg border border-border/50 bg-card p-4 space-y-5">
+                <div>
+                  <h4 className="font-medium">Passions and ministry interests</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Members will see the generic options below plus any options you add for your church.
+                  </p>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="assessmentConfiguration.passions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Passions</FormLabel>
+                      <div className="flex flex-wrap gap-2">
+                        {field.value.map(option => (
+                          <span key={option} className="inline-flex items-center gap-1 rounded-full border bg-muted/30 px-3 py-1 text-sm">
+                            {option}
+                            {!GENERIC_PASSIONS.includes(option as never) && (
+                              <button type="button" className="ml-1 text-muted-foreground hover:text-foreground" onClick={() => removeCustomOption("passions", option)} aria-label={`Remove ${option}`}>
+                                ×
+                              </button>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input value={passionDraft} onChange={event => setPassionDraft(event.target.value)} placeholder="Add a church-specific passion" maxLength={80} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); addCustomOption("passions", passionDraft, () => setPassionDraft("")); } }} />
+                        <Button type="button" variant="outline" onClick={() => addCustomOption("passions", passionDraft, () => setPassionDraft(""))}>Add</Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="assessmentConfiguration.ministryInterests"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ministry interests</FormLabel>
+                      <div className="flex flex-wrap gap-2">
+                        {field.value.map(option => (
+                          <span key={option} className="inline-flex items-center gap-1 rounded-full border bg-muted/30 px-3 py-1 text-sm">
+                            {option}
+                            {!GENERIC_MINISTRY_INTERESTS.includes(option as never) && (
+                              <button type="button" className="ml-1 text-muted-foreground hover:text-foreground" onClick={() => removeCustomOption("ministryInterests", option)} aria-label={`Remove ${option}`}>
+                                ×
+                              </button>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input value={interestDraft} onChange={event => setInterestDraft(event.target.value)} placeholder="Add a church-specific ministry interest" maxLength={80} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); addCustomOption("ministryInterests", interestDraft, () => setInterestDraft("")); } }} />
+                        <Button type="button" variant="outline" onClick={() => addCustomOption("ministryInterests", interestDraft, () => setInterestDraft(""))}>Add</Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
 
