@@ -6,6 +6,7 @@ import {
   HeartHandshake,
   Map,
   Menu,
+  Settings2,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -16,7 +17,7 @@ const features = [
     number: "01",
     title: "Meaningful Discovery",
     description:
-      "Guide members through a thoughtful assessment covering passions, skills, experience, and spiritual gifts.",
+      "Guide members through a thoughtful assessment covering their story, gifts, strengths, passions, spiritual rhythms, and availability.",
   },
   {
     icon: Map,
@@ -45,6 +46,7 @@ export default function LandingPage() {
           </Link>
           <nav className="hidden items-center gap-8 text-sm font-medium md:flex" aria-label="Main navigation">
             <a href="#how-it-works" className="landing-link">How it works</a>
+            <a href="#assessment" className="landing-link">The assessment</a>
             <a href="#for-leaders" className="landing-link">For church leaders</a>
             <Link href="/sign-in" className="landing-link">Sign in</Link>
             <Link href="/sign-up" className="rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:bg-accent">Get started</Link>
@@ -69,7 +71,7 @@ export default function LandingPage() {
                 Every person has a <span className="text-accent">place.</span>
               </h1>
               <p className="landing-reveal landing-reveal-delay-2 mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                Every Part is a ministry discovery tool that replaces static volunteer forms with an engaging assessment, helping you start meaningful conversations about serving.
+                Every Part is a ministry discovery tool that replaces static volunteer forms with an engaging assessment, helping you see the whole person and start meaningful conversations about serving.
               </p>
               <div className="landing-reveal landing-reveal-delay-2 mt-10 flex flex-col gap-3 sm:flex-row">
                 <Link href="/sign-up" className="inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground shadow-[0_12px_24px_hsl(var(--foreground)/.16)] transition hover:-translate-y-0.5 hover:bg-accent">
@@ -105,6 +107,62 @@ export default function LandingPage() {
                   <p className="mt-4 leading-7 text-muted-foreground">{feature.description}</p>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="assessment" className="px-5 py-20 sm:px-8 lg:py-28">
+          <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.05fr_.95fr] lg:items-start lg:gap-20">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">What the assessment explores</p>
+              <h2 className="mt-5 max-w-2xl font-serif text-4xl font-semibold leading-tight tracking-[-.055em] sm:text-6xl">
+                More than a volunteer form.
+              </h2>
+              <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
+                Members reflect on the experiences, gifts, strengths, and rhythms that shape how they serve. The result is a conversation-ready Ministry Profile—not a rigid label or a one-size-fits-all placement.
+              </p>
+              <div className="mt-8 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
+                {[
+                  "Background & experience",
+                  "Spiritual gifts",
+                  "Fivefold / APEST expressions",
+                  "Passions & ministry interests",
+                  "Natural strengths",
+                  "Personality & working style",
+                  "Spiritual health & rhythms",
+                  "Church connection & availability",
+                ].map((part) => (
+                  <div key={part} className="flex items-center gap-3">
+                    <Check className="h-4 w-4 shrink-0 text-secondary" />
+                    <span>{part}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[1.75rem] border border-border bg-muted p-7 sm:p-9">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                <Settings2 className="h-5 w-5" />
+              </div>
+              <h3 className="mt-8 font-serif text-3xl font-semibold tracking-[-.04em]">Make it yours.</h3>
+              <p className="mt-4 leading-7 text-muted-foreground">
+                Every church can shape the assessment around its own ministry context. In Church Setup, pastors can:
+              </p>
+              <ul className="mt-6 space-y-4 text-sm leading-6">
+                {[
+                  "Enable or hide complete sections.",
+                  "Choose which question groups appear within each section.",
+                  "Keep the generic options and add church-specific passions and ministry interests.",
+                  "Update the assessment for future members without changing historical profiles.",
+                ].map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-7 border-t border-border pt-6 text-sm font-medium text-foreground">
+                Thoughtful by default. Flexible by design.
+              </p>
             </div>
           </div>
         </section>
