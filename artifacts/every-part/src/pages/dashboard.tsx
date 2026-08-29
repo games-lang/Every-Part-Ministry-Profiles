@@ -1,6 +1,6 @@
 import { useGetDashboardSummary } from "@workspace/api-client-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, FileText, Settings, Users } from "lucide-react";
+import { ArrowRight, FileText, Settings, Sparkles, Users } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -83,6 +83,34 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-sm">
+        <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/10">
+              <Sparkles className="h-5 w-5 text-secondary" />
+            </div>
+            <div>
+              <CardTitle className="font-serif text-xl text-primary-foreground">
+                Find volunteers for a ministry need
+              </CardTitle>
+              <CardDescription className="mt-1.5 max-w-2xl leading-relaxed text-primary-foreground/75">
+                Describe a role and explore members whose gifts, passions, and availability may align.
+              </CardDescription>
+            </div>
+          </div>
+          <Button
+            variant="secondary"
+            className="w-full shrink-0 font-medium sm:w-auto"
+            asChild
+          >
+            <Link href="/profiles?view=match">
+              Find Volunteers
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
 
       <div className="grid md:grid-cols-3 gap-8">
         {/* Recent Profiles */}

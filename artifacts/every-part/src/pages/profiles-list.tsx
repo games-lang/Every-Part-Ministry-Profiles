@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useListProfiles, useFindVolunteerMatches } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -104,7 +104,11 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
 }
 
 export default function ProfilesList() {
-  const [activeTab, setActiveTab] = useState<"directory" | "match">("directory");
+  const [location] = useLocation();
+  const [activeTab, setActiveTab] = useState<"directory" | "match">(() => {
+    const query = location.split("?")[1] ?? "";
+    return new URLSearchParams(query).get("view") === "match" ? "match" : "directory";
+  });
 
   // Directory state
   const [searchTerm, setSearchTerm] = useState("");
