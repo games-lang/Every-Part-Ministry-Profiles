@@ -16,6 +16,8 @@ tags:
     description: Pastor and administrator dashboard operations
   - name: profiles
     description: Ministry Profile submissions and results
+  - name: teams
+    description: Church ministry team management
 paths:
   /healthz:
     get:
@@ -142,6 +144,73 @@ paths:
                 $ref: "#/components/schemas/DashboardSummary"
         "401":
           description: Unauthorized
+  /teams:
+    get:
+      operationId: listTeams
+      tags: [teams]
+      summary: List teams for the signed-in church
+      responses:
+        "200":
+          description: Teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MinistryTeam"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: createTeam
+      tags: [teams]
+      summary: Create a team for the signed-in church
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamCreateInput"
+      responses:
+        "201":
+          description: Created team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MinistryTeam"
+        "400":
+          description: Invalid team
+        "401":
+          description: Unauthorized
+  /teams/{id}:
+    patch:
+      operationId: updateTeam
+      tags: [teams]
+      summary: Update or archive a church team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamUpdateInput"
+      responses:
+        "200":
+          description: Updated team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MinistryTeam"
+        "400":
+          description: Invalid team
+        "401":
+          description: Unauthorized
+        "404":
+          description: Team not found
   /profiles:
     get:
       operationId: listProfiles
@@ -244,6 +313,36 @@ paths:
           description: Unauthorized
         "404":
           description: Profile not found
+  /profiles/{id}/team:
+    patch:
+      operationId: updateProfileTeam
+      tags: [profiles]
+      summary: Assign or remove a profile's current team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileTeamUpdateInput"
+      responses:
+        "200":
+          description: Updated profile team assignment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileTeamAssignment"
+        "400":
+          description: Invalid team assignment
+        "401":
+          description: Unauthorized
+        "404":
+          description: Profile or team not found
 components:
   schemas:
     HealthStatus:
@@ -381,7 +480,7 @@ components:
         - Voluntary Poverty
     DashboardSummary:
       type: object
-      required: [church, totalProfiles, recentProfiles, topInterests, topPassions]
+      required: [church, totalProfiles, recentProfiles, topInterests, topPassions, teamCount, activeTeamCount, assignedProfileCount]
       properties:
         church:
           $ref: "#/components/schemas/Church"
@@ -398,6 +497,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CountItem"
+        teamCount: { type: integer }
+        activeTeamCount: { type: integer }
+        assignedProfileCount: { type: integer }
     CountItem:
       type: object
       required: [label, count]
@@ -406,7 +508,7 @@ components:
         count: { type: integer }
     ProfileListItem:
       type: object
-      required: [id, memberName, email, completedAt, interests, passions, availability]
+      required: [id, memberName, email, completedAt, interests, passions, availability, teamId]
       properties:
         id: { type: integer }
         memberName: { type: string }
@@ -422,6 +524,55 @@ components:
           type: array
           items: { type: string }
         servingFrequency: { type: ["string", "null"] }
+        teamId: { type: ["integer", "null"] }
+    MinistryTeam:
+      type: object
+      required: [id, name, description, isArchived, memberCount, members]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        description: { type: ["string", "null"] }
+        isArchived: { type: boolean }
+        memberCount: { type: integer }
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamMember"
+    TeamMember:
+      type: object
+      required: [id, memberName, email, completedAt]
+      properties:
+        id: { type: integer }
+        memberName: { type: string }
+        email: { type: string, format: email }
+        completedAt: { type: string, format: date-time }
+    TeamCreateInput:
+      type: object
+      required: [name]
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        description: { type: ["string", "null"], maxLength: 500 }
+    TeamUpdateInput:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        description: { type: ["string", "null"], maxLength: 500 }
+        isArchived: { type: boolean }
+    ProfileTeamUpdateInput:
+      type: object
+      required: [teamId]
+      additionalProperties: false
+      properties:
+        teamId: { type: ["integer", "null"] }
+    ProfileTeamAssignment:
+      type: object
+      required: [profileId, teamId, teamName]
+      properties:
+        profileId: { type: integer }
+        teamId: { type: ["integer", "null"] }
+        teamName: { type: ["string", "null"] }
     VolunteerMatchInput:
       type: object
       required: [roleDescription]

@@ -15,6 +15,7 @@ export function profileListItem(profile: MinistryProfile) {
     passions: profile.passions,
     availability: profile.availability,
     servingFrequency: profile.servingFrequency,
+    teamId: profile.teamId,
   };
 }
 

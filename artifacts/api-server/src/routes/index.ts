@@ -4,6 +4,7 @@ import churchesRouter from "./churches";
 import dashboardRouter from "./dashboard";
 import profilesRouter from "./profiles";
 import storageRouter from "./storage";
+import teamsRouter from "./teams";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use(churchesRouter);
 router.use(dashboardRouter);
 router.use(profilesRouter);
 router.use(storageRouter);
+router.use(teamsRouter);
 
 export default router;

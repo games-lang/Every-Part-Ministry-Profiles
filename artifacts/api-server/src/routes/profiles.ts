@@ -9,8 +9,15 @@ import {
   FindVolunteerMatchesResponse,
   ListProfilesQueryParams,
   ListProfilesResponse,
+  UpdateProfileTeamBody,
+  UpdateProfileTeamResponse,
 } from "@workspace/api-zod";
-import { churchesTable, db, ministryProfilesTable } from "@workspace/db";
+import {
+  churchesTable,
+  db,
+  ministryProfilesTable,
+  ministryTeamsTable,
+} from "@workspace/db";
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
@@ -272,6 +279,87 @@ router.post("/profiles/matches", async (req, res): Promise<void> => {
     "Volunteer matching completed",
   );
   res.json(FindVolunteerMatchesResponse.parse(matches));
+});
+
+router.patch("/profiles/:id/team", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const params = GetProfileParams.safeParse(req.params);
+  const parsed = UpdateProfileTeamBody.safeParse(req.body);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const church = await getOrCreateChurch(userId);
+  const result = await db.transaction(async (tx) => {
+    const [profile] = await tx
+      .select()
+      .from(ministryProfilesTable)
+      .where(
+        and(
+          eq(ministryProfilesTable.id, params.data.id),
+          eq(ministryProfilesTable.churchId, church.id),
+        ),
+      )
+      .for("update")
+      .limit(1);
+    if (!profile) return { error: "Profile not found", status: 404 } as const;
+
+    let teamName: string | null = null;
+    if (parsed.data.teamId !== null) {
+      const [team] = await tx
+        .select()
+        .from(ministryTeamsTable)
+        .where(
+          and(
+            eq(ministryTeamsTable.id, parsed.data.teamId),
+            eq(ministryTeamsTable.churchId, church.id),
+          ),
+        )
+        .for("update")
+        .limit(1);
+      if (!team) return { error: "Team not found", status: 404 } as const;
+      if (team.isArchived) {
+        return {
+          error: "Archived teams cannot receive new profile assignments.",
+          status: 400,
+        } as const;
+      }
+      teamName = team.name;
+    }
+
+    const [updated] = await tx
+      .update(ministryProfilesTable)
+      .set({ teamId: parsed.data.teamId })
+      .where(
+        and(
+          eq(ministryProfilesTable.id, profile.id),
+          eq(ministryProfilesTable.churchId, church.id),
+        ),
+      )
+      .returning();
+    if (!updated) return { error: "Profile not found", status: 404 } as const;
+
+    return { updated, teamName } as const;
+  });
+  if ("error" in result && typeof result.status === "number") {
+    res.status(result.status).json({ error: result.error });
+    return;
+  }
+
+  res.json(
+    UpdateProfileTeamResponse.parse({
+      profileId: result.updated.id,
+      teamId: parsed.data.teamId,
+      teamName: result.teamName,
+    }),
+  );
 });
 
 router.get("/profiles/:id", async (req, res): Promise<void> => {

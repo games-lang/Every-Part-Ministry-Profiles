@@ -14,6 +14,7 @@ import Dashboard from '@/pages/dashboard';
 import ChurchSetup from '@/pages/church-setup';
 import ProfilesList from '@/pages/profiles-list';
 import ProfileDetail from '@/pages/profile-detail';
+import Teams from '@/pages/teams';
 import Assessment from '@/pages/assessment';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
@@ -193,6 +194,9 @@ function ClerkProviderWithRoutes() {
               </Route>
               <Route path="/profiles/:id">
                 <AuthenticatedRoute component={ProfileDetail} />
+              </Route>
+              <Route path="/teams">
+                <AuthenticatedRoute component={Teams} />
               </Route>
               
               <Route path="/profile/:slug" component={Assessment} />

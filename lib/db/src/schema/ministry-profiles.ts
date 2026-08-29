@@ -1,5 +1,6 @@
 import {
   boolean,
+  foreignKey,
   integer,
   jsonb,
   pgTable,
@@ -10,12 +11,14 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { churchesTable } from "./churches";
+import { ministryTeamsTable } from "./ministry-teams";
 
 export const ministryProfilesTable = pgTable("ministry_profiles", {
   id: serial("id").primaryKey(),
   churchId: integer("church_id")
     .notNull()
     .references(() => churchesTable.id, { onDelete: "cascade" }),
+  teamId: integer("team_id"),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
@@ -56,7 +59,13 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
   completedAt: timestamp("completed_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (table) => [
+  foreignKey({
+    columns: [table.teamId, table.churchId],
+    foreignColumns: [ministryTeamsTable.id, ministryTeamsTable.churchId],
+    name: "ministry_profiles_team_church_fk",
+  }),
+]);
 
 export const insertMinistryProfileSchema = createInsertSchema(
   ministryProfilesTable,

@@ -1,9 +1,20 @@
+import { useState } from "react";
 import { useRoute, Link } from "wouter";
-import { useGetProfile, getGetProfileQueryKey } from "@workspace/api-client-react";
-import { ArrowLeft, Mail, Phone, Printer } from "lucide-react";
+import {
+  getGetDashboardSummaryQueryKey,
+  useGetProfile,
+  getGetProfileQueryKey,
+  getListTeamsQueryKey,
+  useListTeams,
+  useUpdateProfileTeam,
+} from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, Loader2, Mail, Phone, Printer, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 
 const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
@@ -115,6 +126,97 @@ function PersonalityAssessment({ value, isEnabled }: { value: unknown; isEnabled
   return <div className="space-y-6"><div><h3 className="font-medium mb-3">How You Tend to Operate</h3><div className="space-y-4">{dimensions.map((dimension,index)=>{const label=typeof dimension.label==="string"?dimension.label:`Dimension ${index+1}`;const left=typeof dimension.left==="string"?dimension.left:"Left";const right=typeof dimension.right==="string"?dimension.right:"Right";const leftPercentage=typeof dimension.leftPercentage==="number"?dimension.leftPercentage:50;const rightPercentage=typeof dimension.rightPercentage==="number"?dimension.rightPercentage:50;const tendency=typeof dimension.tendency==="string"?dimension.tendency:"Balanced";const explanation=typeof dimension.explanation==="string"?dimension.explanation:"";return <div key={label} className="rounded-lg border border-border/60 p-4"><div className="flex items-center justify-between gap-4"><h4 className="font-medium">{label}</h4><span className="text-xs text-muted-foreground">{tendency}</span></div><div className="flex justify-between gap-3 text-xs text-muted-foreground mt-3"><span>{left} — {leftPercentage}%</span><span className="text-right">{right} — {rightPercentage}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-primary/15"><div className="h-full rounded-full bg-primary" style={{width:`${rightPercentage}%`}}/></div>{explanation&&<p className="text-sm leading-6 mt-3">{explanation}</p>}</div>})}</div></div>{summary&&<div><h3 className="font-medium mb-2">Your Personality at a Glance</h3><p className="text-sm leading-6">{summary}</p></div>}{ministryConnection&&<div><h3 className="font-medium mb-2">What This May Mean in Ministry</h3><p className="text-sm leading-6">{ministryConnection}</p><p className="text-sm text-muted-foreground leading-6 mt-3">Personality helps describe how you tend to operate, not what God can or cannot call you to do. God often uses both our natural strengths and the areas where He is stretching us.</p></div>}</div>;
 }
 function Section({title,children}:{title:string;children:React.ReactNode}) { return <section className="space-y-3 print:break-inside-avoid"><h2 className="font-serif text-2xl font-medium">{title}</h2><Card className="border-border/60 shadow-sm"><CardContent className="p-5">{children}</CardContent></Card></section>; }
+function TeamAssignment({ profileId, teamId }: { profileId: number; teamId: number | null }) {
+  const queryClient = useQueryClient();
+  const { data: teams, isLoading } = useListTeams();
+  const updateTeam = useUpdateProfileTeam();
+  const [selectedTeamId, setSelectedTeamId] = useState(teamId === null ? "" : String(teamId));
+  const activeTeams = teams?.filter((team) => !team.isArchived) ?? [];
+  const currentTeam = teams?.find((team) => team.id === teamId);
+  const selectedValue = selectedTeamId === "" ? null : Number(selectedTeamId);
+
+  const save = () => {
+    updateTeam.mutate(
+      { id: profileId, data: { teamId: selectedValue } },
+      {
+        onSuccess: async (assignment) => {
+          queryClient.setQueryData(
+            getGetProfileQueryKey(profileId),
+            (current: ReturnType<typeof useGetProfile>["data"]) =>
+              current ? { ...current, teamId: assignment.teamId } : current,
+          );
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() }),
+            queryClient.invalidateQueries({
+              queryKey: getGetDashboardSummaryQueryKey(),
+            }),
+            queryClient.invalidateQueries({
+              predicate: (query) =>
+                String(query.queryKey[0]).startsWith("/api/profiles"),
+            }),
+          ]);
+          toast({
+            title: assignment.teamName
+              ? `Assigned to ${assignment.teamName}`
+              : "Team assignment removed",
+          });
+        },
+        onError: () =>
+          toast({
+            title: "Unable to update team assignment",
+            description: "Please try again.",
+            variant: "destructive",
+          }),
+      },
+    );
+  };
+
+  return (
+    <Card className="border-primary/20 shadow-sm no-print">
+      <CardContent className="flex flex-col gap-5 p-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <UsersRound className="h-5 w-5 text-primary" />
+            <h2 className="font-serif text-xl font-medium">Current team</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Assignments are pastor-led and can be changed or removed at any time.
+          </p>
+          <div className="max-w-md space-y-2 pt-1">
+            <Label htmlFor="profile-team">Ministry team</Label>
+            <select
+              id="profile-team"
+              value={selectedTeamId}
+              onChange={(event) => setSelectedTeamId(event.target.value)}
+              disabled={isLoading || updateTeam.isPending}
+              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="">Not assigned to a team</option>
+              {activeTeams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+              {currentTeam?.isArchived && (
+                <option value={currentTeam.id}>
+                  {currentTeam.name} (archived)
+                </option>
+              )}
+            </select>
+          </div>
+        </div>
+        <Button
+          onClick={save}
+          disabled={isLoading || updateTeam.isPending || selectedValue === teamId}
+          className="w-full sm:w-auto"
+        >
+          {updateTeam.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Save assignment
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
 export default function ProfileDetail() {
  const [,params]=useRoute("/profiles/:id"); const id=params?.id?Number(params.id):0; const {data:profile,isLoading,error}=useGetProfile(id,{query:{enabled:!!id,queryKey:getGetProfileQueryKey(id)}});
  if(error)return <div className="container p-8"><p className="text-destructive">Failed to load profile details.</p><Link href="/profiles">Back to profiles</Link></div>;
@@ -124,7 +226,8 @@ export default function ProfileDetail() {
   const subsectionEnabled=(section: string, subsection: string)=>configuration.subsections[`${section}.${subsection}` as keyof typeof configuration.subsections];
  return <div className="container max-w-5xl mx-auto px-4 py-8 space-y-8 print:max-w-none print:p-0">
   <div className="flex justify-between no-print"><Button variant="ghost" asChild><Link href="/profiles"><ArrowLeft className="w-4 h-4 mr-2"/>Back</Link></Button><Button variant="outline" onClick={()=>window.print()}><Printer className="w-4 h-4 mr-2"/>Print profile</Button></div>
-  <header className="rounded-2xl border bg-card p-7 md:p-10"><h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p><div className="flex flex-wrap gap-4 mt-5 text-sm"><a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>{basic.phone&&<a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}</div></header>
+   <header className="rounded-2xl border bg-card p-7 md:p-10"><h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p><div className="flex flex-wrap gap-4 mt-5 text-sm"><a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>{basic.phone&&<a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}</div></header>
+   <TeamAssignment profileId={profile.id} teamId={profile.teamId} />
    <div className="space-y-8">
      {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age range" value={basic.ageRange}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div><div className="mt-3"><ObjectValues value={skills.details}/></div></div>}{subsectionEnabled("aboutYou","lifeExperiences")&&<div><h3 className="font-medium mb-2">Life experiences</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
      {sectionEnabled("apest")&&<Section title="How you minister"><p className="text-sm text-muted-foreground mb-3">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest} isEnabled={subsection=>subsectionEnabled("apest",subsection)}/></Section>}

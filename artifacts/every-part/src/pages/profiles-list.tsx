@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useListProfiles, useFindVolunteerMatches } from "@workspace/api-client-react";
+import { useListProfiles, useFindVolunteerMatches, useListTeams } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Search, User, Mail, Calendar, Sparkles, AlertCircle, HeartHandshake, CheckCircle2, Info, Loader2 } from "lucide-react";
+import { Search, User, Mail, Calendar, Sparkles, AlertCircle, HeartHandshake, CheckCircle2, Info, Loader2, UsersRound } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useForm } from "react-hook-form";
 
@@ -114,6 +114,8 @@ export default function ProfilesList() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 300);
   const { data: profiles, isLoading: isLoadingProfiles, error: profilesError } = useListProfiles({ search: debouncedSearch || undefined });
+  const { data: teams } = useListTeams();
+  const teamNames = new Map(teams?.map((team) => [team.id, team.name]) ?? []);
 
   // Match state
   const matchMutation = useFindVolunteerMatches();
@@ -235,6 +237,12 @@ export default function ProfilesList() {
                         </div>
 
                         <div className="flex flex-wrap gap-2 pt-3">
+                          {profile.teamId && teamNames.get(profile.teamId) && (
+                            <Badge className="bg-primary/10 text-primary hover:bg-primary/15">
+                              <UsersRound className="mr-1 h-3 w-3" />
+                              {teamNames.get(profile.teamId)}
+                            </Badge>
+                          )}
                           {profile.passions && profile.passions.slice(0, 2).map((passion) => (
                             <Badge key={passion} variant="secondary" className="bg-secondary/10 text-secondary-foreground hover:bg-secondary/20 font-normal">
                               {passion}

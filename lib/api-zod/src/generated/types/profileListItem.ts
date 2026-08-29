@@ -16,4 +16,6 @@ export interface ProfileListItem {
   availability: string[];
   /** @nullable */
   servingFrequency?: string | null;
+  /** @nullable */
+  teamId: number | null;
 }

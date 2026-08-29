@@ -15,4 +15,7 @@ export interface DashboardSummary {
   recentProfiles: ProfileListItem[];
   topInterests: CountItem[];
   topPassions: CountItem[];
+  teamCount: number;
+  activeTeamCount: number;
+  assignedProfileCount: number;
 }

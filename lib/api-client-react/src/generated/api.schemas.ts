@@ -219,6 +219,8 @@ export interface ProfileListItem {
   availability: string[];
   /** @nullable */
   servingFrequency?: string | null;
+  /** @nullable */
+  teamId: number | null;
 }
 
 export interface CountItem {
@@ -232,6 +234,66 @@ export interface DashboardSummary {
   recentProfiles: ProfileListItem[];
   topInterests: CountItem[];
   topPassions: CountItem[];
+  teamCount: number;
+  activeTeamCount: number;
+  assignedProfileCount: number;
+}
+
+export interface TeamMember {
+  id: number;
+  memberName: string;
+  email: string;
+  completedAt: string;
+}
+
+export interface MinistryTeam {
+  id: number;
+  name: string;
+  /** @nullable */
+  description: string | null;
+  isArchived: boolean;
+  memberCount: number;
+  members: TeamMember[];
+}
+
+export interface TeamCreateInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  name: string;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  description?: string | null;
+}
+
+export interface TeamUpdateInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  name?: string;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  description?: string | null;
+  isArchived?: boolean;
+}
+
+export interface ProfileTeamUpdateInput {
+  /** @nullable */
+  teamId: number | null;
+}
+
+export interface ProfileTeamAssignment {
+  profileId: number;
+  /** @nullable */
+  teamId: number | null;
+  /** @nullable */
+  teamName: string | null;
 }
 
 export interface VolunteerMatchInput {

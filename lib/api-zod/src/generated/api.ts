@@ -538,7 +538,8 @@ export const GetDashboardSummaryResponse = zod.object({
   "interests": zod.array(zod.string()),
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
-  "servingFrequency": zod.string().nullish()
+  "servingFrequency": zod.string().nullish(),
+  "teamId": zod.int().nullable()
 })),
   "topInterests": zod.array(zod.object({
   "label": zod.string(),
@@ -547,6 +548,91 @@ export const GetDashboardSummaryResponse = zod.object({
   "topPassions": zod.array(zod.object({
   "label": zod.string(),
   "count": zod.int()
+})),
+  "teamCount": zod.int(),
+  "activeTeamCount": zod.int(),
+  "assignedProfileCount": zod.int()
+})
+
+
+/**
+ * @summary List teams for the signed-in church
+ */
+export const ListTeamsResponseItem = zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isArchived": zod.boolean(),
+  "memberCount": zod.int(),
+  "members": zod.array(zod.object({
+  "id": zod.int(),
+  "memberName": zod.string(),
+  "email": zod.email(),
+  "completedAt": zod.coerce.date()
+}))
+})
+export const ListTeamsResponse = zod.array(ListTeamsResponseItem)
+
+
+/**
+ * @summary Create a team for the signed-in church
+ */
+export const createTeamBodyNameMax = 120;
+
+export const createTeamBodyDescriptionMax = 500;
+
+
+
+export const CreateTeamBody = zod.object({
+  "name": zod.string().min(1).max(createTeamBodyNameMax),
+  "description": zod.string().max(createTeamBodyDescriptionMax).nullish()
+})
+
+export const CreateTeamResponse = zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isArchived": zod.boolean(),
+  "memberCount": zod.int(),
+  "members": zod.array(zod.object({
+  "id": zod.int(),
+  "memberName": zod.string(),
+  "email": zod.email(),
+  "completedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Update or archive a church team
+ */
+export const UpdateTeamParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const updateTeamBodyNameMax = 120;
+
+export const updateTeamBodyDescriptionMax = 500;
+
+
+
+export const UpdateTeamBody = zod.object({
+  "name": zod.string().min(1).max(updateTeamBodyNameMax).optional(),
+  "description": zod.string().max(updateTeamBodyDescriptionMax).nullish(),
+  "isArchived": zod.boolean().optional()
+})
+
+export const UpdateTeamResponse = zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isArchived": zod.boolean(),
+  "memberCount": zod.int(),
+  "members": zod.array(zod.object({
+  "id": zod.int(),
+  "memberName": zod.string(),
+  "email": zod.email(),
+  "completedAt": zod.coerce.date()
 }))
 })
 
@@ -569,7 +655,8 @@ export const ListProfilesResponseItem = zod.object({
   "interests": zod.array(zod.string()),
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
-  "servingFrequency": zod.string().nullish()
+  "servingFrequency": zod.string().nullish(),
+  "teamId": zod.int().nullable()
 })
 export const ListProfilesResponse = zod.array(ListProfilesResponseItem)
 
@@ -663,7 +750,8 @@ export const CreateProfileResponse = zod.object({
   "interests": zod.array(zod.string()),
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
-  "servingFrequency": zod.string().nullish()
+  "servingFrequency": zod.string().nullish(),
+  "teamId": zod.int().nullable()
 }).and(zod.object({
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
@@ -860,7 +948,8 @@ export const GetProfileResponse = zod.object({
   "interests": zod.array(zod.string()),
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
-  "servingFrequency": zod.string().nullish()
+  "servingFrequency": zod.string().nullish(),
+  "teamId": zod.int().nullable()
 }).and(zod.object({
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
@@ -976,5 +1065,23 @@ export const GetProfileResponse = zod.object({
   "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
   "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish()
 }))
+
+
+/**
+ * @summary Assign or remove a profile's current team
+ */
+export const UpdateProfileTeamParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const UpdateProfileTeamBody = zod.object({
+  "teamId": zod.int().nullable()
+})
+
+export const UpdateProfileTeamResponse = zod.object({
+  "profileId": zod.int(),
+  "teamId": zod.int().nullable(),
+  "teamName": zod.string().nullable()
+})
 
 

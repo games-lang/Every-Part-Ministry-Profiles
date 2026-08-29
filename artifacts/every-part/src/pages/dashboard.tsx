@@ -1,6 +1,6 @@
 import { useGetDashboardSummary } from "@workspace/api-client-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, FileText, Settings, Sparkles, Users } from "lucide-react";
+import { ArrowRight, FileText, Settings, Sparkles, Users, UsersRound } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -46,7 +46,7 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="border-border/60 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Profiles</CardTitle>
@@ -57,6 +57,28 @@ export default function Dashboard() {
               <Skeleton className="h-8 w-16" />
             ) : (
               <div className="text-3xl font-serif font-medium">{summary?.totalProfiles || 0}</div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/60 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Teams</CardTitle>
+            <UsersRound className="w-4 h-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="space-y-2">
+                <div className="text-3xl font-serif font-medium">{summary?.activeTeamCount || 0}</div>
+                <p className="text-xs text-muted-foreground">
+                  {summary?.assignedProfileCount || 0} profiles assigned
+                </p>
+                <Button variant="link" className="h-auto p-0 text-primary" asChild>
+                  <Link href="/teams">Manage teams</Link>
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>

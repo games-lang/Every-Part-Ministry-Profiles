@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { desc, eq } from "drizzle-orm";
 import { GetDashboardSummaryResponse } from "@workspace/api-zod";
-import { db, ministryProfilesTable } from "@workspace/db";
+import { db, ministryProfilesTable, ministryTeamsTable } from "@workspace/db";
 import { requireUserId } from "../lib/auth";
 import { churchResponse, getOrCreateChurch } from "../lib/churches";
 import { profileListItem } from "../lib/profiles";
@@ -30,6 +30,10 @@ router.get("/dashboard/summary", async (req, res): Promise<void> => {
     .from(ministryProfilesTable)
     .where(eq(ministryProfilesTable.churchId, church.id))
     .orderBy(desc(ministryProfilesTable.completedAt));
+  const teams = await db
+    .select()
+    .from(ministryTeamsTable)
+    .where(eq(ministryTeamsTable.churchId, church.id));
 
   res.json(
     GetDashboardSummaryResponse.parse({
@@ -38,6 +42,9 @@ router.get("/dashboard/summary", async (req, res): Promise<void> => {
       recentProfiles: profiles.slice(0, 5).map(profileListItem),
       topInterests: counts(profiles.map((profile) => profile.interests)),
       topPassions: counts(profiles.map((profile) => profile.passions)),
+      teamCount: teams.length,
+      activeTeamCount: teams.filter((team) => !team.isArchived).length,
+      assignedProfileCount: profiles.filter((profile) => profile.teamId !== null).length,
     }),
   );
 });
