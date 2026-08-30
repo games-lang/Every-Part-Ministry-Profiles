@@ -83,4 +83,4 @@ export function CoordinatorAsk({ profile }: { profile: Profile }) {
   );
 }
 
-export { hasValues };c
+export { hasValues };
