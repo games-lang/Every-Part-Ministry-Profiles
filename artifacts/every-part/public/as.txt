@@ -2338,6 +2338,7 @@ export default function Assessment() {
                           name="basicInformation.ageRange"
                           label="Age range"
                           options={[
+                            "Under 18",
                             "18–25",
                             "26–35",
                             "36–45",
