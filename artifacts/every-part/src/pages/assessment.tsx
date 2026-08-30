@@ -45,6 +45,7 @@ import {
   HeartHandshake,
   Loader2,
 } from "lucide-react";
+import { personalitySummarySentence } from "@/lib/personality-prose";
 import { Progress } from "@/components/ui/progress";
 
 function hexToHsl(hex: string) {
@@ -899,13 +900,10 @@ function personalitySummary(results: ReturnType<typeof personalityResults>) {
     .map((result) =>
       result.dominant === "left" ? result.leftSummary : result.rightSummary,
     );
-  return descriptors.length
-    ? `You tend to operate as a ${descriptors.join(", ")} person. These tendencies may shape ${results
-        .filter((result) => result.dominant !== "balanced")
-        .slice(0, 2)
-        .map((result) => result.ministry)
-        .join(" and ")}.`
-    : "You tend to draw from both sides of these dimensions, adapting your approach to the people and situations around you.";
+  return personalitySummarySentence(
+    descriptors,
+    results.filter((result) => result.dominant !== "balanced").slice(0, 2).map((result) => result.ministry),
+  );
 }
 function personalityMinistryConnection(
   results: ReturnType<typeof personalityResults>,

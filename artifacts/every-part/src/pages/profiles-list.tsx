@@ -87,7 +87,7 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
         {(candidate.passions.length > 0 || candidate.interests.length > 0) && (
           <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border/50">
             {candidate.passions.map(p => (
-              <Badge key={p} variant="secondary" className="bg-secondary/10 text-secondary-foreground hover:bg-secondary/20 font-normal">
+              <Badge key={p} variant="secondary" className="bg-secondary/20 text-foreground hover:bg-secondary/20 font-normal">
                 {p}
               </Badge>
             ))}
@@ -244,7 +244,7 @@ export default function ProfilesList() {
                             </Badge>
                           )}
                           {profile.passions && profile.passions.slice(0, 2).map((passion) => (
-                            <Badge key={passion} variant="secondary" className="bg-secondary/10 text-secondary-foreground hover:bg-secondary/20 font-normal">
+                            <Badge key={passion} variant="secondary" className="bg-secondary/20 text-foreground hover:bg-secondary/20 font-normal">
                               {passion}
                             </Badge>
                           ))}

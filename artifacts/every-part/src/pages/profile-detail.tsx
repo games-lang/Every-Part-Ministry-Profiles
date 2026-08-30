@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { personalitySummarySentence } from "@/lib/personality-prose";
 import { toast } from "@/hooks/use-toast";
 
 const empty = "Not shared";
@@ -58,7 +59,7 @@ function derivedPersonality(responses: Record<string, number>, isEnabled: (key: 
 function personalitySummary(results: PersonalityDimension[]) {
   const nonBalanced = results.filter(result => result.dominant !== "balanced");
   const descriptors = [...nonBalanced].sort((a, b) => Math.max(b.leftPercentage, b.rightPercentage) - Math.max(a.leftPercentage, a.rightPercentage)).slice(0, 3).map(result => result.dominant === "left" ? result.leftSummary : result.rightSummary);
-  return descriptors.length ? `You tend to operate as a ${descriptors.join(", ")} person. These tendencies may shape ${nonBalanced.slice(0, 2).map(result => result.ministry).join(" and ")}.` : "You tend to draw from both sides of these dimensions, adapting your approach to the people and situations around you.";
+  return personalitySummarySentence(descriptors, nonBalanced.slice(0, 2).map(result => result.ministry));
 }
 function personalityMinistryConnection(results: PersonalityDimension[]) {
   const tendencies = results.filter(result => result.dominant !== "balanced").slice(0, 3).map(result => result.dominant === "left" ? result.leftSummary : result.rightSummary);

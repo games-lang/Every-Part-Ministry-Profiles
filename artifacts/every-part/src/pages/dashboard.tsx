@@ -98,7 +98,7 @@ export default function Dashboard() {
               <div>
                 <div className="text-lg font-medium">{summary?.church.name}</div>
                 <div className="text-sm text-muted-foreground truncate">
-                  Share link: everypart.com/profile/{summary?.church.slug}
+                  Share link: https://every-part-ministry-profiles.replit.app/profile/{summary?.church.slug}
                 </div>
               </div>
             )}
@@ -169,7 +169,7 @@ export default function Dashboard() {
                       {profile.interests && profile.interests.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {profile.interests.slice(0, 2).map(interest => (
-                            <span key={interest} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary/10 text-secondary-foreground border border-secondary/20">
+                            <span key={interest} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary/20 text-foreground border border-secondary/20">
                               {interest}
                             </span>
                           ))}
