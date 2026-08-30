@@ -21,6 +21,18 @@ import { teamResponse } from "../lib/teams";
 import { generateTeamSuggestions } from "../lib/team-suggestions";
 
 const router: IRouter = Router();
+const TEAM_NAME_UNIQUE_CONSTRAINT = "ministry_teams_church_name_unique";
+
+function isDuplicateTeamName(error: unknown): boolean {
+  return Boolean(
+    error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "23505" &&
+      "constraint" in error &&
+      error.constraint === TEAM_NAME_UNIQUE_CONSTRAINT,
+  );
+}
 
 async function teamWithMembers(teamId: number, churchId: number) {
   const [team] = await db
@@ -109,14 +121,23 @@ router.post("/teams", async (req, res): Promise<void> => {
     return;
   }
 
-  const [created] = await db
-    .insert(ministryTeamsTable)
-    .values({
-      churchId: church.id,
-      name,
-      description: parsed.data.description?.trim() || null,
-    })
-    .returning();
+  let created: typeof ministryTeamsTable.$inferSelect | undefined;
+  try {
+    [created] = await db
+      .insert(ministryTeamsTable)
+      .values({
+        churchId: church.id,
+        name,
+        description: parsed.data.description?.trim() || null,
+      })
+      .returning();
+  } catch (error) {
+    if (isDuplicateTeamName(error)) {
+      res.status(400).json({ error: "A team with this name already exists." });
+      return;
+    }
+    throw error;
+  }
   if (!created) throw new Error("Unable to create team");
 
   res.status(201).json(
@@ -140,7 +161,15 @@ router.post("/teams/suggestions", async (req, res): Promise<void> => {
     .from(ministryProfilesTable)
     .where(eq(ministryProfilesTable.churchId, church.id))
     .orderBy(desc(ministryProfilesTable.completedAt));
-  const result = await generateTeamSuggestions(profiles, parsed.data);
+  const existingTeams = await db
+    .select({ name: ministryTeamsTable.name })
+    .from(ministryTeamsTable)
+    .where(eq(ministryTeamsTable.churchId, church.id));
+  const result = await generateTeamSuggestions(
+    profiles,
+    parsed.data,
+    existingTeams.map((team) => team.name),
+  );
   req.log.info(
     {
       profileCount: profiles.length,
@@ -168,7 +197,9 @@ router.patch("/teams/:id", async (req, res): Promise<void> => {
   }
 
   const church = await getOrCreateChurch(userId);
-  const result = await db.transaction(async (tx) => {
+  let result;
+  try {
+    result = await db.transaction(async (tx) => {
     const [current] = await tx
       .select()
       .from(ministryTeamsTable)
@@ -225,7 +256,14 @@ router.patch("/teams/:id", async (req, res): Promise<void> => {
       .returning();
     if (!updated) return { error: "Team not found", status: 404 } as const;
     return { updated } as const;
-  });
+    });
+  } catch (error) {
+    if (isDuplicateTeamName(error)) {
+      res.status(400).json({ error: "A team with this name already exists." });
+      return;
+    }
+    throw error;
+  }
   if ("error" in result && typeof result.status === "number") {
     res.status(result.status).json({ error: result.error });
     return;

@@ -6,7 +6,9 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { churchesTable } from "./churches";
@@ -33,6 +35,10 @@ export const ministryTeamsTable = pgTable(
     unique("ministry_teams_id_church_id_unique").on(
       table.id,
       table.churchId,
+    ),
+    uniqueIndex("ministry_teams_church_name_unique").on(
+      table.churchId,
+      sql`lower(btrim(${table.name}))`,
     ),
   ],
 );
