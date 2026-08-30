@@ -3,7 +3,9 @@ import {
   getGetDashboardSummaryQueryKey,
   getListTeamsQueryKey,
   type MinistryTeam,
+  type TeamSuggestion,
   useCreateTeam,
+  useGenerateTeamSuggestions,
   useListTeams,
   useUpdateTeam,
 } from "@workspace/api-client-react";
@@ -12,9 +14,13 @@ import { Link } from "wouter";
 import {
   Archive,
   ArchiveRestore,
+  CheckCircle2,
+  Info,
+  Lightbulb,
   Loader2,
   Pencil,
   Plus,
+  Sparkles,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -51,7 +57,10 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 
 type EditorState =
-  | { mode: "create" }
+  | {
+      mode: "create";
+      initial?: { name: string; description: string };
+    }
   | { mode: "edit"; team: MinistryTeam }
   | null;
 
@@ -66,8 +75,14 @@ function TeamEditor({
   const createTeam = useCreateTeam();
   const updateTeam = useUpdateTeam();
   const team = editor?.mode === "edit" ? editor.team : null;
-  const [name, setName] = useState(team?.name ?? "");
-  const [description, setDescription] = useState(team?.description ?? "");
+  const [name, setName] = useState(
+    team?.name ?? (editor?.mode === "create" ? editor.initial?.name : "") ?? "",
+  );
+  const [description, setDescription] = useState(
+    team?.description ??
+      (editor?.mode === "create" ? editor.initial?.description : "") ??
+      "",
+  );
   const isPending = createTeam.isPending || updateTeam.isPending;
 
   const refresh = async () => {
@@ -116,7 +131,9 @@ function TeamEditor({
         <DialogHeader>
           <DialogTitle>{team ? "Edit team" : "Create a team"}</DialogTitle>
           <DialogDescription>
-            Give pastors a clear place to organize people serving together.
+            {editor?.mode === "create" && editor.initial
+              ? "Review this AI-generated starting point before creating the team."
+              : "Give pastors a clear place to organize people serving together."}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-5 py-2">
@@ -154,6 +171,217 @@ function TeamEditor({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function TeamSuggestionCard({
+  suggestion,
+  onDismiss,
+  onCreate,
+}: {
+  suggestion: TeamSuggestion;
+  onDismiss: () => void;
+  onCreate: () => void;
+}) {
+  return (
+    <Card className="overflow-hidden border-primary/20 shadow-sm">
+      <div className="h-1 bg-gradient-to-r from-primary via-secondary to-primary/30" />
+      <CardHeader className="gap-4 pb-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <CardTitle className="font-serif text-xl">{suggestion.name}</CardTitle>
+            <Badge variant="secondary" className="gap-1 bg-secondary/20 text-foreground">
+              <Sparkles className="h-3 w-3" />
+              Suggested
+            </Badge>
+          </div>
+          <CardDescription className="mt-2 max-w-2xl leading-relaxed">
+            {suggestion.purpose}
+          </CardDescription>
+        </div>
+        <Button variant="ghost" size="sm" onClick={onDismiss}>
+          Dismiss
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div>
+          <p className="mb-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            Shared profile signals
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {suggestion.supportingSignals.map((signal) => (
+              <Badge key={signal} variant="outline" className="font-normal">
+                {signal}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {suggestion.candidates.length > 0 ? (
+          <div>
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <p className="text-sm font-medium">Profiles to review</p>
+              <span className="text-xs text-muted-foreground">
+                {suggestion.candidates.length} possible{" "}
+                {suggestion.candidates.length === 1 ? "connection" : "connections"}
+              </span>
+            </div>
+            <div className="divide-y rounded-xl border border-border/60 bg-background">
+              {suggestion.candidates.map((candidate) => (
+                <div
+                  key={candidate.id}
+                  className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-start sm:justify-between"
+                >
+                  <div className="min-w-0">
+                    <Link
+                      href={`/profiles/${candidate.id}`}
+                      className="font-medium text-primary hover:underline"
+                    >
+                      {candidate.memberName}
+                    </Link>
+                    <ul className="mt-1 space-y-1 text-xs leading-relaxed text-muted-foreground">
+                      {candidate.reasons.map((reason) => (
+                        <li key={reason}>• {reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  {candidate.isAssigned && (
+                    <Badge variant="outline" className="w-fit shrink-0 text-xs">
+                      Already assigned
+                    </Badge>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+            No individual profiles were associated with this idea. Review the shared
+            signals and decide whether it fits your church.
+          </p>
+        )}
+
+        <div className="flex flex-col gap-3 border-t border-border/60 pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-muted-foreground">
+            Creating the team will not assign anyone automatically.
+          </p>
+          <Button onClick={onCreate} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            Review & create team
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TeamSuggestions({
+  onCreate,
+}: {
+  onCreate: (suggestion: TeamSuggestion) => void;
+}) {
+  const [focus, setFocus] = useState("");
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const mutation = useGenerateTeamSuggestions();
+  const visibleSuggestions =
+    mutation.data?.suggestions.filter((suggestion) => !dismissed.has(suggestion.id)) ?? [];
+
+  const generate = () => {
+    const trimmedFocus = focus.trim();
+    mutation.mutate({ data: trimmedFocus ? { focus: trimmedFocus } : {} });
+    setDismissed(new Set());
+  };
+
+  return (
+    <Card className="border-secondary/30 bg-gradient-to-br from-secondary/10 via-card to-primary/5 shadow-sm">
+      <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-secondary/20 text-secondary-foreground">
+            <Lightbulb className="h-5 w-5" />
+          </div>
+          <div>
+            <CardTitle className="font-serif text-xl">Find a starting point</CardTitle>
+            <CardDescription className="mt-1 max-w-2xl leading-relaxed">
+              Use shared profile reflections to brainstorm a few ministry team themes.
+              You stay in control of every team and invitation.
+            </CardDescription>
+          </div>
+        </div>
+        <Button onClick={generate} disabled={mutation.isPending} className="shrink-0">
+          {mutation.isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="mr-2 h-4 w-4" />
+          )}
+          {mutation.isPending ? "Exploring profiles..." : "Suggest starter teams"}
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="max-w-2xl">
+          <Label htmlFor="team-suggestion-focus">
+            Optional focus
+          </Label>
+          <Input
+            id="team-suggestion-focus"
+            value={focus}
+            onChange={(event) => setFocus(event.target.value)}
+            maxLength={240}
+            placeholder="e.g. welcoming newcomers, serving families, or prayer"
+            className="mt-2 bg-background/80"
+          />
+          <p className="mt-2 text-xs text-muted-foreground">
+            This guides the brainstorm; it does not change which profiles the church can review.
+          </p>
+        </div>
+
+        {mutation.isError ? (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+            We couldn’t generate team ideas right now. Please try again.
+          </div>
+        ) : mutation.data ? (
+          <div className="space-y-5">
+            <div className="flex gap-3 rounded-xl border border-primary/15 bg-background/70 p-4">
+              {mutation.data.usedAi ? (
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+              ) : (
+                <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              )}
+              <div className="space-y-1">
+                <p className="text-sm leading-relaxed">{mutation.data.summary}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  {mutation.data.advisory}
+                </p>
+              </div>
+            </div>
+            {visibleSuggestions.length > 0 ? (
+              <div className="grid gap-5">
+                {visibleSuggestions.map((suggestion) => (
+                  <TeamSuggestionCard
+                    key={suggestion.id}
+                    suggestion={suggestion}
+                    onDismiss={() =>
+                      setDismissed((current) => new Set(current).add(suggestion.id))
+                    }
+                    onCreate={() => onCreate(suggestion)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-border p-8 text-center">
+                <p className="font-serif text-lg font-medium">No ideas left to review</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Generate another set of suggestions or create a team manually.
+                </p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Suggestions will appear here after you ask us to explore the completed profiles.
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -309,6 +537,15 @@ export default function Teams() {
           Create team
         </Button>
       </div>
+
+      <TeamSuggestions
+        onCreate={(suggestion) =>
+          setEditor({
+            mode: "create",
+            initial: { name: suggestion.name, description: suggestion.purpose },
+          })
+        }
+      />
 
       {error ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-destructive">

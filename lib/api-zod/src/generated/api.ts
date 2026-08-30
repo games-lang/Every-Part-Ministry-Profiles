@@ -638,6 +638,48 @@ export const UpdateTeamResponse = zod.object({
 
 
 /**
+ * @summary Suggest starter ministry teams from completed profiles
+ */
+export const generateTeamSuggestionsBodyFocusMax = 240;
+
+
+
+export const GenerateTeamSuggestionsBody = zod.object({
+  "focus": zod.string().max(generateTeamSuggestionsBodyFocusMax).optional()
+})
+
+export const generateTeamSuggestionsResponseSuggestionsItemSupportingSignalsMax = 4;
+
+export const generateTeamSuggestionsResponseSuggestionsItemCandidatesItemReasonsMax = 2;
+
+export const generateTeamSuggestionsResponseSuggestionsItemCandidatesMax = 6;
+
+export const generateTeamSuggestionsResponseSuggestionsMax = 4;
+
+
+
+export const GenerateTeamSuggestionsResponse = zod.object({
+  "suggestions": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "purpose": zod.string(),
+  "supportingSignals": zod.array(zod.string()).min(1).max(generateTeamSuggestionsResponseSuggestionsItemSupportingSignalsMax),
+  "candidates": zod.array(zod.object({
+  "id": zod.int(),
+  "memberName": zod.string(),
+  "reasons": zod.array(zod.string()).min(1).max(generateTeamSuggestionsResponseSuggestionsItemCandidatesItemReasonsMax),
+  "interests": zod.array(zod.string()),
+  "passions": zod.array(zod.string()),
+  "isAssigned": zod.boolean()
+})).max(generateTeamSuggestionsResponseSuggestionsItemCandidatesMax)
+})).max(generateTeamSuggestionsResponseSuggestionsMax),
+  "summary": zod.string(),
+  "advisory": zod.string(),
+  "usedAi": zod.boolean()
+})
+
+
+/**
  * @summary List completed Ministry Profiles for the signed-in church
  */
 export const ListProfilesQueryParams = zod.object({

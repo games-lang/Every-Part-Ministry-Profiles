@@ -1,8 +1,10 @@
 import { Router, type IRouter } from "express";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import {
   CreateTeamBody,
   CreateTeamResponse,
+  GenerateTeamSuggestionsBody,
+  GenerateTeamSuggestionsResponse,
   ListTeamsResponse,
   UpdateTeamBody,
   UpdateTeamParams,
@@ -16,6 +18,7 @@ import {
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { teamResponse } from "../lib/teams";
+import { generateTeamSuggestions } from "../lib/team-suggestions";
 
 const router: IRouter = Router();
 
@@ -119,6 +122,34 @@ router.post("/teams", async (req, res): Promise<void> => {
   res.status(201).json(
     CreateTeamResponse.parse(teamResponse(created, [])),
   );
+});
+
+router.post("/teams/suggestions", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const parsed = GenerateTeamSuggestionsBody.safeParse(req.body ?? {});
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const church = await getOrCreateChurch(userId);
+  const profiles = await db
+    .select()
+    .from(ministryProfilesTable)
+    .where(eq(ministryProfilesTable.churchId, church.id))
+    .orderBy(desc(ministryProfilesTable.completedAt));
+  const result = await generateTeamSuggestions(profiles, parsed.data);
+  req.log.info(
+    {
+      profileCount: profiles.length,
+      suggestionCount: result.suggestions.length,
+      usedAi: result.usedAi,
+    },
+    "Team suggestions generated",
+  );
+  res.json(GenerateTeamSuggestionsResponse.parse(result));
 });
 
 router.patch("/teams/:id", async (req, res): Promise<void> => {

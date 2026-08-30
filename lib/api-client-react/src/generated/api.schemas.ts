@@ -283,6 +283,45 @@ export interface TeamUpdateInput {
   isArchived?: boolean;
 }
 
+export interface TeamSuggestionsInput {
+  /** @maxLength 240 */
+  focus?: string;
+}
+
+export interface TeamSuggestionCandidate {
+  id: number;
+  memberName: string;
+  /**
+     * @minItems 1
+     * @maxItems 2
+     */
+  reasons: string[];
+  interests: string[];
+  passions: string[];
+  isAssigned: boolean;
+}
+
+export interface TeamSuggestion {
+  id: string;
+  name: string;
+  purpose: string;
+  /**
+     * @minItems 1
+     * @maxItems 4
+     */
+  supportingSignals: string[];
+  /** @maxItems 6 */
+  candidates: TeamSuggestionCandidate[];
+}
+
+export interface TeamSuggestionsResponse {
+  /** @maxItems 4 */
+  suggestions: TeamSuggestion[];
+  summary: string;
+  advisory: string;
+  usedAi: boolean;
+}
+
 export interface ProfileTeamUpdateInput {
   /** @nullable */
   teamId: number | null;

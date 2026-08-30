@@ -211,6 +211,28 @@ paths:
           description: Unauthorized
         "404":
           description: Team not found
+  /teams/suggestions:
+    post:
+      operationId: generateTeamSuggestions
+      tags: [teams]
+      summary: Suggest starter ministry teams from completed profiles
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamSuggestionsInput"
+      responses:
+        "200":
+          description: Starter team suggestions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamSuggestionsResponse"
+        "400":
+          description: Invalid suggestion request
+        "401":
+          description: Unauthorized
   /profiles:
     get:
       operationId: listProfiles
@@ -560,6 +582,58 @@ components:
         name: { type: string, minLength: 1, maxLength: 120 }
         description: { type: ["string", "null"], maxLength: 500 }
         isArchived: { type: boolean }
+    TeamSuggestionsInput:
+      type: object
+      additionalProperties: false
+      properties:
+        focus: { type: string, maxLength: 240 }
+    TeamSuggestionsResponse:
+      type: object
+      required: [suggestions, summary, advisory, usedAi]
+      properties:
+        suggestions:
+          type: array
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/TeamSuggestion"
+        summary: { type: string }
+        advisory: { type: string }
+        usedAi: { type: boolean }
+    TeamSuggestion:
+      type: object
+      required: [id, name, purpose, supportingSignals, candidates]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        purpose: { type: string }
+        supportingSignals:
+          type: array
+          minItems: 1
+          maxItems: 4
+          items: { type: string }
+        candidates:
+          type: array
+          maxItems: 6
+          items:
+            $ref: "#/components/schemas/TeamSuggestionCandidate"
+    TeamSuggestionCandidate:
+      type: object
+      required: [id, memberName, reasons, interests, passions, isAssigned]
+      properties:
+        id: { type: integer }
+        memberName: { type: string }
+        reasons:
+          type: array
+          minItems: 1
+          maxItems: 2
+          items: { type: string }
+        interests:
+          type: array
+          items: { type: string }
+        passions:
+          type: array
+          items: { type: string }
+        isAssigned: { type: boolean }
     ProfileTeamUpdateInput:
       type: object
       required: [teamId]

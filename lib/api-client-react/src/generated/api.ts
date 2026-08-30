@@ -33,6 +33,8 @@ import type {
   ProfileTeamUpdateInput,
   PublicChurch,
   TeamCreateInput,
+  TeamSuggestionsInput,
+  TeamSuggestionsResponse,
   TeamUpdateInput,
   UploadUrlRequest,
   UploadUrlResponse,
@@ -813,6 +815,77 @@ export const useUpdateTeam = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getUpdateTeamMutationOptions(options));
+    }
+
+export const getGenerateTeamSuggestionsUrl = () => {
+
+
+
+
+  return `/api/teams/suggestions`
+}
+
+/**
+ * @summary Suggest starter ministry teams from completed profiles
+ */
+export const generateTeamSuggestions = async (teamSuggestionsInput?: TeamSuggestionsInput, options?: Parameters<typeof customFetch>[1]): Promise<TeamSuggestionsResponse> => {
+
+  return customFetch<TeamSuggestionsResponse>(getGenerateTeamSuggestionsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(teamSuggestionsInput)
+  }
+);}
+
+
+
+
+
+export const getGenerateTeamSuggestionsMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateTeamSuggestions>>, TError,{data?: BodyType<TeamSuggestionsInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof generateTeamSuggestions>>, TError,{data?: BodyType<TeamSuggestionsInput>}, TContext> => {
+
+const mutationKey = ['generateTeamSuggestions'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateTeamSuggestions>>, {data?: BodyType<TeamSuggestionsInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  generateTeamSuggestions(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerateTeamSuggestionsMutationResult = NonNullable<Awaited<ReturnType<typeof generateTeamSuggestions>>>
+    export type GenerateTeamSuggestionsMutationBody = BodyType<TeamSuggestionsInput> | undefined
+    export type GenerateTeamSuggestionsMutationError = ErrorType<void>
+
+    /**
+ * @summary Suggest starter ministry teams from completed profiles
+ */
+export const useGenerateTeamSuggestions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateTeamSuggestions>>, TError,{data?: BodyType<TeamSuggestionsInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof generateTeamSuggestions>>,
+        TError,
+        {data?: BodyType<TeamSuggestionsInput>},
+        TContext
+      > => {
+      return useMutation(getGenerateTeamSuggestionsMutationOptions(options));
     }
 
 export const getListProfilesUrl = (params?: ListProfilesParams,) => {
