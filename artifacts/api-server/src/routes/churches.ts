@@ -1,14 +1,24 @@
+import { clerkClient } from "@clerk/express";
 import { Router, type IRouter } from "express";
 import { Readable } from "stream";
-import { count, eq } from "drizzle-orm";
+import { and, asc, count, eq } from "drizzle-orm";
 import {
+  AddChurchAdminBody,
+  AddChurchAdminResponse,
+  ListChurchAdminsResponse,
   GetMyChurchResponse,
   GetPublicChurchParams,
   GetPublicChurchResponse,
+  RemoveChurchAdminParams,
   UpdateMyChurchBody,
   UpdateMyChurchResponse,
 } from "@workspace/api-zod";
-import { churchesTable, db, ministryProfilesTable } from "@workspace/db";
+import {
+  churchAdminsTable,
+  churchesTable,
+  db,
+  ministryProfilesTable,
+} from "@workspace/db";
 import { requireUserId } from "../lib/auth";
 import {
   activeSpiritualGifts,
@@ -24,6 +34,16 @@ import {
 
 const router: IRouter = Router();
 const objectStorage = new ObjectStorageService();
+
+function adminResponse(admin: typeof churchAdminsTable.$inferSelect) {
+  return {
+    id: admin.id,
+    name: admin.name,
+    email: admin.email,
+    role: admin.role,
+    createdAt: admin.createdAt,
+  };
+}
 
 router.get("/church", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
@@ -111,6 +131,130 @@ router.patch("/church", async (req, res): Promise<void> => {
       churchResponse(updated, result?.count ?? 0),
     ),
   );
+});
+
+router.get("/church/admins", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const church = await getOrCreateChurch(userId);
+  const admins = await db
+    .select()
+    .from(churchAdminsTable)
+    .where(eq(churchAdminsTable.churchId, church.id))
+    .orderBy(
+      asc(churchAdminsTable.role),
+      asc(churchAdminsTable.name),
+      asc(churchAdminsTable.email),
+    );
+
+  res.json(ListChurchAdminsResponse.parse(admins.map(adminResponse)));
+});
+
+router.post("/church/admins", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const parsed = AddChurchAdminBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const church = await getOrCreateChurch(userId);
+  const email = parsed.data.email.trim().toLowerCase();
+  let clerkUser;
+  try {
+    const users = await clerkClient.users.getUserList({
+      emailAddress: [email],
+      limit: 1,
+    });
+    clerkUser = users.data[0];
+  } catch (error) {
+    req.log.error({ err: error }, "Unable to look up church administrator");
+    res.status(503).json({ error: "Unable to verify that pastor's account right now." });
+    return;
+  }
+
+  if (!clerkUser) {
+    res.status(404).json({
+      error: "No Every Part account was found for that email. Ask the pastor to create an account first.",
+    });
+    return;
+  }
+
+  const name =
+    [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ").trim() ||
+    email;
+  const [existing] = await db
+    .select()
+    .from(churchAdminsTable)
+    .where(
+      and(
+        eq(churchAdminsTable.churchId, church.id),
+        eq(churchAdminsTable.clerkUserId, clerkUser.id),
+      ),
+    )
+    .limit(1);
+  if (existing) {
+    res.status(409).json({ error: "That pastor is already an administrator." });
+    return;
+  }
+
+  const [created] = await db
+    .insert(churchAdminsTable)
+    .values({
+      churchId: church.id,
+      clerkUserId: clerkUser.id,
+      email,
+      name,
+      role: "admin",
+    })
+    .returning();
+  if (!created) throw new Error("Unable to add church administrator");
+
+  res.status(201).json(AddChurchAdminResponse.parse(adminResponse(created)));
+});
+
+router.delete("/church/admins/:id", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const params = RemoveChurchAdminParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+
+  const church = await getOrCreateChurch(userId);
+  const [admin] = await db
+    .select()
+    .from(churchAdminsTable)
+    .where(
+      and(
+        eq(churchAdminsTable.id, params.data.id),
+        eq(churchAdminsTable.churchId, church.id),
+      ),
+    )
+    .limit(1);
+  if (!admin) {
+    res.status(404).json({ error: "Administrator not found." });
+    return;
+  }
+  if (admin.role === "owner") {
+    res.status(400).json({ error: "The church owner cannot be removed." });
+    return;
+  }
+
+  await db
+    .delete(churchAdminsTable)
+    .where(
+      and(
+        eq(churchAdminsTable.id, admin.id),
+        eq(churchAdminsTable.churchId, church.id),
+      ),
+    );
+  res.status(204).end();
 });
 
 router.get("/churches/:slug/logo", async (req, res): Promise<void> => {

@@ -4,10 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
   getGetMyChurchQueryKey,
+  getListChurchAdminsQueryKey,
   requestUploadUrl,
+  useAddChurchAdmin,
   useGetMyChurch,
+  useListChurchAdmins,
+  useRemoveChurchAdmin,
   useUpdateMyChurch,
   type SpiritualGiftName,
+  type ChurchAdmin,
   type UploadUrlRequestContentType,
   type AssessmentConfigurationSections,
   type AssessmentConfigurationSubsections,
@@ -21,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Copy, ExternalLink, ImagePlus, Loader2, Palette, Trash2, Upload } from "lucide-react";
+import { Copy, ExternalLink, ImagePlus, Loader2, Palette, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 
 const sectionSchema = z.object({
   aboutYou: z.boolean(),
@@ -323,13 +328,17 @@ function savedLogoSource(path: string | null | undefined, slug: string | undefin
 
 export default function ChurchSetup() {
   const { data: church, isLoading } = useGetMyChurch();
+  const { data: admins, isLoading: adminsLoading } = useListChurchAdmins();
   const updateChurch = useUpdateMyChurch();
+  const addAdmin = useAddChurchAdmin();
+  const removeAdmin = useRemoveChurchAdmin();
   const queryClient = useQueryClient();
   const initializedForId = useRef<number | null>(null);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const [isLogoUploading, setIsLogoUploading] = useState(false);
   const [localLogoPreview, setLocalLogoPreview] = useState<string | null>(null);
   const [logoPath, setLogoPath] = useState<string | null>(null);
+  const [adminEmailDraft, setAdminEmailDraft] = useState("");
 
   const form = useForm<ChurchFormValues>({
     resolver: zodResolver(churchFormSchema),
@@ -413,6 +422,60 @@ export default function ChurchSetup() {
           });
         },
       }
+    );
+  };
+
+  const handleAddAdmin = () => {
+    const email = adminEmailDraft.trim();
+    if (!email) return;
+    addAdmin.mutate(
+      { data: { email } },
+      {
+        onSuccess: (admin) => {
+          setAdminEmailDraft("");
+          queryClient.setQueryData(
+            getListChurchAdminsQueryKey(),
+            (current: ChurchAdmin[] | undefined) => [...(current ?? []), admin],
+          );
+          toast({
+            title: "Pastor added",
+            description: `${admin.name} can now manage this church.`,
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Could not add pastor",
+            description: "Check that they already have an Every Part account, then try again.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
+  };
+
+  const handleRemoveAdmin = (id: number) => {
+    removeAdmin.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          queryClient.setQueryData(
+            getListChurchAdminsQueryKey(),
+            (current: ChurchAdmin[] | undefined) =>
+              (current ?? []).filter((admin) => admin.id !== id),
+          );
+          toast({
+            title: "Pastor access removed",
+            description: "They no longer have access to this church.",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Could not remove pastor",
+            description: "The church owner cannot be removed.",
+            variant: "destructive",
+          });
+        },
+      },
     );
   };
 
@@ -528,6 +591,89 @@ export default function ChurchSetup() {
               </a>
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/60 shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-serif text-xl">
+            <UsersRound className="h-5 w-5 text-primary" />
+            Pastor admins
+          </CardTitle>
+          <CardDescription>
+            Give other pastors access to this church's profiles, teams, and setup. They must have an Every Part account first.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              type="email"
+              value={adminEmailDraft}
+              onChange={(event) => setAdminEmailDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  handleAddAdmin();
+                }
+              }}
+              placeholder="pastor@example.com"
+              aria-label="Pastor email"
+            />
+            <Button
+              type="button"
+              onClick={handleAddAdmin}
+              disabled={addAdmin.isPending || !adminEmailDraft.trim()}
+              className="shrink-0"
+            >
+              {addAdmin.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <UserPlus className="mr-2 h-4 w-4" />
+              )}
+              Add pastor
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            We look up the email securely through Clerk and never store a password.
+          </p>
+
+          {adminsLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-14 w-full" />
+            </div>
+          ) : admins?.length ? (
+            <div className="divide-y rounded-lg border">
+              {admins.map((admin) => (
+                <div key={admin.id} className="flex items-center justify-between gap-4 p-4">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{admin.name}</p>
+                    <p className="truncate text-sm text-muted-foreground">{admin.email}</p>
+                  </div>
+                  {admin.role === "owner" ? (
+                    <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      Owner
+                    </span>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={removeAdmin.isPending}
+                      onClick={() => handleRemoveAdmin(admin.id)}
+                      className="shrink-0 text-muted-foreground hover:text-destructive"
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+              No pastor admins have been added yet.
+            </p>
+          )}
         </CardContent>
       </Card>
 

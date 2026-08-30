@@ -299,6 +299,45 @@ export const UpdateMyChurchResponse = zod.object({
 
 
 /**
+ * @summary List pastors with access to the signed-in church
+ */
+export const ListChurchAdminsResponseItem = zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "email": zod.email(),
+  "role": zod.enum(['owner', 'admin']),
+  "createdAt": zod.coerce.date()
+})
+export const ListChurchAdminsResponse = zod.array(ListChurchAdminsResponseItem)
+
+
+/**
+ * @summary Add an existing Clerk user as a church administrator
+ */
+export const AddChurchAdminBody = zod.object({
+  "email": zod.email()
+})
+
+export const AddChurchAdminResponse = zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "email": zod.email(),
+  "role": zod.enum(['owner', 'admin']),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Remove a pastor's access to the signed-in church
+ */
+export const RemoveChurchAdminParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const RemoveChurchAdminResponse = zod.void()
+
+
+/**
  * @summary Get the public church profile destination
  */
 export const GetPublicChurchParams = zod.object({

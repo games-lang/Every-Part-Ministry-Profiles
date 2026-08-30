@@ -65,6 +65,67 @@ paths:
                 $ref: "#/components/schemas/Church"
         "401":
           description: Unauthorized
+  /church/admins:
+    get:
+      operationId: listChurchAdmins
+      tags: [churches]
+      summary: List pastors with access to the signed-in church
+      responses:
+        "200":
+          description: Church administrators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChurchAdmin"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: addChurchAdmin
+      tags: [churches]
+      summary: Add an existing Clerk user as a church administrator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChurchAdminAddInput"
+      responses:
+        "201":
+          description: Added administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChurchAdmin"
+        "400":
+          description: Invalid administrator
+        "401":
+          description: Unauthorized
+        "404":
+          description: No Clerk account was found for the email address
+        "409":
+          description: User is already an administrator
+  /church/admins/{id}:
+    delete:
+      operationId: removeChurchAdmin
+      tags: [churches]
+      summary: Remove a pastor's access to the signed-in church
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Administrator removed
+        "400":
+          description: The church owner cannot be removed
+        "401":
+          description: Unauthorized
+        "404":
+          description: Administrator not found
   /churches/{slug}:
     get:
       operationId: getPublicChurch
@@ -426,6 +487,24 @@ components:
             $ref: "#/components/schemas/SpiritualGiftName"
         assessmentConfiguration:
           $ref: "#/components/schemas/AssessmentConfiguration"
+    ChurchAdmin:
+      type: object
+      required: [id, name, email, role, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        role:
+          type: string
+          enum: [owner, admin]
+        createdAt: { type: string, format: date-time }
+    ChurchAdminAddInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
     PublicChurch:
       type: object
       required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration]

@@ -21,6 +21,8 @@ import type {
 
 import type {
   Church,
+  ChurchAdmin,
+  ChurchAdminAddInput,
   ChurchUpdate,
   DashboardSummary,
   HealthStatus,
@@ -293,6 +295,225 @@ export const useUpdateMyChurch = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getUpdateMyChurchMutationOptions(options));
+    }
+
+export const getListChurchAdminsUrl = () => {
+
+
+
+
+  return `/api/church/admins`
+}
+
+/**
+ * @summary List pastors with access to the signed-in church
+ */
+export const listChurchAdmins = async ( options?: Parameters<typeof customFetch>[1]): Promise<ChurchAdmin[]> => {
+
+  return customFetch<ChurchAdmin[]>(getListChurchAdminsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListChurchAdminsQueryKey = () => {
+    return [
+    `/api/church/admins`
+    ] as const;
+    }
+
+
+export const getListChurchAdminsQueryOptions = <TData = Awaited<ReturnType<typeof listChurchAdmins>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listChurchAdmins>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListChurchAdminsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listChurchAdmins>>> = ({ signal }) => listChurchAdmins({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listChurchAdmins>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListChurchAdminsQueryResult = NonNullable<Awaited<ReturnType<typeof listChurchAdmins>>>
+export type ListChurchAdminsQueryError = ErrorType<void>
+
+
+/**
+ * @summary List pastors with access to the signed-in church
+ */
+
+export function useListChurchAdmins<TData = Awaited<ReturnType<typeof listChurchAdmins>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listChurchAdmins>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListChurchAdminsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAddChurchAdminUrl = () => {
+
+
+
+
+  return `/api/church/admins`
+}
+
+/**
+ * @summary Add an existing Clerk user as a church administrator
+ */
+export const addChurchAdmin = async (churchAdminAddInput: ChurchAdminAddInput, options?: Parameters<typeof customFetch>[1]): Promise<ChurchAdmin> => {
+
+  return customFetch<ChurchAdmin>(getAddChurchAdminUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(churchAdminAddInput)
+  }
+);}
+
+
+
+
+
+export const getAddChurchAdminMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addChurchAdmin>>, TError,{data: BodyType<ChurchAdminAddInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof addChurchAdmin>>, TError,{data: BodyType<ChurchAdminAddInput>}, TContext> => {
+
+const mutationKey = ['addChurchAdmin'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addChurchAdmin>>, {data: BodyType<ChurchAdminAddInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  addChurchAdmin(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddChurchAdminMutationResult = NonNullable<Awaited<ReturnType<typeof addChurchAdmin>>>
+    export type AddChurchAdminMutationBody = BodyType<ChurchAdminAddInput>
+    export type AddChurchAdminMutationError = ErrorType<void>
+
+    /**
+ * @summary Add an existing Clerk user as a church administrator
+ */
+export const useAddChurchAdmin = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addChurchAdmin>>, TError,{data: BodyType<ChurchAdminAddInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof addChurchAdmin>>,
+        TError,
+        {data: BodyType<ChurchAdminAddInput>},
+        TContext
+      > => {
+      return useMutation(getAddChurchAdminMutationOptions(options));
+    }
+
+export const getRemoveChurchAdminUrl = (id: number,) => {
+
+
+
+
+  return `/api/church/admins/${id}`
+}
+
+/**
+ * @summary Remove a pastor's access to the signed-in church
+ */
+export const removeChurchAdmin = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getRemoveChurchAdminUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveChurchAdminMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeChurchAdmin>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeChurchAdmin>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['removeChurchAdmin'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeChurchAdmin>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  removeChurchAdmin(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveChurchAdminMutationResult = NonNullable<Awaited<ReturnType<typeof removeChurchAdmin>>>
+
+    export type RemoveChurchAdminMutationError = ErrorType<void>
+
+    /**
+ * @summary Remove a pastor's access to the signed-in church
+ */
+export const useRemoveChurchAdmin = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeChurchAdmin>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof removeChurchAdmin>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getRemoveChurchAdminMutationOptions(options));
     }
 
 export const getGetPublicChurchUrl = (slug: string,) => {

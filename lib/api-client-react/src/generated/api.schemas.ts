@@ -165,6 +165,26 @@ export interface ChurchUpdate {
   assessmentConfiguration?: AssessmentConfiguration;
 }
 
+export type ChurchAdminRole = typeof ChurchAdminRole[keyof typeof ChurchAdminRole];
+
+
+export const ChurchAdminRole = {
+  owner: 'owner',
+  admin: 'admin',
+} as const;
+
+export interface ChurchAdmin {
+  id: number;
+  name: string;
+  email: string;
+  role: ChurchAdminRole;
+  createdAt: string;
+}
+
+export interface ChurchAdminAddInput {
+  email: string;
+}
+
 export interface PublicChurch {
   name: string;
   slug: string;

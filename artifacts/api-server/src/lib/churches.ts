@@ -1,4 +1,8 @@
-import { db, churchesTable } from "@workspace/db";
+import {
+  churchAdminsTable,
+  churchesTable,
+  db,
+} from "@workspace/db";
 import { eq } from "drizzle-orm";
 import {
   assessmentConfiguration,
@@ -12,24 +16,56 @@ function slugFromUserId(userId: string): string {
 }
 
 export async function getOrCreateChurch(userId: string) {
+  const [membership] = await db
+    .select({ church: churchesTable })
+    .from(churchAdminsTable)
+    .innerJoin(churchesTable, eq(churchAdminsTable.churchId, churchesTable.id))
+    .where(eq(churchAdminsTable.clerkUserId, userId))
+    .limit(1);
+  if (membership?.church) return membership.church;
+
   const [existing] = await db
     .select()
     .from(churchesTable)
     .where(eq(churchesTable.ownerUserId, userId))
     .limit(1);
 
-  if (existing) return existing;
+  if (existing) {
+    await db
+      .insert(churchAdminsTable)
+      .values({
+        churchId: existing.id,
+        clerkUserId: userId,
+        email: existing.adminEmail,
+        name: existing.adminName,
+        role: "owner",
+      })
+      .onConflictDoNothing();
+    return existing;
+  }
 
-  const [created] = await db
-    .insert(churchesTable)
-    .values({
-      ownerUserId: userId,
-      name: "Your Church",
-      slug: slugFromUserId(userId),
-      adminName: "Church Administrator",
-      adminEmail: "admin@example.com",
-    })
-    .returning();
+  const [created] = await db.transaction(async (tx) => {
+    const [church] = await tx
+      .insert(churchesTable)
+      .values({
+        ownerUserId: userId,
+        name: "Your Church",
+        slug: slugFromUserId(userId),
+        adminName: "Church Administrator",
+        adminEmail: "admin@example.com",
+      })
+      .returning();
+    if (church) {
+      await tx.insert(churchAdminsTable).values({
+        churchId: church.id,
+        clerkUserId: userId,
+        email: church.adminEmail,
+        name: church.adminName,
+        role: "owner",
+      });
+    }
+    return [church] as const;
+  });
 
   if (!created) throw new Error("Unable to create church");
   return created;
