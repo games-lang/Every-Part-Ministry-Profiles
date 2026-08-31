@@ -983,6 +983,10 @@ const assessmentSchema = z.object({
     projects: z.string(),
     commitment: z.string(),
     responsibility: z.string(),
+    durationTheyWillTry: z.string(),
+    capacityThisSeason: z.string(),
+    currentlyServing: z.string(),
+    alreadyAsked: z.string(),
   }),
   spiritualHealth: z.object({
     prayer: z.string(),
@@ -1154,6 +1158,10 @@ const defaultValues: Values = {
     projects: "",
     commitment: "",
     responsibility: "",
+    durationTheyWillTry: "",
+    capacityThisSeason: "",
+    currentlyServing: "",
+    alreadyAsked: "",
   },
   spiritualHealth: {
     prayer: "",
@@ -3291,6 +3299,48 @@ export default function Assessment() {
                         name="availabilityDetails.responsibility"
                         label="What serving responsibility feels realistic right now?"
                         multiline
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.durationTheyWillTry"
+                        label="How long would you try a new serving role?"
+                        options={[
+                          "A few weeks",
+                          "About 3 months",
+                          "This semester",
+                          "Through the school year",
+                          "About a year",
+                          "Open-ended — let's talk",
+                        ]}
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.capacityThisSeason"
+                        label="Can you take more this season?"
+                        options={[
+                          "I can take something new",
+                          "I can keep what I have",
+                          "Not this season",
+                          "Let's talk",
+                        ]}
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.currentlyServing"
+                        label="Are you currently serving on a team here?"
+                        options={["Yes", "No", "Not sure"]}
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.alreadyAsked"
+                        label="Has someone already asked you to serve?"
+                        options={[
+                          "No",
+                          "Yes — kids",
+                          "Yes — worship",
+                          "Yes — another team",
+                          "Yes — not sure who",
+                        ]}
                       />
                     </>
                   )}
