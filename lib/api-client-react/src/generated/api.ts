@@ -29,6 +29,9 @@ import type {
   DiscoverProfileInput,
   DiscoverProfileResult,
   DiscoverProfileSubmission,
+  ExploreProfileInput,
+  ExploreProfileResult,
+  ExploreProfileSubmission,
   HealthStatus,
   ListProfilesParams,
   MinistryProfile,
@@ -1552,6 +1555,154 @@ export function useGetDiscoverResult<TData = Awaited<ReturnType<typeof getDiscov
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetDiscoverResultQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSubmitExploreProfileUrl = () => {
+
+
+
+
+  return `/api/explore-profiles`
+}
+
+/**
+ * @summary Submit a guardian-consented Explore profile for ages 9 through 12
+ */
+export const submitExploreProfile = async (exploreProfileInput: ExploreProfileInput, options?: Parameters<typeof customFetch>[1]): Promise<ExploreProfileSubmission> => {
+
+  return customFetch<ExploreProfileSubmission>(getSubmitExploreProfileUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(exploreProfileInput)
+  }
+);}
+
+
+
+
+
+export const getSubmitExploreProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitExploreProfile>>, TError,{data: BodyType<ExploreProfileInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitExploreProfile>>, TError,{data: BodyType<ExploreProfileInput>}, TContext> => {
+
+const mutationKey = ['submitExploreProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitExploreProfile>>, {data: BodyType<ExploreProfileInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  submitExploreProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitExploreProfileMutationResult = NonNullable<Awaited<ReturnType<typeof submitExploreProfile>>>
+    export type SubmitExploreProfileMutationBody = BodyType<ExploreProfileInput>
+    export type SubmitExploreProfileMutationError = ErrorType<void>
+
+    /**
+ * @summary Submit a guardian-consented Explore profile for ages 9 through 12
+ */
+export const useSubmitExploreProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitExploreProfile>>, TError,{data: BodyType<ExploreProfileInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitExploreProfile>>,
+        TError,
+        {data: BodyType<ExploreProfileInput>},
+        TContext
+      > => {
+      return useMutation(getSubmitExploreProfileMutationOptions(options));
+    }
+
+export const getGetExploreResultUrl = (id: string,) => {
+
+
+
+
+  return `/api/explore-profiles/${id}/result`
+}
+
+/**
+ * @summary Retrieve a guardian-safe Explore result with its opaque token
+ */
+export const getExploreResult = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<ExploreProfileResult> => {
+
+  return customFetch<ExploreProfileResult>(getGetExploreResultUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetExploreResultQueryKey = (id: string,) => {
+    return [
+    `/api/explore-profiles/${id}/result`
+    ] as const;
+    }
+
+
+export const getGetExploreResultQueryOptions = <TData = Awaited<ReturnType<typeof getExploreResult>>, TError = ErrorType<void>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getExploreResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetExploreResultQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExploreResult>>> = ({ signal }) => getExploreResult(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExploreResult>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetExploreResultQueryResult = NonNullable<Awaited<ReturnType<typeof getExploreResult>>>
+export type GetExploreResultQueryError = ErrorType<void>
+
+
+/**
+ * @summary Retrieve a guardian-safe Explore result with its opaque token
+ */
+
+export function useGetExploreResult<TData = Awaited<ReturnType<typeof getExploreResult>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getExploreResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetExploreResultQueryOptions(id,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

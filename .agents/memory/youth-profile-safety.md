@@ -14,3 +14,9 @@ Saved youth drafts must be optional, device-expiring, and clearable, with consen
 **Why:** Automatically retaining a child’s name, guardian contact information, or observations on a shared device can expose one family’s unfinished profile to another.
 
 **How to apply:** Keep persistence off by default, explain the shared-device risk, expire saved drafts quickly, omit blank optional fields, and provide an obvious discard action.
+
+Multi-step youth forms must validate only the visible step during progression and safely validate the complete form at submission; do not run hidden required fields through full-schema validation on every interaction.
+
+**Why:** Full-form validation during early-step interactions can surface expected missing future answers as runtime failures instead of child-friendly inline guidance.
+
+**How to apply:** Use step-scoped, non-throwing checks for Continue actions, then run a complete safe parse before constructing the final strict API payload.

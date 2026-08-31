@@ -998,6 +998,278 @@ export interface DiscoverProfileResult {
   guardian: DiscoverProfileResultGuardian;
 }
 
+export type ExploreProfileInputProfileType = typeof ExploreProfileInputProfileType[keyof typeof ExploreProfileInputProfileType];
+
+
+export const ExploreProfileInputProfileType = {
+  explore: 'explore',
+} as const;
+
+export type ExploreProfileInputChild = {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  firstName: string;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  lastName: string;
+};
+
+export type ExploreProfileInputGuardian = {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  name: string;
+  /** @maxLength 254 */
+  email: string;
+  consent: true;
+};
+
+export type ExploreProfileInputGuardianObservations = {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  strengths?: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  comesAlive?: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  comfortableOpportunities?: string;
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  thriveNotes?: string;
+};
+
+/**
+ * @minItems 1
+ * @maxItems 8
+ * @items.minLength 1
+ * @items.maxLength 80
+ */
+export type ExploreTextList = string[];
+
+export type ExploreAnswersInputHowITendToOperatePeopleEnergy = typeof ExploreAnswersInputHowITendToOperatePeopleEnergy[keyof typeof ExploreAnswersInputHowITendToOperatePeopleEnergy];
+
+
+export const ExploreAnswersInputHowITendToOperatePeopleEnergy = {
+  'being-with-people': 'being-with-people',
+  'mix-of-both': 'mix-of-both',
+  'quiet-time': 'quiet-time',
+} as const;
+
+export type ExploreAnswersInputHowITendToOperateDecisionStyle = typeof ExploreAnswersInputHowITendToOperateDecisionStyle[keyof typeof ExploreAnswersInputHowITendToOperateDecisionStyle];
+
+
+export const ExploreAnswersInputHowITendToOperateDecisionStyle = {
+  'talk-it-out': 'talk-it-out',
+  'think-it-through': 'think-it-through',
+  'try-and-see': 'try-and-see',
+} as const;
+
+export type ExploreAnswersInputHowITendToOperatePlanningStyle = typeof ExploreAnswersInputHowITendToOperatePlanningStyle[keyof typeof ExploreAnswersInputHowITendToOperatePlanningStyle];
+
+
+export const ExploreAnswersInputHowITendToOperatePlanningStyle = {
+  'plan-ahead': 'plan-ahead',
+  'little-plan': 'little-plan',
+  'go-with-the-flow': 'go-with-the-flow',
+} as const;
+
+export type ExploreAnswersInputHowITendToOperateFocusStyle = typeof ExploreAnswersInputHowITendToOperateFocusStyle[keyof typeof ExploreAnswersInputHowITendToOperateFocusStyle];
+
+
+export const ExploreAnswersInputHowITendToOperateFocusStyle = {
+  'one-thing': 'one-thing',
+  'switch-it-up': 'switch-it-up',
+  'notice-details': 'notice-details',
+} as const;
+
+export type ExploreAnswersInputHowITendToOperateActionStyle = typeof ExploreAnswersInputHowITendToOperateActionStyle[keyof typeof ExploreAnswersInputHowITendToOperateActionStyle];
+
+
+export const ExploreAnswersInputHowITendToOperateActionStyle = {
+  'jump-in': 'jump-in',
+  'help-behind-scenes': 'help-behind-scenes',
+  'ask-first': 'ask-first',
+} as const;
+
+export interface ExploreOpportunitiesInput {
+  welcome?: YouthOpportunityResponse;
+  prayer?: YouthOpportunityResponse;
+  kids?: YouthOpportunityResponse;
+  worship?: YouthOpportunityResponse;
+  scriptureReading?: YouthOpportunityResponse;
+  production?: YouthOpportunityResponse;
+  communityCare?: YouthOpportunityResponse;
+  missions?: YouthOpportunityResponse;
+  encouragementCards?: YouthOpportunityResponse;
+  hospitality?: YouthOpportunityResponse;
+  setup?: YouthOpportunityResponse;
+  creative?: YouthOpportunityResponse;
+  events?: YouthOpportunityResponse;
+}
+
+export type ExploreAnswersInputAboutMe = {
+  likes: ExploreTextList;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  goodAt: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  wantToLearn: string;
+};
+
+export type ExploreAnswersInputHowITendToOperate = {
+  peopleEnergy: ExploreAnswersInputHowITendToOperatePeopleEnergy;
+  decisionStyle: ExploreAnswersInputHowITendToOperateDecisionStyle;
+  planningStyle: ExploreAnswersInputHowITendToOperatePlanningStyle;
+  focusStyle: ExploreAnswersInputHowITendToOperateFocusStyle;
+  actionStyle: ExploreAnswersInputHowITendToOperateActionStyle;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  reflection?: string;
+};
+
+export type ExploreAnswersInputGrowingWithJesus = {
+  interests: ExploreTextList;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  helperName?: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  wantsHelpWith?: string;
+};
+
+export interface ExploreAnswersInput {
+  aboutMe: ExploreAnswersInputAboutMe;
+  howITendToOperate: ExploreAnswersInputHowITendToOperate;
+  peopleAndNeeds: ExploreTextList;
+  waysIEnjoyHelping: ExploreTextList;
+  growingWithJesus: ExploreAnswersInputGrowingWithJesus;
+  opportunities: ExploreOpportunitiesInput;
+}
+
+export interface ExploreProfileInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  churchSlug: string;
+  /**
+     * @minimum 9
+     * @maximum 12
+     */
+  age: number;
+  birthdate?: string;
+  profileType: ExploreProfileInputProfileType;
+  child: ExploreProfileInputChild;
+  guardian: ExploreProfileInputGuardian;
+  answers: ExploreAnswersInput;
+  guardianObservations?: ExploreProfileInputGuardianObservations;
+}
+
+export type ExploreProfileSubmissionProfileType = typeof ExploreProfileSubmissionProfileType[keyof typeof ExploreProfileSubmissionProfileType];
+
+
+export const ExploreProfileSubmissionProfileType = {
+  explore: 'explore',
+} as const;
+
+export type ExploreProfileSubmissionRecommendedProfileType = typeof ExploreProfileSubmissionRecommendedProfileType[keyof typeof ExploreProfileSubmissionRecommendedProfileType];
+
+
+export const ExploreProfileSubmissionRecommendedProfileType = {
+  explore: 'explore',
+} as const;
+
+export interface ExploreProfileSubmission {
+  resultToken: string;
+  profileType: ExploreProfileSubmissionProfileType;
+  recommendedProfileType: ExploreProfileSubmissionRecommendedProfileType;
+}
+
+export type ExploreProfileResultProfileType = typeof ExploreProfileResultProfileType[keyof typeof ExploreProfileResultProfileType];
+
+
+export const ExploreProfileResultProfileType = {
+  explore: 'explore',
+} as const;
+
+export type ExploreProfileResultSummary = {
+  headline: string;
+  /**
+     * @minItems 1
+     * @maxItems 3
+     */
+  strengths: string[];
+  tendencySummary: string;
+  completionCopy: string;
+};
+
+export type ExploreProfileResultSuggestionsItemOpportunityKey = typeof ExploreProfileResultSuggestionsItemOpportunityKey[keyof typeof ExploreProfileResultSuggestionsItemOpportunityKey];
+
+
+export const ExploreProfileResultSuggestionsItemOpportunityKey = {
+  welcome: 'welcome',
+  prayer: 'prayer',
+  kids: 'kids',
+  worship: 'worship',
+  scriptureReading: 'scriptureReading',
+  production: 'production',
+  communityCare: 'communityCare',
+  missions: 'missions',
+  encouragementCards: 'encouragementCards',
+  hospitality: 'hospitality',
+  setup: 'setup',
+  creative: 'creative',
+  events: 'events',
+} as const;
+
+export type ExploreProfileResultSuggestionsItem = {
+  opportunityKey: ExploreProfileResultSuggestionsItemOpportunityKey;
+  opportunityLabel: string;
+  reason: string;
+};
+
+export type ExploreProfileResultGuardian = {
+  name: string;
+  consent: true;
+};
+
+export interface ExploreProfileResult {
+  profileType: ExploreProfileResultProfileType;
+  childName: string;
+  summary: ExploreProfileResultSummary;
+  /**
+     * @minItems 2
+     * @maxItems 4
+     */
+  suggestions: ExploreProfileResultSuggestionsItem[];
+  guardian: ExploreProfileResultGuardian;
+}
+
 export type ListProfilesParams = {
 search?: string;
 interest?: string;

@@ -1185,6 +1185,159 @@ export const GetDiscoverResultResponse = zod.object({
 
 
 /**
+ * @summary Submit a guardian-consented Explore profile for ages 9 through 12
+ */
+export const submitExploreProfileBodyChurchSlugMax = 120;
+
+export const submitExploreProfileBodyAgeMin = 9;
+export const submitExploreProfileBodyAgeMax = 12;
+
+export const submitExploreProfileBodyChildFirstNameMax = 80;
+
+export const submitExploreProfileBodyChildLastNameMax = 80;
+
+export const submitExploreProfileBodyGuardianNameMax = 120;
+
+export const submitExploreProfileBodyGuardianEmailMax = 254;
+
+export const submitExploreProfileBodyAnswersAboutMeLikesItemMax = 80;
+
+export const submitExploreProfileBodyAnswersAboutMeLikesMax = 8;
+
+export const submitExploreProfileBodyAnswersAboutMeGoodAtMax = 300;
+
+export const submitExploreProfileBodyAnswersAboutMeWantToLearnMax = 300;
+
+export const submitExploreProfileBodyAnswersHowITendToOperateReflectionMax = 300;
+
+export const submitExploreProfileBodyAnswersPeopleAndNeedsItemMax = 80;
+
+export const submitExploreProfileBodyAnswersPeopleAndNeedsMax = 8;
+
+export const submitExploreProfileBodyAnswersWaysIEnjoyHelpingItemMax = 80;
+
+export const submitExploreProfileBodyAnswersWaysIEnjoyHelpingMax = 8;
+
+export const submitExploreProfileBodyAnswersGrowingWithJesusInterestsItemMax = 80;
+
+export const submitExploreProfileBodyAnswersGrowingWithJesusInterestsMax = 8;
+
+export const submitExploreProfileBodyAnswersGrowingWithJesusHelperNameMax = 120;
+
+export const submitExploreProfileBodyAnswersGrowingWithJesusWantsHelpWithMax = 300;
+
+export const submitExploreProfileBodyGuardianObservationsStrengthsMax = 500;
+
+export const submitExploreProfileBodyGuardianObservationsComesAliveMax = 500;
+
+export const submitExploreProfileBodyGuardianObservationsComfortableOpportunitiesMax = 500;
+
+export const submitExploreProfileBodyGuardianObservationsThriveNotesMax = 1000;
+
+
+
+export const SubmitExploreProfileBody = zod.object({
+  "churchSlug": zod.string().min(1).max(submitExploreProfileBodyChurchSlugMax),
+  "age": zod.int().min(submitExploreProfileBodyAgeMin).max(submitExploreProfileBodyAgeMax),
+  "birthdate": zod.coerce.date().optional(),
+  "profileType": zod.enum(['explore']),
+  "child": zod.object({
+  "firstName": zod.string().min(1).max(submitExploreProfileBodyChildFirstNameMax),
+  "lastName": zod.string().min(1).max(submitExploreProfileBodyChildLastNameMax)
+}),
+  "guardian": zod.object({
+  "name": zod.string().min(1).max(submitExploreProfileBodyGuardianNameMax),
+  "email": zod.email().max(submitExploreProfileBodyGuardianEmailMax),
+  "consent": zod.literal(true)
+}),
+  "answers": zod.object({
+  "aboutMe": zod.object({
+  "likes": zod.array(zod.string().min(1).max(submitExploreProfileBodyAnswersAboutMeLikesItemMax)).min(1).max(submitExploreProfileBodyAnswersAboutMeLikesMax),
+  "goodAt": zod.string().min(1).max(submitExploreProfileBodyAnswersAboutMeGoodAtMax),
+  "wantToLearn": zod.string().min(1).max(submitExploreProfileBodyAnswersAboutMeWantToLearnMax)
+}),
+  "howITendToOperate": zod.object({
+  "peopleEnergy": zod.enum(['being-with-people', 'mix-of-both', 'quiet-time']),
+  "decisionStyle": zod.enum(['talk-it-out', 'think-it-through', 'try-and-see']),
+  "planningStyle": zod.enum(['plan-ahead', 'little-plan', 'go-with-the-flow']),
+  "focusStyle": zod.enum(['one-thing', 'switch-it-up', 'notice-details']),
+  "actionStyle": zod.enum(['jump-in', 'help-behind-scenes', 'ask-first']),
+  "reflection": zod.string().min(1).max(submitExploreProfileBodyAnswersHowITendToOperateReflectionMax).optional()
+}),
+  "peopleAndNeeds": zod.array(zod.string().min(1).max(submitExploreProfileBodyAnswersPeopleAndNeedsItemMax)).min(1).max(submitExploreProfileBodyAnswersPeopleAndNeedsMax),
+  "waysIEnjoyHelping": zod.array(zod.string().min(1).max(submitExploreProfileBodyAnswersWaysIEnjoyHelpingItemMax)).min(1).max(submitExploreProfileBodyAnswersWaysIEnjoyHelpingMax),
+  "growingWithJesus": zod.object({
+  "interests": zod.array(zod.string().min(1).max(submitExploreProfileBodyAnswersGrowingWithJesusInterestsItemMax)).min(1).max(submitExploreProfileBodyAnswersGrowingWithJesusInterestsMax),
+  "helperName": zod.string().min(1).max(submitExploreProfileBodyAnswersGrowingWithJesusHelperNameMax).optional(),
+  "wantsHelpWith": zod.string().min(1).max(submitExploreProfileBodyAnswersGrowingWithJesusWantsHelpWithMax).optional()
+}),
+  "opportunities": zod.object({
+  "welcome": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "prayer": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "kids": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "worship": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "scriptureReading": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "production": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "communityCare": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "missions": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "encouragementCards": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "hospitality": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "setup": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "creative": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "events": zod.enum(['love', 'maybe', 'not-now']).optional()
+})
+}),
+  "guardianObservations": zod.object({
+  "strengths": zod.string().min(1).max(submitExploreProfileBodyGuardianObservationsStrengthsMax).optional(),
+  "comesAlive": zod.string().min(1).max(submitExploreProfileBodyGuardianObservationsComesAliveMax).optional(),
+  "comfortableOpportunities": zod.string().min(1).max(submitExploreProfileBodyGuardianObservationsComfortableOpportunitiesMax).optional(),
+  "thriveNotes": zod.string().min(1).max(submitExploreProfileBodyGuardianObservationsThriveNotesMax).optional()
+}).optional()
+})
+
+export const SubmitExploreProfileResponse = zod.object({
+  "resultToken": zod.uuid(),
+  "profileType": zod.enum(['explore']),
+  "recommendedProfileType": zod.enum(['explore'])
+})
+
+
+/**
+ * @summary Retrieve a guardian-safe Explore result with its opaque token
+ */
+export const GetExploreResultParams = zod.object({
+  "id": zod.uuid()
+})
+
+export const getExploreResultResponseSummaryStrengthsMax = 3;
+
+export const getExploreResultResponseSuggestionsMin = 2;
+export const getExploreResultResponseSuggestionsMax = 4;
+
+
+
+export const GetExploreResultResponse = zod.object({
+  "profileType": zod.enum(['explore']),
+  "childName": zod.string(),
+  "summary": zod.object({
+  "headline": zod.string(),
+  "strengths": zod.array(zod.string()).min(1).max(getExploreResultResponseSummaryStrengthsMax),
+  "tendencySummary": zod.string(),
+  "completionCopy": zod.string()
+}),
+  "suggestions": zod.array(zod.object({
+  "opportunityKey": zod.enum(['welcome', 'prayer', 'kids', 'worship', 'scriptureReading', 'production', 'communityCare', 'missions', 'encouragementCards', 'hospitality', 'setup', 'creative', 'events']),
+  "opportunityLabel": zod.string(),
+  "reason": zod.string()
+})).min(getExploreResultResponseSuggestionsMin).max(getExploreResultResponseSuggestionsMax),
+  "guardian": zod.object({
+  "name": zod.string(),
+  "consent": zod.literal(true)
+})
+})
+
+
+/**
  * @summary View a completed Ministry Profile
  */
 export const GetProfileParams = zod.object({

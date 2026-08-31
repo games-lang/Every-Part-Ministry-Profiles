@@ -229,7 +229,7 @@ function DiscoverProfileView({ profile }: { profile: MinistryProfile }) {
     <div className="space-y-8 mt-8">
       <Section title="About Me">
         <div className="grid sm:grid-cols-2 gap-3">
-          <Value label="Likes for fun" value={answers.aboutMe?.likes} />
+          <Value label="Likes for fun" value={Array.isArray(answers.aboutMe?.likes) ? answers.aboutMe?.likes.join(', ') : answers.aboutMe?.likes} />
           <Value label="Good at" value={answers.aboutMe?.goodAt} />
           <Value label="Wants to learn" value={answers.aboutMe?.wantToLearn} />
         </div>
@@ -248,6 +248,67 @@ function DiscoverProfileView({ profile }: { profile: MinistryProfile }) {
         <div className="grid sm:grid-cols-2 gap-3">
           <Value label="Cares About" value={Array.isArray(answers.caresAbout) ? answers.caresAbout.join(', ') : answers.caresAbout} />
           <Value label="Likes to Help" value={Array.isArray(answers.waysToHelp) ? answers.waysToHelp.join(', ') : answers.waysToHelp} />
+        </div>
+      </Section>
+
+      <Section title="Growing With Jesus">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Interests" value={Array.isArray(answers.growingWithJesus?.interests) ? answers.growingWithJesus?.interests.join(', ') : answers.growingWithJesus?.interests} />
+          <Value label="Look up to" value={answers.growingWithJesus?.helperName} />
+          <Value label="Wants help learning" value={answers.growingWithJesus?.wantsHelpWith} />
+        </div>
+      </Section>
+
+      <Section title="Things I Would Like To Try">
+         <ObjectValues value={answers.opportunities} />
+      </Section>
+
+      {Boolean(obs.strengths || obs.comesAlive || obs.comfortableOpportunities || obs.thriveNotes) && (
+        <div className="pt-4">
+          <h2 className="font-serif text-2xl font-medium mb-3">Guardian Observations</h2>
+          <Card className="border-border/60 shadow-sm bg-muted/10">
+            <CardContent className="p-5 grid sm:grid-cols-2 gap-4">
+              <Value label="Natural strengths" value={obs.strengths} />
+              <Value label="Comes alive when" value={obs.comesAlive} />
+              <Value label="Comfortable starting opportunities" value={obs.comfortableOpportunities} />
+              <Value label="Notes for thriving" value={obs.thriveNotes} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ExploreProfileView({ profile }: { profile: MinistryProfile }) {
+  const answers = (profile.youthResponses || {}) as Record<string, any>;
+  const obs = (profile.guardianObservations || {}) as Record<string, any>;
+
+  return (
+    <div className="space-y-8 mt-8">
+      <Section title="About Me">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Likes for fun" value={Array.isArray(answers.aboutMe?.likes) ? answers.aboutMe?.likes.join(', ') : answers.aboutMe?.likes} />
+          <Value label="Good at" value={answers.aboutMe?.goodAt} />
+          <Value label="Wants to learn" value={answers.aboutMe?.wantToLearn} />
+        </div>
+      </Section>
+
+      <Section title="How I Tend to Operate">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Social Energy" value={answers.howITendToOperate?.peopleEnergy} />
+          <Value label="Decision Style" value={answers.howITendToOperate?.decisionStyle} />
+          <Value label="Planning Style" value={answers.howITendToOperate?.planningStyle} />
+          <Value label="Focus Style" value={answers.howITendToOperate?.focusStyle} />
+          <Value label="Action Style" value={answers.howITendToOperate?.actionStyle} />
+          <Value label="Reflection" value={answers.howITendToOperate?.reflection} />
+        </div>
+      </Section>
+
+      <Section title="Caring & Helping">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="People & Needs" value={Array.isArray(answers.peopleAndNeeds) ? answers.peopleAndNeeds.join(', ') : answers.peopleAndNeeds} />
+          <Value label="Ways I Enjoy Helping" value={Array.isArray(answers.waysIEnjoyHelping) ? answers.waysIEnjoyHelping.join(', ') : answers.waysIEnjoyHelping} />
         </div>
       </Section>
 
@@ -304,6 +365,8 @@ export default function ProfileDetail() {
 
    {profile.profileType === 'discover' ? (
      <DiscoverProfileView profile={profile} />
+   ) : profile.profileType === 'explore' ? (
+     <ExploreProfileView profile={profile} />
    ) : (
      <>
        <CoordinatorAsk profile={profile} />
