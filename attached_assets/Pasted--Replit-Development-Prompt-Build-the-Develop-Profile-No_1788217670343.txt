@@ -1,0 +1,103 @@
+# Replit Development Prompt: Build the Develop Profile
+
+Now build the **Develop Profile for ages 13–17**.
+
+This should bridge the gap between the children's Every Part experience and the existing adult Ministry Profile.
+
+Target completion time:
+
+**15–25 minutes**
+
+Make the interface feel appropriate for teenagers rather than young children.
+
+Use the same Every Part branding, but reduce childish illustrations and use a cleaner, more mature design.
+
+Build these sections:
+
+1. Prayer & Calling
+2. About Me
+3. How I Tend to Operate
+4. Spiritual Gifts Exploration
+5. Passions
+6. Growing With Jesus
+7. Calling & Purpose
+8. Ministry Interests
+9. Availability & Responsibility
+10. My Development Plan
+
+For spiritual gifts, explain clearly that assessment results are not definitive.
+
+Use terminology such as:
+
+**“Gifts you may want to explore further.”**
+
+Do not tell a teenager:
+
+“Your spiritual gift is ______.”
+
+The personality section must continue using the original Every Part personality framework rather than Myers-Briggs names, codes, or copyrighted assessment material.
+
+Include exploration of:
+
+* People energy
+* Processing style
+* Planning/flexibility
+* People/logic considerations
+* Action/reflection
+* Leadership/support tendencies
+* Conflict tendencies
+* Team preferences
+
+Create descriptive results rather than personality codes.
+
+The Calling & Purpose section should help teenagers consider questions such as:
+
+* What needs or problems affect me deeply?
+* Where do I enjoy making a difference?
+* What do other Christians see in me?
+* Is there something God may be asking me to explore?
+* What ministry experiences would I like to try?
+* What skills would I like to develop?
+
+For older teenagers, optionally include vocational interests such as:
+
+* Pastoral ministry
+* Missions
+* Teaching
+* Counseling/care
+* Nonprofit/community service
+* Business
+* Healthcare
+* Technology
+* Creative work
+* Other
+
+Make clear that God's calling can be lived out in any vocation and is not limited to professional ministry.
+
+The final Development Plan should contain:
+
+**Strengths I'm Discovering**
+
+**How I Tend to Operate**
+
+**Gifts I May Want to Explore**
+
+**People & Needs I Care About**
+
+**Ministry Experiences I Might Try**
+
+**One Way I Want to Grow With Jesus**
+
+**People Who Can Help Me Grow**
+
+**Questions About Calling I Want to Keep Exploring**
+
+Include this statement:
+
+**You are still growing and discovering how God has made you. These results are a starting point for conversations, prayer, serving, and learning—not a permanent label.**
+
+Maintain the existing youth privacy and permissions structure.
+
+Do not overwrite Discover or Explore profiles if this student completed them previously.
+
+Please complete the Develop Profile and let me test the entire workflow before making significant changes to the adult Ministry Profile.
