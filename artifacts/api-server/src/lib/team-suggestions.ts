@@ -4,6 +4,7 @@ import {
   DEFAULT_PASSIONS,
 } from "./assessment-configuration.ts";
 import { SUPPORTED_SPIRITUAL_GIFT_NAMES } from "./spiritual-gifts.ts";
+import { adultProfilesOnly } from "./youth-profiles.ts";
 
 const ADVISORY =
   "These are starting points for pastoral discernment, not placement decisions. Review the full profiles and talk with people before creating a team or inviting anyone to serve.";
@@ -432,7 +433,7 @@ export async function generateTeamSuggestions(
   criteria: TeamSuggestionCriteria,
   existingTeamNames: string[] = [],
 ): Promise<TeamSuggestionResult> {
-  const safeProfiles = profiles.map(toSafeProfile);
+  const safeProfiles = adultProfilesOnly(profiles).map(toSafeProfile);
   const signals = prioritizeByFocus(buildSignals(safeProfiles), criteria.focus);
   if (!safeProfiles.length) {
     return {

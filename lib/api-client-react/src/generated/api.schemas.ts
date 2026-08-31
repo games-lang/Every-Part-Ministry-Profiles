@@ -185,6 +185,10 @@ export interface ChurchAdminAddInput {
   email: string;
 }
 
+export interface ChurchAdminAccess {
+  canOverrideYouthPathway: boolean;
+}
+
 export interface PublicChurch {
   name: string;
   slug: string;
@@ -229,6 +233,16 @@ export interface UploadUrlResponse {
   metadata: UploadUrlRequest;
 }
 
+export type ProfileListItemProfileType = typeof ProfileListItemProfileType[keyof typeof ProfileListItemProfileType];
+
+
+export const ProfileListItemProfileType = {
+  adult: 'adult',
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+} as const;
+
 export interface ProfileListItem {
   id: number;
   memberName: string;
@@ -241,6 +255,13 @@ export interface ProfileListItem {
   servingFrequency?: string | null;
   /** @nullable */
   teamId: number | null;
+  profileType: ProfileListItemProfileType;
+  /**
+     * @minimum 6
+     * @maximum 120
+     * @nullable
+     */
+  age: number | null;
 }
 
 export interface CountItem {
@@ -429,6 +450,43 @@ export type MinistryProfileMinistryPreferences = { [key: string]: unknown } | nu
 /**
  * @nullable
  */
+export type MinistryProfileRecommendedProfileType = typeof MinistryProfileRecommendedProfileType[keyof typeof MinistryProfileRecommendedProfileType] | null;
+
+
+export const MinistryProfileRecommendedProfileType = {
+  adult: 'adult',
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+} as const;
+
+/**
+ * @nullable
+ */
+export type MinistryProfileYouthResponses = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type MinistryProfileGuardianObservations = { [key: string]: unknown } | null;
+
+export type MinistryProfileGuardian = {
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  consent: boolean | null;
+};
+
+/**
+ * @nullable
+ */
+export type MinistryProfileYouth = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
 export type BasicInformationLanguages = { [key: string]: unknown } | null;
 
 export interface BasicInformation {
@@ -549,7 +607,24 @@ export type MinistryProfile = ProfileListItem & {
   availabilityDetails?: MinistryProfileAvailabilityDetails;
   /** @nullable */
   ministryPreferences?: MinistryProfileMinistryPreferences;
+  /** @nullable */
+  recommendedProfileType: MinistryProfileRecommendedProfileType;
+  profileTypeOverridden: boolean;
+  /** @nullable */
+  youthResponses: MinistryProfileYouthResponses;
+  /** @nullable */
+  guardianObservations: MinistryProfileGuardianObservations;
+  guardian: MinistryProfileGuardian;
+  /** @nullable */
+  youth: MinistryProfileYouth;
 };
+
+export type ProfileInputProfileType = typeof ProfileInputProfileType[keyof typeof ProfileInputProfileType];
+
+
+export const ProfileInputProfileType = {
+  adult: 'adult',
+} as const;
 
 /**
  * @nullable
@@ -682,6 +757,13 @@ export interface AssessmentSectionsInput {
 export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
+  /**
+     * @minimum 18
+     * @maximum 120
+     */
+  age: number;
+  birthdate?: string;
+  profileType: ProfileInputProfileType;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];
@@ -702,6 +784,218 @@ export interface ProfileInput {
   /** @nullable */
   ministryPreferences?: ProfileInputMinistryPreferences;
   assessmentSections?: AssessmentSectionsInput;
+}
+
+export type DiscoverProfileInputProfileType = typeof DiscoverProfileInputProfileType[keyof typeof DiscoverProfileInputProfileType];
+
+
+export const DiscoverProfileInputProfileType = {
+  discover: 'discover',
+} as const;
+
+export type DiscoverProfileInputChild = {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  firstName: string;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  lastName: string;
+};
+
+export type DiscoverProfileInputGuardian = {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  name: string;
+  /** @maxLength 254 */
+  email: string;
+  consent: true;
+};
+
+export type DiscoverProfileInputGuardianObservations = {
+  /** @maxLength 500 */
+  strengths?: string;
+  /** @maxLength 500 */
+  comesAlive?: string;
+  /** @maxLength 500 */
+  comfortableOpportunities?: string;
+  /** @maxLength 1000 */
+  thriveNotes?: string;
+};
+
+/**
+ * @minItems 1
+ * @maxItems 8
+ * @items.minLength 1
+ * @items.maxLength 80
+ */
+export type YouthTextList = string[];
+
+export type DiscoverAnswersInputTendenciesPeopleEnergy = typeof DiscoverAnswersInputTendenciesPeopleEnergy[keyof typeof DiscoverAnswersInputTendenciesPeopleEnergy];
+
+
+export const DiscoverAnswersInputTendenciesPeopleEnergy = {
+  love: 'love',
+  sometimes: 'sometimes',
+  quiet: 'quiet',
+} as const;
+
+export type DiscoverAnswersInputTendenciesNewThings = typeof DiscoverAnswersInputTendenciesNewThings[keyof typeof DiscoverAnswersInputTendenciesNewThings];
+
+
+export const DiscoverAnswersInputTendenciesNewThings = {
+  love: 'love',
+  sometimes: 'sometimes',
+  'not-yet': 'not-yet',
+} as const;
+
+export type DiscoverAnswersInputTendenciesHelpingResponse = typeof DiscoverAnswersInputTendenciesHelpingResponse[keyof typeof DiscoverAnswersInputTendenciesHelpingResponse];
+
+
+export const DiscoverAnswersInputTendenciesHelpingResponse = {
+  'jump-in': 'jump-in',
+  'ask-first': 'ask-first',
+  'prefer-support': 'prefer-support',
+} as const;
+
+export type YouthOpportunityResponse = typeof YouthOpportunityResponse[keyof typeof YouthOpportunityResponse];
+
+
+export const YouthOpportunityResponse = {
+  love: 'love',
+  maybe: 'maybe',
+  'not-now': 'not-now',
+} as const;
+
+export type DiscoverAnswersInputAboutMe = {
+  likes: YouthTextList;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  goodAt: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  wantToLearn: string;
+};
+
+export type DiscoverAnswersInputTendencies = {
+  peopleEnergy: DiscoverAnswersInputTendenciesPeopleEnergy;
+  newThings: DiscoverAnswersInputTendenciesNewThings;
+  helpingResponse: DiscoverAnswersInputTendenciesHelpingResponse;
+  enjoys: YouthTextList;
+};
+
+export type DiscoverAnswersInputGrowingWithJesus = {
+  interests: YouthTextList;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  helperName?: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  wantsHelpWith?: string;
+};
+
+export type DiscoverAnswersInputOpportunities = {
+  welcome?: YouthOpportunityResponse;
+  kids?: YouthOpportunityResponse;
+  students?: YouthOpportunityResponse;
+  worship?: YouthOpportunityResponse;
+  production?: YouthOpportunityResponse;
+  prayer?: YouthOpportunityResponse;
+  hospitality?: YouthOpportunityResponse;
+  communityCare?: YouthOpportunityResponse;
+  outreach?: YouthOpportunityResponse;
+  creative?: YouthOpportunityResponse;
+  behindTheScenes?: YouthOpportunityResponse;
+};
+
+export interface DiscoverAnswersInput {
+  aboutMe: DiscoverAnswersInputAboutMe;
+  tendencies: DiscoverAnswersInputTendencies;
+  caresAbout: YouthTextList;
+  waysToHelp: YouthTextList;
+  growingWithJesus: DiscoverAnswersInputGrowingWithJesus;
+  opportunities: DiscoverAnswersInputOpportunities;
+}
+
+export interface DiscoverProfileInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  churchSlug: string;
+  /**
+     * @minimum 6
+     * @maximum 120
+     */
+  age: number;
+  birthdate?: string;
+  profileType: DiscoverProfileInputProfileType;
+  child: DiscoverProfileInputChild;
+  guardian: DiscoverProfileInputGuardian;
+  answers: DiscoverAnswersInput;
+  guardianObservations?: DiscoverProfileInputGuardianObservations;
+}
+
+export type DiscoverProfileSubmissionProfileType = typeof DiscoverProfileSubmissionProfileType[keyof typeof DiscoverProfileSubmissionProfileType];
+
+
+export const DiscoverProfileSubmissionProfileType = {
+  discover: 'discover',
+} as const;
+
+export type DiscoverProfileSubmissionRecommendedProfileType = typeof DiscoverProfileSubmissionRecommendedProfileType[keyof typeof DiscoverProfileSubmissionRecommendedProfileType];
+
+
+export const DiscoverProfileSubmissionRecommendedProfileType = {
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+  adult: 'adult',
+} as const;
+
+export interface DiscoverProfileSubmission {
+  resultToken: string;
+  profileType: DiscoverProfileSubmissionProfileType;
+  recommendedProfileType: DiscoverProfileSubmissionRecommendedProfileType;
+}
+
+export type DiscoverProfileResultProfileType = typeof DiscoverProfileResultProfileType[keyof typeof DiscoverProfileResultProfileType];
+
+
+export const DiscoverProfileResultProfileType = {
+  discover: 'discover',
+} as const;
+
+export type DiscoverProfileResultSummary = {
+  headline: string;
+  nextStep: string;
+  strengths: string[];
+  tentativeNote: string;
+};
+
+export type DiscoverProfileResultGuardian = {
+  name: string;
+  consent: boolean;
+};
+
+export interface DiscoverProfileResult {
+  profileType: DiscoverProfileResultProfileType;
+  childName: string;
+  summary: DiscoverProfileResultSummary;
+  guardian: DiscoverProfileResultGuardian;
 }
 
 export type ListProfilesParams = {

@@ -22,9 +22,13 @@ import type {
 import type {
   Church,
   ChurchAdmin,
+  ChurchAdminAccess,
   ChurchAdminAddInput,
   ChurchUpdate,
   DashboardSummary,
+  DiscoverProfileInput,
+  DiscoverProfileResult,
+  DiscoverProfileSubmission,
   HealthStatus,
   ListProfilesParams,
   MinistryProfile,
@@ -581,6 +585,83 @@ export function useGetPublicChurch<TData = Awaited<ReturnType<typeof getPublicCh
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetPublicChurchQueryOptions(slug,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetChurchAdminAccessUrl = (slug: string,) => {
+
+
+
+
+  return `/api/churches/${slug}/admin-access`
+}
+
+/**
+ * @summary Check whether the signed-in user may override a youth pathway
+ */
+export const getChurchAdminAccess = async (slug: string, options?: Parameters<typeof customFetch>[1]): Promise<ChurchAdminAccess> => {
+
+  return customFetch<ChurchAdminAccess>(getGetChurchAdminAccessUrl(slug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetChurchAdminAccessQueryKey = (slug: string,) => {
+    return [
+    `/api/churches/${slug}/admin-access`
+    ] as const;
+    }
+
+
+export const getGetChurchAdminAccessQueryOptions = <TData = Awaited<ReturnType<typeof getChurchAdminAccess>>, TError = ErrorType<void>>(slug: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChurchAdminAccess>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChurchAdminAccessQueryKey(slug);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChurchAdminAccess>>> = ({ signal }) => getChurchAdminAccess(slug, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChurchAdminAccess>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetChurchAdminAccessQueryResult = NonNullable<Awaited<ReturnType<typeof getChurchAdminAccess>>>
+export type GetChurchAdminAccessQueryError = ErrorType<void>
+
+
+/**
+ * @summary Check whether the signed-in user may override a youth pathway
+ */
+
+export function useGetChurchAdminAccess<TData = Awaited<ReturnType<typeof getChurchAdminAccess>>, TError = ErrorType<void>>(
+ slug: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChurchAdminAccess>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetChurchAdminAccessQueryOptions(slug,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1334,6 +1415,154 @@ export const useFindVolunteerMatches = <TError = ErrorType<void>,
       > => {
       return useMutation(getFindVolunteerMatchesMutationOptions(options));
     }
+
+export const getSubmitDiscoverProfileUrl = () => {
+
+
+
+
+  return `/api/youth-profiles`
+}
+
+/**
+ * @summary Submit a guardian-consented Discover profile
+ */
+export const submitDiscoverProfile = async (discoverProfileInput: DiscoverProfileInput, options?: Parameters<typeof customFetch>[1]): Promise<DiscoverProfileSubmission> => {
+
+  return customFetch<DiscoverProfileSubmission>(getSubmitDiscoverProfileUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(discoverProfileInput)
+  }
+);}
+
+
+
+
+
+export const getSubmitDiscoverProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitDiscoverProfile>>, TError,{data: BodyType<DiscoverProfileInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitDiscoverProfile>>, TError,{data: BodyType<DiscoverProfileInput>}, TContext> => {
+
+const mutationKey = ['submitDiscoverProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitDiscoverProfile>>, {data: BodyType<DiscoverProfileInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  submitDiscoverProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitDiscoverProfileMutationResult = NonNullable<Awaited<ReturnType<typeof submitDiscoverProfile>>>
+    export type SubmitDiscoverProfileMutationBody = BodyType<DiscoverProfileInput>
+    export type SubmitDiscoverProfileMutationError = ErrorType<void>
+
+    /**
+ * @summary Submit a guardian-consented Discover profile
+ */
+export const useSubmitDiscoverProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitDiscoverProfile>>, TError,{data: BodyType<DiscoverProfileInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitDiscoverProfile>>,
+        TError,
+        {data: BodyType<DiscoverProfileInput>},
+        TContext
+      > => {
+      return useMutation(getSubmitDiscoverProfileMutationOptions(options));
+    }
+
+export const getGetDiscoverResultUrl = (id: string,) => {
+
+
+
+
+  return `/api/youth-profiles/${id}/result`
+}
+
+/**
+ * @summary Retrieve a youth discovery result with its opaque token
+ */
+export const getDiscoverResult = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<DiscoverProfileResult> => {
+
+  return customFetch<DiscoverProfileResult>(getGetDiscoverResultUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetDiscoverResultQueryKey = (id: string,) => {
+    return [
+    `/api/youth-profiles/${id}/result`
+    ] as const;
+    }
+
+
+export const getGetDiscoverResultQueryOptions = <TData = Awaited<ReturnType<typeof getDiscoverResult>>, TError = ErrorType<void>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDiscoverResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDiscoverResultQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDiscoverResult>>> = ({ signal }) => getDiscoverResult(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDiscoverResult>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDiscoverResultQueryResult = NonNullable<Awaited<ReturnType<typeof getDiscoverResult>>>
+export type GetDiscoverResultQueryError = ErrorType<void>
+
+
+/**
+ * @summary Retrieve a youth discovery result with its opaque token
+ */
+
+export function useGetDiscoverResult<TData = Awaited<ReturnType<typeof getDiscoverResult>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDiscoverResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetDiscoverResultQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getGetProfileUrl = (id: number,) => {
 

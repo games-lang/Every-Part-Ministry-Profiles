@@ -7,3 +7,4 @@
 - [AI ministry assistance boundaries](ai-volunteer-matching-boundaries.md) — send only canonical aggregates or evidence-qualified signals; keep all displayed claims local and advisory.
 - [Object storage upload validation](object-storage-upload-validation.md) — treat signed-upload metadata as untrusted; validate owned bytes before purpose-specific public serving.
 - [Church team assignments](church-team-assignments.md) — profiles have one pastor-led current team; archiving preserves assignments and tenant integrity is enforced in the database.
+- [Youth profile safety](youth-profile-safety.md) — minor pathways require server-enforced age routing, guardian consent, private leader access, and strict separation from adult AI/team flows.

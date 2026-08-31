@@ -433,6 +433,18 @@ export const GetPublicChurchResponse = zod.object({
 
 
 /**
+ * @summary Check whether the signed-in user may override a youth pathway
+ */
+export const GetChurchAdminAccessParams = zod.object({
+  "slug": zod.coerce.string()
+})
+
+export const GetChurchAdminAccessResponse = zod.object({
+  "canOverrideYouthPathway": zod.boolean()
+})
+
+
+/**
  * @summary Get the approved public logo for a church
  */
 export const GetPublicChurchLogoParams = zod.object({
@@ -486,6 +498,9 @@ export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax
 export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const getDashboardSummaryResponseRecentProfilesItemAgeMin = 6;
+export const getDashboardSummaryResponseRecentProfilesItemAgeMax = 120;
 
 
 
@@ -578,7 +593,9 @@ export const GetDashboardSummaryResponse = zod.object({
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
   "servingFrequency": zod.string().nullish(),
-  "teamId": zod.int().nullable()
+  "teamId": zod.int().nullable(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "age": zod.int().min(getDashboardSummaryResponseRecentProfilesItemAgeMin).max(getDashboardSummaryResponseRecentProfilesItemAgeMax).nullable()
 })),
   "topInterests": zod.array(zod.object({
   "label": zod.string(),
@@ -728,6 +745,11 @@ export const ListProfilesQueryParams = zod.object({
   "availability": zod.coerce.string().optional()
 })
 
+export const listProfilesResponseAgeMin = 6;
+export const listProfilesResponseAgeMax = 120;
+
+
+
 export const ListProfilesResponseItem = zod.object({
   "id": zod.int(),
   "memberName": zod.string(),
@@ -737,7 +759,9 @@ export const ListProfilesResponseItem = zod.object({
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
   "servingFrequency": zod.string().nullish(),
-  "teamId": zod.int().nullable()
+  "teamId": zod.int().nullable(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "age": zod.int().min(listProfilesResponseAgeMin).max(listProfilesResponseAgeMax).nullable()
 })
 export const ListProfilesResponse = zod.array(ListProfilesResponseItem)
 
@@ -745,6 +769,9 @@ export const ListProfilesResponse = zod.array(ListProfilesResponseItem)
 /**
  * @summary Submit a Ministry Profile for a church
  */
+
+export const createProfileBodyAgeMin = 18;
+export const createProfileBodyAgeMax = 120;
 
 
 
@@ -760,6 +787,9 @@ export const createProfileBodyAssessmentSectionsSpiritualGiftsResponsesMaxOne = 
 
 export const CreateProfileBody = zod.object({
   "churchSlug": zod.string().min(1),
+  "age": zod.int().min(createProfileBodyAgeMin).max(createProfileBodyAgeMax),
+  "birthdate": zod.coerce.date().optional(),
+  "profileType": zod.enum(['adult']),
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
   "lastName": zod.string().min(1),
@@ -809,6 +839,9 @@ export const CreateProfileBody = zod.object({
 }).optional()
 })
 
+export const createProfileResponseOneAgeMin = 6;
+export const createProfileResponseOneAgeMax = 120;
+
 
 
 export const createProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
@@ -832,7 +865,9 @@ export const CreateProfileResponse = zod.object({
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
   "servingFrequency": zod.string().nullish(),
-  "teamId": zod.int().nullable()
+  "teamId": zod.int().nullable(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "age": zod.int().min(createProfileResponseOneAgeMin).max(createProfileResponseOneAgeMax).nullable()
 }).and(zod.object({
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
@@ -946,7 +981,17 @@ export const CreateProfileResponse = zod.object({
   "conversations": zod.array(zod.string()),
   "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
   "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
-  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish()
+  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish(),
+  "recommendedProfileType": zod.union([zod.literal('adult'),zod.literal('discover'),zod.literal('explore'),zod.literal('develop'),zod.literal(null)]).nullable(),
+  "profileTypeOverridden": zod.boolean(),
+  "youthResponses": zod.record(zod.string(), zod.unknown()).nullable(),
+  "guardianObservations": zod.record(zod.string(), zod.unknown()).nullable(),
+  "guardian": zod.object({
+  "name": zod.string().nullable(),
+  "email": zod.email().nullable(),
+  "consent": zod.boolean().nullable()
+}),
+  "youth": zod.record(zod.string(), zod.unknown()).nullable()
 }))
 
 
@@ -1001,11 +1046,153 @@ export const FindVolunteerMatchesResponse = zod.object({
 
 
 /**
+ * @summary Submit a guardian-consented Discover profile
+ */
+export const submitDiscoverProfileBodyChurchSlugMax = 120;
+
+export const submitDiscoverProfileBodyAgeMin = 6;
+export const submitDiscoverProfileBodyAgeMax = 120;
+
+export const submitDiscoverProfileBodyChildFirstNameMax = 80;
+
+export const submitDiscoverProfileBodyChildLastNameMax = 80;
+
+export const submitDiscoverProfileBodyGuardianNameMax = 120;
+
+export const submitDiscoverProfileBodyGuardianEmailMax = 254;
+
+export const submitDiscoverProfileBodyAnswersAboutMeLikesItemMax = 80;
+
+export const submitDiscoverProfileBodyAnswersAboutMeLikesMax = 8;
+
+export const submitDiscoverProfileBodyAnswersAboutMeGoodAtMax = 300;
+
+export const submitDiscoverProfileBodyAnswersAboutMeWantToLearnMax = 300;
+
+export const submitDiscoverProfileBodyAnswersTendenciesEnjoysItemMax = 80;
+
+export const submitDiscoverProfileBodyAnswersTendenciesEnjoysMax = 8;
+
+export const submitDiscoverProfileBodyAnswersCaresAboutItemMax = 80;
+
+export const submitDiscoverProfileBodyAnswersCaresAboutMax = 8;
+
+export const submitDiscoverProfileBodyAnswersWaysToHelpItemMax = 80;
+
+export const submitDiscoverProfileBodyAnswersWaysToHelpMax = 8;
+
+export const submitDiscoverProfileBodyAnswersGrowingWithJesusInterestsItemMax = 80;
+
+export const submitDiscoverProfileBodyAnswersGrowingWithJesusInterestsMax = 8;
+
+export const submitDiscoverProfileBodyAnswersGrowingWithJesusHelperNameMax = 120;
+
+export const submitDiscoverProfileBodyAnswersGrowingWithJesusWantsHelpWithMax = 300;
+
+export const submitDiscoverProfileBodyGuardianObservationsStrengthsMax = 500;
+
+export const submitDiscoverProfileBodyGuardianObservationsComesAliveMax = 500;
+
+export const submitDiscoverProfileBodyGuardianObservationsComfortableOpportunitiesMax = 500;
+
+export const submitDiscoverProfileBodyGuardianObservationsThriveNotesMax = 1000;
+
+
+
+export const SubmitDiscoverProfileBody = zod.object({
+  "churchSlug": zod.string().min(1).max(submitDiscoverProfileBodyChurchSlugMax),
+  "age": zod.int().min(submitDiscoverProfileBodyAgeMin).max(submitDiscoverProfileBodyAgeMax),
+  "birthdate": zod.coerce.date().optional(),
+  "profileType": zod.enum(['discover']),
+  "child": zod.object({
+  "firstName": zod.string().min(1).max(submitDiscoverProfileBodyChildFirstNameMax),
+  "lastName": zod.string().min(1).max(submitDiscoverProfileBodyChildLastNameMax)
+}),
+  "guardian": zod.object({
+  "name": zod.string().min(1).max(submitDiscoverProfileBodyGuardianNameMax),
+  "email": zod.email().max(submitDiscoverProfileBodyGuardianEmailMax),
+  "consent": zod.literal(true)
+}),
+  "answers": zod.object({
+  "aboutMe": zod.object({
+  "likes": zod.array(zod.string().min(1).max(submitDiscoverProfileBodyAnswersAboutMeLikesItemMax)).min(1).max(submitDiscoverProfileBodyAnswersAboutMeLikesMax),
+  "goodAt": zod.string().min(1).max(submitDiscoverProfileBodyAnswersAboutMeGoodAtMax),
+  "wantToLearn": zod.string().min(1).max(submitDiscoverProfileBodyAnswersAboutMeWantToLearnMax)
+}),
+  "tendencies": zod.object({
+  "peopleEnergy": zod.enum(['love', 'sometimes', 'quiet']),
+  "newThings": zod.enum(['love', 'sometimes', 'not-yet']),
+  "helpingResponse": zod.enum(['jump-in', 'ask-first', 'prefer-support']),
+  "enjoys": zod.array(zod.string().min(1).max(submitDiscoverProfileBodyAnswersTendenciesEnjoysItemMax)).min(1).max(submitDiscoverProfileBodyAnswersTendenciesEnjoysMax)
+}),
+  "caresAbout": zod.array(zod.string().min(1).max(submitDiscoverProfileBodyAnswersCaresAboutItemMax)).min(1).max(submitDiscoverProfileBodyAnswersCaresAboutMax),
+  "waysToHelp": zod.array(zod.string().min(1).max(submitDiscoverProfileBodyAnswersWaysToHelpItemMax)).min(1).max(submitDiscoverProfileBodyAnswersWaysToHelpMax),
+  "growingWithJesus": zod.object({
+  "interests": zod.array(zod.string().min(1).max(submitDiscoverProfileBodyAnswersGrowingWithJesusInterestsItemMax)).min(1).max(submitDiscoverProfileBodyAnswersGrowingWithJesusInterestsMax),
+  "helperName": zod.string().min(1).max(submitDiscoverProfileBodyAnswersGrowingWithJesusHelperNameMax).optional(),
+  "wantsHelpWith": zod.string().min(1).max(submitDiscoverProfileBodyAnswersGrowingWithJesusWantsHelpWithMax).optional()
+}),
+  "opportunities": zod.object({
+  "welcome": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "kids": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "students": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "worship": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "production": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "prayer": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "hospitality": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "communityCare": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "outreach": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "creative": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "behindTheScenes": zod.enum(['love', 'maybe', 'not-now']).optional()
+})
+}),
+  "guardianObservations": zod.object({
+  "strengths": zod.string().max(submitDiscoverProfileBodyGuardianObservationsStrengthsMax).optional(),
+  "comesAlive": zod.string().max(submitDiscoverProfileBodyGuardianObservationsComesAliveMax).optional(),
+  "comfortableOpportunities": zod.string().max(submitDiscoverProfileBodyGuardianObservationsComfortableOpportunitiesMax).optional(),
+  "thriveNotes": zod.string().max(submitDiscoverProfileBodyGuardianObservationsThriveNotesMax).optional()
+}).optional()
+})
+
+export const SubmitDiscoverProfileResponse = zod.object({
+  "resultToken": zod.uuid(),
+  "profileType": zod.enum(['discover']),
+  "recommendedProfileType": zod.enum(['discover', 'explore', 'develop', 'adult'])
+})
+
+
+/**
+ * @summary Retrieve a youth discovery result with its opaque token
+ */
+export const GetDiscoverResultParams = zod.object({
+  "id": zod.uuid()
+})
+
+export const GetDiscoverResultResponse = zod.object({
+  "profileType": zod.enum(['discover']),
+  "childName": zod.string(),
+  "summary": zod.object({
+  "headline": zod.string(),
+  "nextStep": zod.string(),
+  "strengths": zod.array(zod.string()),
+  "tentativeNote": zod.string()
+}),
+  "guardian": zod.object({
+  "name": zod.string(),
+  "consent": zod.boolean()
+})
+})
+
+
+/**
  * @summary View a completed Ministry Profile
  */
 export const GetProfileParams = zod.object({
   "id": zod.coerce.number().int()
 })
+
+export const getProfileResponseOneAgeMin = 6;
+export const getProfileResponseOneAgeMax = 120;
 
 
 
@@ -1030,7 +1217,9 @@ export const GetProfileResponse = zod.object({
   "passions": zod.array(zod.string()),
   "availability": zod.array(zod.string()),
   "servingFrequency": zod.string().nullish(),
-  "teamId": zod.int().nullable()
+  "teamId": zod.int().nullable(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "age": zod.int().min(getProfileResponseOneAgeMin).max(getProfileResponseOneAgeMax).nullable()
 }).and(zod.object({
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
@@ -1144,7 +1333,17 @@ export const GetProfileResponse = zod.object({
   "conversations": zod.array(zod.string()),
   "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
   "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
-  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish()
+  "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish(),
+  "recommendedProfileType": zod.union([zod.literal('adult'),zod.literal('discover'),zod.literal('explore'),zod.literal('develop'),zod.literal(null)]).nullable(),
+  "profileTypeOverridden": zod.boolean(),
+  "youthResponses": zod.record(zod.string(), zod.unknown()).nullable(),
+  "guardianObservations": zod.record(zod.string(), zod.unknown()).nullable(),
+  "guardian": zod.object({
+  "name": zod.string().nullable(),
+  "email": zod.email().nullable(),
+  "consent": zod.boolean().nullable()
+}),
+  "youth": zod.record(zod.string(), zod.unknown()).nullable()
 }))
 
 

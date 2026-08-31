@@ -16,6 +16,8 @@ export function profileListItem(profile: MinistryProfile) {
     availability: profile.availability,
     servingFrequency: profile.servingFrequency,
     teamId: profile.teamId,
+    profileType: profile.profileType,
+    age: profile.age,
   };
 }
 
@@ -34,6 +36,19 @@ export function profileResponse(profile: MinistryProfile) {
     defaultAssessmentConfiguration();
   return {
     ...profileListItem(profile),
+    recommendedProfileType: profile.recommendedProfileType,
+    profileTypeOverridden: profile.profileTypeOverridden,
+    youthResponses: profile.youthResponses,
+    guardianObservations: profile.guardianObservations,
+    guardian: {
+      name: profile.guardianName,
+      email: profile.guardianEmail,
+      consent: profile.guardianConsent,
+    },
+    youth: profile.profileType === "adult" ? null : {
+      responses: profile.youthResponses,
+      guardianObservations: profile.guardianObservations,
+    },
     basicInformation: {
       firstName: profile.firstName,
       lastName: profile.lastName,

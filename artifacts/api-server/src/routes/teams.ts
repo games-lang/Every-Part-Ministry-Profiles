@@ -19,6 +19,7 @@ import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { teamResponse } from "../lib/teams";
 import { generateTeamSuggestions } from "../lib/team-suggestions";
+import { adultProfilesOnly } from "../lib/youth-profiles";
 
 const router: IRouter = Router();
 const TEAM_NAME_UNIQUE_CONSTRAINT = "ministry_teams_church_name_unique";
@@ -55,11 +56,12 @@ async function teamWithMembers(teamId: number, churchId: number) {
       and(
         eq(ministryProfilesTable.churchId, churchId),
         eq(ministryProfilesTable.teamId, team.id),
+        eq(ministryProfilesTable.profileType, "adult"),
       ),
     )
     .orderBy(asc(ministryProfilesTable.lastName), asc(ministryProfilesTable.firstName));
 
-  return teamResponse(team, members);
+  return teamResponse(team, adultProfilesOnly(members));
 }
 
 router.get("/teams", async (req, res): Promise<void> => {
@@ -79,9 +81,9 @@ router.get("/teams", async (req, res): Promise<void> => {
   const members = await db
     .select()
     .from(ministryProfilesTable)
-    .where(eq(ministryProfilesTable.churchId, church.id));
+    .where(and(eq(ministryProfilesTable.churchId, church.id), eq(ministryProfilesTable.profileType, "adult")));
   const membersByTeam = new Map<number, typeof members>();
-  for (const member of members) {
+  for (const member of adultProfilesOnly(members)) {
     if (member.teamId === null) continue;
     const current = membersByTeam.get(member.teamId) ?? [];
     current.push(member);
@@ -159,14 +161,14 @@ router.post("/teams/suggestions", async (req, res): Promise<void> => {
   const profiles = await db
     .select()
     .from(ministryProfilesTable)
-    .where(eq(ministryProfilesTable.churchId, church.id))
+    .where(and(eq(ministryProfilesTable.churchId, church.id), eq(ministryProfilesTable.profileType, "adult")))
     .orderBy(desc(ministryProfilesTable.completedAt));
   const existingTeams = await db
     .select({ name: ministryTeamsTable.name })
     .from(ministryTeamsTable)
     .where(eq(ministryTeamsTable.churchId, church.id));
   const result = await generateTeamSuggestions(
-    profiles,
+    adultProfilesOnly(profiles),
     parsed.data,
     existingTeams.map((team) => team.name),
   );

@@ -1,13 +1,18 @@
 import {
   boolean,
+  date,
   foreignKey,
   integer,
   jsonb,
+  check,
   pgTable,
   serial,
   text,
   timestamp,
+  uniqueIndex,
+  uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { churchesTable } from "./churches";
@@ -19,6 +24,19 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
     .notNull()
     .references(() => churchesTable.id, { onDelete: "cascade" }),
   teamId: integer("team_id"),
+  profileType: text("profile_type").notNull().default("adult"),
+  recommendedProfileType: text("recommended_profile_type"),
+  profileTypeOverridden: boolean("profile_type_overridden").notNull().default(false),
+  age: integer("age"),
+  birthdate: date("birthdate", { mode: "string" }),
+  personKey: uuid("person_key").notNull().defaultRandom(),
+  resultToken: uuid("result_token").notNull().defaultRandom(),
+  resultExpiresAt: timestamp("result_expires_at", { withTimezone: true }),
+  youthResponses: jsonb("youth_responses").$type<unknown>(),
+  guardianObservations: jsonb("guardian_observations").$type<unknown>(),
+  guardianName: text("guardian_name"),
+  guardianEmail: text("guardian_email"),
+  guardianConsent: boolean("guardian_consent"),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
@@ -60,6 +78,28 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
     .notNull()
     .defaultNow(),
 }, (table) => [
+  uniqueIndex("ministry_profiles_result_token_unique").on(table.resultToken),
+  check(
+    "ministry_profiles_profile_type_check",
+    sql`${table.profileType} in ('adult', 'discover', 'explore', 'develop')`,
+  ),
+  check(
+    "ministry_profiles_age_check",
+    sql`(
+      (${table.profileType} = 'adult' and (${table.age} is null or ${table.age} >= 18))
+      or (
+        ${table.profileType} in ('discover', 'explore', 'develop')
+        and ${table.age} is not null
+        and ${table.age} between 6 and 17
+        and (
+          ${table.profileTypeOverridden} = true
+          or (${table.profileType} = 'discover' and ${table.age} between 6 and 8)
+          or (${table.profileType} = 'explore' and ${table.age} between 9 and 12)
+          or (${table.profileType} = 'develop' and ${table.age} between 13 and 17)
+        )
+      )
+    )`,
+  ),
   foreignKey({
     columns: [table.teamId, table.churchId],
     foreignColumns: [ministryTeamsTable.id, ministryTeamsTable.churchId],

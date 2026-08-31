@@ -13,12 +13,20 @@ import type { ProfileInputChurchDetails } from './profileInputChurchDetails';
 import type { ProfileInputLanguages } from './profileInputLanguages';
 import type { ProfileInputLifeExperiences } from './profileInputLifeExperiences';
 import type { ProfileInputMinistryPreferences } from './profileInputMinistryPreferences';
+import type { ProfileInputProfileType } from './profileInputProfileType';
 import type { ProfileInputSkillsDetails } from './profileInputSkillsDetails';
 import type { SkillsAndExperienceInput } from './skillsAndExperienceInput';
 
 export interface ProfileInput {
   /** @minLength 1 */
   churchSlug: string;
+  /**
+     * @minimum 18
+     * @maximum 120
+     */
+  age: number;
+  birthdate?: Date;
+  profileType: ProfileInputProfileType;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];

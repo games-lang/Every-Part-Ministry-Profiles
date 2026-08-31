@@ -7,6 +7,8 @@ import {
   AddChurchAdminResponse,
   ListChurchAdminsResponse,
   GetMyChurchResponse,
+  GetChurchAdminAccessParams,
+  GetChurchAdminAccessResponse,
   GetPublicChurchParams,
   GetPublicChurchResponse,
   RemoveChurchAdminParams,
@@ -255,6 +257,45 @@ router.delete("/church/admins/:id", async (req, res): Promise<void> => {
       ),
     );
   res.status(204).end();
+});
+
+router.get("/churches/:slug/admin-access", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const params = GetChurchAdminAccessParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  // This check intentionally uses the requested public church directly. Do
+  // not use getOrCreateChurch here: it could create an unrelated church for a
+  // signed-in user who is not an administrator of this slug.
+  const [church] = await db
+    .select({ id: churchesTable.id })
+    .from(churchesTable)
+    .where(eq(churchesTable.slug, params.data.slug))
+    .limit(1);
+  if (!church) {
+    res.status(404).json({ error: "Church not found" });
+    return;
+  }
+  const [membership] = await db
+    .select({ id: churchAdminsTable.id })
+    .from(churchAdminsTable)
+    .where(
+      and(
+        eq(churchAdminsTable.churchId, church.id),
+        eq(churchAdminsTable.clerkUserId, userId),
+      ),
+    )
+    .limit(1);
+
+  res.json(
+    GetChurchAdminAccessResponse.parse({
+      canOverrideYouthPathway: Boolean(membership),
+    }),
+  );
 });
 
 router.get("/churches/:slug/logo", async (req, res): Promise<void> => {

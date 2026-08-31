@@ -10,8 +10,13 @@ import type { BasicInformation } from './basicInformation';
 import type { ChurchConnection } from './churchConnection';
 import type { FutureAssessmentSections } from './futureAssessmentSections';
 import type { MinistryProfileAvailabilityDetails } from './ministryProfileAvailabilityDetails';
+import type { MinistryProfileGuardian } from './ministryProfileGuardian';
+import type { MinistryProfileGuardianObservations } from './ministryProfileGuardianObservations';
 import type { MinistryProfileLifeExperiences } from './ministryProfileLifeExperiences';
 import type { MinistryProfileMinistryPreferences } from './ministryProfileMinistryPreferences';
+import type { MinistryProfileRecommendedProfileType } from './ministryProfileRecommendedProfileType';
+import type { MinistryProfileYouth } from './ministryProfileYouth';
+import type { MinistryProfileYouthResponses } from './ministryProfileYouthResponses';
 import type { ProfileListItem } from './profileListItem';
 import type { SkillsAndExperience } from './skillsAndExperience';
 
@@ -29,4 +34,14 @@ export type MinistryProfile = ProfileListItem & {
   availabilityDetails?: MinistryProfileAvailabilityDetails;
   /** @nullable */
   ministryPreferences?: MinistryProfileMinistryPreferences;
+  /** @nullable */
+  recommendedProfileType: MinistryProfileRecommendedProfileType;
+  profileTypeOverridden: boolean;
+  /** @nullable */
+  youthResponses: MinistryProfileYouthResponses;
+  /** @nullable */
+  guardianObservations: MinistryProfileGuardianObservations;
+  guardian: MinistryProfileGuardian;
+  /** @nullable */
+  youth: MinistryProfileYouth;
 };

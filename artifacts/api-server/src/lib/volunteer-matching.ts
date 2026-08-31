@@ -1,4 +1,5 @@
 import type { MinistryProfile } from "@workspace/db";
+import { adultProfilesOnly } from "./youth-profiles.ts";
 
 const ADVISORY =
   "These suggestions are conversation starters, not placement decisions. Review each full profile, pray, and talk with the person before inviting them to serve.";
@@ -370,7 +371,8 @@ export async function findVolunteerMatches(
   profiles: MinistryProfile[],
   criteria: MatchCriteria,
 ): Promise<VolunteerMatchResult> {
-  const deterministic = profiles
+  const adultProfiles = adultProfilesOnly(profiles);
+  const deterministic = adultProfiles
     .map(toSafeCandidate)
     .map((candidate) => deterministicCandidate(candidate, criteria))
     .filter((candidate) => candidate.score > 0 && candidate.reasons.length > 0)
@@ -380,7 +382,7 @@ export async function findVolunteerMatches(
   if (!deterministic.length) {
     return {
       candidates: [],
-      summary: profiles.length
+      summary: adultProfiles.length
         ? "No profiles had enough relevant evidence for this ministry need. Try broadening the description or reviewing the directory."
         : "No completed Ministry Profiles are available to compare yet.",
       advisory: ADVISORY,

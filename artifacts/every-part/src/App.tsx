@@ -16,6 +16,11 @@ import ProfilesList from '@/pages/profiles-list';
 import ProfileDetail from '@/pages/profile-detail';
 import Teams from '@/pages/teams';
 import Assessment from '@/pages/assessment';
+import AgeGateway from '@/pages/age-gateway';
+import DiscoverAssessment from '@/pages/discover-assessment';
+import ExplorePlaceholder from '@/pages/explore-placeholder';
+import DevelopPlaceholder from '@/pages/develop-placeholder';
+import DiscoverResult from '@/pages/discover-result';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
 
@@ -199,7 +204,12 @@ function ClerkProviderWithRoutes() {
                 <AuthenticatedRoute component={Teams} />
               </Route>
               
-              <Route path="/profile/:slug" component={Assessment} />
+              <Route path="/profile/:slug" component={AgeGateway} />
+              <Route path="/profile/:slug/adult" component={Assessment} />
+              <Route path="/profile/:slug/discover" component={DiscoverAssessment} />
+              <Route path="/profile/:slug/explore" component={ExplorePlaceholder} />
+              <Route path="/profile/:slug/develop" component={DevelopPlaceholder} />
+              <Route path="/discover/result/:token" component={DiscoverResult} />
               
               <Route component={NotFound} />
             </Switch>

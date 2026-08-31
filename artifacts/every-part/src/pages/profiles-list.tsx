@@ -226,6 +226,11 @@ export default function ProfilesList() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                          {profile.profileType !== 'adult' && (
+                            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 capitalize">
+                              {profile.profileType} {profile.age ? `(Age ${profile.age})` : ''}
+                            </Badge>
+                          )}
                           <span className="flex items-center gap-1.5">
                             <Mail className="w-3.5 h-3.5" />
                             {profile.email}

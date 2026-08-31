@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { getAuth } from "@clerk/express";
 import { and, desc, eq } from "drizzle-orm";
 import {
   CreateProfileBody,
@@ -14,6 +15,7 @@ import {
 } from "@workspace/api-zod";
 import {
   churchesTable,
+  churchAdminsTable,
   db,
   ministryProfilesTable,
   ministryTeamsTable,
@@ -22,6 +24,8 @@ import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
 import { findVolunteerMatches } from "../lib/volunteer-matching";
+import { adultProfilesOnly } from "../lib/youth-profiles";
+import { pathwayForAge, pathwayOverrideRequired } from "../lib/youth-profiles";
 import {
   activeSpiritualGifts,
   spiritualGiftsSubmissionError,
@@ -91,6 +95,32 @@ router.post("/profiles", async (req, res): Promise<void> => {
   if (!church) {
     res.status(404).json({ error: "Church not found" });
     return;
+  }
+  const recommendedProfileType = pathwayForAge(parsed.data.age);
+  let profileTypeOverridden = false;
+  if (pathwayOverrideRequired(parsed.data.profileType, recommendedProfileType)) {
+    const auth = getAuth(req);
+    const userId =
+      (auth.sessionClaims?.userId as string | undefined) ?? auth.userId;
+    if (!userId) {
+      res.status(400).json({ error: "This age belongs on a different pathway." });
+      return;
+    }
+    const [membership] = await db
+      .select({ id: churchAdminsTable.id })
+      .from(churchAdminsTable)
+      .where(
+        and(
+          eq(churchAdminsTable.churchId, church.id),
+          eq(churchAdminsTable.clerkUserId, userId),
+        ),
+      )
+      .limit(1);
+    if (!membership) {
+      res.status(400).json({ error: "This age belongs on a different pathway." });
+      return;
+    }
+    profileTypeOverridden = true;
   }
 
   const configuration = assessmentConfiguration(church.assessmentConfiguration);
@@ -202,6 +232,15 @@ router.post("/profiles", async (req, res): Promise<void> => {
     .insert(ministryProfilesTable)
     .values({
       churchId: church.id,
+      profileType: "adult",
+      recommendedProfileType,
+      profileTypeOverridden,
+      age: parsed.data.age,
+      // OpenAPI's date validator returns a Date; database date columns retain
+      // a calendar-day string to avoid timezone shifts.
+      birthdate: parsed.data.birthdate
+        ? parsed.data.birthdate.toISOString().slice(0, 10)
+        : null,
       firstName: basicInformation.firstName,
       lastName: basicInformation.lastName,
       email: basicInformation.email,
@@ -266,10 +305,10 @@ router.post("/profiles/matches", async (req, res): Promise<void> => {
   const profiles = await db
     .select()
     .from(ministryProfilesTable)
-    .where(eq(ministryProfilesTable.churchId, church.id))
+    .where(and(eq(ministryProfilesTable.churchId, church.id), eq(ministryProfilesTable.profileType, "adult")))
     .orderBy(desc(ministryProfilesTable.completedAt));
 
-  const matches = await findVolunteerMatches(profiles, parsed.data);
+  const matches = await findVolunteerMatches(adultProfilesOnly(profiles), parsed.data);
   req.log.info(
     {
       candidateCount: profiles.length,
@@ -310,6 +349,9 @@ router.patch("/profiles/:id/team", async (req, res): Promise<void> => {
       .for("update")
       .limit(1);
     if (!profile) return { error: "Profile not found", status: 404 } as const;
+    if (profile.profileType !== "adult") {
+      return { error: "Youth profiles cannot be assigned to adult ministry teams.", status: 400 } as const;
+    }
 
     let teamName: string | null = null;
     if (parsed.data.teamId !== null) {

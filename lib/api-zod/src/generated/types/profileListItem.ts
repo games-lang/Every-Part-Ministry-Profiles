@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ProfileListItemProfileType } from './profileListItemProfileType';
 
 export interface ProfileListItem {
   id: number;
@@ -18,4 +19,11 @@ export interface ProfileListItem {
   servingFrequency?: string | null;
   /** @nullable */
   teamId: number | null;
+  profileType: ProfileListItemProfileType;
+  /**
+     * @minimum 6
+     * @maximum 120
+     * @nullable
+     */
+  age: number | null;
 }

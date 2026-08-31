@@ -13,14 +13,6 @@ function textOf(value: unknown) {
   return "";
 }
 
-function collectText(value: unknown) {
-  if (!value || typeof value !== "object") return "";
-  return Object.values(value as Record<string, unknown>)
-    .map((v) => (Array.isArray(v) ? v.filter((x) => typeof x === "string").join(", ") : textOf(v)))
-    .filter(Boolean)
-    .join(" — ");
-}
-
 function AskRow({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="rounded-lg border border-border/60 bg-card p-3 break-words">
@@ -35,23 +27,31 @@ export function CoordinatorAsk({ profile }: { profile: Profile }) {
   const basic = profile.basicInformation ?? {};
   const connection = profile.churchConnection ?? {};
   const skills = profile.skills ?? {};
-  const availabilityText = collectText(profile.availabilityDetails);
+  const details = profile.availabilityDetails && typeof profile.availabilityDetails === "object"
+    ? profile.availabilityDetails
+    : {};
   const servingWish =
-    availabilityText || collectText(profile.ministryPreferences) || textOf(skills.previousMinistryExperience);
+    textOf(details.responsibility) || textOf(skills.previousMinistryExperience);
   const times = Array.isArray(profile.availability) ? profile.availability.join(", ") : "";
   const availability = [textOf(profile.servingFrequency), times].filter(Boolean).join(" — ");
-  const capacity = textOf(basic.familySituation);
-  const alreadyServing = [connection.servedBefore ? "Has served here before" : "", textOf(connection.previousService)]
-    .filter(Boolean)
-    .join(" — ");
+  const duration = textOf(details.durationTheyWillTry);
+  const capacity = textOf(details.capacityThisSeason) || textOf(basic.familySituation);
+  const onTeam = textOf(details.currentlyServing);
+  const alreadyServing = [
+    onTeam ? (onTeam === "Yes" ? "Currently on a team" : onTeam === "No" ? "Not on a team now" : onTeam) : "",
+    connection.servedBefore ? "Has served here before" : "",
+    textOf(connection.previousService),
+  ].filter(Boolean).join(" — ");
+  const alreadyAsked = textOf(details.alreadyAsked);
   const tags = [
     ...(Array.isArray(profile.passions) ? profile.passions : []),
     ...(Array.isArray(profile.interests) ? profile.interests : []),
   ].filter((x: unknown) => typeof x === "string") as string[];
   const kidsSignal = tags.filter((x) => /child|kid|youth|student|nursery/i.test(x));
-  const kidsWords = /child|kid|youth|nursery/i.test(`${servingWish} ${availabilityText}`);
+  const kidsWords = /child|kid|youth|nursery/i.test(`${servingWish}`);
   const showKids = kidsSignal.length > 0 || kidsWords;
-  const prompt = `Would you try ${servingWish || "the area they mentioned"} on ${availability || "a time that works for them"} for a season, serving with our team?`;
+  const durationBit = duration && duration !== "Open-ended — let's talk" ? duration : "a season";
+  const prompt = `Would you try ${servingWish || "the area they mentioned"} on ${availability || "a time that works for them"} for ${durationBit}, serving with our team?`;
   return (
     <section className="space-y-3 print:break-inside-avoid">
       <h2 className="font-serif text-2xl font-medium">Before you ask</h2>
@@ -62,10 +62,10 @@ export function CoordinatorAsk({ profile }: { profile: Profile }) {
         <div className="grid sm:grid-cols-2 gap-3">
           <AskRow label="Serving wish (their words)" value={servingWish} />
           <AskRow label="Availability" value={availability} />
-          <AskRow label="Duration they will try" value="" hint="Not on file yet — ask them." />
-          <AskRow label="Capacity / season of life" value={capacity} />
+          <AskRow label="Duration they will try" value={duration} hint={duration ? undefined : "Ask them for an endpoint."} />
+          <AskRow label="Capacity this season" value={capacity} />
           <AskRow label="Already serving" value={alreadyServing} />
-          <AskRow label="Already asked" value="" hint="Not on file yet — check with your team." />
+          <AskRow label="Already asked" value={alreadyAsked} hint={alreadyAsked ? undefined : "Check with your team before you ask."} />
           {showKids ? (
             <AskRow
               label="Kids-safety note"

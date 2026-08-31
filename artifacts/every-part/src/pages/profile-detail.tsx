@@ -219,6 +219,67 @@ function TeamAssignment({ profileId, teamId }: { profileId: number; teamId: numb
     </Card>
   );
 }
+import type { MinistryProfile } from "@workspace/api-client-react";
+
+function DiscoverProfileView({ profile }: { profile: MinistryProfile }) {
+  const answers = (profile.youthResponses || {}) as Record<string, any>;
+  const obs = (profile.guardianObservations || {}) as Record<string, any>;
+
+  return (
+    <div className="space-y-8 mt-8">
+      <Section title="About Me">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Likes for fun" value={answers.aboutMe?.likes} />
+          <Value label="Good at" value={answers.aboutMe?.goodAt} />
+          <Value label="Wants to learn" value={answers.aboutMe?.wantToLearn} />
+        </div>
+      </Section>
+
+      <Section title="What Sounds Like Me">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Social Energy" value={answers.tendencies?.peopleEnergy} />
+          <Value label="New Things" value={answers.tendencies?.newThings} />
+          <Value label="Helping Response" value={answers.tendencies?.helpingResponse} />
+          <Value label="Enjoys" value={Array.isArray(answers.tendencies?.enjoys) ? answers.tendencies?.enjoys.join(', ') : answers.tendencies?.enjoys} />
+        </div>
+      </Section>
+
+      <Section title="Caring & Helping">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Cares About" value={Array.isArray(answers.caresAbout) ? answers.caresAbout.join(', ') : answers.caresAbout} />
+          <Value label="Likes to Help" value={Array.isArray(answers.waysToHelp) ? answers.waysToHelp.join(', ') : answers.waysToHelp} />
+        </div>
+      </Section>
+
+      <Section title="Growing With Jesus">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Value label="Interests" value={Array.isArray(answers.growingWithJesus?.interests) ? answers.growingWithJesus?.interests.join(', ') : answers.growingWithJesus?.interests} />
+          <Value label="Look up to" value={answers.growingWithJesus?.helperName} />
+          <Value label="Wants help learning" value={answers.growingWithJesus?.wantsHelpWith} />
+        </div>
+      </Section>
+
+      <Section title="Things I Would Like To Try">
+         <ObjectValues value={answers.opportunities} />
+      </Section>
+
+      {Boolean(obs.strengths || obs.comesAlive || obs.comfortableOpportunities || obs.thriveNotes) && (
+        <div className="pt-4">
+          <h2 className="font-serif text-2xl font-medium mb-3">Guardian Observations</h2>
+          <Card className="border-border/60 shadow-sm bg-muted/10">
+            <CardContent className="p-5 grid sm:grid-cols-2 gap-4">
+              <Value label="Natural strengths" value={obs.strengths} />
+              <Value label="Comes alive when" value={obs.comesAlive} />
+              <Value label="Comfortable starting opportunities" value={obs.comfortableOpportunities} />
+              <Value label="Notes for thriving" value={obs.thriveNotes} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ProfileDetail() {
  const [,params]=useRoute("/profiles/:id"); const id=params?.id?Number(params.id):0; const {data:profile,isLoading,error}=useGetProfile(id,{query:{enabled:!!id,queryKey:getGetProfileQueryKey(id)}});
  if(error)return <div className="container p-8"><p className="text-destructive">Failed to load profile details.</p><Link href="/profiles">Back to profiles</Link></div>;
@@ -228,18 +289,36 @@ export default function ProfileDetail() {
   const subsectionEnabled=(section: string, subsection: string)=>configuration.subsections[`${section}.${subsection}` as keyof typeof configuration.subsections];
  return <div className="container max-w-5xl mx-auto px-4 py-8 space-y-8 print:max-w-none print:p-0">
   <div className="flex justify-between no-print"><Button variant="ghost" asChild><Link href="/profiles"><ArrowLeft className="w-4 h-4 mr-2"/>Back</Link></Button><Button variant="outline" onClick={()=>window.print()}><Printer className="w-4 h-4 mr-2"/>Print profile</Button></div>
-   <header className="rounded-2xl border bg-card p-7 md:p-10"><h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p><div className="flex flex-wrap gap-4 mt-5 text-sm"><a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>{basic.phone&&<a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}</div></header>
-   <CoordinatorAsk profile={profile} />
-   <TeamAssignment profileId={profile.id} teamId={profile.teamId} />
-   <div className="space-y-8">
-     {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age range" value={basic.ageRange}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div></div>}{subsectionEnabled("aboutYou","lifeExperiences")&&hasValues(profile.lifeExperiences)&&<div><h3 className="font-medium mb-2">Life experiences</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
-     {sectionEnabled("apest")&&<Section title="How you minister"><p className="text-sm text-muted-foreground mb-3">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest} isEnabled={subsection=>subsectionEnabled("apest",subsection)}/></Section>}
-     {sectionEnabled("spiritualGifts")&&<details className="no-print rounded-2xl border bg-card p-4"><summary className="cursor-pointer font-serif text-2xl font-medium">Full gifts reflections</summary><p className="text-sm text-muted-foreground mt-3 mb-3">Member self-reflection, not a diagnosis or placement recommendation.</p><SpiritualGifts value={profile.assessmentSections.spiritualGifts}/></details>}
-     {sectionEnabled("passionsInterests")&&<Section title="Who and where you are drawn toward (Passions)"><div className="space-y-5">{subsectionEnabled("passionsInterests","passions")&&<div><h3 className="font-medium mb-2">Passions</h3><div className="flex flex-wrap gap-2">{profile.passions.length ? profile.passions.map(x=><Badge key={x}>{x}</Badge>) : <span className="italic text-muted-foreground">No passions shared.</span>}</div></div>}{subsectionEnabled("passionsInterests","ministryInterests")&&<div><h3 className="font-medium mb-2">Ministry interests</h3><div className="flex flex-wrap gap-2">{profile.interests.length ? profile.interests.map(x=><Badge key={x} variant="outline">{x}</Badge>) : <span className="italic text-muted-foreground">No interests shared.</span>}</div></div>}</div></Section>}
-     {sectionEnabled("naturalStrengths")&&<Section title="What you naturally do well (Strengths)"><p className="text-sm text-muted-foreground mb-3">Strengths-based self-reflection for conversation, not a branded test, diagnosis, or automatic placement recommendation.</p><StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={subsection=>subsectionEnabled("naturalStrengths",subsection)}/></Section>}
-     {sectionEnabled("personalityStrengths")&&<Section title="Personality"><div className="space-y-5"><div><p className="text-sm text-muted-foreground mb-3">Original ministry-focused self-reflection, not a rigid personality type, diagnosis, or statement about calling.</p><PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={subsection=>subsectionEnabled("personalityStrengths",subsection)}/></div>{subsectionEnabled("personalityStrengths","ministryPreferences")&&hasValues(profile.ministryPreferences)&&<div><h3 className="font-medium mb-2">Ministry preferences & environment</h3><ObjectValues value={profile.ministryPreferences}/></div>}</div></Section>}
-     {sectionEnabled("spiritualHealth")&&hasValues(profile.assessmentSections.spiritualHealth)&&<Section title="How you are doing (Spiritual Health)"><p className="text-sm text-muted-foreground mb-3">Pastoral self-reflection only, never a pass/fail measure.</p><ObjectValues value={profile.assessmentSections.spiritualHealth}/></Section>}
-     {sectionEnabled("connectionAvailability")&&<Section title="How you are connected"><div className="space-y-5">{subsectionEnabled("connectionAvailability","churchConnection")&&<div><h3 className="font-medium mb-2">Church connection</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Attending" value={connection.attendanceLength}/><Value label="Following Jesus" value={connection.followingJesusLength}/><Value label="Connection level (self-reported)" value={connection.connectionLevel}/><Value label="Served here before" value={connection.servedBefore ? "Yes" : "No"}/><Value label="Prior service" value={connection.previousService}/></div><div className="mt-3"><ObjectValues value={connection.details}/></div></div>}{subsectionEnabled("connectionAvailability","availability")&&<div><h3 className="font-medium mb-2">Current availability and serving</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Frequency" value={profile.servingFrequency}/><Value label="Times" value={profile.availability.join(", ")}/></div><div className="mt-3"><ObjectValues value={profile.availabilityDetails}/></div></div>}</div></Section>}
-   </div>
+   <header className="rounded-2xl border bg-card p-7 md:p-10">
+     {profile.profileType !== 'adult' && (
+       <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20 capitalize">
+         {profile.profileType} Pathway (Age {profile.age})
+       </Badge>
+     )}
+     <h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p>
+     <div className="flex flex-wrap gap-4 mt-5 text-sm">
+       <a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>
+       {basic?.phone && <a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}
+     </div>
+   </header>
+
+   {profile.profileType === 'discover' ? (
+     <DiscoverProfileView profile={profile} />
+   ) : (
+     <>
+       <CoordinatorAsk profile={profile} />
+       <TeamAssignment profileId={profile.id} teamId={profile.teamId} />
+       <div className="space-y-8">
+         {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age range" value={basic.ageRange}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div></div>}{subsectionEnabled("aboutYou","lifeExperiences")&&hasValues(profile.lifeExperiences)&&<div><h3 className="font-medium mb-2">Life experiences</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
+         {sectionEnabled("apest")&&<Section title="How you minister"><p className="text-sm text-muted-foreground mb-3">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest} isEnabled={subsection=>subsectionEnabled("apest",subsection)}/></Section>}
+         {sectionEnabled("spiritualGifts")&&<details className="no-print rounded-2xl border bg-card p-4"><summary className="cursor-pointer font-serif text-2xl font-medium">Full gifts reflections</summary><p className="text-sm text-muted-foreground mt-3 mb-3">Member self-reflection, not a diagnosis or placement recommendation.</p><SpiritualGifts value={profile.assessmentSections.spiritualGifts}/></details>}
+         {sectionEnabled("passionsInterests")&&<Section title="Who and where you are drawn toward (Passions)"><div className="space-y-5">{subsectionEnabled("passionsInterests","passions")&&<div><h3 className="font-medium mb-2">Passions</h3><div className="flex flex-wrap gap-2">{profile.passions.length ? profile.passions.map(x=><Badge key={x}>{x}</Badge>) : <span className="italic text-muted-foreground">No passions shared.</span>}</div></div>}{subsectionEnabled("passionsInterests","ministryInterests")&&<div><h3 className="font-medium mb-2">Ministry interests</h3><div className="flex flex-wrap gap-2">{profile.interests.length ? profile.interests.map(x=><Badge key={x} variant="outline">{x}</Badge>) : <span className="italic text-muted-foreground">No interests shared.</span>}</div></div>}</div></Section>}
+         {sectionEnabled("naturalStrengths")&&<Section title="What you naturally do well (Strengths)"><p className="text-sm text-muted-foreground mb-3">Strengths-based self-reflection for conversation, not a branded test, diagnosis, or automatic placement recommendation.</p><StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={subsection=>subsectionEnabled("naturalStrengths",subsection)}/></Section>}
+         {sectionEnabled("personalityStrengths")&&<Section title="Personality"><div className="space-y-5"><div><p className="text-sm text-muted-foreground mb-3">Original ministry-focused self-reflection, not a rigid personality type, diagnosis, or statement about calling.</p><PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={subsection=>subsectionEnabled("personalityStrengths",subsection)}/></div>{subsectionEnabled("personalityStrengths","ministryPreferences")&&hasValues(profile.ministryPreferences)&&<div><h3 className="font-medium mb-2">Ministry preferences & environment</h3><ObjectValues value={profile.ministryPreferences}/></div>}</div></Section>}
+         {sectionEnabled("spiritualHealth")&&hasValues(profile.assessmentSections.spiritualHealth)&&<Section title="How you are doing (Spiritual Health)"><p className="text-sm text-muted-foreground mb-3">Pastoral self-reflection only, never a pass/fail measure.</p><ObjectValues value={profile.assessmentSections.spiritualHealth}/></Section>}
+         {sectionEnabled("connectionAvailability")&&<Section title="How you are connected"><div className="space-y-5">{subsectionEnabled("connectionAvailability","churchConnection")&&<div><h3 className="font-medium mb-2">Church connection</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Attending" value={connection.attendanceLength}/><Value label="Following Jesus" value={connection.followingJesusLength}/><Value label="Connection level (self-reported)" value={connection.connectionLevel}/><Value label="Served here before" value={connection.servedBefore ? "Yes" : "No"}/><Value label="Prior service" value={connection.previousService}/></div><div className="mt-3"><ObjectValues value={connection.details}/></div></div>}{subsectionEnabled("connectionAvailability","availability")&&<div><h3 className="font-medium mb-2">Current availability and serving</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Frequency" value={profile.servingFrequency}/><Value label="Times" value={profile.availability.join(", ")}/></div><div className="mt-3"><ObjectValues value={profile.availabilityDetails}/></div></div>}</div></Section>}
+       </div>
+     </>
+   )}
  </div>;
 }

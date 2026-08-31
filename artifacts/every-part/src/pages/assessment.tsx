@@ -1433,8 +1433,14 @@ function PersonalityResultsView({
 }
 
 export default function Assessment() {
-  const [, params] = useRoute("/profile/:slug");
+  const [, params] = useRoute("/profile/:slug/adult");
   const slug = params?.slug ?? "";
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const ageQuery = searchParams.get("age");
+  const age = ageQuery ? Number(ageQuery) : NaN;
+  const birthdate = searchParams.get("birthdate") || undefined;
+
   const {
     data: church,
     isLoading,
@@ -1451,6 +1457,27 @@ export default function Assessment() {
   const [submitError, setSubmitError] = useState("");
   const [reflectionValidationError, setReflectionValidationError] =
     useState("");
+
+  if (!age || isNaN(age)) {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
+        <Card className="w-full max-w-md border-border/60 shadow-lg text-center landing-reveal">
+          <CardContent className="p-8">
+            <h2 className="text-xl font-serif font-medium mb-3">Age Required</h2>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              We need to know your age to ensure we provide the right ministry profile.
+            </p>
+            <Button asChild variant="default" className="w-full">
+              <Link href={`/profile/${slug}`}>
+                Return to start
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const setStep = (updater: number | ((current: number) => number)) =>
     setStepIndex((current) => {
       const next = typeof updater === "function" ? updater(current) : updater;
@@ -2169,6 +2196,9 @@ export default function Assessment() {
             }
           : {}),
       },
+      age,
+      birthdate,
+      profileType: "adult",
     };
     createProfile.mutate(
       { data: payload },
