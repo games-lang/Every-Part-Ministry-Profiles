@@ -3,6 +3,9 @@ import test from "node:test";
 import {
   adultProfilesOnly,
   discoverSubmissionSchema,
+  DEVELOP_COMPLETION_COPY,
+  developResultSummary,
+  developSubmissionSchema,
   EXPLORE_COMPLETION_COPY,
   exploreResultSummary,
   exploreSubmissionSchema,
@@ -49,6 +52,36 @@ const exploreValid = {
     opportunities: { welcome: "love", creative: "love", worship: "maybe", production: "maybe" },
   },
   guardianObservations: { strengths: "Thoughtful", thriveNotes: "Enjoys a calm introduction" },
+} as const;
+
+const developValid = {
+  churchSlug: "grace",
+  age: 15,
+  birthdate: "2010-04-10",
+  profileType: "develop",
+  child: { firstName: "Jordan", lastName: "Lee" },
+  guardian: { name: "Pat Lee", email: "pat@example.com", consent: true },
+  answers: {
+    prayerAndCalling: { reflection: "I am praying about how to use my creativity." },
+    aboutMe: { likes: ["Creating", "Learning"], goodAt: "Explaining ideas", wantToLearn: "Sound and video" },
+    howITendToOperate: {
+      peopleEnergy: "mix-of-both",
+      processingStyle: "learn-by-doing",
+      planningStyle: "adapt-as-you-go",
+      peopleLogic: "people-first",
+      actionReflection: "move-between-both",
+      leadershipSupport: "share-leadership",
+      conflictStyle: "listen-and-find-common-ground",
+      teamPreference: "variety-of-people",
+    },
+    giftsToExplore: { interests: ["Creativity", "Encouragement"], reflection: "I like helping people feel seen." },
+    passions: { peopleAndCauses: ["Newcomers", "Community"], reflection: "I want people to feel included." },
+    growingWithJesus: { interests: ["Prayer", "Asking honest questions"] },
+    callingAndPurpose: { whatMatters: "People feeling included", futureHope: "I hope to encourage others." },
+    ministryInterests: { creative: "love", welcome: "maybe", production: "maybe" },
+    availabilityAndResponsibility: { availability: "monthly", responsibilityStyle: "start-small" },
+    developmentPlan: { nextSteps: ["conversation", "shadow"], goal: "Talk with a leader about trying tech." },
+  },
 } as const;
 
 test("pathwayForAge has safe boundaries", () => {
@@ -138,6 +171,39 @@ test("Explore summary gives deterministic tentative 2–4 suggestions", () => {
   assert.ok(first.suggestions.every((suggestion) => !/should serve/i.test(suggestion.reason)));
   assert.match(first.tendencySummary, /energized by being with people|clear plan|details/i);
   assert.doesNotMatch(first.tendencySummary, /\b(MBTI|score|type|label|percentage)\b/i);
+});
+
+test("Develop payload enforces teen ages, consent, and server-owned opportunities", () => {
+  assert.equal(developSubmissionSchema.safeParse(developValid).success, true);
+  assert.equal(developSubmissionSchema.safeParse({ ...developValid, age: 12 }).success, false);
+  assert.equal(developSubmissionSchema.safeParse({ ...developValid, age: 18 }).success, false);
+  assert.equal(developSubmissionSchema.safeParse({
+    ...developValid,
+    guardian: { ...developValid.guardian, consent: false },
+  }).success, false);
+  assert.equal(developSubmissionSchema.safeParse({
+    ...developValid,
+    answers: { ...developValid.answers, ministryInterests: { invented: "love", creative: "love" } },
+  }).success, false);
+  assert.equal(developSubmissionSchema.safeParse({
+    ...developValid,
+    answers: { ...developValid.answers, howITendToOperate: { ...developValid.answers.howITendToOperate, conflictStyle: "avoid-everything" } },
+  }).success, false);
+  assert.equal(developSubmissionSchema.safeParse({
+    ...developValid,
+    answers: { ...developValid.answers, ministryInterests: { creative: "not-now" } },
+  }).success, false);
+});
+
+test("Develop summary stays tentative and includes the teen's plan", () => {
+  const parsed = developSubmissionSchema.parse(developValid);
+  const summary = developResultSummary(parsed.answers);
+  assert.equal(summary.developmentPlan.goal, "Talk with a leader about trying tech.");
+  assert.deepEqual(summary.ministryInterests.map((item) => item.opportunityKey), ["welcome", "production", "creative"]);
+  assert.equal(summary.completionCopy, DEVELOP_COMPLETION_COPY);
+  assert.match(summary.tendencySummary, /may|you may/i);
+  assert.doesNotMatch(summary.tendencySummary, /\b(MBTI|type|score|label|percentage)\b/i);
+  assert.match(summary.callingSummary, /included|encourage/i);
 });
 
 test("adultProfilesOnly excludes every youth pathway", () => {

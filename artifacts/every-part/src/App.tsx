@@ -20,7 +20,8 @@ import AgeGateway from '@/pages/age-gateway';
 import DiscoverAssessment from '@/pages/discover-assessment';
 import ExploreAssessment from '@/pages/explore-assessment';
 import ExploreResult from '@/pages/explore-result';
-import DevelopPlaceholder from '@/pages/develop-placeholder';
+import DevelopAssessment from '@/pages/develop-assessment';
+import DevelopResult from '@/pages/develop-result';
 import DiscoverResult from '@/pages/discover-result';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
@@ -209,9 +210,10 @@ function ClerkProviderWithRoutes() {
               <Route path="/profile/:slug/adult" component={Assessment} />
               <Route path="/profile/:slug/discover" component={DiscoverAssessment} />
               <Route path="/profile/:slug/explore" component={ExploreAssessment} />
-              <Route path="/profile/:slug/develop" component={DevelopPlaceholder} />
+              <Route path="/profile/:slug/develop" component={DevelopAssessment} />
               <Route path="/discover/result/:token" component={DiscoverResult} />
               <Route path="/explore/result/:token" component={ExploreResult} />
+              <Route path="/develop/result/:token" component={DevelopResult} />
               
               <Route component={NotFound} />
             </Switch>

@@ -25,6 +25,11 @@ export const EXPLORE_OPPORTUNITY_KEYS = [
   "communityCare", "missions", "encouragementCards", "hospitality", "setup",
   "creative", "events",
 ] as const;
+export const DEVELOP_OPPORTUNITY_KEYS = [
+  "welcome", "prayer", "kids", "students", "worship", "production",
+  "scriptureReading", "communityCare", "missions", "creative", "events",
+  "behindTheScenes",
+] as const;
 
 export function pathwayForAge(age: number): "discover" | "explore" | "develop" | "adult" {
   if (!Number.isInteger(age) || age < 6 || age > 120) {
@@ -151,6 +156,189 @@ export const exploreSubmissionSchema = z.object({
 }).strict();
 
 export type ExploreSubmission = z.infer<typeof exploreSubmissionSchema>;
+
+const developOperationSchema = z.object({
+  peopleEnergy: z.enum(["energized-with-people", "mix-of-both", "recharge-alone"]),
+  processingStyle: z.enum(["talk-it-out", "think-it-through", "learn-by-doing"]),
+  planningStyle: z.enum(["plan-ahead", "adapt-as-you-go", "last-minute-energy"]),
+  peopleLogic: z.enum(["people-first", "balance-both", "details-and-ideas"]),
+  actionReflection: z.enum(["act-then-reflect", "reflect-then-act", "move-between-both"]),
+  leadershipSupport: z.enum(["take-the-lead", "support-the-lead", "share-leadership"]),
+  conflictStyle: z.enum(["address-it-directly", "listen-and-find-common-ground", "pause-and-seek-guidance"]),
+  teamPreference: z.enum(["close-team", "variety-of-people", "independent-with-check-ins"]),
+}).strict();
+
+const developOpportunitySchema = z.object(
+  Object.fromEntries(
+    DEVELOP_OPPORTUNITY_KEYS.map((key) => [key, z.enum(["love", "maybe", "not-now"]).optional()]),
+  ),
+).strict()
+  .refine((value) => Object.keys(value).length > 0, "Choose at least one ministry interest.")
+  .refine(
+    (value) => Object.values(value).filter((response) => response !== "not-now").length >= 2,
+    "Choose at least two ministry interests you would love or might like to explore.",
+  );
+
+export const developSubmissionSchema = z.object({
+  churchSlug: text(120),
+  age: z.number().int().min(13).max(17),
+  birthdate: z.string().date().optional(),
+  profileType: z.literal("develop"),
+  child: z.object({ firstName: text(80), lastName: text(80) }).strict(),
+  guardian: z.object({
+    name: text(120),
+    email: z.string().trim().email().max(254),
+    consent: z.literal(true),
+  }).strict(),
+  answers: z.object({
+    prayerAndCalling: z.object({
+      reflection: text(500),
+    }).strict(),
+    aboutMe: z.object({
+      likes: uniqueShortList(8),
+      goodAt: text(500),
+      wantToLearn: text(500),
+    }).strict(),
+    howITendToOperate: developOperationSchema,
+    giftsToExplore: z.object({
+      interests: uniqueShortList(8),
+      reflection: optionalText(400),
+    }).strict(),
+    passions: z.object({
+      peopleAndCauses: uniqueShortList(8),
+      reflection: text(500),
+    }).strict(),
+    growingWithJesus: z.object({
+      interests: uniqueShortList(8),
+      helperName: optionalText(120),
+      wantsHelpWith: optionalText(500),
+    }).strict(),
+    callingAndPurpose: z.object({
+      whatMatters: text(500),
+      futureHope: text(500),
+      callingReflection: optionalText(500),
+    }).strict(),
+    ministryInterests: developOpportunitySchema,
+    availabilityAndResponsibility: z.object({
+      availability: z.enum(["weekly", "monthly", "seasonal", "not-sure-yet"]),
+      responsibilityStyle: z.enum(["ready-for-responsibility", "growing-into-it", "start-small"]),
+      notes: optionalText(500),
+    }).strict(),
+    developmentPlan: z.object({
+      nextSteps: uniqueShortList(5, 160),
+      supportNeeded: optionalText(500),
+      goal: text(500),
+    }).strict(),
+  }).strict(),
+  guardianObservations: z.object({
+    strengths: optionalText(500),
+    comesAlive: optionalText(500),
+    comfortableOpportunities: optionalText(500),
+    thriveNotes: optionalText(1000),
+  }).strict().optional(),
+}).strict();
+
+export type DevelopSubmission = z.infer<typeof developSubmissionSchema>;
+
+const DEVELOP_OPPORTUNITY_LABELS: Record<(typeof DEVELOP_OPPORTUNITY_KEYS)[number], string> = {
+  welcome: "Welcoming people",
+  prayer: "Prayer",
+  kids: "Helping younger children",
+  students: "Student ministry",
+  worship: "Worship or music",
+  production: "Tech or production",
+  scriptureReading: "Scripture reading",
+  communityCare: "Community care",
+  missions: "Missions and outreach",
+  creative: "Creative projects",
+  events: "Church events",
+  behindTheScenes: "Behind-the-scenes support",
+};
+
+export const DEVELOP_COMPLETION_COPY =
+  "You are still growing and discovering how God has made you. These results are a starting point for conversations, prayer, serving, and learning—not a permanent label.";
+
+function developTendencySummary(answers: DevelopSubmission["answers"]): string {
+  const tendencies = answers.howITendToOperate;
+  const labels = {
+    peopleEnergy: {
+      "energized-with-people": "You may feel energized by being with people",
+      "mix-of-both": "You may enjoy a mix of people time and quiet time",
+      "recharge-alone": "You may need quiet time to recharge",
+    },
+    processingStyle: {
+      "talk-it-out": "you may process by talking ideas through",
+      "think-it-through": "you may like time to think things through",
+      "learn-by-doing": "you may learn best by trying things",
+    },
+    planningStyle: {
+      "plan-ahead": "you may appreciate a clear plan",
+      "adapt-as-you-go": "you may like a plan with room to adapt",
+      "last-minute-energy": "you may find energy in responding as things develop",
+    },
+    peopleLogic: {
+      "people-first": "you may naturally notice people and relationships",
+      "balance-both": "you may balance people, details, and ideas",
+      "details-and-ideas": "you may naturally notice details and ideas",
+    },
+    actionReflection: {
+      "act-then-reflect": "you may like to act and reflect afterward",
+      "reflect-then-act": "you may like to reflect before acting",
+      "move-between-both": "you may move between action and reflection",
+    },
+    leadershipSupport: {
+      "take-the-lead": "you may enjoy taking initiative",
+      "support-the-lead": "you may enjoy strengthening someone else's leadership",
+      "share-leadership": "you may prefer shared leadership",
+    },
+    conflictStyle: {
+      "address-it-directly": "you may prefer to address tension directly",
+      "listen-and-find-common-ground": "you may look for listening and common ground",
+      "pause-and-seek-guidance": "you may prefer to pause and seek guidance",
+    },
+    teamPreference: {
+      "close-team": "you may thrive with a close team",
+      "variety-of-people": "you may enjoy working with a variety of people",
+      "independent-with-check-ins": "you may like independent work with check-ins",
+    },
+  } as const;
+  return [
+    labels.peopleEnergy[tendencies.peopleEnergy],
+    labels.processingStyle[tendencies.processingStyle],
+    labels.planningStyle[tendencies.planningStyle],
+    labels.peopleLogic[tendencies.peopleLogic],
+    labels.actionReflection[tendencies.actionReflection],
+    labels.leadershipSupport[tendencies.leadershipSupport],
+    labels.conflictStyle[tendencies.conflictStyle],
+    labels.teamPreference[tendencies.teamPreference],
+  ].join("; ") + ".";
+}
+
+export function developResultSummary(answers: DevelopSubmission["answers"]) {
+  const selectedInterests = DEVELOP_OPPORTUNITY_KEYS
+    .map((key) => ({ key, response: answers.ministryInterests[key] }))
+    .filter((item) => item.response === "love" || item.response === "maybe")
+    .slice(0, 4);
+  return {
+    headline: `You are noticing ways to grow, serve, and use what matters to you.`,
+    strengths: [answers.aboutMe.goodAt, answers.passions.reflection, answers.callingAndPurpose.whatMatters].slice(0, 3),
+    tendencySummary: developTendencySummary(answers),
+    giftsToExplore: answers.giftsToExplore.interests.slice(0, 5),
+    callingSummary: answers.callingAndPurpose.callingReflection
+      || `You care about ${answers.callingAndPurpose.whatMatters.toLocaleLowerCase()} and are beginning to imagine how that could shape your next steps.`,
+    ministryInterests: selectedInterests.map(({ key, response }) => ({
+      opportunityKey: key,
+      opportunityLabel: DEVELOP_OPPORTUNITY_LABELS[key],
+      response,
+    })),
+    developmentPlan: {
+      goal: answers.developmentPlan.goal,
+      nextSteps: answers.developmentPlan.nextSteps.slice(0, 5),
+      supportNeeded: answers.developmentPlan.supportNeeded,
+    },
+    completionCopy: DEVELOP_COMPLETION_COPY,
+  };
+}
 
 const EXPLORE_OPPORTUNITY_LABELS: Record<(typeof EXPLORE_OPPORTUNITY_KEYS)[number], string> = {
   welcome: "Welcome",

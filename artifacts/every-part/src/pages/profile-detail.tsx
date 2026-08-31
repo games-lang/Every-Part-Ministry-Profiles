@@ -80,11 +80,11 @@ function Value({ label, value }: {label:string;value: unknown}) {
   const text = typeof value === "string" || typeof value === "number" ? String(value) : "";
   return <div className="rounded-lg border border-border/60 bg-card p-3 break-words"><div className="text-xs font-medium text-muted-foreground mb-1">{label}</div><div className={text ? "" : "text-muted-foreground italic"}>{text || empty}</div></div>;
 }
-function ObjectValues({ value }: {value: unknown}) {
+function ObjectValues({ value, labels }: {value: unknown; labels?: Record<string, string>}) {
   if (!value || typeof value !== "object") return null;
   const entries = Object.entries(value as Record<string, unknown>).filter(([,v]) => v !== null && v !== "" && (!Array.isArray(v) || v.length));
   if (!entries.length) return null;
-  return <div className="grid sm:grid-cols-2 gap-3">{entries.map(([key,val]) => <Value key={key} label={key.replace(/([A-Z])/g, " $1").replace(/^./,x=>x.toUpperCase())} value={Array.isArray(val) ? val.join(", ") : typeof val === "object" ? JSON.stringify(val) : val}/>)}</div>;
+  return <div className="grid sm:grid-cols-2 gap-3">{entries.map(([key,val]) => <Value key={key} label={labels?.[key] ?? key.replace(/([A-Z])/g, " $1").replace(/^./,x=>x.toUpperCase())} value={Array.isArray(val) ? val.join(", ") : typeof val === "object" ? JSON.stringify(val) : val}/>)}</div>;
 }
 function MinistryAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
@@ -339,6 +339,39 @@ function ExploreProfileView({ profile }: { profile: MinistryProfile }) {
       )}
     </div>
   );
+}
+
+function DevelopProfileView({ profile }: { profile: MinistryProfile }) {
+  const answers = (profile.youthResponses || {}) as Record<string, any>;
+  const obs = (profile.guardianObservations || {}) as Record<string, any>;
+  const values = (value: unknown) => Array.isArray(value) ? value.join(", ") : value;
+  const operationLabels: Record<string, string> = {
+    peopleEnergy: "People energy", processingStyle: "Processing style", planningStyle: "Planning style",
+    peopleLogic: "What they notice", actionReflection: "Action & reflection", leadershipSupport: "Leadership & support",
+    conflictStyle: "Conflict approach", teamPreference: "Team preference",
+  };
+  const opportunityLabels: Record<string, string> = {
+    welcome: "Welcoming people", prayer: "Prayer", kids: "Helping younger children", students: "Student ministry",
+    worship: "Worship or music", production: "Tech or production", scriptureReading: "Reading Scripture",
+    communityCare: "Community care", missions: "Missions and outreach", creative: "Creative projects",
+    events: "Church events", behindTheScenes: "Behind-the-scenes support",
+  };
+  return <div className="mt-8 space-y-8">
+    <div className="rounded-xl border border-primary/15 bg-primary/5 p-4 text-sm text-muted-foreground">
+      Youth profile: teen answers and guardian observations are shown separately. Develop profiles are private, conversation-oriented records and cannot be assigned to teams or used for adult matching.
+    </div>
+    <Section title="Prayer & Calling"><Value label="Reflection" value={answers.prayerAndCalling?.reflection} /></Section>
+    <Section title="About Me"><div className="grid gap-3 sm:grid-cols-2"><Value label="Enjoys" value={values(answers.aboutMe?.likes)} /><Value label="Naturally good at" value={answers.aboutMe?.goodAt} /><Value label="Wants to learn" value={answers.aboutMe?.wantToLearn} /></div></Section>
+    <Section title="How I Tend to Operate"><div className="grid gap-3 sm:grid-cols-2">{Object.entries(operationLabels).map(([key, label]) => <Value key={key} label={label} value={answers.howITendToOperate?.[key]} />)}</div><p className="mt-4 text-sm text-muted-foreground">Flexible self-reflection, not a type, diagnosis, score, or placement recommendation.</p></Section>
+    <Section title="Gifts You May Want to Explore Further"><Value label="Areas of interest" value={values(answers.giftsToExplore?.interests)} /><Value label="Why they are interesting" value={answers.giftsToExplore?.reflection} /></Section>
+    <Section title="Passions"><Value label="People and causes" value={values(answers.passions?.peopleAndCauses)} /><Value label="Why this matters" value={answers.passions?.reflection} /></Section>
+    <Section title="Growing With Jesus"><div className="grid gap-3 sm:grid-cols-2"><Value label="Interests" value={values(answers.growingWithJesus?.interests)} /><Value label="Trusted helper" value={answers.growingWithJesus?.helperName} /><Value label="Wants help with" value={answers.growingWithJesus?.wantsHelpWith} /></div></Section>
+    <Section title="Calling & Purpose"><Value label="What matters" value={answers.callingAndPurpose?.whatMatters} /><Value label="Future hope" value={answers.callingAndPurpose?.futureHope} /><Value label="Calling reflection" value={answers.callingAndPurpose?.callingReflection} /></Section>
+    <Section title="Ministry Interests"><ObjectValues value={answers.ministryInterests} labels={opportunityLabels} /></Section>
+    <Section title="Availability & Responsibility"><div className="grid gap-3 sm:grid-cols-2"><Value label="Availability" value={answers.availabilityAndResponsibility?.availability} /><Value label="Responsibility style" value={answers.availabilityAndResponsibility?.responsibilityStyle} /><Value label="Notes" value={answers.availabilityAndResponsibility?.notes} /></div></Section>
+    <Section title="My Development Plan"><Value label="Goal" value={answers.developmentPlan?.goal} /><Value label="Next steps" value={values(answers.developmentPlan?.nextSteps)} /><Value label="Support needed" value={answers.developmentPlan?.supportNeeded} /></Section>
+    {Boolean(obs.strengths || obs.comesAlive || obs.comfortableOpportunities || obs.thriveNotes) && <div><h2 className="mb-3 font-serif text-2xl font-medium">Guardian Observations</h2><Card className="border-border/60 bg-muted/10 shadow-sm"><CardContent className="grid gap-4 p-5 sm:grid-cols-2"><Value label="Natural strengths" value={obs.strengths} /><Value label="Comes alive when" value={obs.comesAlive} /><Value label="Comfortable starting opportunities" value={obs.comfortableOpportunities} /><Value label="Notes for thriving" value={obs.thriveNotes} /></CardContent></Card></div>}
+  </div>;
 }
 
 export default function ProfileDetail() {

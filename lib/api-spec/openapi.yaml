@@ -480,6 +480,47 @@ paths:
                 $ref: "#/components/schemas/ExploreProfileResult"
         "404":
           description: Result not found
+  /develop-profiles:
+    post:
+      operationId: submitDevelopProfile
+      tags: [youth-profiles]
+      summary: Submit a guardian-consented Develop profile for ages 13 through 17
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DevelopProfileInput"
+      responses:
+        "201":
+          description: Submitted Develop profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DevelopProfileSubmission"
+        "400":
+          description: Invalid Develop profile
+        "404":
+          description: Church not found
+  /develop-profiles/{id}/result:
+    get:
+      operationId: getDevelopResult
+      tags: [youth-profiles]
+      summary: Retrieve a guardian-safe Develop result with its opaque token
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Guardian-safe Develop result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DevelopProfileResult"
+        "404":
+          description: Result not found
   /profiles/{id}:
     get:
       operationId: getProfile
@@ -1400,6 +1441,209 @@ components:
               opportunityKey: { type: string, enum: [welcome, prayer, kids, worship, scriptureReading, production, communityCare, missions, encouragementCards, hospitality, setup, creative, events] }
               opportunityLabel: { type: string }
               reason: { type: string }
+        guardian:
+          type: object
+          additionalProperties: false
+          required: [name, consent]
+          properties:
+            name: { type: string }
+            consent: { type: boolean, enum: [true] }
+    DevelopProfileInput:
+      type: object
+      additionalProperties: false
+      required: [churchSlug, age, profileType, child, guardian, answers]
+      properties:
+        churchSlug: { type: string, minLength: 1, maxLength: 120 }
+        age: { type: integer, minimum: 13, maximum: 17 }
+        birthdate: { type: string, format: date }
+        profileType: { type: string, enum: [develop] }
+        child:
+          type: object
+          additionalProperties: false
+          required: [firstName, lastName]
+          properties:
+            firstName: { type: string, minLength: 1, maxLength: 80 }
+            lastName: { type: string, minLength: 1, maxLength: 80 }
+        guardian:
+          type: object
+          additionalProperties: false
+          required: [name, email, consent]
+          properties:
+            name: { type: string, minLength: 1, maxLength: 120 }
+            email: { type: string, format: email, maxLength: 254 }
+            consent: { type: boolean, enum: [true] }
+        answers:
+          $ref: "#/components/schemas/DevelopAnswersInput"
+        guardianObservations:
+          type: object
+          additionalProperties: false
+          properties:
+            strengths: { type: string, minLength: 1, maxLength: 500 }
+            comesAlive: { type: string, minLength: 1, maxLength: 500 }
+            comfortableOpportunities: { type: string, minLength: 1, maxLength: 500 }
+            thriveNotes: { type: string, minLength: 1, maxLength: 1000 }
+    DevelopProfileSubmission:
+      type: object
+      additionalProperties: false
+      required: [resultToken, profileType, recommendedProfileType]
+      properties:
+        resultToken: { type: string, format: uuid }
+        profileType: { type: string, enum: [develop] }
+        recommendedProfileType: { type: string, enum: [develop] }
+    DevelopAnswersInput:
+      type: object
+      additionalProperties: false
+      required: [prayerAndCalling, aboutMe, howITendToOperate, giftsToExplore, passions, growingWithJesus, callingAndPurpose, ministryInterests, availabilityAndResponsibility, developmentPlan]
+      properties:
+        prayerAndCalling:
+          type: object
+          additionalProperties: false
+          required: [reflection]
+          properties:
+            reflection: { type: string, minLength: 1, maxLength: 500 }
+        aboutMe:
+          type: object
+          additionalProperties: false
+          required: [likes, goodAt, wantToLearn]
+          properties:
+            likes: { $ref: "#/components/schemas/ExploreTextList" }
+            goodAt: { type: string, minLength: 1, maxLength: 500 }
+            wantToLearn: { type: string, minLength: 1, maxLength: 500 }
+        howITendToOperate:
+          $ref: "#/components/schemas/DevelopOperationInput"
+        giftsToExplore:
+          type: object
+          additionalProperties: false
+          required: [interests]
+          properties:
+            interests: { $ref: "#/components/schemas/ExploreTextList" }
+            reflection: { type: string, minLength: 1, maxLength: 400 }
+        passions:
+          type: object
+          additionalProperties: false
+          required: [peopleAndCauses, reflection]
+          properties:
+            peopleAndCauses: { $ref: "#/components/schemas/ExploreTextList" }
+            reflection: { type: string, minLength: 1, maxLength: 500 }
+        growingWithJesus:
+          type: object
+          additionalProperties: false
+          required: [interests]
+          properties:
+            interests: { $ref: "#/components/schemas/ExploreTextList" }
+            helperName: { type: string, minLength: 1, maxLength: 120 }
+            wantsHelpWith: { type: string, minLength: 1, maxLength: 500 }
+        callingAndPurpose:
+          type: object
+          additionalProperties: false
+          required: [whatMatters, futureHope]
+          properties:
+            whatMatters: { type: string, minLength: 1, maxLength: 500 }
+            futureHope: { type: string, minLength: 1, maxLength: 500 }
+            callingReflection: { type: string, minLength: 1, maxLength: 500 }
+        ministryInterests:
+          $ref: "#/components/schemas/DevelopOpportunitiesInput"
+        availabilityAndResponsibility:
+          type: object
+          additionalProperties: false
+          required: [availability, responsibilityStyle]
+          properties:
+            availability: { type: string, enum: [weekly, monthly, seasonal, not-sure-yet] }
+            responsibilityStyle: { type: string, enum: [ready-for-responsibility, growing-into-it, start-small] }
+            notes: { type: string, minLength: 1, maxLength: 500 }
+        developmentPlan:
+          type: object
+          additionalProperties: false
+          required: [nextSteps, goal]
+          properties:
+            nextSteps:
+              type: array
+              minItems: 1
+              maxItems: 5
+              uniqueItems: true
+              items: { type: string, minLength: 1, maxLength: 160 }
+            supportNeeded: { type: string, minLength: 1, maxLength: 500 }
+            goal: { type: string, minLength: 1, maxLength: 500 }
+    DevelopOperationInput:
+      type: object
+      additionalProperties: false
+      required: [peopleEnergy, processingStyle, planningStyle, peopleLogic, actionReflection, leadershipSupport, conflictStyle, teamPreference]
+      properties:
+        peopleEnergy: { type: string, enum: [energized-with-people, mix-of-both, recharge-alone] }
+        processingStyle: { type: string, enum: [talk-it-out, think-it-through, learn-by-doing] }
+        planningStyle: { type: string, enum: [plan-ahead, adapt-as-you-go, last-minute-energy] }
+        peopleLogic: { type: string, enum: [people-first, balance-both, details-and-ideas] }
+        actionReflection: { type: string, enum: [act-then-reflect, reflect-then-act, move-between-both] }
+        leadershipSupport: { type: string, enum: [take-the-lead, support-the-lead, share-leadership] }
+        conflictStyle: { type: string, enum: [address-it-directly, listen-and-find-common-ground, pause-and-seek-guidance] }
+        teamPreference: { type: string, enum: [close-team, variety-of-people, independent-with-check-ins] }
+    DevelopOpportunitiesInput:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        welcome: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        prayer: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        kids: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        students: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        worship: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        production: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        scriptureReading: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        communityCare: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        missions: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        creative: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        events: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+        behindTheScenes: { $ref: "#/components/schemas/YouthOpportunityResponse" }
+    DevelopProfileResult:
+      type: object
+      additionalProperties: false
+      required: [profileType, childName, summary, guardian]
+      properties:
+        profileType: { type: string, enum: [develop] }
+        childName: { type: string }
+        summary:
+          type: object
+          additionalProperties: false
+          required: [headline, strengths, tendencySummary, giftsToExplore, callingSummary, ministryInterests, developmentPlan, completionCopy]
+          properties:
+            headline: { type: string }
+            strengths:
+              type: array
+              minItems: 1
+              maxItems: 3
+              items: { type: string }
+            tendencySummary: { type: string }
+            giftsToExplore:
+              type: array
+              minItems: 1
+              maxItems: 5
+              items: { type: string }
+            callingSummary: { type: string }
+            ministryInterests:
+              type: array
+              minItems: 2
+              maxItems: 4
+              items:
+                type: object
+                additionalProperties: false
+                required: [opportunityKey, opportunityLabel, response]
+                properties:
+                  opportunityKey: { type: string, enum: [welcome, prayer, kids, students, worship, production, scriptureReading, communityCare, missions, creative, events, behindTheScenes] }
+                  opportunityLabel: { type: string }
+                  response: { type: string, enum: [love, maybe] }
+            developmentPlan:
+              type: object
+              additionalProperties: false
+              required: [goal, nextSteps]
+              properties:
+                goal: { type: string }
+                nextSteps:
+                  type: array
+                  minItems: 1
+                  maxItems: 5
+                  items: { type: string }
+                supportNeeded: { type: string }
+            completionCopy: { type: string }
         guardian:
           type: object
           additionalProperties: false

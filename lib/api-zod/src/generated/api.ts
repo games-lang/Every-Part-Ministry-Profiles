@@ -1338,6 +1338,215 @@ export const GetExploreResultResponse = zod.object({
 
 
 /**
+ * @summary Submit a guardian-consented Develop profile for ages 13 through 17
+ */
+export const submitDevelopProfileBodyChurchSlugMax = 120;
+
+export const submitDevelopProfileBodyAgeMin = 13;
+export const submitDevelopProfileBodyAgeMax = 17;
+
+export const submitDevelopProfileBodyChildFirstNameMax = 80;
+
+export const submitDevelopProfileBodyChildLastNameMax = 80;
+
+export const submitDevelopProfileBodyGuardianNameMax = 120;
+
+export const submitDevelopProfileBodyGuardianEmailMax = 254;
+
+export const submitDevelopProfileBodyAnswersPrayerAndCallingReflectionMax = 500;
+
+export const submitDevelopProfileBodyAnswersAboutMeLikesItemMax = 80;
+
+export const submitDevelopProfileBodyAnswersAboutMeLikesMax = 8;
+
+export const submitDevelopProfileBodyAnswersAboutMeGoodAtMax = 500;
+
+export const submitDevelopProfileBodyAnswersAboutMeWantToLearnMax = 500;
+
+export const submitDevelopProfileBodyAnswersGiftsToExploreInterestsItemMax = 80;
+
+export const submitDevelopProfileBodyAnswersGiftsToExploreInterestsMax = 8;
+
+export const submitDevelopProfileBodyAnswersGiftsToExploreReflectionMax = 400;
+
+export const submitDevelopProfileBodyAnswersPassionsPeopleAndCausesItemMax = 80;
+
+export const submitDevelopProfileBodyAnswersPassionsPeopleAndCausesMax = 8;
+
+export const submitDevelopProfileBodyAnswersPassionsReflectionMax = 500;
+
+export const submitDevelopProfileBodyAnswersGrowingWithJesusInterestsItemMax = 80;
+
+export const submitDevelopProfileBodyAnswersGrowingWithJesusInterestsMax = 8;
+
+export const submitDevelopProfileBodyAnswersGrowingWithJesusHelperNameMax = 120;
+
+export const submitDevelopProfileBodyAnswersGrowingWithJesusWantsHelpWithMax = 500;
+
+export const submitDevelopProfileBodyAnswersCallingAndPurposeWhatMattersMax = 500;
+
+export const submitDevelopProfileBodyAnswersCallingAndPurposeFutureHopeMax = 500;
+
+export const submitDevelopProfileBodyAnswersCallingAndPurposeCallingReflectionMax = 500;
+
+export const submitDevelopProfileBodyAnswersAvailabilityAndResponsibilityNotesMax = 500;
+
+export const submitDevelopProfileBodyAnswersDevelopmentPlanNextStepsItemMax = 160;
+
+export const submitDevelopProfileBodyAnswersDevelopmentPlanNextStepsMax = 5;
+
+export const submitDevelopProfileBodyAnswersDevelopmentPlanSupportNeededMax = 500;
+
+export const submitDevelopProfileBodyAnswersDevelopmentPlanGoalMax = 500;
+
+export const submitDevelopProfileBodyGuardianObservationsStrengthsMax = 500;
+
+export const submitDevelopProfileBodyGuardianObservationsComesAliveMax = 500;
+
+export const submitDevelopProfileBodyGuardianObservationsComfortableOpportunitiesMax = 500;
+
+export const submitDevelopProfileBodyGuardianObservationsThriveNotesMax = 1000;
+
+
+
+export const SubmitDevelopProfileBody = zod.object({
+  "churchSlug": zod.string().min(1).max(submitDevelopProfileBodyChurchSlugMax),
+  "age": zod.int().min(submitDevelopProfileBodyAgeMin).max(submitDevelopProfileBodyAgeMax),
+  "birthdate": zod.coerce.date().optional(),
+  "profileType": zod.enum(['develop']),
+  "child": zod.object({
+  "firstName": zod.string().min(1).max(submitDevelopProfileBodyChildFirstNameMax),
+  "lastName": zod.string().min(1).max(submitDevelopProfileBodyChildLastNameMax)
+}),
+  "guardian": zod.object({
+  "name": zod.string().min(1).max(submitDevelopProfileBodyGuardianNameMax),
+  "email": zod.email().max(submitDevelopProfileBodyGuardianEmailMax),
+  "consent": zod.literal(true)
+}),
+  "answers": zod.object({
+  "prayerAndCalling": zod.object({
+  "reflection": zod.string().min(1).max(submitDevelopProfileBodyAnswersPrayerAndCallingReflectionMax)
+}),
+  "aboutMe": zod.object({
+  "likes": zod.array(zod.string().min(1).max(submitDevelopProfileBodyAnswersAboutMeLikesItemMax)).min(1).max(submitDevelopProfileBodyAnswersAboutMeLikesMax),
+  "goodAt": zod.string().min(1).max(submitDevelopProfileBodyAnswersAboutMeGoodAtMax),
+  "wantToLearn": zod.string().min(1).max(submitDevelopProfileBodyAnswersAboutMeWantToLearnMax)
+}),
+  "howITendToOperate": zod.object({
+  "peopleEnergy": zod.enum(['energized-with-people', 'mix-of-both', 'recharge-alone']),
+  "processingStyle": zod.enum(['talk-it-out', 'think-it-through', 'learn-by-doing']),
+  "planningStyle": zod.enum(['plan-ahead', 'adapt-as-you-go', 'last-minute-energy']),
+  "peopleLogic": zod.enum(['people-first', 'balance-both', 'details-and-ideas']),
+  "actionReflection": zod.enum(['act-then-reflect', 'reflect-then-act', 'move-between-both']),
+  "leadershipSupport": zod.enum(['take-the-lead', 'support-the-lead', 'share-leadership']),
+  "conflictStyle": zod.enum(['address-it-directly', 'listen-and-find-common-ground', 'pause-and-seek-guidance']),
+  "teamPreference": zod.enum(['close-team', 'variety-of-people', 'independent-with-check-ins'])
+}),
+  "giftsToExplore": zod.object({
+  "interests": zod.array(zod.string().min(1).max(submitDevelopProfileBodyAnswersGiftsToExploreInterestsItemMax)).min(1).max(submitDevelopProfileBodyAnswersGiftsToExploreInterestsMax),
+  "reflection": zod.string().min(1).max(submitDevelopProfileBodyAnswersGiftsToExploreReflectionMax).optional()
+}),
+  "passions": zod.object({
+  "peopleAndCauses": zod.array(zod.string().min(1).max(submitDevelopProfileBodyAnswersPassionsPeopleAndCausesItemMax)).min(1).max(submitDevelopProfileBodyAnswersPassionsPeopleAndCausesMax),
+  "reflection": zod.string().min(1).max(submitDevelopProfileBodyAnswersPassionsReflectionMax)
+}),
+  "growingWithJesus": zod.object({
+  "interests": zod.array(zod.string().min(1).max(submitDevelopProfileBodyAnswersGrowingWithJesusInterestsItemMax)).min(1).max(submitDevelopProfileBodyAnswersGrowingWithJesusInterestsMax),
+  "helperName": zod.string().min(1).max(submitDevelopProfileBodyAnswersGrowingWithJesusHelperNameMax).optional(),
+  "wantsHelpWith": zod.string().min(1).max(submitDevelopProfileBodyAnswersGrowingWithJesusWantsHelpWithMax).optional()
+}),
+  "callingAndPurpose": zod.object({
+  "whatMatters": zod.string().min(1).max(submitDevelopProfileBodyAnswersCallingAndPurposeWhatMattersMax),
+  "futureHope": zod.string().min(1).max(submitDevelopProfileBodyAnswersCallingAndPurposeFutureHopeMax),
+  "callingReflection": zod.string().min(1).max(submitDevelopProfileBodyAnswersCallingAndPurposeCallingReflectionMax).optional()
+}),
+  "ministryInterests": zod.object({
+  "welcome": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "prayer": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "kids": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "students": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "worship": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "production": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "scriptureReading": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "communityCare": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "missions": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "creative": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "events": zod.enum(['love', 'maybe', 'not-now']).optional(),
+  "behindTheScenes": zod.enum(['love', 'maybe', 'not-now']).optional()
+}),
+  "availabilityAndResponsibility": zod.object({
+  "availability": zod.enum(['weekly', 'monthly', 'seasonal', 'not-sure-yet']),
+  "responsibilityStyle": zod.enum(['ready-for-responsibility', 'growing-into-it', 'start-small']),
+  "notes": zod.string().min(1).max(submitDevelopProfileBodyAnswersAvailabilityAndResponsibilityNotesMax).optional()
+}),
+  "developmentPlan": zod.object({
+  "nextSteps": zod.array(zod.string().min(1).max(submitDevelopProfileBodyAnswersDevelopmentPlanNextStepsItemMax)).min(1).max(submitDevelopProfileBodyAnswersDevelopmentPlanNextStepsMax),
+  "supportNeeded": zod.string().min(1).max(submitDevelopProfileBodyAnswersDevelopmentPlanSupportNeededMax).optional(),
+  "goal": zod.string().min(1).max(submitDevelopProfileBodyAnswersDevelopmentPlanGoalMax)
+})
+}),
+  "guardianObservations": zod.object({
+  "strengths": zod.string().min(1).max(submitDevelopProfileBodyGuardianObservationsStrengthsMax).optional(),
+  "comesAlive": zod.string().min(1).max(submitDevelopProfileBodyGuardianObservationsComesAliveMax).optional(),
+  "comfortableOpportunities": zod.string().min(1).max(submitDevelopProfileBodyGuardianObservationsComfortableOpportunitiesMax).optional(),
+  "thriveNotes": zod.string().min(1).max(submitDevelopProfileBodyGuardianObservationsThriveNotesMax).optional()
+}).optional()
+})
+
+export const SubmitDevelopProfileResponse = zod.object({
+  "resultToken": zod.uuid(),
+  "profileType": zod.enum(['develop']),
+  "recommendedProfileType": zod.enum(['develop'])
+})
+
+
+/**
+ * @summary Retrieve a guardian-safe Develop result with its opaque token
+ */
+export const GetDevelopResultParams = zod.object({
+  "id": zod.uuid()
+})
+
+export const getDevelopResultResponseSummaryStrengthsMax = 3;
+
+export const getDevelopResultResponseSummaryGiftsToExploreMax = 5;
+
+export const getDevelopResultResponseSummaryMinistryInterestsMin = 2;
+export const getDevelopResultResponseSummaryMinistryInterestsMax = 4;
+
+export const getDevelopResultResponseSummaryDevelopmentPlanNextStepsMax = 5;
+
+
+
+export const GetDevelopResultResponse = zod.object({
+  "profileType": zod.enum(['develop']),
+  "childName": zod.string(),
+  "summary": zod.object({
+  "headline": zod.string(),
+  "strengths": zod.array(zod.string()).min(1).max(getDevelopResultResponseSummaryStrengthsMax),
+  "tendencySummary": zod.string(),
+  "giftsToExplore": zod.array(zod.string()).min(1).max(getDevelopResultResponseSummaryGiftsToExploreMax),
+  "callingSummary": zod.string(),
+  "ministryInterests": zod.array(zod.object({
+  "opportunityKey": zod.enum(['welcome', 'prayer', 'kids', 'students', 'worship', 'production', 'scriptureReading', 'communityCare', 'missions', 'creative', 'events', 'behindTheScenes']),
+  "opportunityLabel": zod.string(),
+  "response": zod.enum(['love', 'maybe'])
+})).min(getDevelopResultResponseSummaryMinistryInterestsMin).max(getDevelopResultResponseSummaryMinistryInterestsMax),
+  "developmentPlan": zod.object({
+  "goal": zod.string(),
+  "nextSteps": zod.array(zod.string()).min(1).max(getDevelopResultResponseSummaryDevelopmentPlanNextStepsMax),
+  "supportNeeded": zod.string().optional()
+}),
+  "completionCopy": zod.string()
+}),
+  "guardian": zod.object({
+  "name": zod.string(),
+  "consent": zod.literal(true)
+})
+})
+
+
+/**
  * @summary View a completed Ministry Profile
  */
 export const GetProfileParams = zod.object({

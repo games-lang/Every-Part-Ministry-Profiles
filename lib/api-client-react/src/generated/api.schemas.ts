@@ -1270,6 +1270,415 @@ export interface ExploreProfileResult {
   guardian: ExploreProfileResultGuardian;
 }
 
+export type DevelopProfileInputProfileType = typeof DevelopProfileInputProfileType[keyof typeof DevelopProfileInputProfileType];
+
+
+export const DevelopProfileInputProfileType = {
+  develop: 'develop',
+} as const;
+
+export type DevelopProfileInputChild = {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  firstName: string;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  lastName: string;
+};
+
+export type DevelopProfileInputGuardian = {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  name: string;
+  /** @maxLength 254 */
+  email: string;
+  consent: true;
+};
+
+export type DevelopProfileInputGuardianObservations = {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  strengths?: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  comesAlive?: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  comfortableOpportunities?: string;
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  thriveNotes?: string;
+};
+
+export type DevelopOperationInputPeopleEnergy = typeof DevelopOperationInputPeopleEnergy[keyof typeof DevelopOperationInputPeopleEnergy];
+
+
+export const DevelopOperationInputPeopleEnergy = {
+  'energized-with-people': 'energized-with-people',
+  'mix-of-both': 'mix-of-both',
+  'recharge-alone': 'recharge-alone',
+} as const;
+
+export type DevelopOperationInputProcessingStyle = typeof DevelopOperationInputProcessingStyle[keyof typeof DevelopOperationInputProcessingStyle];
+
+
+export const DevelopOperationInputProcessingStyle = {
+  'talk-it-out': 'talk-it-out',
+  'think-it-through': 'think-it-through',
+  'learn-by-doing': 'learn-by-doing',
+} as const;
+
+export type DevelopOperationInputPlanningStyle = typeof DevelopOperationInputPlanningStyle[keyof typeof DevelopOperationInputPlanningStyle];
+
+
+export const DevelopOperationInputPlanningStyle = {
+  'plan-ahead': 'plan-ahead',
+  'adapt-as-you-go': 'adapt-as-you-go',
+  'last-minute-energy': 'last-minute-energy',
+} as const;
+
+export type DevelopOperationInputPeopleLogic = typeof DevelopOperationInputPeopleLogic[keyof typeof DevelopOperationInputPeopleLogic];
+
+
+export const DevelopOperationInputPeopleLogic = {
+  'people-first': 'people-first',
+  'balance-both': 'balance-both',
+  'details-and-ideas': 'details-and-ideas',
+} as const;
+
+export type DevelopOperationInputActionReflection = typeof DevelopOperationInputActionReflection[keyof typeof DevelopOperationInputActionReflection];
+
+
+export const DevelopOperationInputActionReflection = {
+  'act-then-reflect': 'act-then-reflect',
+  'reflect-then-act': 'reflect-then-act',
+  'move-between-both': 'move-between-both',
+} as const;
+
+export type DevelopOperationInputLeadershipSupport = typeof DevelopOperationInputLeadershipSupport[keyof typeof DevelopOperationInputLeadershipSupport];
+
+
+export const DevelopOperationInputLeadershipSupport = {
+  'take-the-lead': 'take-the-lead',
+  'support-the-lead': 'support-the-lead',
+  'share-leadership': 'share-leadership',
+} as const;
+
+export type DevelopOperationInputConflictStyle = typeof DevelopOperationInputConflictStyle[keyof typeof DevelopOperationInputConflictStyle];
+
+
+export const DevelopOperationInputConflictStyle = {
+  'address-it-directly': 'address-it-directly',
+  'listen-and-find-common-ground': 'listen-and-find-common-ground',
+  'pause-and-seek-guidance': 'pause-and-seek-guidance',
+} as const;
+
+export type DevelopOperationInputTeamPreference = typeof DevelopOperationInputTeamPreference[keyof typeof DevelopOperationInputTeamPreference];
+
+
+export const DevelopOperationInputTeamPreference = {
+  'close-team': 'close-team',
+  'variety-of-people': 'variety-of-people',
+  'independent-with-check-ins': 'independent-with-check-ins',
+} as const;
+
+export interface DevelopOperationInput {
+  peopleEnergy: DevelopOperationInputPeopleEnergy;
+  processingStyle: DevelopOperationInputProcessingStyle;
+  planningStyle: DevelopOperationInputPlanningStyle;
+  peopleLogic: DevelopOperationInputPeopleLogic;
+  actionReflection: DevelopOperationInputActionReflection;
+  leadershipSupport: DevelopOperationInputLeadershipSupport;
+  conflictStyle: DevelopOperationInputConflictStyle;
+  teamPreference: DevelopOperationInputTeamPreference;
+}
+
+export interface DevelopOpportunitiesInput {
+  welcome?: YouthOpportunityResponse;
+  prayer?: YouthOpportunityResponse;
+  kids?: YouthOpportunityResponse;
+  students?: YouthOpportunityResponse;
+  worship?: YouthOpportunityResponse;
+  production?: YouthOpportunityResponse;
+  scriptureReading?: YouthOpportunityResponse;
+  communityCare?: YouthOpportunityResponse;
+  missions?: YouthOpportunityResponse;
+  creative?: YouthOpportunityResponse;
+  events?: YouthOpportunityResponse;
+  behindTheScenes?: YouthOpportunityResponse;
+}
+
+export type DevelopAnswersInputAvailabilityAndResponsibilityAvailability = typeof DevelopAnswersInputAvailabilityAndResponsibilityAvailability[keyof typeof DevelopAnswersInputAvailabilityAndResponsibilityAvailability];
+
+
+export const DevelopAnswersInputAvailabilityAndResponsibilityAvailability = {
+  weekly: 'weekly',
+  monthly: 'monthly',
+  seasonal: 'seasonal',
+  'not-sure-yet': 'not-sure-yet',
+} as const;
+
+export type DevelopAnswersInputAvailabilityAndResponsibilityResponsibilityStyle = typeof DevelopAnswersInputAvailabilityAndResponsibilityResponsibilityStyle[keyof typeof DevelopAnswersInputAvailabilityAndResponsibilityResponsibilityStyle];
+
+
+export const DevelopAnswersInputAvailabilityAndResponsibilityResponsibilityStyle = {
+  'ready-for-responsibility': 'ready-for-responsibility',
+  'growing-into-it': 'growing-into-it',
+  'start-small': 'start-small',
+} as const;
+
+export type DevelopAnswersInputPrayerAndCalling = {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  reflection: string;
+};
+
+export type DevelopAnswersInputAboutMe = {
+  likes: ExploreTextList;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  goodAt: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  wantToLearn: string;
+};
+
+export type DevelopAnswersInputGiftsToExplore = {
+  interests: ExploreTextList;
+  /**
+     * @minLength 1
+     * @maxLength 400
+     */
+  reflection?: string;
+};
+
+export type DevelopAnswersInputPassions = {
+  peopleAndCauses: ExploreTextList;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  reflection: string;
+};
+
+export type DevelopAnswersInputGrowingWithJesus = {
+  interests: ExploreTextList;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  helperName?: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  wantsHelpWith?: string;
+};
+
+export type DevelopAnswersInputCallingAndPurpose = {
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  whatMatters: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  futureHope: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  callingReflection?: string;
+};
+
+export type DevelopAnswersInputAvailabilityAndResponsibility = {
+  availability: DevelopAnswersInputAvailabilityAndResponsibilityAvailability;
+  responsibilityStyle: DevelopAnswersInputAvailabilityAndResponsibilityResponsibilityStyle;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  notes?: string;
+};
+
+export type DevelopAnswersInputDevelopmentPlan = {
+  /**
+     * @minItems 1
+     * @maxItems 5
+     * @items.minLength 1
+     * @items.maxLength 160
+     */
+  nextSteps: string[];
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  supportNeeded?: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  goal: string;
+};
+
+export interface DevelopAnswersInput {
+  prayerAndCalling: DevelopAnswersInputPrayerAndCalling;
+  aboutMe: DevelopAnswersInputAboutMe;
+  howITendToOperate: DevelopOperationInput;
+  giftsToExplore: DevelopAnswersInputGiftsToExplore;
+  passions: DevelopAnswersInputPassions;
+  growingWithJesus: DevelopAnswersInputGrowingWithJesus;
+  callingAndPurpose: DevelopAnswersInputCallingAndPurpose;
+  ministryInterests: DevelopOpportunitiesInput;
+  availabilityAndResponsibility: DevelopAnswersInputAvailabilityAndResponsibility;
+  developmentPlan: DevelopAnswersInputDevelopmentPlan;
+}
+
+export interface DevelopProfileInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  churchSlug: string;
+  /**
+     * @minimum 13
+     * @maximum 17
+     */
+  age: number;
+  birthdate?: string;
+  profileType: DevelopProfileInputProfileType;
+  child: DevelopProfileInputChild;
+  guardian: DevelopProfileInputGuardian;
+  answers: DevelopAnswersInput;
+  guardianObservations?: DevelopProfileInputGuardianObservations;
+}
+
+export type DevelopProfileSubmissionProfileType = typeof DevelopProfileSubmissionProfileType[keyof typeof DevelopProfileSubmissionProfileType];
+
+
+export const DevelopProfileSubmissionProfileType = {
+  develop: 'develop',
+} as const;
+
+export type DevelopProfileSubmissionRecommendedProfileType = typeof DevelopProfileSubmissionRecommendedProfileType[keyof typeof DevelopProfileSubmissionRecommendedProfileType];
+
+
+export const DevelopProfileSubmissionRecommendedProfileType = {
+  develop: 'develop',
+} as const;
+
+export interface DevelopProfileSubmission {
+  resultToken: string;
+  profileType: DevelopProfileSubmissionProfileType;
+  recommendedProfileType: DevelopProfileSubmissionRecommendedProfileType;
+}
+
+export type DevelopProfileResultProfileType = typeof DevelopProfileResultProfileType[keyof typeof DevelopProfileResultProfileType];
+
+
+export const DevelopProfileResultProfileType = {
+  develop: 'develop',
+} as const;
+
+export type DevelopProfileResultSummaryMinistryInterestsItemOpportunityKey = typeof DevelopProfileResultSummaryMinistryInterestsItemOpportunityKey[keyof typeof DevelopProfileResultSummaryMinistryInterestsItemOpportunityKey];
+
+
+export const DevelopProfileResultSummaryMinistryInterestsItemOpportunityKey = {
+  welcome: 'welcome',
+  prayer: 'prayer',
+  kids: 'kids',
+  students: 'students',
+  worship: 'worship',
+  production: 'production',
+  scriptureReading: 'scriptureReading',
+  communityCare: 'communityCare',
+  missions: 'missions',
+  creative: 'creative',
+  events: 'events',
+  behindTheScenes: 'behindTheScenes',
+} as const;
+
+export type DevelopProfileResultSummaryMinistryInterestsItemResponse = typeof DevelopProfileResultSummaryMinistryInterestsItemResponse[keyof typeof DevelopProfileResultSummaryMinistryInterestsItemResponse];
+
+
+export const DevelopProfileResultSummaryMinistryInterestsItemResponse = {
+  love: 'love',
+  maybe: 'maybe',
+} as const;
+
+export type DevelopProfileResultSummaryMinistryInterestsItem = {
+  opportunityKey: DevelopProfileResultSummaryMinistryInterestsItemOpportunityKey;
+  opportunityLabel: string;
+  response: DevelopProfileResultSummaryMinistryInterestsItemResponse;
+};
+
+export type DevelopProfileResultSummaryDevelopmentPlan = {
+  goal: string;
+  /**
+     * @minItems 1
+     * @maxItems 5
+     */
+  nextSteps: string[];
+  supportNeeded?: string;
+};
+
+export type DevelopProfileResultSummary = {
+  headline: string;
+  /**
+     * @minItems 1
+     * @maxItems 3
+     */
+  strengths: string[];
+  tendencySummary: string;
+  /**
+     * @minItems 1
+     * @maxItems 5
+     */
+  giftsToExplore: string[];
+  callingSummary: string;
+  /**
+     * @minItems 2
+     * @maxItems 4
+     */
+  ministryInterests: DevelopProfileResultSummaryMinistryInterestsItem[];
+  developmentPlan: DevelopProfileResultSummaryDevelopmentPlan;
+  completionCopy: string;
+};
+
+export type DevelopProfileResultGuardian = {
+  name: string;
+  consent: true;
+};
+
+export interface DevelopProfileResult {
+  profileType: DevelopProfileResultProfileType;
+  childName: string;
+  summary: DevelopProfileResultSummary;
+  guardian: DevelopProfileResultGuardian;
+}
+
 export type ListProfilesParams = {
 search?: string;
 interest?: string;

@@ -26,6 +26,9 @@ import type {
   ChurchAdminAddInput,
   ChurchUpdate,
   DashboardSummary,
+  DevelopProfileInput,
+  DevelopProfileResult,
+  DevelopProfileSubmission,
   DiscoverProfileInput,
   DiscoverProfileResult,
   DiscoverProfileSubmission,
@@ -1703,6 +1706,154 @@ export function useGetExploreResult<TData = Awaited<ReturnType<typeof getExplore
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetExploreResultQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSubmitDevelopProfileUrl = () => {
+
+
+
+
+  return `/api/develop-profiles`
+}
+
+/**
+ * @summary Submit a guardian-consented Develop profile for ages 13 through 17
+ */
+export const submitDevelopProfile = async (developProfileInput: DevelopProfileInput, options?: Parameters<typeof customFetch>[1]): Promise<DevelopProfileSubmission> => {
+
+  return customFetch<DevelopProfileSubmission>(getSubmitDevelopProfileUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(developProfileInput)
+  }
+);}
+
+
+
+
+
+export const getSubmitDevelopProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitDevelopProfile>>, TError,{data: BodyType<DevelopProfileInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitDevelopProfile>>, TError,{data: BodyType<DevelopProfileInput>}, TContext> => {
+
+const mutationKey = ['submitDevelopProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitDevelopProfile>>, {data: BodyType<DevelopProfileInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  submitDevelopProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitDevelopProfileMutationResult = NonNullable<Awaited<ReturnType<typeof submitDevelopProfile>>>
+    export type SubmitDevelopProfileMutationBody = BodyType<DevelopProfileInput>
+    export type SubmitDevelopProfileMutationError = ErrorType<void>
+
+    /**
+ * @summary Submit a guardian-consented Develop profile for ages 13 through 17
+ */
+export const useSubmitDevelopProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitDevelopProfile>>, TError,{data: BodyType<DevelopProfileInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitDevelopProfile>>,
+        TError,
+        {data: BodyType<DevelopProfileInput>},
+        TContext
+      > => {
+      return useMutation(getSubmitDevelopProfileMutationOptions(options));
+    }
+
+export const getGetDevelopResultUrl = (id: string,) => {
+
+
+
+
+  return `/api/develop-profiles/${id}/result`
+}
+
+/**
+ * @summary Retrieve a guardian-safe Develop result with its opaque token
+ */
+export const getDevelopResult = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<DevelopProfileResult> => {
+
+  return customFetch<DevelopProfileResult>(getGetDevelopResultUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetDevelopResultQueryKey = (id: string,) => {
+    return [
+    `/api/develop-profiles/${id}/result`
+    ] as const;
+    }
+
+
+export const getGetDevelopResultQueryOptions = <TData = Awaited<ReturnType<typeof getDevelopResult>>, TError = ErrorType<void>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDevelopResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDevelopResultQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDevelopResult>>> = ({ signal }) => getDevelopResult(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDevelopResult>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDevelopResultQueryResult = NonNullable<Awaited<ReturnType<typeof getDevelopResult>>>
+export type GetDevelopResultQueryError = ErrorType<void>
+
+
+/**
+ * @summary Retrieve a guardian-safe Develop result with its opaque token
+ */
+
+export function useGetDevelopResult<TData = Awaited<ReturnType<typeof getDevelopResult>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDevelopResult>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetDevelopResultQueryOptions(id,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

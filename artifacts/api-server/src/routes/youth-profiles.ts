@@ -10,6 +10,10 @@ import {
   GetExploreResultResponse,
   SubmitExploreProfileBody,
   SubmitExploreProfileResponse,
+  GetDevelopResultParams,
+  GetDevelopResultResponse,
+  SubmitDevelopProfileBody,
+  SubmitDevelopProfileResponse,
 } from "@workspace/api-zod";
 import {
   churchAdminsTable,
@@ -21,6 +25,8 @@ import {
   discoverSubmissionSchema,
   exploreResultSummary,
   exploreSubmissionSchema,
+  developResultSummary,
+  developSubmissionSchema,
   pathwayForAge,
   pathwayOverrideRequired,
   youthResultSummary,
@@ -223,6 +229,98 @@ router.get("/explore-profiles/:id/result", async (req, res): Promise<void> => {
       completionCopy: result.completionCopy,
     },
     suggestions: result.suggestions,
+    guardian: { name: profile.guardianName, consent: true },
+  }));
+});
+
+router.post("/develop-profiles", async (req, res): Promise<void> => {
+  const generated = SubmitDevelopProfileBody.safeParse(req.body);
+  const parsed = developSubmissionSchema.safeParse(req.body);
+  if (!generated.success || !parsed.success) {
+    res.status(400).json({
+      error: !parsed.success
+        ? parsed.error.message
+        : generated.error?.message ?? "Invalid Develop profile",
+    });
+    return;
+  }
+  const [church] = await db.select().from(churchesTable)
+    .where(eq(churchesTable.slug, parsed.data.churchSlug)).limit(1);
+  if (!church) {
+    res.status(404).json({ error: "Church not found" });
+    return;
+  }
+
+  const recommended = pathwayForAge(parsed.data.age);
+  let overridden = false;
+  if (pathwayOverrideRequired("develop", recommended)) {
+    const userId = optionalUserId(req);
+    if (!userId || recommended === "adult") {
+      res.status(400).json({ error: "This age belongs on a different pathway." });
+      return;
+    }
+    const [membership] = await db.select({ id: churchAdminsTable.id })
+      .from(churchAdminsTable)
+      .where(and(eq(churchAdminsTable.churchId, church.id), eq(churchAdminsTable.clerkUserId, userId)))
+      .limit(1);
+    if (!membership) {
+      res.status(400).json({ error: "This age belongs on a different pathway." });
+      return;
+    }
+    overridden = true;
+  }
+
+  const [created] = await db.insert(ministryProfilesTable).values({
+    churchId: church.id,
+    firstName: parsed.data.child.firstName,
+    lastName: parsed.data.child.lastName,
+    email: parsed.data.guardian.email,
+    passions: [],
+    interests: [],
+    availability: [],
+    profileType: "develop",
+    recommendedProfileType: recommended,
+    profileTypeOverridden: overridden,
+    age: parsed.data.age,
+    birthdate: parsed.data.birthdate ?? null,
+    youthResponses: parsed.data.answers,
+    guardianObservations: parsed.data.guardianObservations ?? null,
+    guardianName: parsed.data.guardian.name,
+    guardianEmail: parsed.data.guardian.email,
+    guardianConsent: true,
+    resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  }).returning();
+  if (!created) throw new Error("Unable to submit Develop profile");
+  res.status(201).json(SubmitDevelopProfileResponse.parse({
+    resultToken: created.resultToken,
+    profileType: "develop",
+    recommendedProfileType: recommended,
+  }));
+});
+
+router.get("/develop-profiles/:id/result", async (req, res): Promise<void> => {
+  const params = GetDevelopResultParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ error: "Result not found" });
+    return;
+  }
+  const [profile] = await db.select().from(ministryProfilesTable)
+    .where(and(eq(ministryProfilesTable.resultToken, params.data.id), eq(ministryProfilesTable.profileType, "develop")))
+    .limit(1);
+  if (!profile || !profile.resultExpiresAt || profile.resultExpiresAt <= new Date()) {
+    res.status(404).json({ error: "Result not found" });
+    return;
+  }
+  const parsedAnswers = developSubmissionSchema.shape.answers.safeParse(profile.youthResponses);
+  if (!parsedAnswers.success || !profile.guardianName || profile.guardianConsent !== true) {
+    res.status(404).json({ error: "Result not found" });
+    return;
+  }
+  const result = developResultSummary(parsedAnswers.data);
+  res.json(GetDevelopResultResponse.parse({
+    profileType: "develop",
+    childName: profile.firstName,
+    summary: result,
     guardian: { name: profile.guardianName, consent: true },
   }));
 });
