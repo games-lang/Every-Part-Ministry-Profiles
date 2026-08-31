@@ -1,0 +1,722 @@
+# Replit Development Prompt: Add Kids & Student Ministry Profiles to Every Part
+
+I want to expand Every Part by adding age-appropriate ministry profiles for children and teenagers.
+
+Please do not replace or significantly change the existing adult Ministry Profile. Instead, build a new age-based profile system that works alongside the existing adult profile.
+
+## Overall Structure
+
+Create four profile pathways based on age:
+
+1. **Discover Profile — Ages 6–8**
+2. **Explore Profile — Ages 9–12**
+3. **Develop Profile — Ages 13–17**
+4. **Adult Ministry Profile — Ages 18+**
+
+The adult Ministry Profile should remain the existing profile unless changes are specifically requested later.
+
+The purpose of the children's and student profiles is not to permanently label someone or tell them exactly what their ministry is.
+
+The goal is to help young people:
+
+* Discover how God has made them
+* Recognize strengths and interests
+* Identify people or needs they care about
+* Explore ways they enjoy helping others
+* Grow spiritually
+* Try age-appropriate ministry opportunities
+* Reflect on what they learned
+* Begin developing a sense of calling over time
+
+Use encouraging Christian language throughout.
+
+A central idea should be:
+
+**Every child and teenager is already an important part of the Body of Christ.**
+
+Avoid language that suggests children are simply future church members or future volunteers.
+
+---
+
+# AGE SELECTION
+
+When creating a new youth profile, ask for the person's birthdate or age.
+
+Automatically direct them to the appropriate profile:
+
+### Ages 6–8
+
+Discover
+
+### Ages 9–12
+
+Explore
+
+### Ages 13–17
+
+Develop
+
+### Age 18+
+
+Adult Ministry Profile
+
+Allow an authorized church administrator to override the age recommendation if necessary.
+
+---
+
+# PROFILE 1: DISCOVER — AGES 6–8
+
+This should be the simplest and most visual profile.
+
+Design it so a child can complete it with a parent, guardian, or ministry leader.
+
+Target completion time:
+
+**5–10 minutes**
+
+Use large buttons, icons, illustrations, simple sentences, and minimal reading.
+
+Do not use formal personality assessments, spiritual gifts tests, APEST, or complicated scoring.
+
+## Opening Prayer
+
+Begin with a child-friendly prayer screen.
+
+Suggested wording:
+
+“God made you special and gave you ways to love Him and help other people. Before you begin, ask God to help you learn more about how He made you.”
+
+Include a simple prayer such as:
+
+“Jesus, thank You for making me. Help me learn how I can love You and help others. Amen.”
+
+Add a Continue button.
+
+## Section 1: About Me
+
+Questions could include:
+
+* My name
+* My age
+* Things I really like doing
+* Something I think I am good at
+* Something I would like to learn
+
+Use visual selections whenever possible.
+
+## Section 2: What Sounds Like Me?
+
+Create simple choices such as:
+
+“I like…”
+
+* Being with lots of people
+* Being with a few people
+* Sometimes both
+
+“I like…”
+
+* Trying new things
+* Knowing what is going to happen
+* Both are okay
+
+“When someone needs help, I like to…”
+
+* Help them
+* Cheer them up
+* Get an adult
+* Try to fix the problem
+
+“I enjoy…”
+
+* Making things
+* Helping people
+* Talking
+* Listening
+* Leading
+* Learning
+* Organizing
+* Playing music
+* Moving and doing things
+
+Allow multiple selections where appropriate.
+
+## Section 3: People & Things I Care About
+
+Use icons or pictures.
+
+Options could include:
+
+* Younger children
+* My friends
+* People who are lonely
+* People who are sick
+* Older people
+* People who need food or help
+* People in other countries
+* Animals
+* My neighborhood
+* God's creation
+* People who don't know Jesus
+* Helping at church
+
+## Section 4: Ways I Like to Help
+
+Choices could include:
+
+* Welcoming people
+* Praying
+* Singing
+* Making art
+* Helping younger children
+* Cleaning up
+* Setting things up
+* Encouraging people
+* Giving
+* Serving food
+* Inviting friends
+* Helping with simple church jobs
+
+## Section 5: Growing With Jesus
+
+Keep this simple and non-judgmental.
+
+Questions:
+
+* I like learning about Jesus
+* I like praying
+* I like Bible stories
+* I have questions about God
+* Someone who helps me follow Jesus is ______
+* Something I want Jesus to help me with is ______
+
+Do not create a spiritual maturity score.
+
+## Section 6: Things I Would Like to Try
+
+Let the child choose:
+
+* I'd love to try this
+* Maybe
+* Not right now
+
+Possible opportunities:
+
+* Greeting
+* Prayer
+* Children's worship
+* Helping with younger children
+* Making cards
+* Community service
+* Scripture reading
+* Music
+* Art projects
+* Helping set up
+* Helping clean up
+
+## Parent / Guardian Input
+
+Create an optional short parent/guardian section.
+
+Questions:
+
+* What strengths do you see in this child?
+* When do you see this child come alive?
+* What kinds of serving opportunities would you be comfortable with them trying?
+* Is there anything ministry leaders should know to help this child thrive?
+
+Parent responses should be clearly identified as parent/guardian observations rather than the child's own answers.
+
+---
+
+# PROFILE 2: EXPLORE — AGES 9–12
+
+Target completion time:
+
+**10–15 minutes**
+
+This profile can go deeper while remaining fun and easy to understand.
+
+Include:
+
+## Opening Prayer
+
+Similar to Discover, but slightly more mature.
+
+Emphasize:
+
+“Ask God to help you discover the ways He has made you and how you can use them to love Him and others.”
+
+## Section 1: About Me
+
+Include:
+
+* Interests
+* Hobbies
+* Things I enjoy learning
+* Things I think I do well
+* Things other people say I do well
+* Something I would like to become better at
+
+## Section 2: How I Tend to Operate
+
+This should connect with the original Every Part personality framework but must NOT copy Myers-Briggs terminology or scoring.
+
+Explore tendencies such as:
+
+### People Energy
+
+* I get energy from being around lots of people
+* I usually prefer smaller groups
+* It depends
+
+### Thinking Out Loud
+
+* I often talk while I figure things out
+* I usually think before I talk
+* It depends
+
+### Planning
+
+* I like having a plan
+* I like figuring things out as I go
+* I enjoy both
+
+### Decisions
+
+* I often notice how a decision affects people
+* I often notice what makes the most sense
+* I think about both
+
+### Action
+
+* I like jumping in and doing something
+* I like watching and understanding first
+* It depends
+
+Do not assign four-letter personality types.
+
+Create a simple descriptive summary instead.
+
+Example:
+
+“You often enjoy working with a smaller group, thinking before speaking, and knowing what the plan is. You also care about how decisions affect people.”
+
+## Section 3: Things I Care About
+
+Include:
+
+* Children
+* Friends
+* People who are lonely
+* People who are hurting
+* People who don't know Jesus
+* New people at church
+* People with disabilities
+* Older adults
+* People experiencing poverty
+* Immigrants and refugees
+* Other cultures
+* World missions
+* Animals
+* Creation/environment
+* My neighborhood
+* Justice and fairness
+
+## Section 4: Ways I Enjoy Helping
+
+Include:
+
+* Encouraging
+* Leading
+* Organizing
+* Teaching
+* Serving
+* Welcoming
+* Creating
+* Giving
+* Praying
+* Listening
+* Solving problems
+* Making things
+* Music
+* Technology
+* Helping younger children
+* Inviting others
+* Working behind the scenes
+
+Instead of labeling these as permanent spiritual gifts, describe them as:
+
+**“Ways you may enjoy helping.”**
+
+## Section 5: Growing With Jesus
+
+Include:
+
+* Prayer
+* Bible reading/listening
+* Worship
+* Asking questions
+* Serving
+* Talking about Jesus
+* Learning from Christian adults
+* Something I want to grow in
+* Something I wonder about God
+* Someone who helps me follow Jesus
+
+Do not produce a spiritual health score.
+
+## Section 6: Ministry Experiences
+
+Ask which opportunities they would like to explore.
+
+Use:
+
+* I'd love to try this
+* Maybe
+* Not right now
+
+Possible opportunities:
+
+* Welcome team
+* Prayer
+* Children's ministry helper
+* Worship/music
+* Scripture reading
+* Tech
+* Community service
+* Missions projects
+* Encouragement/cards
+* Hospitality
+* Setup
+* Creative projects
+* Helping with events
+
+## Section 7: My Next Step
+
+At the end, create 2–4 suggested ministry experiments.
+
+Call these:
+
+**Things You Might Enjoy Trying**
+
+Do not say:
+
+“You should serve here.”
+
+Instead say things such as:
+
+“Based on what you told us, you might enjoy trying…”
+
+---
+
+# PROFILE 3: DEVELOP — AGES 13–17
+
+Target completion time:
+
+**15–25 minutes**
+
+This should feel more mature and begin transitioning toward the adult Ministry Profile.
+
+Include:
+
+## Opening Prayer & Calling
+
+Begin with prayer and a brief explanation that God calls every Christian to participate in His mission.
+
+Avoid implying that calling only means becoming a pastor.
+
+## Section 1: About Me
+
+Include:
+
+* Interests
+* Skills
+* Hobbies
+* School activities
+* Work experience if applicable
+* Things others often ask me to help with
+* Things I would like to learn
+* Leadership experiences
+
+## Section 2: How I Tend to Operate
+
+Use the Every Part original personality framework.
+
+Explore:
+
+* People energy
+* Processing style
+* Planning/flexibility
+* People/logic considerations
+* Action/reflection
+* Leadership/support tendencies
+* Conflict tendencies
+* Team preferences
+
+Provide descriptive results rather than a personality type code.
+
+## Section 3: Spiritual Gifts Exploration
+
+Introduce spiritual gifts carefully.
+
+Explain that a profile can help identify possible gifts but cannot definitively tell someone what gifts God has given them.
+
+Explore gifts such as:
+
+* Administration
+* Encouragement
+* Evangelism
+* Faith
+* Giving
+* Helps
+* Hospitality
+* Leadership
+* Mercy
+* Shepherding
+* Teaching
+* Wisdom
+* Service
+* Discernment
+
+Use age-appropriate questions and examples.
+
+Results should use language such as:
+
+**“Gifts you may want to explore further.”**
+
+## Section 4: Passions
+
+Ask who or what they especially care about.
+
+Include:
+
+* Children
+* Teenagers
+* People who don't know Jesus
+* New Christians
+* People experiencing poverty
+* People who are hurting
+* People with disabilities
+* Immigrants/refugees
+* Older adults
+* World missions
+* Justice issues
+* Worship
+* Prayer
+* Technology
+* Creative arts
+* Community outreach
+* Leadership
+* Discipleship
+* Creation care
+
+## Section 5: Growing With Jesus
+
+Explore:
+
+* Prayer
+* Scripture
+* Worship
+* Christian community
+* Serving
+* Sharing faith
+* Mentoring
+* Questions/doubts
+* Areas where they want to grow
+
+Do not create a simplistic spiritual maturity score.
+
+## Section 6: Calling & Purpose
+
+Questions could include:
+
+* What problems in the world or church bother you?
+* What kinds of things make you excited to help?
+* If you could make a difference somewhere, where would it be?
+* Is there something you think God may be asking you to explore?
+* Have other people ever told you they see a gift or calling in you?
+* What would you like to learn about ministry?
+
+For older teens, optionally include:
+
+* Career/vocational interests
+* Interest in ministry leadership
+* Interest in missions
+* Interest in pastoral ministry
+* Interest in nonprofit/community work
+
+These should never imply that ministry is limited to church employment.
+
+## Section 7: Ministry Interests
+
+Let students indicate:
+
+* Very interested
+* Interested
+* Willing to try
+* Not right now
+
+Include age-appropriate church and community ministry opportunities.
+
+## Section 8: Availability & Responsibility
+
+Ask:
+
+* How often would you realistically like to serve?
+* School schedule
+* Work schedule
+* Sports/activities
+* Transportation
+* Parent/guardian requirements
+
+Do not collect unnecessary sensitive information.
+
+## Section 9: My Development Plan
+
+Create a summary with:
+
+### Strengths I'm Discovering
+
+### Gifts I May Want to Explore
+
+### People & Needs I Care About
+
+### Ministry Experiences I Might Try
+
+### One Way I Want to Grow With Jesus
+
+### People Who Can Help Me Grow
+
+---
+
+# RESULTS PHILOSOPHY
+
+This is very important.
+
+Do not make children's or teenagers' results sound permanent.
+
+Avoid statements like:
+
+“You are a leader.”
+
+Instead use:
+
+“You appear to enjoy taking initiative and helping a group move forward.”
+
+Avoid:
+
+“Your spiritual gift is teaching.”
+
+Instead use:
+
+“Teaching is one of the gifts you may want to explore further.”
+
+Include this message somewhere in every youth result:
+
+**You are still growing and discovering how God has made you. These results are a starting point for conversations, prayer, serving, and learning—not a permanent label.**
+
+---
+
+# PROFILE SUMMARY FOR CHURCH LEADERS
+
+Authorized church leaders should be able to view an age-appropriate summary.
+
+For example:
+
+**Name:** Jordan
+**Profile:** Explore
+**Age:** 10
+
+**Enjoys:** Art, music, younger children
+
+**How Jordan tends to operate:** Thoughtful, prefers smaller groups, enjoys knowing the plan, cares strongly about people.
+
+**People & needs Jordan cares about:** Younger children, lonely people, animals.
+
+**Ways Jordan enjoys helping:** Encouragement, creativity, helping younger children.
+
+**Would like to try:** Kids worship, encouragement cards, community service.
+
+**Faith-growth interest:** Learning how to pray for others.
+
+**Parent observation:** Patient with younger children and loves making things for people.
+
+Make the summary easy for a pastor, children's director, youth pastor, or ministry leader to scan.
+
+---
+
+# DESIGN REQUIREMENTS
+
+Keep all three youth profiles consistent with the existing Every Part branding.
+
+However, make the children's profiles feel warmer, more visual, and more interactive.
+
+Use:
+
+* Progress indicators
+* Large buttons
+* Cards
+* Icons
+* Friendly illustrations where appropriate
+* Short sections
+* Save-and-return functionality
+* Mobile-first design
+
+For younger children especially, avoid large amounts of text on one screen.
+
+---
+
+# SAFETY & PERMISSIONS
+
+Because these are profiles for minors:
+
+* Do not publicly display children's profiles.
+* Only authorized church leaders and appropriate parent/guardian accounts should have access.
+* Do not allow general church members to search children's profiles.
+* Keep parent/guardian observations separate from the child's answers.
+* Do not use children's information for unrelated purposes.
+* Build the system so churches can control who can view youth profiles.
+* Avoid unnecessary collection of sensitive information.
+
+Do not make assumptions about legal compliance requirements. Structure the system so privacy and parental-consent controls can be expanded later.
+
+---
+
+# FUTURE FEATURE: PROFILE GROWTH
+
+Design the database so the same person can complete different profiles as they grow.
+
+For example:
+
+Age 7 — Discover
+Age 10 — Explore
+Age 14 — Develop
+Age 18 — Adult Ministry Profile
+
+Do not overwrite previous profiles.
+
+Preserve previous completed profiles so development can eventually be viewed over time.
+
+Eventually I want Every Part to be able to show:
+
+**How a person's strengths, interests, ministry experiences, and sense of calling have developed over time.**
+
+Do not build complex longitudinal analytics yet, but make sure the database structure will support this later.
+
+---
+
+# FIRST DEVELOPMENT PHASE
+
+For now, please:
+
+1. Create the three profile types and age-routing structure.
+2. Build the database structure required to store them.
+3. Create the Discover profile first.
+4. Build the basic Discover results/summary page.
+5. Add the parent/guardian section.
+6. Add leader access to the Discover summary.
+7. Make the profile mobile friendly.
+8. Do not build AI-generated recommendations yet.
+9. Do not make major changes to the existing adult Ministry Profile.
+10. Show me the new screens and flow so I can test the Discover profile before we build Explore and Develop.
