@@ -21,7 +21,7 @@ const GENERIC_MATCH_TERMS = new Set([
   "work",
 ]);
 
-type MatchCriteria = {
+export type MatchCriteria = {
   roleDescription: string;
   ministryArea?: string;
   preferredExperience?: string;
@@ -250,7 +250,17 @@ type AiRanking = {
   score: number;
 };
 
-function parseAiResponse(value: unknown): { rankings: AiRanking[] } | null {
+export function hasDuplicateAvailabilityChoices(
+  availability: string[] | undefined,
+): boolean {
+  if (!availability) return false;
+  const normalized = availability.map((choice) => choice.trim().toLowerCase());
+  return new Set(normalized).size !== normalized.length;
+}
+function parseAiResponse(
+  value: unknown,
+  allowedIds?: ReadonlySet<number>,
+): { rankings: AiRanking[] } | null {
   const record = objectRecord(value);
   if (!Array.isArray(record.rankings)) return null;
   const seenIds = new Set<number>();
@@ -258,13 +268,15 @@ function parseAiResponse(value: unknown): { rankings: AiRanking[] } | null {
     .map((entry) => objectRecord(entry))
     .filter(
       (entry) =>
-        Number.isInteger(entry.id) &&
+        Number.isSafeInteger(entry.id) &&
         typeof entry.score === "number" &&
+        Number.isFinite(entry.score) &&
         entry.score >= 0 &&
         entry.score <= 100,
     )
     .map((entry) => ({ id: entry.id as number, score: entry.score as number }))
     .filter(({ id }) => {
+      if (allowedIds && !allowedIds.has(id)) return false;
       if (seenIds.has(id)) return false;
       seenIds.add(id);
       return true;
@@ -359,7 +371,10 @@ async function rankWithOpenAi(
     const first = objectRecord(choices[0]);
     const message = objectRecord(first.message);
     if (typeof message.content !== "string") return null;
-    return parseAiResponse(JSON.parse(message.content));
+    return parseAiResponse(
+      JSON.parse(message.content),
+      new Set(candidates.map((candidate) => candidate.id)),
+    );
   } catch {
     return null;
   } finally {
@@ -370,9 +385,16 @@ async function rankWithOpenAi(
 export async function findVolunteerMatches(
   profiles: MinistryProfile[],
   criteria: MatchCriteria,
+  churchId?: number,
 ): Promise<VolunteerMatchResult> {
-  const adultProfiles = adultProfilesOnly(profiles);
-  const deterministic = adultProfiles
+  const tenantProfiles =
+    churchId === undefined
+      ? new Set(profiles.map((profile) => profile.churchId)).size > 1
+        ? []
+        : profiles
+      : profilesForChurch(profiles, churchId);
+  const scopedProfiles = adultProfilesOnly(tenantProfiles);
+  const deterministic = scopedProfiles
     .map(toSafeCandidate)
     .map((candidate) => deterministicCandidate(candidate, criteria))
     .filter((candidate) => candidate.score > 0 && candidate.reasons.length > 0)
@@ -382,7 +404,7 @@ export async function findVolunteerMatches(
   if (!deterministic.length) {
     return {
       candidates: [],
-      summary: adultProfiles.length
+      summary: scopedProfiles.length
         ? "No profiles had enough relevant evidence for this ministry need. Try broadening the description or reviewing the directory."
         : "No completed Ministry Profiles are available to compare yet.",
       advisory: ADVISORY,
@@ -426,4 +448,11 @@ export async function findVolunteerMatches(
     advisory: ADVISORY,
     usedAi: false,
   };
+}
+
+export function profilesForChurch(
+  profiles: MinistryProfile[],
+  churchId: number,
+): MinistryProfile[] {
+  return profiles.filter((profile) => profile.churchId === churchId);
 }

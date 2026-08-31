@@ -23,9 +23,15 @@ import {
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
-import { findVolunteerMatches } from "../lib/volunteer-matching";
-import { adultProfilesOnly } from "../lib/youth-profiles";
-import { pathwayForAge, pathwayOverrideRequired } from "../lib/youth-profiles";
+import {
+  findVolunteerMatches,
+  hasDuplicateAvailabilityChoices,
+} from "../lib/volunteer-matching";
+import {
+  adultProfilesOnly,
+  pathwayForAge,
+  pathwayOverrideRequired,
+} from "../lib/youth-profiles";
 import {
   activeSpiritualGifts,
   spiritualGiftsSubmissionError,
@@ -295,7 +301,7 @@ router.post("/profiles/matches", async (req, res): Promise<void> => {
   }
   if (
     parsed.data.availability &&
-    new Set(parsed.data.availability).size !== parsed.data.availability.length
+    hasDuplicateAvailabilityChoices(parsed.data.availability)
   ) {
     res.status(400).json({ error: "Availability choices must be unique." });
     return;
@@ -308,7 +314,11 @@ router.post("/profiles/matches", async (req, res): Promise<void> => {
     .where(and(eq(ministryProfilesTable.churchId, church.id), eq(ministryProfilesTable.profileType, "adult")))
     .orderBy(desc(ministryProfilesTable.completedAt));
 
-  const matches = await findVolunteerMatches(adultProfilesOnly(profiles), parsed.data);
+  const matches = await findVolunteerMatches(
+    adultProfilesOnly(profiles),
+    parsed.data,
+    church.id,
+  );
   req.log.info(
     {
       candidateCount: profiles.length,

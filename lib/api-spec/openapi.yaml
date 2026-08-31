@@ -930,6 +930,11 @@ components:
         servingFrequency: { type: ["string", "null"] }
     VolunteerMatchResponse:
       type: object
+      description: >
+        Advisory results are limited to completed profiles belonging to the
+        signed-in pastor's church. Candidates are included only when locally
+        verified profile signals overlap the requested need; AI output may
+        prioritize those candidates but cannot add new ones.
       required: [candidates, summary, advisory, usedAi]
       properties:
         candidates:
@@ -1651,4 +1656,3 @@ components:
           properties:
             name: { type: string }
             consent: { type: boolean, enum: [true] }
-

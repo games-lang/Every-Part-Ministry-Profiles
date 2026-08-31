@@ -7,6 +7,9 @@
  */
 import type { VolunteerMatchCandidate } from './volunteerMatchCandidate';
 
+/**
+ * Advisory results are limited to completed profiles belonging to the signed-in pastor's church. Candidates are included only when locally verified profile signals overlap the requested need; AI output may prioritize those candidates but cannot add new ones.
+ */
 export interface VolunteerMatchResponse {
   /** @maxItems 10 */
   candidates: VolunteerMatchCandidate[];

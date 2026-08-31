@@ -31,7 +31,6 @@ export const getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax 
 export const getMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
 
 
-
 export const GetMyChurchResponse = zod.object({
   "id": zod.int(),
   "name": zod.string(),
@@ -130,7 +129,6 @@ export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax =
 export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax = 100;
 
 
-
 export const UpdateMyChurchBody = zod.object({
   "name": zod.string().min(1).optional(),
   "logoUrl": zod.string().regex(updateMyChurchBodyLogoUrlRegExp).nullish(),
@@ -215,7 +213,6 @@ export const updateMyChurchResponseAssessmentConfigurationPassionsMax = 100;
 export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
-
 
 
 export const UpdateMyChurchResponse = zod.object({
@@ -357,7 +354,6 @@ export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsItem
 export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
 
 
-
 export const GetPublicChurchResponse = zod.object({
   "name": zod.string(),
   "slug": zod.string(),
@@ -462,7 +458,6 @@ export const requestUploadUrlBodyNameMax = 255;
 export const requestUploadUrlBodySizeMax = 5242880;
 
 
-
 export const RequestUploadUrlBody = zod.object({
   "name": zod.string().min(1).max(requestUploadUrlBodyNameMax),
   "size": zod.int().min(1).max(requestUploadUrlBodySizeMax),
@@ -472,7 +467,6 @@ export const RequestUploadUrlBody = zod.object({
 export const requestUploadUrlResponseMetadataNameMax = 255;
 
 export const requestUploadUrlResponseMetadataSizeMax = 5242880;
-
 
 
 export const RequestUploadUrlResponse = zod.object({
@@ -501,7 +495,6 @@ export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInt
 
 export const getDashboardSummaryResponseRecentProfilesItemAgeMin = 6;
 export const getDashboardSummaryResponseRecentProfilesItemAgeMax = 120;
-
 
 
 export const GetDashboardSummaryResponse = zod.object({
@@ -638,7 +631,6 @@ export const createTeamBodyNameMax = 120;
 export const createTeamBodyDescriptionMax = 500;
 
 
-
 export const CreateTeamBody = zod.object({
   "name": zod.string().min(1).max(createTeamBodyNameMax),
   "description": zod.string().max(createTeamBodyDescriptionMax).nullish()
@@ -671,7 +663,6 @@ export const updateTeamBodyNameMax = 120;
 export const updateTeamBodyDescriptionMax = 500;
 
 
-
 export const UpdateTeamBody = zod.object({
   "name": zod.string().min(1).max(updateTeamBodyNameMax).optional(),
   "description": zod.string().max(updateTeamBodyDescriptionMax).nullish(),
@@ -699,7 +690,6 @@ export const UpdateTeamResponse = zod.object({
 export const generateTeamSuggestionsBodyFocusMax = 240;
 
 
-
 export const GenerateTeamSuggestionsBody = zod.object({
   "focus": zod.string().max(generateTeamSuggestionsBodyFocusMax).optional()
 })
@@ -711,7 +701,6 @@ export const generateTeamSuggestionsResponseSuggestionsItemCandidatesItemReasons
 export const generateTeamSuggestionsResponseSuggestionsItemCandidatesMax = 6;
 
 export const generateTeamSuggestionsResponseSuggestionsMax = 4;
-
 
 
 export const GenerateTeamSuggestionsResponse = zod.object({
@@ -749,7 +738,6 @@ export const listProfilesResponseAgeMin = 6;
 export const listProfilesResponseAgeMax = 120;
 
 
-
 export const ListProfilesResponseItem = zod.object({
   "id": zod.int(),
   "memberName": zod.string(),
@@ -774,7 +762,6 @@ export const createProfileBodyAgeMin = 18;
 export const createProfileBodyAgeMax = 120;
 
 
-
 export const createProfileBodyChurchConnectionConnectionLevelMax = 5;
 
 
@@ -782,7 +769,6 @@ export const createProfileBodyAssessmentSectionsSpiritualGiftsResponsesItemRespo
 
 export const createProfileBodyAssessmentSectionsSpiritualGiftsResponsesMinOne = 3;
 export const createProfileBodyAssessmentSectionsSpiritualGiftsResponsesMaxOne = 3;
-
 
 
 export const CreateProfileBody = zod.object({
@@ -843,7 +829,6 @@ export const createProfileResponseOneAgeMin = 6;
 export const createProfileResponseOneAgeMax = 120;
 
 
-
 export const createProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
 
 export const createProfileResponseTwoAssessmentConfigurationPassionsItemMax = 80;
@@ -853,7 +838,6 @@ export const createProfileResponseTwoAssessmentConfigurationPassionsMax = 100;
 export const createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax = 100;
-
 
 
 export const CreateProfileResponse = zod.object({
@@ -1010,7 +994,6 @@ export const findVolunteerMatchesBodyAvailabilityItemMax = 80;
 export const findVolunteerMatchesBodyAvailabilityMax = 8;
 
 
-
 export const FindVolunteerMatchesBody = zod.object({
   "roleDescription": zod.string().min(findVolunteerMatchesBodyRoleDescriptionMin).max(findVolunteerMatchesBodyRoleDescriptionMax),
   "ministryArea": zod.string().max(findVolunteerMatchesBodyMinistryAreaMax).optional(),
@@ -1024,7 +1007,6 @@ export const findVolunteerMatchesResponseCandidatesItemScoreMax = 100;
 export const findVolunteerMatchesResponseCandidatesItemReasonsMax = 4;
 
 export const findVolunteerMatchesResponseCandidatesMax = 10;
-
 
 
 export const FindVolunteerMatchesResponse = zod.object({
@@ -1042,7 +1024,7 @@ export const FindVolunteerMatchesResponse = zod.object({
   "summary": zod.string(),
   "advisory": zod.string(),
   "usedAi": zod.boolean()
-})
+}).describe('Advisory results are limited to completed profiles belonging to the signed-in pastor\'s church. Candidates are included only when locally verified profile signals overlap the requested need; AI output may prioritize those candidates but cannot add new ones.\n')
 
 
 /**
@@ -1096,7 +1078,6 @@ export const submitDiscoverProfileBodyGuardianObservationsComesAliveMax = 500;
 export const submitDiscoverProfileBodyGuardianObservationsComfortableOpportunitiesMax = 500;
 
 export const submitDiscoverProfileBodyGuardianObservationsThriveNotesMax = 1000;
-
 
 
 export const SubmitDiscoverProfileBody = zod.object({
@@ -1235,7 +1216,6 @@ export const submitExploreProfileBodyGuardianObservationsComfortableOpportunitie
 export const submitExploreProfileBodyGuardianObservationsThriveNotesMax = 1000;
 
 
-
 export const SubmitExploreProfileBody = zod.object({
   "churchSlug": zod.string().min(1).max(submitExploreProfileBodyChurchSlugMax),
   "age": zod.int().min(submitExploreProfileBodyAgeMin).max(submitExploreProfileBodyAgeMax),
@@ -1313,7 +1293,6 @@ export const getExploreResultResponseSummaryStrengthsMax = 3;
 
 export const getExploreResultResponseSuggestionsMin = 2;
 export const getExploreResultResponseSuggestionsMax = 4;
-
 
 
 export const GetExploreResultResponse = zod.object({
@@ -1406,7 +1385,6 @@ export const submitDevelopProfileBodyGuardianObservationsComesAliveMax = 500;
 export const submitDevelopProfileBodyGuardianObservationsComfortableOpportunitiesMax = 500;
 
 export const submitDevelopProfileBodyGuardianObservationsThriveNotesMax = 1000;
-
 
 
 export const SubmitDevelopProfileBody = zod.object({
@@ -1517,7 +1495,6 @@ export const getDevelopResultResponseSummaryMinistryInterestsMax = 4;
 export const getDevelopResultResponseSummaryDevelopmentPlanNextStepsMax = 5;
 
 
-
 export const GetDevelopResultResponse = zod.object({
   "profileType": zod.enum(['develop']),
   "childName": zod.string(),
@@ -1557,7 +1534,6 @@ export const getProfileResponseOneAgeMin = 6;
 export const getProfileResponseOneAgeMax = 120;
 
 
-
 export const getProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
 
 export const getProfileResponseTwoAssessmentConfigurationPassionsItemMax = 80;
@@ -1567,7 +1543,6 @@ export const getProfileResponseTwoAssessmentConfigurationPassionsMax = 100;
 export const getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax = 100;
-
 
 
 export const GetProfileResponse = zod.object({
@@ -1725,5 +1700,4 @@ export const UpdateProfileTeamResponse = zod.object({
   "teamId": zod.int().nullable(),
   "teamName": zod.string().nullable()
 })
-
 

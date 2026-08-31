@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "incremental": true,
     "allowImportingTsExtensions": true,
     "tsBuildInfoFile": ".tsbuildinfo",
