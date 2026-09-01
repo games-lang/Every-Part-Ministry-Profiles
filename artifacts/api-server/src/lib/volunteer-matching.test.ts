@@ -18,6 +18,7 @@ function profile(
     email: "alex@example.com",
     phone: "555-0100",
     teamId: null,
+    journeyId: null,
     ageRange: "Adult",
     profileType: "adult",
     recommendedProfileType: null,

@@ -18,6 +18,7 @@ export function profileListItem(profile: MinistryProfile) {
     teamId: profile.teamId,
     profileType: profile.profileType,
     age: profile.age,
+    journeyToken: profile.personKey,
   };
 }
 

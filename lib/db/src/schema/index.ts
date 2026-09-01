@@ -17,7 +17,8 @@
 //   export type InsertPost = z.infer<typeof insertPostSchema>;
 //   export type Post = typeof postsTable.$inferSelect;
 
-export * from "./churches";
-export * from "./church-admins";
-export * from "./ministry-teams";
-export * from "./ministry-profiles";
+export * from "./churches.ts";
+export * from "./church-admins.ts";
+export * from "./ministry-teams.ts";
+export * from "./ministry-profiles.ts";
+export * from "./ministry-journeys.ts";

@@ -15,8 +15,9 @@ import {
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { churchesTable } from "./churches";
-import { ministryTeamsTable } from "./ministry-teams";
+import { churchesTable } from "./churches.ts";
+import { ministryTeamsTable } from "./ministry-teams.ts";
+import { ministryJourneysTable } from "./ministry-journeys.ts";
 
 export const ministryProfilesTable = pgTable("ministry_profiles", {
   id: serial("id").primaryKey(),
@@ -24,6 +25,9 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
     .notNull()
     .references(() => churchesTable.id, { onDelete: "cascade" }),
   teamId: integer("team_id"),
+  journeyId: uuid("journey_id").references(() => ministryJourneysTable.id, {
+    onDelete: "set null",
+  }),
   profileType: text("profile_type").notNull().default("adult"),
   recommendedProfileType: text("recommended_profile_type"),
   profileTypeOverridden: boolean("profile_type_overridden").notNull().default(false),

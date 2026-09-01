@@ -321,6 +321,7 @@ export default function DiscoverAssessment({ params }: { params: { slug: string 
 
     const payload: DiscoverProfileInput = {
       churchSlug: slug,
+      journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       age: initialAge,
       birthdate: initialBirthdate,
       profileType: "discover",
@@ -339,6 +340,7 @@ export default function DiscoverAssessment({ params }: { params: { slug: string 
 
     submitProfile.mutate({ data: payload }, {
       onSuccess: (result) => {
+         localStorage.setItem("every-part-journey-token", result.journeyToken);
         localStorage.removeItem(`every-part-discover-draft-${slug}`);
         setLocation(`/discover/result/${result.resultToken}`);
       },

@@ -289,7 +289,7 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
     const observations = Object.fromEntries(Object.entries(observationValues || {}).map(([key, value]) => [key, cleanOptional(value)]).filter(([, value]) => value)) as DevelopProfileInput["guardianObservations"];
     const answers = submitted.answers;
     const payload: DevelopProfileInput = {
-      churchSlug: slug, age, ...(birthdate ? { birthdate } : {}), profileType: "develop",
+      churchSlug: slug, age, journeyToken: localStorage.getItem("every-part-journey-token") || undefined, ...(birthdate ? { birthdate } : {}), profileType: "develop",
       child: { firstName: submitted.child.firstName.trim(), lastName: submitted.child.lastName.trim() },
       guardian: { name: submitted.guardian.name.trim(), email: submitted.guardian.email.trim(), consent: true },
       answers: {
@@ -306,7 +306,7 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
       },
       ...(Object.keys(observations || {}).length ? { guardianObservations: observations } : {}),
     };
-    submitProfile.mutate({ data: payload }, { onSuccess: (result) => { localStorage.removeItem(`every-part-develop-draft-${slug}`); setLocation(`/develop/result/${result.resultToken}`); } });
+    submitProfile.mutate({ data: payload }, { onSuccess: (result) => { localStorage.setItem("every-part-journey-token", result.journeyToken); localStorage.removeItem(`every-part-develop-draft-${slug}`); setLocation(`/develop/result/${result.resultToken}`); } });
   };
 
   if (!Number.isInteger(age) || age < 13 || age > 17) return <AgeError slug={slug} />;

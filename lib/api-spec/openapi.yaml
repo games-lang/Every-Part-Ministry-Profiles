@@ -376,6 +376,135 @@ paths:
           description: Invalid profile
         "404":
           description: Church not found
+  /profiles/{id}/journey:
+    get:
+      operationId: getProfileJourney
+      tags: [journeys]
+      summary: Get the authenticated leader journey for a profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Ministry journey timeline
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyResponse"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Profile not found
+  /journeys/{token}:
+    get:
+      operationId: getPublicJourney
+      tags: [journeys]
+      summary: Get a safe member-facing journey using its private token
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Safe ministry journey timeline
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyResponse"
+        "404":
+          description: Journey not found
+  /journeys/{token}/entries:
+    post:
+      operationId: createJourneyEntry
+      tags: [journeys]
+      summary: Add a milestone or annual check-in to a church journey
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JourneyEntryInput"
+      responses:
+        "201":
+          description: Journey entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyEntry"
+        "400":
+          description: Invalid entry
+        "401":
+          description: Unauthorized
+        "404":
+          description: Journey not found
+  /journeys/entries/{id}:
+    patch:
+      operationId: updateJourneyEntry
+      tags: [journeys]
+      summary: Add or update a future reflection on a journey entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JourneyEntryUpdateInput"
+      responses:
+        "200":
+          description: Updated journey entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyEntry"
+        "400":
+          description: Invalid entry
+        "401":
+          description: Unauthorized
+        "404":
+          description: Journey entry not found
+  /journeys/{token}/compare/{leftProfileId}/{rightProfileId}:
+    get:
+      operationId: compareJourneyProfiles
+      tags: [journeys]
+      summary: Compare two historical profile snapshots using rule-based themes
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: leftProfileId
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: rightProfileId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Profile comparison
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JourneyCompareResponse"
+        "400":
+          description: Invalid comparison
+        "401":
+          description: Unauthorized
+        "404":
+          description: Journey or profile not found
   /profiles/matches:
     post:
       operationId: findVolunteerMatches
@@ -945,11 +1074,118 @@ components:
         summary: { type: string }
         advisory: { type: string }
         usedAi: { type: boolean }
+    JourneyCurrentProfile:
+      type: object
+      required: [profileType, profileLabel, completedAt]
+      properties:
+        profileType: { type: string, enum: [adult, discover, explore, develop] }
+        profileLabel: { type: string }
+        completedAt: { type: string, format: date-time }
+    JourneyProfileSummary:
+      type: object
+      required: [id, profileType, profileLabel, memberName, age, completedAt, themes]
+      properties:
+        id: { type: integer }
+        profileType: { type: string, enum: [adult, discover, explore, develop] }
+        profileLabel: { type: string }
+        memberName: { type: string }
+        age: { type: ["integer", "null"] }
+        completedAt: { type: string, format: date-time }
+        themes:
+          type: array
+          maxItems: 5
+          items: { type: string }
+    JourneyEntry:
+      type: object
+      required: [id, entryType, occurredAt, title, description, ministryArea, author, reflection, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        entryType: { type: string, enum: [check_in, milestone] }
+        occurredAt: { type: string, format: date }
+        title: { type: string }
+        description: { type: string }
+        ministryArea: { type: ["string", "null"] }
+        author: { type: string }
+        reflection: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    JourneyEntryInput:
+      type: object
+      additionalProperties: false
+      required: [entryType, occurredAt, title, description, author]
+      properties:
+        entryType: { type: string, enum: [check_in, milestone] }
+        occurredAt: { type: string, format: date }
+        title: { type: string, minLength: 1, maxLength: 160 }
+        description: { type: string, minLength: 1, maxLength: 2000 }
+        ministryArea: { type: ["string", "null"], maxLength: 120 }
+        author: { type: string, minLength: 1, maxLength: 120 }
+        reflection: { type: ["string", "null"], maxLength: 2000 }
+    JourneyEntryUpdateInput:
+      type: object
+      additionalProperties: false
+      properties:
+        reflection: { type: ["string", "null"], maxLength: 2000 }
+    JourneyPatterns:
+      type: object
+      required: [consistent, emerging]
+      properties:
+        consistent:
+          type: array
+          maxItems: 5
+          items: { type: string }
+        emerging:
+          type: array
+          maxItems: 5
+          items: { type: string }
+    JourneyResponse:
+      type: object
+      required: [journeyToken, currentProfile, nextProfileType, nextCheckInDate, profiles, entries, patterns]
+      properties:
+        journeyToken: { type: string, format: uuid }
+        currentProfile:
+          oneOf:
+            - $ref: "#/components/schemas/JourneyCurrentProfile"
+            - type: "null"
+        nextProfileType: { type: ["string", "null"], enum: [adult, discover, explore, develop, null] }
+        nextCheckInDate: { type: ["string", "null"], format: date }
+        profiles:
+          type: array
+          items: { $ref: "#/components/schemas/JourneyProfileSummary" }
+        entries:
+          type: array
+          items: { $ref: "#/components/schemas/JourneyEntry" }
+        patterns:
+          $ref: "#/components/schemas/JourneyPatterns"
+    JourneyCompareProfile:
+      type: object
+      required: [id, profileType, profileLabel, completedAt, themes]
+      properties:
+        id: { type: integer }
+        profileType: { type: string, enum: [adult, discover, explore, develop] }
+        profileLabel: { type: string }
+        completedAt: { type: string, format: date-time }
+        themes:
+          type: array
+          items: { type: string }
+    JourneyCompareResponse:
+      type: object
+      required: [left, right, sharedThemes, emergingThemes, note]
+      properties:
+        left: { $ref: "#/components/schemas/JourneyCompareProfile" }
+        right: { $ref: "#/components/schemas/JourneyCompareProfile" }
+        sharedThemes:
+          type: array
+          items: { type: string }
+        emergingThemes:
+          type: array
+          items: { type: string }
+        note: { type: string }
     MinistryProfile:
       allOf:
         - $ref: "#/components/schemas/ProfileListItem"
         - type: object
-          required: [basicInformation, churchConnection, skills, experience, assessmentSections, assessmentConfiguration, conversations, recommendedProfileType, profileTypeOverridden, youthResponses, guardianObservations, guardian, youth]
+          required: [basicInformation, churchConnection, skills, experience, assessmentSections, assessmentConfiguration, conversations, recommendedProfileType, profileTypeOverridden, youthResponses, guardianObservations, guardian, youth, journeyToken]
           properties:
             basicInformation:
               $ref: "#/components/schemas/BasicInformation"
@@ -966,6 +1202,7 @@ components:
             conversations:
               type: array
               items: { type: string }
+            journeyToken: { type: string, format: uuid }
             lifeExperiences: { type: ["object", "null"], additionalProperties: true }
             availabilityDetails: { type: ["object", "null"], additionalProperties: true }
             ministryPreferences: { type: ["object", "null"], additionalProperties: true }
@@ -991,6 +1228,7 @@ components:
         age: { type: integer, minimum: 18, maximum: 120 }
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [adult] }
+        journeyToken: { type: ["string", "null"], format: uuid }
         basicInformation:
           $ref: "#/components/schemas/BasicInformationInput"
         churchConnection:
@@ -1203,6 +1441,7 @@ components:
         age: { type: integer, minimum: 6, maximum: 120 }
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [discover] }
+        journeyToken: { type: ["string", "null"], format: uuid }
         child:
           type: object
           additionalProperties: false
@@ -1230,9 +1469,10 @@ components:
             thriveNotes: { type: string, maxLength: 1000 }
     DiscoverProfileSubmission:
       type: object
-      required: [resultToken, profileType, recommendedProfileType]
+      required: [resultToken, journeyToken, profileType, recommendedProfileType]
       properties:
         resultToken: { type: string, format: uuid }
+        journeyToken: { type: string, format: uuid }
         profileType: { type: string, enum: [discover] }
         recommendedProfileType: { type: string, enum: [discover, explore, develop, adult] }
     DiscoverAnswersInput:
@@ -1293,9 +1533,10 @@ components:
       enum: [love, maybe, not-now]
     DiscoverProfileResult:
       type: object
-      required: [profileType, childName, summary, guardian]
+      required: [profileType, childName, summary, guardian, journeyToken]
       properties:
         profileType: { type: string, enum: [discover] }
+        journeyToken: { type: string, format: uuid }
         childName: { type: string }
         summary:
           type: object
@@ -1322,6 +1563,7 @@ components:
         age: { type: integer, minimum: 9, maximum: 12 }
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [explore] }
+        journeyToken: { type: ["string", "null"], format: uuid }
         child:
           type: object
           additionalProperties: false
@@ -1350,9 +1592,10 @@ components:
     ExploreProfileSubmission:
       type: object
       additionalProperties: false
-      required: [resultToken, profileType, recommendedProfileType]
+      required: [resultToken, journeyToken, profileType, recommendedProfileType]
       properties:
         resultToken: { type: string, format: uuid }
+        journeyToken: { type: string, format: uuid }
         profileType: { type: string, enum: [explore] }
         recommendedProfileType: { type: string, enum: [explore] }
     ExploreAnswersInput:
@@ -1417,9 +1660,10 @@ components:
     ExploreProfileResult:
       type: object
       additionalProperties: false
-      required: [profileType, childName, summary, suggestions, guardian]
+      required: [profileType, childName, summary, suggestions, guardian, journeyToken]
       properties:
         profileType: { type: string, enum: [explore] }
+        journeyToken: { type: string, format: uuid }
         childName: { type: string }
         summary:
           type: object
@@ -1462,6 +1706,7 @@ components:
         age: { type: integer, minimum: 13, maximum: 17 }
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [develop] }
+        journeyToken: { type: ["string", "null"], format: uuid }
         child:
           type: object
           additionalProperties: false
@@ -1490,9 +1735,10 @@ components:
     DevelopProfileSubmission:
       type: object
       additionalProperties: false
-      required: [resultToken, profileType, recommendedProfileType]
+      required: [resultToken, journeyToken, profileType, recommendedProfileType]
       properties:
         resultToken: { type: string, format: uuid }
+        journeyToken: { type: string, format: uuid }
         profileType: { type: string, enum: [develop] }
         recommendedProfileType: { type: string, enum: [develop] }
     DevelopAnswersInput:

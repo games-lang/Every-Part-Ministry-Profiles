@@ -24,6 +24,8 @@ export interface ExploreProfileInput {
   age: number;
   birthdate?: Date;
   profileType: ExploreProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   child: ExploreProfileInputChild;
   guardian: ExploreProfileInputGuardian;
   answers: ExploreAnswersInput;

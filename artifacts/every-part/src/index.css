@@ -295,3 +295,24 @@
     page-break-before: always;
   }
 }
+
+/* Ministry journey: a quiet, editorial rhythm for stories that unfold over time. */
+.journey-page {
+  background:
+    radial-gradient(circle at 91% 0%, hsl(var(--secondary) / .13), transparent 25rem),
+    radial-gradient(circle at 4% 38%, hsl(var(--chart-3) / .12), transparent 22rem),
+    hsl(var(--background));
+}
+.journey-rise { animation: journey-rise .55s cubic-bezier(.2, .75, .25, 1) both; }
+.journey-rise-delay { animation-delay: .08s; }
+.journey-rise-delay-2 { animation-delay: .16s; }
+.journey-card { transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease; }
+.journey-card:hover { transform: translateY(-2px); border-color: hsl(var(--primary) / .25); box-shadow: 0 14px 28px hsl(var(--primary) / .08); }
+@keyframes journey-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-rise { animation: none; }
+  .journey-card { transition: none; }
+}

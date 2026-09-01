@@ -1,0 +1,627 @@
+# Replit Development Prompt: Build a Ministry Journey Timeline
+
+I want Every Part to include a long-term **Ministry Journey Timeline** that allows a person and authorized church leaders to look back over years and see how that person has grown from childhood into adulthood in their gifts, interests, ministry involvement, leadership, spiritual development, and sense of calling.
+
+The purpose is not simply to store old assessment results.
+
+The purpose is to help answer:
+
+**How has God been shaping this person over time, and how has their participation in the Body of Christ developed?**
+
+This feature should connect all four Every Part Ministry Profiles:
+
+* **Discover** — ages 6–8
+* **Explore** — ages 9–12
+* **Develop** — ages 13–17
+* **Deploy** — ages 18+
+
+Every completed profile should become part of one continuous Ministry Journey.
+
+---
+
+## 1. Preserve Every Completed Profile
+
+Never overwrite a completed Ministry Profile when someone takes another one.
+
+Each completed profile should be saved as a historical snapshot that includes:
+
+* Profile type
+* Date completed
+* Person's age at completion
+* Major strengths or tendencies identified
+* Gifts being explored
+* Passions
+* People or needs they care about
+* Ministry interests
+* Skills and abilities
+* Spiritual-growth interests
+* Availability
+* Suggested ministry experiences
+* Current serving involvement at that time
+* Any appropriate parent/guardian observations for youth profiles
+
+The newest completed profile should be marked as:
+
+**Current Ministry Profile**
+
+Older profiles should remain available through the Ministry Journey Timeline.
+
+---
+
+# 2. Create a Ministry Journey Timeline
+
+Add a section on each person's profile called:
+
+# My Ministry Journey
+
+For authorized ministry leaders, it can be called:
+
+# Ministry Journey
+
+The timeline should display ministry-development events chronologically.
+
+Example:
+
+### Age 7 — Discover Profile
+
+**2027**
+
+Loved:
+
+* Welcoming people
+* Helping younger children
+* Making things
+
+Cared about:
+
+* Lonely people
+* Younger children
+
+Wanted to try:
+
+* Greeting
+* Art projects
+* Helping with children's ministry
+
+---
+
+### Age 10 — Explore Profile
+
+**2030**
+
+Emerging strengths:
+
+* Encouragement
+* Creativity
+* Helping others
+
+How they tended to operate:
+
+* Preferred smaller groups
+* Thought before speaking
+* Enjoyed knowing the plan
+
+Passions:
+
+* Younger children
+* People who feel left out
+
+Ministry experiences:
+
+* Encouragement cards
+* Community service
+* Children's ministry helper
+
+---
+
+### Age 14 — Develop Profile
+
+**2034**
+
+Gifts being explored:
+
+* Shepherding
+* Encouragement
+* Leadership
+
+Passions:
+
+* Children
+* Discipleship
+* People who feel overlooked
+
+Calling questions:
+
+* Interested in helping younger Christians grow
+
+Serving:
+
+* Children's ministry twice per month
+
+---
+
+### Age 18 — Deploy Profile
+
+**2038**
+
+Gift patterns:
+
+* Shepherding
+* Leadership
+* Helps
+
+Passions:
+
+* Children
+* Discipleship
+* Mentoring
+
+Skills:
+
+* Teaching
+* Organization
+* Communication
+
+Current ministry:
+
+* Children's Ministry
+
+Possible next steps:
+
+* Begin mentoring
+* Explore team leadership
+
+---
+
+### Age 21 — Annual Ministry Check-In
+
+**2041**
+
+Current ministry:
+
+* Children's Ministry
+
+Experience:
+
+* Energized and fulfilled
+
+New strength discovered:
+
+* Teaching
+
+Growth interest:
+
+* Leadership
+
+Next step:
+
+* Interested in more responsibility
+
+---
+
+### Age 24 — Deploy Profile Retake
+
+**2044**
+
+Gift patterns:
+
+* Shepherding
+* Teaching
+* Leadership
+
+Emerging passion:
+
+* Developing other leaders
+
+Current ministry:
+
+* Children's Ministry Team Leader
+
+Calling:
+
+* Exploring pastoral ministry
+
+This should allow someone to visually see development over time.
+
+---
+
+# 3. Show Growth Without Treating Old Results as Wrong
+
+The system should never make previous profile results look like mistakes.
+
+Use language such as:
+
+* Emerging
+* Developing
+* Consistent
+* Newly discovered
+* Growing interest
+* Changed over time
+* No longer a primary interest
+
+Avoid language such as:
+
+* Incorrect
+* Wrong result
+* Failed
+* Lost gift
+
+People grow, mature, enter new seasons, and discover new abilities.
+
+The timeline should celebrate that growth.
+
+---
+
+# 4. Highlight Consistent Patterns
+
+Create a simple comparison feature that identifies things appearing repeatedly across several profiles.
+
+For example:
+
+## Consistent Through Your Journey
+
+**Encouragement**
+Appeared in profiles at ages 10, 14, 18, and 24.
+
+**Children**
+Has remained one of your strongest ministry passions since age 7.
+
+**Smaller Teams**
+You have consistently indicated that you thrive in smaller relational ministry environments.
+
+Do not use AI for this initially.
+
+Use rule-based comparisons between structured profile fields.
+
+---
+
+# 5. Highlight Emerging Patterns
+
+Also show areas that become stronger over time.
+
+Example:
+
+## Emerging Over Time
+
+**Leadership**
+First appeared as an interest at age 14.
+
+By age 18, leadership appeared among your stronger tendencies.
+
+At age 21, you expressed interest in greater responsibility.
+
+At age 24, you were serving as a ministry team leader.
+
+This should help people see that calling and leadership often develop gradually.
+
+---
+
+# 6. Ministry Experience Timeline
+
+Profiles should not be the only items shown.
+
+Allow authorized church leaders and/or the member to add ministry milestones.
+
+Examples:
+
+* First time serving
+* Joined Children's Ministry
+* Joined Welcome Team
+* Participated in community outreach
+* Went on first mission trip
+* Became a small-group leader
+* Began mentoring someone
+* Completed ministry training
+* Became a ministry-team leader
+* Began preaching or teaching
+* Entered pastoral ministry training
+* Took a season of rest
+* Started serving in a new ministry
+
+Each milestone should contain:
+
+* Date
+* Milestone title
+* Optional short description
+* Ministry area
+* Who entered the milestone
+
+Keep milestone notes focused on ministry development.
+
+Do not use this area for pastoral counseling notes or sensitive information.
+
+---
+
+# 7. Connect Ministry Milestones to Profiles
+
+When possible, visually show the relationship between profile discoveries and actual ministry experiences.
+
+Example:
+
+**Age 10**
+Profile showed strong interest in younger children.
+
+↓
+
+**Age 11**
+Began helping in Children's Ministry.
+
+↓
+
+**Age 14**
+Develop Profile showed possible shepherding and encouragement gifts.
+
+↓
+
+**Age 16**
+Began helping lead a children's small group.
+
+↓
+
+**Age 18**
+Deploy Profile identified shepherding, leadership, and teaching as strong patterns.
+
+This is one of the most important purposes of the feature.
+
+Every Part should help churches see not only what someone said on an assessment but:
+
+**What happened when they actually served?**
+
+---
+
+# 8. Reflection After Ministry Experiences
+
+Prepare the database so ministry experiences can eventually include a short reflection.
+
+Possible questions:
+
+* Did you enjoy this ministry experience?
+* Did you feel energized or drained?
+* What did you learn about yourself?
+* What did you learn about God?
+* Did someone affirm a strength or gift in you?
+* Would you like to serve in this area again?
+* Is there something else you would like to try?
+
+Do not require reflections for every ministry activity.
+
+This should be available for meaningful ministry experiences or trial-serving opportunities.
+
+---
+
+# 9. Youth-to-Adult Transition
+
+When a person turns 18 and completes the Deploy Ministry Profile, do not start a new history.
+
+Continue the same Ministry Journey.
+
+Their childhood and student profiles should remain part of the same timeline.
+
+The person should eventually be able to look back and see something like:
+
+**My Ministry Journey**
+
+Age 7 — Discover
+Age 10 — Explore
+Age 14 — Develop
+Age 18 — Deploy
+Age 19 — First Mission Trip
+Age 21 — Ministry Check-In
+Age 22 — Became Small Group Leader
+Age 24 — Deploy Retake
+Age 27 — Ministry Check-In
+Age 30 — Deploy Retake
+
+This should feel like one continuous story rather than separate youth and adult systems.
+
+---
+
+# 10. Adult Profile Retakes
+
+After age 18:
+
+Recommend a complete **Deploy Ministry Profile** every:
+
+**3 years**
+
+Do not overwrite previous Deploy Profiles.
+
+Each retake should become another timeline entry.
+
+This allows someone to see how things changed between:
+
+* Age 18
+* Age 21
+* Age 24
+* Age 27
+* Age 30
+* And beyond
+
+Also allow someone to retake the Deploy Profile earlier after a major ministry or life-season change.
+
+---
+
+# 11. Annual Ministry Check-In
+
+Between full Deploy Profile retakes, adults should complete a short:
+
+**Annual Ministry Check-In**
+
+This should also appear on the Ministry Journey Timeline.
+
+The Annual Check-In should capture:
+
+* Current ministry involvement
+* Whether serving feels energizing or draining
+* New strengths discovered
+* New ministry interests
+* Changed passions
+* Growth goals
+* Availability changes
+* Desire for more responsibility
+* Desire to try another ministry
+* Need for rest
+* Desire to speak with a ministry leader
+
+This gives the timeline meaningful updates without requiring a full profile every year.
+
+---
+
+# 12. Member View
+
+Members should be able to see their own journey.
+
+Use a heading such as:
+
+# My Ministry Journey
+
+Include a short explanation:
+
+**God continues to shape us throughout our lives. Your Ministry Journey shows how your gifts, passions, experiences, and sense of calling have developed through different seasons.**
+
+Allow the person to:
+
+* Scroll through the timeline
+* Open previous profiles
+* View current profile
+* View ministry milestones
+* Compare profiles
+* See consistent themes
+* See emerging areas
+* See upcoming recommended profile/check-in dates
+
+---
+
+# 13. Leader View
+
+Authorized pastors or ministry leaders should have a similar timeline with a concise summary at the top.
+
+Example:
+
+# Ministry Journey Summary
+
+**Current Profile:** Deploy
+
+**Current Ministry:** Children's Ministry Leader
+
+**Long-Term Strength Patterns:**
+
+* Shepherding
+* Encouragement
+* Leadership
+
+**Long-Term Passion Patterns:**
+
+* Children
+* Discipleship
+* New Christians
+
+**Emerging Areas:**
+
+* Teaching
+* Mentoring
+* Leadership development
+
+**Serving History:**
+
+* Children's helper
+* Children's small-group leader
+* Children's ministry team leader
+
+**Current Growth Interest:**
+
+* Developing other leaders
+
+**Next Recommended Full Profile:**
+June 2047
+
+The goal is for a leader to understand the person's ministry story quickly without reading every previous profile.
+
+---
+
+# 14. Comparison View
+
+Eventually allow the user or authorized leader to select two profiles and compare them.
+
+Example:
+
+# Age 14 vs. Age 24
+
+| Area       | Age 14                     | Age 24                            |
+| ---------- | -------------------------- | --------------------------------- |
+| Gifts      | Encouragement, Shepherding | Shepherding, Teaching, Leadership |
+| Passion    | Children                   | Children, Discipleship            |
+| Leadership | Interested                 | Ministry Team Leader              |
+| Serving    | Children's helper          | Children's Ministry Leader        |
+| Calling    | Exploring                  | Developing leaders                |
+
+Do not build overly complicated analytics yet.
+
+Start with simple comparisons of structured fields.
+
+---
+
+# 15. Privacy
+
+The Ministry Journey must remain private.
+
+It should only be accessible to:
+
+* The individual
+* Appropriate parent/guardian accounts for minors
+* Authorized church leaders according to permissions
+
+Do not make youth ministry information searchable by general church members.
+
+Do not store sensitive pastoral-care information in this timeline.
+
+The timeline is specifically for:
+
+**ministry discovery, ministry development, serving history, growth, and calling.**
+
+---
+
+# 16. Long-Term Vision
+
+Please structure this feature so Every Part can eventually answer questions such as:
+
+* What has this person cared about since childhood?
+* Which strengths have consistently appeared?
+* Which spiritual gifts emerged later?
+* What ministry experiences helped clarify their calling?
+* How did they move from participating to leading?
+* What ministry environments consistently energized them?
+* Has their availability changed?
+* What areas of service did they try and discover were not a good fit?
+* Who invested in their development?
+* What might be an appropriate next ministry-development opportunity?
+
+Do not build AI-generated conclusions yet.
+
+For now, focus on preserving high-quality structured historical data.
+
+---
+
+# 17. Initial Build
+
+For the first version, please build:
+
+1. Historical storage for all completed profiles.
+2. One Ministry Journey Timeline that spans childhood through adulthood.
+3. Discover, Explore, Develop, and Deploy profile entries on the same timeline.
+4. Adult Deploy Profile retakes without overwriting old profiles.
+5. Annual Ministry Check-In entries.
+6. Ministry milestone entries.
+7. Member timeline view.
+8. Authorized leader timeline view.
+9. Basic consistent-pattern detection.
+10. Basic emerging-pattern detection.
+11. Ability to open old profiles.
+12. Basic comparison between two profile snapshots.
+13. Current Profile designation.
+14. Recommended next profile/check-in date.
+15. Preserve all existing Every Part functionality.
+
+Do not add complex AI analysis yet.
+
+I want to test whether the Ministry Journey clearly tells the story of how a person grows from childhood into adulthood in their participation, service, leadership, and calling before adding more advanced features.

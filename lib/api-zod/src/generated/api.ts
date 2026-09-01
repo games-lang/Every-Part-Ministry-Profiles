@@ -790,6 +790,7 @@ export const CreateProfileBody = zod.object({
   "age": zod.int().min(createProfileBodyAgeMin).max(createProfileBodyAgeMax),
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['adult']),
+  "journeyToken": zod.uuid().nullish(),
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
   "lastName": zod.string().min(1),
@@ -979,6 +980,7 @@ export const CreateProfileResponse = zod.object({
   "ministryInterests": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
 }),
   "conversations": zod.array(zod.string()),
+  "journeyToken": zod.uuid(),
   "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
   "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
   "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish(),
@@ -993,6 +995,212 @@ export const CreateProfileResponse = zod.object({
 }),
   "youth": zod.record(zod.string(), zod.unknown()).nullable()
 }))
+
+
+/**
+ * @summary Get the authenticated leader journey for a profile
+ */
+export const GetProfileJourneyParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const getProfileJourneyResponseProfilesItemThemesMax = 5;
+
+export const getProfileJourneyResponsePatternsConsistentMax = 5;
+
+export const getProfileJourneyResponsePatternsEmergingMax = 5;
+
+
+
+export const GetProfileJourneyResponse = zod.object({
+  "journeyToken": zod.uuid(),
+  "currentProfile": zod.union([zod.object({
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "profileLabel": zod.string(),
+  "completedAt": zod.coerce.date()
+}),zod.null()]),
+  "nextProfileType": zod.union([zod.literal('adult'),zod.literal('discover'),zod.literal('explore'),zod.literal('develop'),zod.literal(null)]).nullable(),
+  "nextCheckInDate": zod.coerce.date().nullable(),
+  "profiles": zod.array(zod.object({
+  "id": zod.int(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "profileLabel": zod.string(),
+  "memberName": zod.string(),
+  "age": zod.int().nullable(),
+  "completedAt": zod.coerce.date(),
+  "themes": zod.array(zod.string()).max(getProfileJourneyResponseProfilesItemThemesMax)
+})),
+  "entries": zod.array(zod.object({
+  "id": zod.int(),
+  "entryType": zod.enum(['check_in', 'milestone']),
+  "occurredAt": zod.coerce.date(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "ministryArea": zod.string().nullable(),
+  "author": zod.string(),
+  "reflection": zod.string().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})),
+  "patterns": zod.object({
+  "consistent": zod.array(zod.string()).max(getProfileJourneyResponsePatternsConsistentMax),
+  "emerging": zod.array(zod.string()).max(getProfileJourneyResponsePatternsEmergingMax)
+})
+})
+
+
+/**
+ * @summary Get a safe member-facing journey using its private token
+ */
+export const GetPublicJourneyParams = zod.object({
+  "token": zod.uuid()
+})
+
+export const getPublicJourneyResponseProfilesItemThemesMax = 5;
+
+export const getPublicJourneyResponsePatternsConsistentMax = 5;
+
+export const getPublicJourneyResponsePatternsEmergingMax = 5;
+
+
+
+export const GetPublicJourneyResponse = zod.object({
+  "journeyToken": zod.uuid(),
+  "currentProfile": zod.union([zod.object({
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "profileLabel": zod.string(),
+  "completedAt": zod.coerce.date()
+}),zod.null()]),
+  "nextProfileType": zod.union([zod.literal('adult'),zod.literal('discover'),zod.literal('explore'),zod.literal('develop'),zod.literal(null)]).nullable(),
+  "nextCheckInDate": zod.coerce.date().nullable(),
+  "profiles": zod.array(zod.object({
+  "id": zod.int(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "profileLabel": zod.string(),
+  "memberName": zod.string(),
+  "age": zod.int().nullable(),
+  "completedAt": zod.coerce.date(),
+  "themes": zod.array(zod.string()).max(getPublicJourneyResponseProfilesItemThemesMax)
+})),
+  "entries": zod.array(zod.object({
+  "id": zod.int(),
+  "entryType": zod.enum(['check_in', 'milestone']),
+  "occurredAt": zod.coerce.date(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "ministryArea": zod.string().nullable(),
+  "author": zod.string(),
+  "reflection": zod.string().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})),
+  "patterns": zod.object({
+  "consistent": zod.array(zod.string()).max(getPublicJourneyResponsePatternsConsistentMax),
+  "emerging": zod.array(zod.string()).max(getPublicJourneyResponsePatternsEmergingMax)
+})
+})
+
+
+/**
+ * @summary Add a milestone or annual check-in to a church journey
+ */
+export const CreateJourneyEntryParams = zod.object({
+  "token": zod.uuid()
+})
+
+export const createJourneyEntryBodyTitleMax = 160;
+
+export const createJourneyEntryBodyDescriptionMax = 2000;
+
+export const createJourneyEntryBodyMinistryAreaMax = 120;
+
+export const createJourneyEntryBodyAuthorMax = 120;
+
+export const createJourneyEntryBodyReflectionMax = 2000;
+
+
+
+export const CreateJourneyEntryBody = zod.object({
+  "entryType": zod.enum(['check_in', 'milestone']),
+  "occurredAt": zod.coerce.date(),
+  "title": zod.string().min(1).max(createJourneyEntryBodyTitleMax),
+  "description": zod.string().min(1).max(createJourneyEntryBodyDescriptionMax),
+  "ministryArea": zod.string().max(createJourneyEntryBodyMinistryAreaMax).nullish(),
+  "author": zod.string().min(1).max(createJourneyEntryBodyAuthorMax),
+  "reflection": zod.string().max(createJourneyEntryBodyReflectionMax).nullish()
+})
+
+export const CreateJourneyEntryResponse = zod.object({
+  "id": zod.int(),
+  "entryType": zod.enum(['check_in', 'milestone']),
+  "occurredAt": zod.coerce.date(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "ministryArea": zod.string().nullable(),
+  "author": zod.string(),
+  "reflection": zod.string().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Add or update a future reflection on a journey entry
+ */
+export const UpdateJourneyEntryParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const updateJourneyEntryBodyReflectionMax = 2000;
+
+
+
+export const UpdateJourneyEntryBody = zod.object({
+  "reflection": zod.string().max(updateJourneyEntryBodyReflectionMax).nullish()
+})
+
+export const UpdateJourneyEntryResponse = zod.object({
+  "id": zod.int(),
+  "entryType": zod.enum(['check_in', 'milestone']),
+  "occurredAt": zod.coerce.date(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "ministryArea": zod.string().nullable(),
+  "author": zod.string(),
+  "reflection": zod.string().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Compare two historical profile snapshots using rule-based themes
+ */
+export const CompareJourneyProfilesParams = zod.object({
+  "token": zod.uuid(),
+  "leftProfileId": zod.coerce.number().int(),
+  "rightProfileId": zod.coerce.number().int()
+})
+
+export const CompareJourneyProfilesResponse = zod.object({
+  "left": zod.object({
+  "id": zod.int(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "profileLabel": zod.string(),
+  "completedAt": zod.coerce.date(),
+  "themes": zod.array(zod.string())
+}),
+  "right": zod.object({
+  "id": zod.int(),
+  "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
+  "profileLabel": zod.string(),
+  "completedAt": zod.coerce.date(),
+  "themes": zod.array(zod.string())
+}),
+  "sharedThemes": zod.array(zod.string()),
+  "emergingThemes": zod.array(zod.string()),
+  "note": zod.string()
+})
 
 
 /**
@@ -1104,6 +1312,7 @@ export const SubmitDiscoverProfileBody = zod.object({
   "age": zod.int().min(submitDiscoverProfileBodyAgeMin).max(submitDiscoverProfileBodyAgeMax),
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['discover']),
+  "journeyToken": zod.uuid().nullish(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitDiscoverProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitDiscoverProfileBodyChildLastNameMax)
@@ -1156,6 +1365,7 @@ export const SubmitDiscoverProfileBody = zod.object({
 
 export const SubmitDiscoverProfileResponse = zod.object({
   "resultToken": zod.uuid(),
+  "journeyToken": zod.uuid(),
   "profileType": zod.enum(['discover']),
   "recommendedProfileType": zod.enum(['discover', 'explore', 'develop', 'adult'])
 })
@@ -1170,6 +1380,7 @@ export const GetDiscoverResultParams = zod.object({
 
 export const GetDiscoverResultResponse = zod.object({
   "profileType": zod.enum(['discover']),
+  "journeyToken": zod.uuid(),
   "childName": zod.string(),
   "summary": zod.object({
   "headline": zod.string(),
@@ -1241,6 +1452,7 @@ export const SubmitExploreProfileBody = zod.object({
   "age": zod.int().min(submitExploreProfileBodyAgeMin).max(submitExploreProfileBodyAgeMax),
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['explore']),
+  "journeyToken": zod.uuid().nullish(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitExploreProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitExploreProfileBodyChildLastNameMax)
@@ -1297,6 +1509,7 @@ export const SubmitExploreProfileBody = zod.object({
 
 export const SubmitExploreProfileResponse = zod.object({
   "resultToken": zod.uuid(),
+  "journeyToken": zod.uuid(),
   "profileType": zod.enum(['explore']),
   "recommendedProfileType": zod.enum(['explore'])
 })
@@ -1318,6 +1531,7 @@ export const getExploreResultResponseSuggestionsMax = 4;
 
 export const GetExploreResultResponse = zod.object({
   "profileType": zod.enum(['explore']),
+  "journeyToken": zod.uuid(),
   "childName": zod.string(),
   "summary": zod.object({
   "headline": zod.string(),
@@ -1414,6 +1628,7 @@ export const SubmitDevelopProfileBody = zod.object({
   "age": zod.int().min(submitDevelopProfileBodyAgeMin).max(submitDevelopProfileBodyAgeMax),
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['develop']),
+  "journeyToken": zod.uuid().nullish(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitDevelopProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitDevelopProfileBodyChildLastNameMax)
@@ -1495,6 +1710,7 @@ export const SubmitDevelopProfileBody = zod.object({
 
 export const SubmitDevelopProfileResponse = zod.object({
   "resultToken": zod.uuid(),
+  "journeyToken": zod.uuid(),
   "profileType": zod.enum(['develop']),
   "recommendedProfileType": zod.enum(['develop'])
 })
@@ -1693,6 +1909,7 @@ export const GetProfileResponse = zod.object({
   "ministryInterests": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
 }),
   "conversations": zod.array(zod.string()),
+  "journeyToken": zod.uuid(),
   "lifeExperiences": zod.record(zod.string(), zod.unknown()).nullish(),
   "availabilityDetails": zod.record(zod.string(), zod.unknown()).nullish(),
   "ministryPreferences": zod.record(zod.string(), zod.unknown()).nullish(),

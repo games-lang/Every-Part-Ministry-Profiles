@@ -28,6 +28,7 @@ export type MinistryProfile = ProfileListItem & {
   assessmentSections: FutureAssessmentSections;
   assessmentConfiguration: AssessmentConfiguration;
   conversations: string[];
+  journeyToken: string;
   /** @nullable */
   lifeExperiences?: MinistryProfileLifeExperiences;
   /** @nullable */

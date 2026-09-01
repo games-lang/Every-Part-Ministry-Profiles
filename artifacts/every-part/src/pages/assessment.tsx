@@ -2077,6 +2077,7 @@ export default function Assessment() {
     );
     const payload: ProfileInput = {
       churchSlug: slug,
+      journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       basicInformation: {
         firstName: data.basicInformation.firstName,
         lastName: data.basicInformation.lastName,
@@ -2211,7 +2212,8 @@ export default function Assessment() {
     createProfile.mutate(
       { data: payload },
       {
-        onSuccess: () => {
+        onSuccess: (result) => {
+          localStorage.setItem("every-part-journey-token", result.journeyToken);
           setStepIndex(stepKeys.length);
           window.scrollTo({ top: 0, behavior: "smooth" });
         },
@@ -2310,6 +2312,13 @@ export default function Assessment() {
               Your profile has been shared with {church.name}. A leader can
               follow up thoughtfully about next steps.
             </p>
+            {createProfile.data?.journeyToken && (
+              <Button asChild variant="outline">
+                <Link href={`/journey/${createProfile.data.journeyToken}`}>
+                  View your private ministry journey
+                </Link>
+              </Button>
+            )}
             <Button asChild>
               <a href={church.profileUrl || "/"}>Return to church profile</a>
             </Button>

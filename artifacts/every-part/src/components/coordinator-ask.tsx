@@ -43,6 +43,8 @@ export function CoordinatorAsk({ profile }: { profile: Profile }) {
     textOf(connection.previousService),
   ].filter(Boolean).join(" — ");
   const alreadyAsked = textOf(details.alreadyAsked);
+  const servingLoad = [textOf(details.servingLoadCount), textOf(details.servingLoadFeel)].filter(Boolean).join(" — ");
+  const heavyLoad = /three or more|overloaded|stretched/i.test(servingLoad);
   const tags = [
     ...(Array.isArray(profile.passions) ? profile.passions : []),
     ...(Array.isArray(profile.interests) ? profile.interests : []),
@@ -66,6 +68,7 @@ export function CoordinatorAsk({ profile }: { profile: Profile }) {
           <AskRow label="Capacity this season" value={capacity} />
           <AskRow label="Already serving" value={alreadyServing} />
           <AskRow label="Already asked" value={alreadyAsked} hint={alreadyAsked ? undefined : "Check with your team before you ask."} />
+          <AskRow label="Serving load" value={servingLoad} hint={heavyLoad ? "Already carrying a lot — coordinate before you ask." : (servingLoad ? undefined : "How many roles they are already carrying.")} />
           {showKids ? (
             <AskRow
               label="Kids-safety note"

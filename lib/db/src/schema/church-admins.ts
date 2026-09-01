@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { churchesTable } from "./churches";
+import { churchesTable } from "./churches.ts";
 
 export const churchAdminsTable = pgTable(
   "church_admins",

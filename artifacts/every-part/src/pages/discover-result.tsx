@@ -100,12 +100,15 @@ export default function DiscoverResult({ params }: { params: { token: string } }
           <p className="text-sm text-muted-foreground mb-6">
             A copy of this profile has been shared with approved ministry leaders.
           </p>
-          <Button asChild variant="outline" className="h-12 px-6">
-            <Link href="/">
-              Return to Homepage
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
+          <div className="flex flex-col items-center gap-3">
+            {result.journeyToken && <Button asChild className="h-12 px-6"><Link href={`/journey/${result.journeyToken}`}>Open your ministry journey<ArrowRight className="w-4 h-4 ml-2" /></Link></Button>}
+            <Button asChild variant="outline" className="h-12 px-6">
+              <Link href="/">
+                Return to Homepage
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

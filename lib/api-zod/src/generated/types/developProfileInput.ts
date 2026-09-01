@@ -24,6 +24,8 @@ export interface DevelopProfileInput {
   age: number;
   birthdate?: Date;
   profileType: DevelopProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   child: DevelopProfileInputChild;
   guardian: DevelopProfileInputGuardian;
   answers: DevelopAnswersInput;

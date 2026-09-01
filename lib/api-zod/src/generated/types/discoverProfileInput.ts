@@ -24,6 +24,8 @@ export interface DiscoverProfileInput {
   age: number;
   birthdate?: Date;
   profileType: DiscoverProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   child: DiscoverProfileInputChild;
   guardian: DiscoverProfileInputGuardian;
   answers: DiscoverAnswersInput;

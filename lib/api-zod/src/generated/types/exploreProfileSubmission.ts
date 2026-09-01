@@ -10,6 +10,7 @@ import type { ExploreProfileSubmissionRecommendedProfileType } from './explorePr
 
 export interface ExploreProfileSubmission {
   resultToken: string;
+  journeyToken: string;
   profileType: ExploreProfileSubmissionProfileType;
   recommendedProfileType: ExploreProfileSubmissionRecommendedProfileType;
 }

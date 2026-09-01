@@ -435,6 +435,171 @@ export interface VolunteerMatchResponse {
   usedAi: boolean;
 }
 
+export type JourneyCurrentProfileProfileType = typeof JourneyCurrentProfileProfileType[keyof typeof JourneyCurrentProfileProfileType];
+
+
+export const JourneyCurrentProfileProfileType = {
+  adult: 'adult',
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+} as const;
+
+export interface JourneyCurrentProfile {
+  profileType: JourneyCurrentProfileProfileType;
+  profileLabel: string;
+  completedAt: string;
+}
+
+export type JourneyProfileSummaryProfileType = typeof JourneyProfileSummaryProfileType[keyof typeof JourneyProfileSummaryProfileType];
+
+
+export const JourneyProfileSummaryProfileType = {
+  adult: 'adult',
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+} as const;
+
+export interface JourneyProfileSummary {
+  id: number;
+  profileType: JourneyProfileSummaryProfileType;
+  profileLabel: string;
+  memberName: string;
+  /** @nullable */
+  age: number | null;
+  completedAt: string;
+  /** @maxItems 5 */
+  themes: string[];
+}
+
+export type JourneyEntryEntryType = typeof JourneyEntryEntryType[keyof typeof JourneyEntryEntryType];
+
+
+export const JourneyEntryEntryType = {
+  check_in: 'check_in',
+  milestone: 'milestone',
+} as const;
+
+export interface JourneyEntry {
+  id: number;
+  entryType: JourneyEntryEntryType;
+  occurredAt: string;
+  title: string;
+  description: string;
+  /** @nullable */
+  ministryArea: string | null;
+  author: string;
+  /** @nullable */
+  reflection: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type JourneyEntryInputEntryType = typeof JourneyEntryInputEntryType[keyof typeof JourneyEntryInputEntryType];
+
+
+export const JourneyEntryInputEntryType = {
+  check_in: 'check_in',
+  milestone: 'milestone',
+} as const;
+
+export interface JourneyEntryInput {
+  entryType: JourneyEntryInputEntryType;
+  occurredAt: string;
+  /**
+     * @minLength 1
+     * @maxLength 160
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  description: string;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  ministryArea?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  author: string;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  reflection?: string | null;
+}
+
+export interface JourneyEntryUpdateInput {
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  reflection?: string | null;
+}
+
+export interface JourneyPatterns {
+  /** @maxItems 5 */
+  consistent: string[];
+  /** @maxItems 5 */
+  emerging: string[];
+}
+
+/**
+ * @nullable
+ */
+export type JourneyResponseNextProfileType = typeof JourneyResponseNextProfileType[keyof typeof JourneyResponseNextProfileType] | null;
+
+
+export const JourneyResponseNextProfileType = {
+  adult: 'adult',
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+} as const;
+
+export interface JourneyResponse {
+  journeyToken: string;
+  currentProfile: JourneyCurrentProfile | null;
+  /** @nullable */
+  nextProfileType: JourneyResponseNextProfileType;
+  /** @nullable */
+  nextCheckInDate: string | null;
+  profiles: JourneyProfileSummary[];
+  entries: JourneyEntry[];
+  patterns: JourneyPatterns;
+}
+
+export type JourneyCompareProfileProfileType = typeof JourneyCompareProfileProfileType[keyof typeof JourneyCompareProfileProfileType];
+
+
+export const JourneyCompareProfileProfileType = {
+  adult: 'adult',
+  discover: 'discover',
+  explore: 'explore',
+  develop: 'develop',
+} as const;
+
+export interface JourneyCompareProfile {
+  id: number;
+  profileType: JourneyCompareProfileProfileType;
+  profileLabel: string;
+  completedAt: string;
+  themes: string[];
+}
+
+export interface JourneyCompareResponse {
+  left: JourneyCompareProfile;
+  right: JourneyCompareProfile;
+  sharedThemes: string[];
+  emergingThemes: string[];
+  note: string;
+}
+
 /**
  * @nullable
  */
@@ -604,6 +769,7 @@ export type MinistryProfile = ProfileListItem & {
   assessmentSections: FutureAssessmentSections;
   assessmentConfiguration: AssessmentConfiguration;
   conversations: string[];
+  journeyToken: string;
   /** @nullable */
   lifeExperiences?: MinistryProfileLifeExperiences;
   /** @nullable */
@@ -767,6 +933,8 @@ export interface ProfileInput {
   age: number;
   birthdate?: string;
   profileType: ProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];
@@ -946,6 +1114,8 @@ export interface DiscoverProfileInput {
   age: number;
   birthdate?: string;
   profileType: DiscoverProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   child: DiscoverProfileInputChild;
   guardian: DiscoverProfileInputGuardian;
   answers: DiscoverAnswersInput;
@@ -971,6 +1141,7 @@ export const DiscoverProfileSubmissionRecommendedProfileType = {
 
 export interface DiscoverProfileSubmission {
   resultToken: string;
+  journeyToken: string;
   profileType: DiscoverProfileSubmissionProfileType;
   recommendedProfileType: DiscoverProfileSubmissionRecommendedProfileType;
 }
@@ -996,6 +1167,7 @@ export type DiscoverProfileResultGuardian = {
 
 export interface DiscoverProfileResult {
   profileType: DiscoverProfileResultProfileType;
+  journeyToken: string;
   childName: string;
   summary: DiscoverProfileResultSummary;
   guardian: DiscoverProfileResultGuardian;
@@ -1187,6 +1359,8 @@ export interface ExploreProfileInput {
   age: number;
   birthdate?: string;
   profileType: ExploreProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   child: ExploreProfileInputChild;
   guardian: ExploreProfileInputGuardian;
   answers: ExploreAnswersInput;
@@ -1209,6 +1383,7 @@ export const ExploreProfileSubmissionRecommendedProfileType = {
 
 export interface ExploreProfileSubmission {
   resultToken: string;
+  journeyToken: string;
   profileType: ExploreProfileSubmissionProfileType;
   recommendedProfileType: ExploreProfileSubmissionRecommendedProfileType;
 }
@@ -1263,6 +1438,7 @@ export type ExploreProfileResultGuardian = {
 
 export interface ExploreProfileResult {
   profileType: ExploreProfileResultProfileType;
+  journeyToken: string;
   childName: string;
   summary: ExploreProfileResultSummary;
   /**
@@ -1572,6 +1748,8 @@ export interface DevelopProfileInput {
   age: number;
   birthdate?: string;
   profileType: DevelopProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   child: DevelopProfileInputChild;
   guardian: DevelopProfileInputGuardian;
   answers: DevelopAnswersInput;
@@ -1594,6 +1772,7 @@ export const DevelopProfileSubmissionRecommendedProfileType = {
 
 export interface DevelopProfileSubmission {
   resultToken: string;
+  journeyToken: string;
   profileType: DevelopProfileSubmissionProfileType;
   recommendedProfileType: DevelopProfileSubmissionRecommendedProfileType;
 }

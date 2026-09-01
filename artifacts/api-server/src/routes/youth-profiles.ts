@@ -31,6 +31,10 @@ import {
   pathwayOverrideRequired,
   youthResultSummary,
 } from "../lib/youth-profiles";
+import {
+  getOrCreateJourney,
+  updateJourneyAfterProfile,
+} from "../lib/ministry-journeys";
 
 const router: IRouter = Router();
 
@@ -79,8 +83,21 @@ router.post("/youth-profiles", async (req, res): Promise<void> => {
     overridden = true;
   }
 
+  let journey;
+  try {
+    journey = await getOrCreateJourney(
+      church.id,
+      generated.data.journeyToken ?? undefined,
+      recommended,
+    );
+  } catch {
+    res.status(400).json({ error: "The journey link is invalid or no longer available." });
+    return;
+  }
   const [created] = await db.insert(ministryProfilesTable).values({
     churchId: church.id,
+    journeyId: journey.id,
+    personKey: journey.accessToken,
     firstName: parsed.data.child.firstName,
     lastName: parsed.data.child.lastName,
     // The legacy adult-required email column only carries the guardian email
@@ -102,8 +119,10 @@ router.post("/youth-profiles", async (req, res): Promise<void> => {
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   }).returning();
   if (!created) throw new Error("Unable to submit youth profile");
+  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(SubmitDiscoverProfileResponse.parse({
     resultToken: created.resultToken,
+    journeyToken: journey.accessToken,
     profileType: "discover",
     recommendedProfileType: recommended,
   }));
@@ -129,6 +148,7 @@ router.get("/youth-profiles/:id/result", async (req, res): Promise<void> => {
   }
   res.json(GetDiscoverResultResponse.parse({
     profileType: "discover",
+    journeyToken: profile.personKey,
     childName: profile.firstName,
     summary: youthResultSummary(parsedAnswers.data),
     guardian: { name: profile.guardianName, consent: true },
@@ -172,8 +192,21 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     overridden = true;
   }
 
+  let journey;
+  try {
+    journey = await getOrCreateJourney(
+      church.id,
+      generated.data.journeyToken ?? undefined,
+      recommended,
+    );
+  } catch {
+    res.status(400).json({ error: "The journey link is invalid or no longer available." });
+    return;
+  }
   const [created] = await db.insert(ministryProfilesTable).values({
     churchId: church.id,
+    journeyId: journey.id,
+    personKey: journey.accessToken,
     firstName: parsed.data.child.firstName,
     lastName: parsed.data.child.lastName,
     email: parsed.data.guardian.email,
@@ -193,8 +226,10 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   }).returning();
   if (!created) throw new Error("Unable to submit Explore profile");
+  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(SubmitExploreProfileResponse.parse({
     resultToken: created.resultToken,
+    journeyToken: journey.accessToken,
     profileType: "explore",
     recommendedProfileType: recommended,
   }));
@@ -221,6 +256,7 @@ router.get("/explore-profiles/:id/result", async (req, res): Promise<void> => {
   const result = exploreResultSummary(parsedAnswers.data);
   res.json(GetExploreResultResponse.parse({
     profileType: "explore",
+    journeyToken: profile.personKey,
     childName: profile.firstName,
     summary: {
       headline: result.headline,
@@ -270,8 +306,21 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     overridden = true;
   }
 
+  let journey;
+  try {
+    journey = await getOrCreateJourney(
+      church.id,
+      generated.data.journeyToken ?? undefined,
+      recommended,
+    );
+  } catch {
+    res.status(400).json({ error: "The journey link is invalid or no longer available." });
+    return;
+  }
   const [created] = await db.insert(ministryProfilesTable).values({
     churchId: church.id,
+    journeyId: journey.id,
+    personKey: journey.accessToken,
     firstName: parsed.data.child.firstName,
     lastName: parsed.data.child.lastName,
     email: parsed.data.guardian.email,
@@ -291,8 +340,10 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   }).returning();
   if (!created) throw new Error("Unable to submit Develop profile");
+  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(SubmitDevelopProfileResponse.parse({
     resultToken: created.resultToken,
+    journeyToken: journey.accessToken,
     profileType: "develop",
     recommendedProfileType: recommended,
   }));
@@ -319,6 +370,7 @@ router.get("/develop-profiles/:id/result", async (req, res): Promise<void> => {
   const result = developResultSummary(parsedAnswers.data);
   res.json(GetDevelopResultResponse.parse({
     profileType: "develop",
+    journeyToken: profile.personKey,
     childName: profile.firstName,
     summary: result,
     guardian: { name: profile.guardianName, consent: true },

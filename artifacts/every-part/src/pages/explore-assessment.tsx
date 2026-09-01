@@ -462,6 +462,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
     const payload: ExploreProfileInput = {
       churchSlug: slug,
       age: initialAge,
+      journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       ...(initialBirthdate ? { birthdate: initialBirthdate } : {}),
       profileType: "explore",
       child: {
@@ -501,6 +502,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
 
     submitProfile.mutate({ data: payload }, {
       onSuccess: (result) => {
+        localStorage.setItem("every-part-journey-token", result.journeyToken);
         localStorage.removeItem(`every-part-explore-draft-${slug}`);
         setLocation(`/explore/result/${result.resultToken}`);
       }

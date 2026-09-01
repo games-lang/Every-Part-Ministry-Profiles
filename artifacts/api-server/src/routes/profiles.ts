@@ -41,6 +41,11 @@ import {
   filterAssessmentSection,
   hasEnabledSubsections,
 } from "../lib/assessment-configuration";
+import {
+  ensureJourneyForProfile,
+  getOrCreateJourney,
+  updateJourneyAfterProfile,
+} from "../lib/ministry-journeys";
 
 const router: IRouter = Router();
 
@@ -232,12 +237,25 @@ router.post("/profiles", async (req, res): Promise<void> => {
     }
   }
 
+  let journey;
+  try {
+    journey = await getOrCreateJourney(
+      church.id,
+      parsed.data.journeyToken ?? undefined,
+      recommendedProfileType,
+    );
+  } catch {
+    res.status(400).json({ error: "The journey link is invalid or no longer available." });
+    return;
+  }
   const churchConnection = parsed.data.churchConnection;
   const skills = parsed.data.skills;
   const [created] = await db
     .insert(ministryProfilesTable)
     .values({
       churchId: church.id,
+      journeyId: journey.id,
+      personKey: journey.accessToken,
       profileType: "adult",
       recommendedProfileType,
       profileTypeOverridden,
@@ -286,6 +304,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
     .returning();
 
   if (!created) throw new Error("Unable to create Ministry Profile");
+  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(CreateProfileResponse.parse(profileResponse(created)));
 });
 
@@ -441,6 +460,11 @@ router.get("/profiles/:id", async (req, res): Promise<void> => {
     return;
   }
 
+  if (!profile.journeyId) {
+    const journey = await ensureJourneyForProfile(profile);
+    profile.journeyId = journey.id;
+    profile.personKey = journey.accessToken;
+  }
   res.json(GetProfileResponse.parse(profileResponse(profile)));
 });
 

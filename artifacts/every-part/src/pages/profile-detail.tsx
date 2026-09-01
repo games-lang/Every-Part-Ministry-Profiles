@@ -9,7 +9,7 @@ import {
   useUpdateProfileTeam,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, Mail, Phone, Printer, UsersRound } from "lucide-react";
+import { ArrowLeft, Check, Clipboard, Compass, Loader2, Mail, Phone, Printer, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -376,6 +376,7 @@ function DevelopProfileView({ profile }: { profile: MinistryProfile }) {
 
 export default function ProfileDetail() {
  const [,params]=useRoute("/profiles/:id"); const id=params?.id?Number(params.id):0; const {data:profile,isLoading,error}=useGetProfile(id,{query:{enabled:!!id,queryKey:getGetProfileQueryKey(id)}});
+ const [journeyCopied, setJourneyCopied] = useState(false);
  if(error)return <div className="container p-8"><p className="text-destructive">Failed to load profile details.</p><Link href="/profiles">Back to profiles</Link></div>;
  if(isLoading||!profile)return <div className="container p-8"><div className="h-48 animate-pulse rounded bg-muted"/></div>;
   const basic=profile.basicInformation; const connection=profile.churchConnection; const skills=profile.skills; const configuration=profile.assessmentConfiguration;
@@ -389,7 +390,13 @@ export default function ProfileDetail() {
          {profile.profileType} Pathway (Age {profile.age})
        </Badge>
      )}
-     <h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p>
+     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+       <div><h1 className="font-serif text-4xl">{profile.memberName}</h1><p className="text-muted-foreground mt-1">Completed {new Date(profile.completedAt).toLocaleDateString()}</p></div>
+       <div className="flex flex-wrap gap-2 no-print">
+         <Button variant="outline" asChild><Link href={`/profiles/${profile.id}/journey`}><Compass className="h-4 w-4" />View journey</Link></Button>
+         {profile.journeyToken && <Button variant="ghost" onClick={() => { const url = `${window.location.origin}${import.meta.env.BASE_URL}journey/${profile.journeyToken}`; void navigator.clipboard?.writeText(url); setJourneyCopied(true); window.setTimeout(() => setJourneyCopied(false), 1800); }}>{journeyCopied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}{journeyCopied ? "Copied" : "Copy private link"}</Button>}
+       </div>
+     </div>
      <div className="flex flex-wrap gap-4 mt-5 text-sm">
        <a className="flex gap-2 hover:text-primary" href={`mailto:${profile.email}`}><Mail className="w-4 h-4"/>{profile.email}</a>
        {basic?.phone && <a className="flex gap-2 hover:text-primary" href={`tel:${basic.phone}`}><Phone className="w-4 h-4"/>{basic.phone}</a>}

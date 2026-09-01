@@ -10,6 +10,7 @@ import type { DevelopProfileSubmissionRecommendedProfileType } from './developPr
 
 export interface DevelopProfileSubmission {
   resultToken: string;
+  journeyToken: string;
   profileType: DevelopProfileSubmissionProfileType;
   recommendedProfileType: DevelopProfileSubmissionRecommendedProfileType;
 }

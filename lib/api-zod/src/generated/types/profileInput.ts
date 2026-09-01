@@ -27,6 +27,8 @@ export interface ProfileInput {
   age: number;
   birthdate?: Date;
   profileType: ProfileInputProfileType;
+  /** @nullable */
+  journeyToken?: string | null;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];

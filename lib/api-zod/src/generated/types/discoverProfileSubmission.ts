@@ -10,6 +10,7 @@ import type { DiscoverProfileSubmissionRecommendedProfileType } from './discover
 
 export interface DiscoverProfileSubmission {
   resultToken: string;
+  journeyToken: string;
   profileType: DiscoverProfileSubmissionProfileType;
   recommendedProfileType: DiscoverProfileSubmissionRecommendedProfileType;
 }

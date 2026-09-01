@@ -11,6 +11,7 @@ import type { DiscoverProfileResultSummary } from './discoverProfileResultSummar
 
 export interface DiscoverProfileResult {
   profileType: DiscoverProfileResultProfileType;
+  journeyToken: string;
   childName: string;
   summary: DiscoverProfileResultSummary;
   guardian: DiscoverProfileResultGuardian;

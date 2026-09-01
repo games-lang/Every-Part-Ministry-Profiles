@@ -11,7 +11,7 @@ import {
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { churchesTable } from "./churches";
+import { churchesTable } from "./churches.ts";
 
 export const ministryTeamsTable = pgTable(
   "ministry_teams",

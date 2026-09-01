@@ -1,0 +1,352 @@
+Please redesign and improve the public homepage for Every Part.
+
+The goal of the homepage is to make pastors and church leaders quickly understand what Every Part is, why their church needs it, and want to try it.
+
+Do not change the core app functionality, authentication, dashboard, ministry profile logic, database structure, or existing user data unless absolutely necessary for the homepage redesign. Focus primarily on the public-facing homepage and navigation.
+
+EVERY PART BRAND POSITIONING
+
+Every Part is not simply a spiritual gifts test or questionnaire.
+
+Every Part is a ministry mobilization platform that helps churches prayerfully discover how God has shaped their people and connect them with meaningful places to serve and grow.
+
+The main idea is:
+
+“Every person has a part. Help them discover it.”
+
+The site should feel:
+
+* Warm
+* Modern
+* Clean
+* Ministry-focused
+* Trustworthy
+* Professional enough for pastors and church leaders
+* Spiritual without feeling overly decorative or cliché
+* Simple and easy to understand
+
+Avoid making the homepage feel like corporate HR software.
+
+SECTION 1 — HERO
+
+Create a strong hero section.
+
+Main headline:
+
+“Every person has a part. Help them discover it.”
+
+Supporting text:
+
+“Every Part helps churches prayerfully discover the gifts, passions, calling, ministry potential, and availability of their people—and connect them with a place to serve and grow.”
+
+Primary CTA:
+“Try Every Part”
+
+Secondary CTA:
+“See How It Works”
+
+Include an attractive preview of the Every Part platform, such as a ministry profile or pastor dashboard mockup/screenshot if existing UI can be safely reused.
+
+A pastor should understand what Every Part does within approximately 5–10 seconds.
+
+SECTION 2 — THE PROBLEM
+
+Add a section explaining why churches need Every Part.
+
+Heading:
+
+“Your church already has people God has equipped.”
+
+Subheading:
+
+“The challenge is discovering where they fit.”
+
+Show 4 simple problem cards:
+
+1. Hidden Gifts
+   “People in your congregation may have gifts and abilities leaders do not yet know about.”
+
+2. The Same People Serve
+   “A small group of faithful volunteers often carries most of the ministry load.”
+
+3. People Don’t Know Where to Begin
+   “Many people are willing to serve but are unsure where they belong.”
+
+4. Leaders Are Guessing
+   “Church leaders often recruit from the people they already know instead of seeing the full potential of the congregation.”
+
+Close this section with:
+
+“Every Part gives your church a pathway from discovery to meaningful ministry.”
+
+SECTION 3 — THE EVERY PART PATHWAY
+
+Create a visually engaging pathway section titled:
+
+“A Prayerful Pathway to Meaningful Ministry”
+
+Show these six steps:
+
+1. PRAY
+   “Begin by asking God for wisdom, openness, and direction.”
+
+2. SET UP
+   “Customize Every Part around your church, ministry teams, and serving opportunities.”
+
+3. DISCOVER
+   “Members complete their Ministry Profile and reflect on their gifts, passions, ministry style, experience, availability, spiritual health, and more.”
+
+4. DISCERN
+   “Leaders meet with members to hear their story, discuss their profile, pray together, and discern possible next steps.”
+
+5. CONNECT
+   “Help each person find a ministry team that fits their calling, gifts, passions, and current season of life.”
+
+6. DEVELOP
+   “Follow up, encourage growth, develop emerging leaders, and revisit ministry fit over time.”
+
+Prominently display this statement:
+
+“The profile starts the conversation. Prayer, relationship, and discernment help determine the next step.”
+
+Make this pathway attractive on both desktop and mobile.
+
+SECTION 4 — WHAT IS IN A MINISTRY PROFILE?
+
+Create a section titled:
+
+“Discover the Whole Person”
+
+Explain that Every Part goes beyond a basic spiritual gifts test.
+
+Use attractive cards for:
+
+Spiritual Gifts
+“How has the Holy Spirit equipped me?”
+
+APEST
+“How do I tend to contribute to the mission of the Church?”
+
+How You Tend to Operate
+“How do I naturally relate, decide, organize, and work with others?”
+
+Passions
+“Who or what has God placed on my heart?”
+
+Skills & Experience
+“What has God already developed in me?”
+
+Spiritual Health
+“How am I doing in my relationship with Christ?”
+
+Availability & Current Season
+“What commitment is realistic and healthy right now?”
+
+Ministry Interests
+“Where am I drawn toward serving?”
+
+SECTION 5 — SAMPLE MINISTRY PROFILE
+
+Create a visually compelling sample completed profile using FICTIONAL DATA ONLY.
+
+Do not use any existing real member data.
+
+Title:
+
+“See What Your Members Discover”
+
+Example:
+
+Sarah’s Ministry Profile
+
+Top Spiritual Gifts:
+Encouragement
+Mercy
+Helps
+
+APEST Contribution:
+Shepherd
+
+How She Tends to Operate:
+Relational
+Reflective
+Organized
+People-centered
+
+Passions:
+Young Adults
+People in Crisis
+New Believers
+
+Possible Ministry Environments:
+Care Ministry
+Discipleship
+Small Groups
+Hospitality
+
+Add a button:
+“View Sample Profile”
+
+If a full sample profile page does not exist, either create a safe static demo preview or make the button non-destructive until that page is built.
+
+SECTION 6 — FOR CHURCH LEADERS
+
+Create a section focused specifically on pastors and ministry leaders.
+
+Heading:
+
+“See Your Church Differently”
+
+Supporting text:
+
+“Every Part gives leaders a clearer picture of the people God has already placed in their congregation.”
+
+Show benefits such as:
+
+* View completed Ministry Profiles
+* Search by gifts and passions
+* Understand availability
+* Discover potential ministry matches
+* Identify emerging leaders
+* Discover overlooked abilities
+* Track profile completion
+* Build healthier ministry teams
+
+If possible, include a safe screenshot or visual mockup of the existing leader dashboard.
+
+Do not expose any real member information.
+
+SECTION 7 — MINISTRY MATCHING
+
+Add a section showing how Every Part can help leaders find people for ministry needs.
+
+Heading:
+
+“Stop Guessing Who Might Be a Good Fit”
+
+Use a fictional example:
+
+“We are launching a care ministry and need people who may be gifted and passionate about caring for others.”
+
+Then show a sample match:
+
+Sarah — Strong Match
+
+Reasons:
+
+* Mercy
+* Encouragement
+* Shepherd APEST
+* Passion for people experiencing hardship
+* Available during the needed time
+
+Add this statement prominently:
+
+“Every Part does not replace pastoral discernment. It helps leaders know where to begin the conversation.”
+
+If AI-powered ministry matching is already functional, describe it accurately.
+
+If it is not yet fully functional, label advanced AI matching clearly as “Coming Soon” instead of implying it already exists.
+
+SECTION 8 — TRUST AND PRIVACY
+
+Create a trust section.
+
+Heading:
+
+“Your People Matter. Their Information Does Too.”
+
+Only make claims that are technically true in the current system.
+
+Explain available protections such as:
+
+* Church-controlled access
+* Permission-based leader access
+* Protection of sensitive profile information
+* Secure accounts
+* Responsible handling of member information
+
+Do NOT make unsupported claims such as specific encryption standards, certifications, HIPAA compliance, or security guarantees unless those are actually implemented and verified.
+
+Include this statement:
+
+“Every Part is designed to assist ministry leaders—not replace prayer, pastoral relationships, or the work of the Holy Spirit.”
+
+SECTION 9 — FINAL CALL TO ACTION
+
+Create an emotionally compelling final section.
+
+Heading:
+
+“There are people in your church God has already equipped to serve.”
+
+Supporting copy:
+
+“Some know exactly where they belong. Others are still trying to discover their part.”
+
+Then:
+
+“Help every part of the Body find its place.”
+
+Primary CTA:
+“Try Every Part”
+
+If a free trial currently exists, use:
+“Start Your Free Trial”
+
+Do not advertise a free trial unless one actually exists.
+
+DESIGN REQUIREMENTS
+
+Use the current Every Part visual identity where appropriate, but improve the overall polish.
+
+Please:
+
+* Create clear visual hierarchy
+* Increase whitespace
+* Keep paragraphs short
+* Use readable typography
+* Use cards and icons thoughtfully
+* Make CTAs visually obvious
+* Avoid excessive animations
+* Avoid clutter
+* Ensure excellent mobile responsiveness
+* Ensure accessibility with good contrast, readable font sizes, semantic headings, keyboard-friendly navigation, and descriptive button labels
+* Keep loading performance in mind
+* Reuse existing components where sensible instead of unnecessarily rebuilding everything
+
+NAVIGATION
+
+Make the public navigation simple.
+
+Suggested items:
+
+How It Works
+Ministry Profile
+For Churches
+Pricing — only if pricing is ready
+Login
+Try Every Part
+
+Make “Try Every Part” the primary CTA.
+
+IMPORTANT
+
+Before changing anything:
+
+1. Review the current homepage and identify reusable components.
+2. Preserve all existing working functionality.
+3. Do not expose real user or church data.
+4. Do not modify authentication behavior unless necessary.
+5. Do not remove existing functionality just to simplify the homepage.
+6. Keep the redesign consistent with the rest of the application.
+7. After completing the redesign, test the homepage on desktop and mobile sizes.
+8. Check all buttons and navigation links.
+9. Make sure no placeholder text, broken links, fake statistics, or invented testimonials remain.
+
+The final homepage should make a first-time pastor think:
+
+“I understand what this does.”
+“This could help our church.”
+“I want to see what it looks like.”
+“I am willing to try it.”

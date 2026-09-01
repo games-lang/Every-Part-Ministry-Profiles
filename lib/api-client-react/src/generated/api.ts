@@ -36,6 +36,11 @@ import type {
   ExploreProfileResult,
   ExploreProfileSubmission,
   HealthStatus,
+  JourneyCompareResponse,
+  JourneyEntry,
+  JourneyEntryInput,
+  JourneyEntryUpdateInput,
+  JourneyResponse,
   ListProfilesParams,
   MinistryProfile,
   MinistryTeam,
@@ -1416,6 +1421,409 @@ export const useCreateProfile = <TError = ErrorType<void>,
       > => {
       return useMutation(getCreateProfileMutationOptions(options));
     }
+
+export const getGetProfileJourneyUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}/journey`
+}
+
+/**
+ * @summary Get the authenticated leader journey for a profile
+ */
+export const getProfileJourney = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<JourneyResponse> => {
+
+  return customFetch<JourneyResponse>(getGetProfileJourneyUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfileJourneyQueryKey = (id: number,) => {
+    return [
+    `/api/profiles/${id}/journey`
+    ] as const;
+    }
+
+
+export const getGetProfileJourneyQueryOptions = <TData = Awaited<ReturnType<typeof getProfileJourney>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfileJourney>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfileJourneyQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfileJourney>>> = ({ signal }) => getProfileJourney(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfileJourney>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfileJourneyQueryResult = NonNullable<Awaited<ReturnType<typeof getProfileJourney>>>
+export type GetProfileJourneyQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the authenticated leader journey for a profile
+ */
+
+export function useGetProfileJourney<TData = Awaited<ReturnType<typeof getProfileJourney>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfileJourney>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfileJourneyQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetPublicJourneyUrl = (token: string,) => {
+
+
+
+
+  return `/api/journeys/${token}`
+}
+
+/**
+ * @summary Get a safe member-facing journey using its private token
+ */
+export const getPublicJourney = async (token: string, options?: Parameters<typeof customFetch>[1]): Promise<JourneyResponse> => {
+
+  return customFetch<JourneyResponse>(getGetPublicJourneyUrl(token),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPublicJourneyQueryKey = (token: string,) => {
+    return [
+    `/api/journeys/${token}`
+    ] as const;
+    }
+
+
+export const getGetPublicJourneyQueryOptions = <TData = Awaited<ReturnType<typeof getPublicJourney>>, TError = ErrorType<void>>(token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicJourney>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPublicJourneyQueryKey(token);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicJourney>>> = ({ signal }) => getPublicJourney(token, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPublicJourney>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPublicJourneyQueryResult = NonNullable<Awaited<ReturnType<typeof getPublicJourney>>>
+export type GetPublicJourneyQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get a safe member-facing journey using its private token
+ */
+
+export function useGetPublicJourney<TData = Awaited<ReturnType<typeof getPublicJourney>>, TError = ErrorType<void>>(
+ token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicJourney>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPublicJourneyQueryOptions(token,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateJourneyEntryUrl = (token: string,) => {
+
+
+
+
+  return `/api/journeys/${token}/entries`
+}
+
+/**
+ * @summary Add a milestone or annual check-in to a church journey
+ */
+export const createJourneyEntry = async (token: string,
+    journeyEntryInput: JourneyEntryInput, options?: Parameters<typeof customFetch>[1]): Promise<JourneyEntry> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<JourneyEntry>(getCreateJourneyEntryUrl(token),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(journeyEntryInput)
+  }
+);}
+
+
+
+
+
+export const getCreateJourneyEntryMutationKey = () => ['createJourneyEntry'] as const;
+
+export const getCreateJourneyEntryMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createJourneyEntry>>, TError,CreateJourneyEntryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createJourneyEntry>>, TError,CreateJourneyEntryMutationVariables, TContext> => {
+
+const mutationKey = getCreateJourneyEntryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createJourneyEntry>>, CreateJourneyEntryMutationVariables> = (props) => {
+          const {token,data} = props ?? {};
+
+          return  createJourneyEntry(token,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateJourneyEntryMutationResult = NonNullable<Awaited<ReturnType<typeof createJourneyEntry>>>
+    export type CreateJourneyEntryMutationBody = BodyType<JourneyEntryInput>
+    export type CreateJourneyEntryMutationError = ErrorType<void>
+    export type CreateJourneyEntryMutationVariables = {token: string;data: BodyType<JourneyEntryInput>}
+
+    /**
+ * @summary Add a milestone or annual check-in to a church journey
+ */
+export const useCreateJourneyEntry = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createJourneyEntry>>, TError,CreateJourneyEntryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createJourneyEntry>>,
+        TError,
+        CreateJourneyEntryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateJourneyEntryMutationOptions(options));
+    }
+
+export const getUpdateJourneyEntryUrl = (id: number,) => {
+
+
+
+
+  return `/api/journeys/entries/${id}`
+}
+
+/**
+ * @summary Add or update a future reflection on a journey entry
+ */
+export const updateJourneyEntry = async (id: number,
+    journeyEntryUpdateInput: JourneyEntryUpdateInput, options?: Parameters<typeof customFetch>[1]): Promise<JourneyEntry> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<JourneyEntry>(getUpdateJourneyEntryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(journeyEntryUpdateInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateJourneyEntryMutationKey = () => ['updateJourneyEntry'] as const;
+
+export const getUpdateJourneyEntryMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateJourneyEntry>>, TError,UpdateJourneyEntryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateJourneyEntry>>, TError,UpdateJourneyEntryMutationVariables, TContext> => {
+
+const mutationKey = getUpdateJourneyEntryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateJourneyEntry>>, UpdateJourneyEntryMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateJourneyEntry(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateJourneyEntryMutationResult = NonNullable<Awaited<ReturnType<typeof updateJourneyEntry>>>
+    export type UpdateJourneyEntryMutationBody = BodyType<JourneyEntryUpdateInput>
+    export type UpdateJourneyEntryMutationError = ErrorType<void>
+    export type UpdateJourneyEntryMutationVariables = {id: number;data: BodyType<JourneyEntryUpdateInput>}
+
+    /**
+ * @summary Add or update a future reflection on a journey entry
+ */
+export const useUpdateJourneyEntry = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateJourneyEntry>>, TError,UpdateJourneyEntryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateJourneyEntry>>,
+        TError,
+        UpdateJourneyEntryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateJourneyEntryMutationOptions(options));
+    }
+
+export const getCompareJourneyProfilesUrl = (token: string,
+    leftProfileId: number,
+    rightProfileId: number,) => {
+
+
+
+
+  return `/api/journeys/${token}/compare/${leftProfileId}/${rightProfileId}`
+}
+
+/**
+ * @summary Compare two historical profile snapshots using rule-based themes
+ */
+export const compareJourneyProfiles = async (token: string,
+    leftProfileId: number,
+    rightProfileId: number, options?: Parameters<typeof customFetch>[1]): Promise<JourneyCompareResponse> => {
+
+  return customFetch<JourneyCompareResponse>(getCompareJourneyProfilesUrl(token,leftProfileId,rightProfileId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getCompareJourneyProfilesQueryKey = (token: string,
+    leftProfileId: number,
+    rightProfileId: number,) => {
+    return [
+    `/api/journeys/${token}/compare/${leftProfileId}/${rightProfileId}`
+    ] as const;
+    }
+
+
+export const getCompareJourneyProfilesQueryOptions = <TData = Awaited<ReturnType<typeof compareJourneyProfiles>>, TError = ErrorType<void>>(token: string,
+    leftProfileId: number,
+    rightProfileId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof compareJourneyProfiles>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCompareJourneyProfilesQueryKey(token,leftProfileId,rightProfileId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof compareJourneyProfiles>>> = ({ signal }) => compareJourneyProfiles(token,leftProfileId,rightProfileId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined && leftProfileId !== null && leftProfileId !== undefined && rightProfileId !== null && rightProfileId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof compareJourneyProfiles>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type CompareJourneyProfilesQueryResult = NonNullable<Awaited<ReturnType<typeof compareJourneyProfiles>>>
+export type CompareJourneyProfilesQueryError = ErrorType<void>
+
+
+/**
+ * @summary Compare two historical profile snapshots using rule-based themes
+ */
+
+export function useCompareJourneyProfiles<TData = Awaited<ReturnType<typeof compareJourneyProfiles>>, TError = ErrorType<void>>(
+ token: string,
+    leftProfileId: number,
+    rightProfileId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof compareJourneyProfiles>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getCompareJourneyProfilesQueryOptions(token,leftProfileId,rightProfileId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getFindVolunteerMatchesUrl = () => {
 

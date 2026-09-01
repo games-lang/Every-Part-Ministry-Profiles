@@ -12,6 +12,7 @@ import type { ExploreProfileResultSummary } from './exploreProfileResultSummary'
 
 export interface ExploreProfileResult {
   profileType: ExploreProfileResultProfileType;
+  journeyToken: string;
   childName: string;
   summary: ExploreProfileResultSummary;
   /**

@@ -8,6 +8,7 @@ function profile(overrides: Partial<MinistryProfile> = {}): MinistryProfile {
     id: 1,
     churchId: 1,
     teamId: null,
+    journeyId: null,
     profileType: "adult",
     recommendedProfileType: null,
     profileTypeOverridden: false,

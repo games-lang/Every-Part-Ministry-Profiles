@@ -23,6 +23,7 @@ import ExploreResult from '@/pages/explore-result';
 import DevelopAssessment from '@/pages/develop-assessment';
 import DevelopResult from '@/pages/develop-result';
 import DiscoverResult from '@/pages/discover-result';
+import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
 
@@ -199,6 +200,9 @@ function ClerkProviderWithRoutes() {
               <Route path="/profiles">
                 <AuthenticatedRoute component={ProfilesList} />
               </Route>
+              <Route path="/profiles/:id/journey">
+                <AuthenticatedRoute component={LeaderJourneyPage} />
+              </Route>
               <Route path="/profiles/:id">
                 <AuthenticatedRoute component={ProfileDetail} />
               </Route>
@@ -214,6 +218,7 @@ function ClerkProviderWithRoutes() {
               <Route path="/discover/result/:token" component={DiscoverResult} />
               <Route path="/explore/result/:token" component={ExploreResult} />
               <Route path="/develop/result/:token" component={DevelopResult} />
+              <Route path="/journey/:token" component={PublicJourneyPage} />
               
               <Route component={NotFound} />
             </Switch>
