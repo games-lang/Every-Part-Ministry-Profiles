@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+/* Every Part's semantic palette, kept local to this mockup group. */
+:root {
+  --background: 180 22% 96%;
+  --foreground: 220 58% 17%;
+  --border: 215 25% 82%;
+  --input: 215 25% 82%;
+  --ring: 209 71% 24%;
+  --card: 180 25% 98%;
+  --card-foreground: 220 58% 17%;
+  --card-border: 215 25% 86%;
+  --popover: 180 25% 98%;
+  --popover-foreground: 220 58% 17%;
+  --popover-border: 215 25% 86%;
+  --primary: 220 58% 17%;
+  --primary-foreground: 180 22% 96%;
+  --secondary: 12 81% 65%;
+  --secondary-foreground: 20 100% 98%;
+  --muted: 190 27% 92%;
+  --muted-foreground: 217 20% 41%;
+  --accent: 209 71% 24%;
+  --accent-foreground: 180 22% 96%;
+  --destructive: 0 70% 45%;
+  --destructive-foreground: 180 22% 96%;
+  --app-font-sans: "DM Sans", sans-serif;
+  --app-font-serif: "Space Grotesk", sans-serif;
+  --app-font-mono: Menlo, monospace;
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+  --radius: 0.75rem;
+  --landing-cyan: 178 45% 89%;
+  --landing-slate: 208 23% 70%;
+  --landing-light-text: 201 27% 81%;
+  --primary-deep: 210 74% 19%;
+}
+
+.dark {
+  --background: 220 58% 10%;
+  --foreground: 180 22% 96%;
+  --border: 214 51% 25%;
+  --input: 214 40% 24%;
+  --ring: 180 22% 96%;
+  --card: 220 50% 13%;
+  --card-foreground: 180 22% 96%;
+  --card-border: 214 51% 25%;
+  --popover: 220 50% 13%;
+  --popover-foreground: 180 22% 96%;
+  --popover-border: 214 51% 25%;
+  --primary: 180 22% 96%;
+  --primary-foreground: 220 50% 13%;
+  --secondary: 12 81% 65%;
+  --secondary-foreground: 20 100% 98%;
+  --muted: 214 40% 18%;
+  --muted-foreground: 202 22% 75%;
+  --accent: 209 55% 31%;
+  --accent-foreground: 180 22% 96%;
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 180 22% 96%;
+}
+
+.ep-landing {
+  background:
+    radial-gradient(circle at 86% 1%, hsl(182 43% 61% / .19), transparent 28rem),
+    radial-gradient(circle at 4% 39%, hsl(var(--secondary) / .07), transparent 25rem),
+    hsl(var(--background));
+}
+
+.landing-link { transition: transform .2s ease; }
+.landing-link:hover { color: hsl(var(--secondary)); transform: translateX(3px); }
+.landing-focus:focus-visible { outline: 3px solid hsl(var(--secondary) / .7); outline-offset: 4px; }
+.landing-menu { animation: landing-menu-in .2s ease both; transform-origin: top; }
+@keyframes landing-menu-in { from { opacity: 0; transform: scaleY(.96); } to { opacity: 1; transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .landing-link, .landing-menu { transition: none; animation: none; }
+}

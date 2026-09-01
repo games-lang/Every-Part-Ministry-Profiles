@@ -1,136 +1,130 @@
-import { useEffect, useState } from "react";
-import { Link } from "wouter";
+import "./_group.css";
+import { useEffect, useState, type AnchorHTMLAttributes } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
   Check,
-  Compass,
   ChevronDown,
   CircleHelp,
+  Compass,
   Cross,
-  HeartHandshake,
   Menu,
   Network,
   Sparkles,
-  UsersRound,
   X,
 } from "lucide-react";
 
+function Link({ href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return <a href={href} {...props} />;
+}
+
 const plans = [
   {
-    id: "free",
-    name: "Free",
+    id: "start-free",
+    name: "Start Free",
     eyebrow: "Begin gently",
-    profileLimit: "10",
-    limitLabel: "active profiles",
     price: "$0",
     cadence: "per month",
     description: "A simple place to begin exploring Every Part with your church.",
     icon: Cross,
     tone: "light",
-    valueNote: "No card required",
-    action: "Start free",
+    features: [
+      "Church setup",
+      "Ministry Profiles",
+      "A small leader team",
+      "Search and filtering",
+    ],
+    action: "Start with the free plan",
     href: "/sign-up",
   },
   {
-    id: "25-profiles",
-    name: "25 Profiles",
-    eyebrow: "Start small",
-    profileLimit: "25",
-    limitLabel: "active profiles",
-    price: "$4.99",
+    id: "church",
+    name: "Church",
+    eyebrow: "A steady next step",
+    price: "$79",
     cadence: "per month",
-    description: "For a small team beginning a shared ministry conversation.",
+    description: "For a church ready to make discovery part of its regular ministry rhythm.",
     icon: Sparkles,
-    tone: "light",
-    valueNote: "20¢ per included profile",
-    action: "Choose 25",
-    href: "/sign-up",
-  },
-  {
-    id: "50-profiles",
-    name: "50 Profiles",
-    eyebrow: "Find your rhythm",
-    profileLimit: "50",
-    limitLabel: "active profiles",
-    price: "$9.99",
-    cadence: "per month",
-    description: "Room for a growing group to discover gifts and places to serve.",
-    icon: Network,
-    tone: "light",
-    valueNote: "20¢ per included profile",
-    action: "Choose 50",
-    href: "/sign-up",
-  },
-  {
-    id: "100-profiles",
-    name: "100 Profiles",
-    eyebrow: "Most churches begin here",
-    profileLimit: "100",
-    limitLabel: "active profiles",
-    price: "$14.99",
-    cadence: "per month",
-    description: "A comfortable starting point for a church-wide ministry rhythm.",
-    icon: Compass,
     tone: "featured",
-    valueNote: "15¢ per included profile",
-    action: "Choose 100",
+    features: [
+      "Everything in Start Free",
+      "Expanded leader access",
+      "Team conversations",
+      "Profile history",
+      "Search and filtering across your church",
+    ],
+    action: "Choose Church",
     href: "/sign-up",
   },
   {
-    id: "250-profiles",
-    name: "250 Profiles",
-    eyebrow: "Make room",
-    profileLimit: "250",
-    limitLabel: "active profiles",
-    price: "$19.99",
+    id: "growing-church",
+    name: "Growing Church",
+    eyebrow: "For a wider rhythm",
+    price: "$149",
     cadence: "per month",
-    description: "For churches making room for more people to be seen and invited.",
-    icon: UsersRound,
-    tone: "light",
-    valueNote: "8¢ per included profile",
-    action: "Choose 250",
-    href: "/sign-up",
-  },
-  {
-    id: "500-profiles",
-    name: "500 Profiles",
-    eyebrow: "Wider reach",
-    profileLimit: "500",
-    limitLabel: "active profiles",
-    price: "$24.99",
-    cadence: "per month",
-    description: "A generous runway for a fuller picture of your congregation.",
+    description: "For churches building a shared language of gifts, service, and development.",
     icon: Network,
     tone: "light",
-    valueNote: "5¢ per included profile",
-    action: "Choose 500",
+    features: [
+      "Everything in Church",
+      "More leader access",
+      "Broader profile history",
+      "Support for growing ministry teams",
+    ],
+    action: "Choose Growing Church",
     href: "/sign-up",
   },
   {
-    id: "unlimited",
-    name: "Unlimited",
-    eyebrow: "One church, no cap",
-    profileLimit: "∞",
-    limitLabel: "active profiles",
-    price: "$29.99",
-    cadence: "per month",
-    description: "No profile limit for one church as Every Part grows with you.",
-    icon: HeartHandshake,
+    id: "multi-site",
+    name: "Multi-site",
+    eyebrow: "Many places, one purpose",
+    price: "Custom",
+    cadence: "let’s talk about fit",
+    description: "A thoughtful conversation for churches connecting more than one site.",
+    icon: Compass,
     tone: "dark",
-    valueNote: "No profile limit",
-    action: "Choose unlimited",
+    features: [
+      "A conversation about your structure",
+      "Ministry Profiles across sites",
+      "Leader access shaped to your teams",
+      "A considered path forward",
+    ],
+    action: "Discuss multi-site fit",
     href: "/sign-up",
   },
 ];
 
-const includedBenefits = [
-  ["Church setup", "Shape your church, teams, and places to serve."],
-  ["Ministry Profiles", "Give people a thoughtful starting point for conversation."],
-  ["Search and filtering", "Find a place to begin exploring together."],
-  ["Team conversations", "Give leaders a shared starting point."],
-  ["Profile history", "Return to the conversation as seasons change."],
-  ["Leader access", "Invite the people who help your church discern."],
+const comparisonRows = [
+  {
+    feature: "Ministry Profiles",
+    note: "A fuller picture for ministry conversations",
+    values: ["Included", "Included", "Included", "Included"],
+  },
+  {
+    feature: "Church setup",
+    note: "Shape your church, teams, and places to serve",
+    values: ["Included", "Included", "Included", "Included"],
+  },
+  {
+    feature: "Search and filtering",
+    note: "Find a place to begin exploring together",
+    values: ["Included", "Included", "Included", "Included"],
+  },
+  {
+    feature: "Team conversations",
+    note: "Give leaders a shared starting point",
+    values: ["—", "Included", "Included", "Included"],
+  },
+  {
+    feature: "Profile history",
+    note: "Return to the conversation as seasons change",
+    values: ["—", "Included", "Included", "Included"],
+  },
+  {
+    feature: "Leader access",
+    note: "Invite the people who help your church discern",
+    values: ["Small team", "Expanded", "More access", "Shaped together"],
+  },
 ];
 
 const faqs = [
@@ -142,17 +136,12 @@ const faqs = [
   {
     question: "What does Start Free include?",
     answer:
-      "The Free plan includes up to 10 active Ministry Profiles. It is a low-pressure way to set up your church and begin exploring with your leaders. Exact plan limits will be confirmed before any billing begins.",
-  },
-  {
-    question: "What does an active profile mean?",
-    answer:
-      "Active profiles are the people your church is currently including in its ministry conversations. Historical or archived profiles should not be treated as a surprise charge; the final rules will be confirmed before billing begins.",
+      "Start Free is a low-pressure way to begin: set up your church, create Ministry Profiles, and start exploring with a small leader team. The exact limits will be confirmed before any billing begins.",
   },
   {
     question: "Can we change plans later?",
     answer:
-      "That is the intention. A church should be able to move up or down as its ministry rhythm changes. We will confirm the details with you before billing is enabled.",
+      "That is the intention. We are designing the path so a church can begin simply and grow into a plan that fits its ministry rhythm. We will confirm the details with you before billing is enabled.",
   },
   {
     question: "How do we think about matching?",
@@ -217,19 +206,6 @@ function Brand() {
 export default function PricingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  useEffect(() => {
-    document.title = "Preview pricing | Every Part";
-    const description =
-      "Explore preview pricing for Every Part, a thoughtful way for churches to discover their people and connect them with meaningful ministry.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
 
   return (
     <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
@@ -355,58 +331,68 @@ export default function PricingPage() {
                 return (
                   <Reveal key={plan.id} className={`pricing-card-reveal-${index}`}>
                     <article
-                      className={`relative flex h-full min-h-[460px] flex-col rounded-[1.75rem] border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_hsl(var(--foreground)/.12)] sm:p-7 ${
+                      className={`relative flex h-full min-h-[520px] flex-col rounded-[1.75rem] border p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_hsl(var(--foreground)/.12)] sm:p-8 ${
                         featured
-                          ? "border-primary bg-primary text-primary-foreground shadow-[0_20px_50px_hsl(var(--primary)/.2)] lg:-mt-5 lg:min-h-[500px]"
+                          ? "border-primary bg-primary text-primary-foreground shadow-[0_20px_50px_hsl(var(--primary)/.2)] lg:-mt-5 lg:min-h-[560px]"
                           : dark
                             ? "border-accent bg-accent text-accent-foreground"
                             : "border-border bg-card"
                       }`}
                       data-testid={`card-plan-${plan.id}`}
                     >
+                      {featured && (
+                        <span className="absolute right-7 top-7 rounded-full bg-secondary px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-secondary-foreground" data-testid="badge-plan-recommended">
+                          Most churches begin here
+                        </span>
+                      )}
                       <div className="flex items-start justify-between gap-3">
                         <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${featured ? "bg-white/10 text-secondary" : dark ? "bg-white/10 text-secondary" : "bg-muted text-primary"}`}>
                           <Icon className="h-5 w-5" />
                         </span>
-                        {featured && (
-                          <span className="rounded-full bg-secondary px-3 py-1.5 text-center text-[9px] font-bold uppercase tracking-[.13em] text-secondary-foreground" data-testid="badge-plan-recommended">
-                            Best value
-                          </span>
-                        )}
+                        {!featured && <span className={`text-[10px] font-bold uppercase tracking-[.16em] ${dark ? "text-[hsl(var(--landing-cyan))]" : "text-muted-foreground"}`}>{plan.eyebrow}</span>}
                       </div>
-                      <p className={`mt-5 text-[10px] font-bold uppercase tracking-[.16em] ${featured || dark ? "text-[hsl(var(--landing-cyan))]" : "text-muted-foreground"}`}>
-                        {featured ? "Most churches begin here" : plan.eyebrow}
-                      </p>
+                      {featured && <p className="mt-5 text-[10px] font-bold uppercase tracking-[.16em] text-[hsl(var(--landing-cyan))]">{plan.eyebrow}</p>}
                       <h3 className="mt-6 font-serif text-3xl font-semibold tracking-[-.055em]" data-testid={`text-plan-name-${plan.id}`}>{plan.name}</h3>
-                      <div className="mt-6 flex items-baseline gap-2">
+                      <div className="mt-7 flex items-baseline gap-2">
                         <span className="font-serif text-5xl font-semibold tracking-[-.07em]" data-testid={`text-plan-price-${plan.id}`}>{plan.price}</span>
                         <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>{plan.cadence}</span>
                       </div>
-                      <div className={`mt-5 rounded-2xl p-4 ${featured || dark ? "bg-white/10" : "bg-muted/70"}`}>
-                        <p className={`text-[10px] font-bold uppercase tracking-[.14em] ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>Includes up to</p>
-                        <div className="mt-1 flex items-baseline gap-2">
-                          <span className="font-serif text-4xl font-semibold tracking-[-.06em]" data-testid={`text-plan-limit-${plan.id}`}>{plan.profileLimit}</span>
-                          <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.limitLabel}</span>
-                        </div>
-                      </div>
-                      <p className={`mt-4 min-h-[48px] text-sm leading-6 ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.description}</p>
-                      <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.id}`}>{plan.valueNote}</p>
+                      <p className={`mt-5 min-h-[72px] text-sm leading-6 ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.description}</p>
+                      <div className={`my-7 h-px ${featured || dark ? "bg-white/15" : "bg-border"}`} />
+                      <ul className="space-y-3" aria-label={`${plan.name} features`}>
+                        {plan.features.map((feature) => (
+                          <li key={feature} className="flex gap-3 text-sm leading-5" data-testid={`feature-${plan.id}-${feature.toLowerCase().replaceAll(" ", "-")}`}>
+                            <Check className={`mt-0.5 h-4 w-4 shrink-0 ${featured || dark ? "text-secondary" : "text-accent"}`} />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
                       <div className="mt-auto pt-8">
-                        <Link
-                          href={plan.href}
-                          className={`landing-focus inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 ${featured ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : dark ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "bg-primary text-primary-foreground hover:bg-accent"}`}
-                          data-testid={`link-plan-action-${plan.id}`}
-                        >
-                          {plan.action} <ArrowRight className="h-4 w-4" />
-                        </Link>
+                        {plan.href.startsWith("mailto:") ? (
+                          <a
+                            href={plan.href}
+                            className={`landing-focus inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 ${dark ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "border border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground"}`}
+                            data-testid={`link-plan-action-${plan.id}`}
+                          >
+                            {plan.action} <ArrowUpRight className="h-4 w-4" />
+                          </a>
+                        ) : (
+                          <Link
+                            href={plan.href}
+                            className={`landing-focus inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 ${featured ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "bg-primary text-primary-foreground hover:bg-accent"}`}
+                            data-testid={`link-plan-action-${plan.id}`}
+                          >
+                            {plan.action} <ArrowRight className="h-4 w-4" />
+                          </Link>
+                        )}
                       </div>
                     </article>
                   </Reveal>
                 );
               })}
             </div>
-             <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
-               Placeholder pricing shown in USD per month. Profile limits refer to active Ministry Profiles. Final plan details will be confirmed before billing is enabled.
+            <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
+              Placeholder pricing shown in USD per month. Final plan details will be confirmed before billing is enabled.
             </p>
           </div>
         </section>
@@ -416,31 +402,47 @@ export default function PricingPage() {
             <div className="grid gap-10 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
               <Reveal className="pricing-compare-label">
                 <div>
-                   <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.2em] text-accent"><span className="h-px w-8 bg-secondary" />What every plan includes</p>
+                  <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.2em] text-accent"><span className="h-px w-8 bg-secondary" />What stays at the center</p>
                   <Cross className="mt-8 h-8 w-8 text-secondary" />
                 </div>
               </Reveal>
               <Reveal className="pricing-compare-heading">
                 <div>
-                   <h2 className="max-w-3xl font-serif text-4xl font-semibold leading-[.96] tracking-[-.065em] sm:text-6xl">Choose your capacity. Keep the whole conversation.</h2>
-                   <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">Every profile limit comes with the full Every Part experience. The plan you choose changes the room you have to invite people in—not the care you bring to the conversation.</p>
+                  <h2 className="max-w-3xl font-serif text-4xl font-semibold leading-[.96] tracking-[-.065em] sm:text-6xl">The tools are modest. The conversation is meaningful.</h2>
+                  <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">Every Part gives your leaders a clear place to start. It does not replace prayer, relationship, or the wisdom of people who know one another well.</p>
                 </div>
               </Reveal>
             </div>
 
-             <Reveal className="pricing-included-reveal">
-               <div className="mt-14 grid gap-px overflow-hidden rounded-[1.75rem] border border-border bg-border sm:grid-cols-2 lg:grid-cols-3" data-testid="grid-plan-inclusions">
-                 {includedBenefits.map(([feature, note], index) => (
-                   <div key={feature} className="bg-card p-7 sm:p-8" data-testid={`card-inclusion-${index}`}>
-                     <Check className="h-5 w-5 text-secondary" aria-hidden="true" />
-                     <h3 className="mt-6 font-serif text-2xl font-semibold tracking-[-.04em]" data-testid={`text-inclusion-feature-${index}`}>{feature}</h3>
-                     <p className="mt-3 text-sm leading-6 text-muted-foreground">{note}</p>
-                   </div>
-                 ))}
+            <Reveal className="pricing-table-reveal">
+              <div className="mt-14 overflow-x-auto rounded-[1.75rem] border border-border bg-card">
+                <table className="w-full min-w-[760px] border-collapse text-left" data-testid="table-pricing-comparison">
+                  <caption className="sr-only">Preview comparison of Every Part plans and features</caption>
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th scope="col" className="w-[31%] p-6 text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Included in the plan</th>
+                      {plans.map((plan) => (
+                        <th scope="col" key={plan.id} className="p-6 text-center font-serif text-lg tracking-[-.03em]" data-testid={`table-header-${plan.id}`}>{plan.name}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comparisonRows.map((row) => (
+                      <tr key={row.feature} className="border-b border-border last:border-b-0">
+                        <th scope="row" className="p-6 align-top font-medium">
+                          <span className="block" data-testid={`text-comparison-feature-${row.feature.toLowerCase().replaceAll(" ", "-")}`}>{row.feature}</span>
+                          <span className="mt-1 block max-w-[210px] text-xs font-normal leading-5 text-muted-foreground">{row.note}</span>
+                        </th>
+                        {row.values.map((value, index) => (
+                          <td key={`${row.feature}-${plans[index].id}`} className={`p-6 text-center text-sm ${value === "—" ? "text-muted-foreground/50" : "text-foreground/75"}`} data-testid={`text-comparison-${row.feature.toLowerCase().replaceAll(" ", "-")}-${plans[index].id}`}>
+                            {value === "Included" ? <Check className="mx-auto h-4 w-4 text-secondary" aria-label="Included" /> : value}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-               <p className="mt-6 text-sm leading-6 text-muted-foreground" data-testid="text-active-profile-definition">
-                 Active profiles are the people your church is currently including in ministry conversations. Archived and historical profiles will be handled clearly before billing is enabled.
-               </p>
             </Reveal>
           </div>
         </section>

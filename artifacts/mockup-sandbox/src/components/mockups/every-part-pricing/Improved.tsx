@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { Link } from "wouter";
+import "./_group.css";
+import { useEffect, useState, type AnchorHTMLAttributes } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
   Check,
-  Compass,
   ChevronDown,
   CircleHelp,
+  Compass,
   Cross,
   HeartHandshake,
   Menu,
@@ -15,6 +15,10 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
+
+function Link({ href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return <a href={href} {...props} />;
+}
 
 const plans = [
   {
@@ -217,19 +221,6 @@ function Brand() {
 export default function PricingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  useEffect(() => {
-    document.title = "Preview pricing | Every Part";
-    const description =
-      "Explore preview pricing for Every Part, a thoughtful way for churches to discover their people and connect them with meaningful ministry.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
 
   return (
     <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
