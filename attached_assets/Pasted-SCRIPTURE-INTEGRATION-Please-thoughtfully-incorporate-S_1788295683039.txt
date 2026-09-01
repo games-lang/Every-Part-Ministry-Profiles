@@ -1,0 +1,74 @@
+SCRIPTURE INTEGRATION
+
+Please thoughtfully incorporate Scripture throughout the homepage so it is clear that Every Part is built on a biblical understanding of the Church as the Body of Christ.
+
+Do not overload the page with verses. Use Scripture strategically in 3–4 places where it naturally reinforces the message.
+
+PRIMARY SCRIPTURE
+
+Use 1 Corinthians 12:12–27 as the main biblical foundation for Every Part.
+
+Prominently feature:
+
+“Now you are the body of Christ, and each one of you is a part of it.”
+— 1 Corinthians 12:27
+
+This verse should appear somewhere near the hero section, the Every Part Pathway, or the final call to action.
+
+Consider also using this short phrase from 1 Corinthians 12:18:
+
+“God has placed the parts in the body, every one of them, just as he wanted them to be.”
+— 1 Corinthians 12:18
+
+This would work especially well near the section about helping people discover where they fit.
+
+SPIRITUAL GIFTS SECTION
+
+Near the Ministry Profile or Spiritual Gifts section, use:
+
+“We have different gifts, according to the grace given to each of us.”
+— Romans 12:6
+
+Use this to reinforce that Every Part is about discovering God-given gifts, not merely identifying personality traits or skills.
+
+SERVING SECTION
+
+Near the Connect or Develop stage of the Every Part Pathway, consider:
+
+“Each of you should use whatever gift you have received to serve others.”
+— 1 Peter 4:10
+
+This verse can reinforce the idea that gifts are given for service, not simply self-discovery.
+
+FINAL CALL TO ACTION
+
+Connect the final invitation back to the Body of Christ.
+
+Possible presentation:
+
+“Now you are the body of Christ, and each one of you is a part of it.”
+— 1 Corinthians 12:27
+
+Then:
+
+“Every person has a part. Help them discover it.”
+
+DESIGN DIRECTION FOR SCRIPTURE
+
+* Scripture should feel like part of the theological foundation of the product, not random inspirational quotes.
+* Use elegant Scripture callouts with plenty of whitespace.
+* Do not place a Bible verse under every section.
+* Keep the Body of Christ imagery centered around 1 Corinthians 12.
+* Avoid using Scripture simply as decoration.
+* Where possible, connect each verse directly to the purpose of that section.
+* Keep Scripture readable on mobile.
+* Use one consistent Bible translation throughout the homepage.
+* Use the NIV unless the application already has a different established translation.
+
+THEOLOGICAL MESSAGE
+
+The homepage should communicate this underlying biblical idea:
+
+God has intentionally placed different people, with different gifts and roles, within the Body of Christ. Every Part helps churches prayerfully recognize those gifts, discern where people may serve, and develop every member so the whole Body can function more faithfully.
+
+Do not imply that an assessment determines a person's calling. Continue emphasizing that Scripture, prayer, the Holy Spirit, relationships, and pastoral discernment are central to the process.

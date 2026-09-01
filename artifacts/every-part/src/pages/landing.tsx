@@ -158,6 +158,25 @@ function Eyebrow({ children, light = false }: { children: React.ReactNode; light
   );
 }
 
+function ScriptureCallout({
+  verse,
+  reference,
+  dark = false,
+}: {
+  verse: string;
+  reference: string;
+  dark?: boolean;
+}) {
+  return (
+    <figure className={`landing-scripture ${dark ? "landing-scripture--dark" : ""}`}>
+      <blockquote className="font-serif text-xl leading-tight tracking-[-.025em] sm:text-2xl">“{verse}”</blockquote>
+      <figcaption className="mt-4 text-xs font-bold uppercase tracking-[.16em]">
+        — {reference} <span className="ml-2 font-medium opacity-70">NIV</span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -311,6 +330,12 @@ export default function LandingPage() {
               </div>
             </Reveal>
             <p className="mt-10 max-w-3xl font-serif text-2xl leading-tight tracking-[-.04em] sm:text-3xl">Every Part gives your church a pathway from discovery to meaningful ministry.</p>
+            <Reveal className="mt-10 max-w-3xl">
+              <ScriptureCallout
+                verse="God has placed the parts in the body, every one of them, just as he wanted them to be."
+                reference="1 Corinthians 12:18"
+              />
+            </Reveal>
 
             <div className="mt-24 grid gap-8 lg:grid-cols-[1fr_.72fr] lg:items-end">
               <Reveal>
@@ -341,6 +366,12 @@ export default function LandingPage() {
                 </Reveal>
               ))}
             </div>
+            <Reveal className="mt-12 max-w-3xl">
+              <ScriptureCallout
+                verse="Each of you should use whatever gift you have received to serve others."
+                reference="1 Peter 4:10"
+              />
+            </Reveal>
           </div>
         </section>
 
@@ -358,6 +389,10 @@ export default function LandingPage() {
                 <p className="mt-6 max-w-xl border-l-2 border-secondary pl-5 font-serif text-xl leading-8 tracking-[-.025em]">
                   The profile starts the conversation. Prayer, relationship, and discernment help determine the next step.
                 </p>
+                <ScriptureCallout
+                  verse="We have different gifts, according to the grace given to each of us."
+                  reference="Romans 12:6"
+                />
               </Reveal>
 
               <Reveal className="[animation-delay:.12s]">
@@ -520,8 +555,13 @@ export default function LandingPage() {
             <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-secondary px-7 py-16 text-center text-secondary-foreground sm:px-14 sm:py-20">
               <div className="pointer-events-none absolute -left-16 -top-20 h-52 w-52 rounded-full border-[28px] border-secondary-foreground/10" aria-hidden="true" />
               <div className="pointer-events-none absolute -bottom-24 -right-12 h-64 w-64 rounded-full border-[32px] border-secondary-foreground/10" aria-hidden="true" />
-              <p className="relative text-xs font-bold uppercase tracking-[.2em]">Begin with one conversation</p>
-               <h2 className="relative mx-auto mt-6 max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-6xl">There are people in your church God has already equipped to serve.</h2>
+               <p className="relative text-xs font-bold uppercase tracking-[.2em]">Begin with one conversation</p>
+               <ScriptureCallout
+                 verse="Now you are the body of Christ, and each one of you is a part of it."
+                 reference="1 Corinthians 12:27"
+                 dark
+               />
+                <h2 className="relative mx-auto mt-6 max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-6xl">There are people in your church God has already equipped to serve.</h2>
                <p className="relative mx-auto mt-6 max-w-xl text-base leading-7 text-secondary-foreground/80 sm:text-lg">Some know exactly where they belong. Others are still trying to discover their part.</p>
                <p className="relative mx-auto mt-4 max-w-xl font-serif text-2xl leading-tight sm:text-3xl">Help every part of the Body find its place.</p>
               <div className="relative mt-9 flex flex-col justify-center gap-3 sm:flex-row">
