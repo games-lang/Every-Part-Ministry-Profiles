@@ -10,6 +10,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 
 // Pages
 import LandingPage from '@/pages/landing';
+import PricingPage from '@/pages/pricing';
 import Dashboard from '@/pages/dashboard';
 import ChurchSetup from '@/pages/church-setup';
 import ProfilesList from '@/pages/profiles-list';
@@ -183,6 +184,7 @@ function ClerkProviderWithRoutes() {
           <RoutedErrorBoundary>
             <Switch>
               <Route path="/" component={HomeRedirect} />
+              <Route path="/pricing" component={PricingPage} />
               <Route path="/sign-in/*?" component={SignInPage} />
               <Route path="/sign-up/*?" component={SignUpPage} />
               
