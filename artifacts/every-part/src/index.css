@@ -207,20 +207,31 @@
   --landing-slate: 208 23% 70%;
   --landing-light-text: 201 27% 81%;
   --primary-deep: 210 74% 19%;
-  background: radial-gradient(circle at 84% 4%, hsl(182 43% 61% / .22), transparent 25rem), hsl(var(--background));
+  background:
+    radial-gradient(circle at 86% 1%, hsl(182 43% 61% / .19), transparent 28rem),
+    radial-gradient(circle at 4% 39%, hsl(var(--secondary) / .07), transparent 25rem),
+    hsl(var(--background));
 }
 
-.landing-reveal { animation: landing-rise .7s cubic-bezier(.2, .75, .25, 1) both; }
-.landing-reveal-delay { animation-delay: .12s; }
-.landing-reveal-delay-2 { animation-delay: .22s; }
-.landing-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.landing-grid {
+  background-image: linear-gradient(hsl(var(--primary) / .055) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / .055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+.landing-reveal { opacity: 0; transform: translateY(20px); }
+.landing-reveal.is-visible { animation: landing-rise .7s cubic-bezier(.2, .75, .25, 1) both; }
+.landing-card { transition: transform .25s ease; }
 .landing-card:hover { transform: translateY(-5px); box-shadow: 0 20px 44px hsl(202 61% 20% / .12); border-color: hsl(209 71% 24% / .3); }
-.landing-link { transition: color .2s ease, transform .2s ease; }
+.landing-link { transition: transform .2s ease; }
 .landing-link:hover { color: hsl(var(--secondary)); transform: translateX(3px); }
-@keyframes landing-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.landing-focus:focus-visible { outline: 3px solid hsl(var(--secondary) / .7); outline-offset: 4px; }
+.landing-menu { animation: landing-menu-in .2s ease both; transform-origin: top; }
+@keyframes landing-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes landing-menu-in { from { opacity: 0; transform: scaleY(.96); } to { opacity: 1; transform: scaleY(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .landing-reveal { animation: none; }
-  .landing-card, .landing-link { transition: none; }
+  .landing-reveal { opacity: 1; transform: none; }
+  .landing-reveal.is-visible { animation: none; }
+  .landing-card, .landing-link, .landing-menu { transition: none; animation: none; }
 }
 
 @layer utilities {

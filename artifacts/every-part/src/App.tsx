@@ -17,12 +17,7 @@ import ProfileDetail from '@/pages/profile-detail';
 import Teams from '@/pages/teams';
 import Assessment from '@/pages/assessment';
 import AgeGateway from '@/pages/age-gateway';
-import DiscoverAssessment from '@/pages/discover-assessment';
-import ExploreAssessment from '@/pages/explore-assessment';
-import ExploreResult from '@/pages/explore-result';
-import DevelopAssessment from '@/pages/develop-assessment';
-import DevelopResult from '@/pages/develop-result';
-import DiscoverResult from '@/pages/discover-result';
+import YouthPathwayStub from '@/pages/youth-pathway-stub';
 import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
@@ -212,12 +207,12 @@ function ClerkProviderWithRoutes() {
               
               <Route path="/profile/:slug" component={AgeGateway} />
               <Route path="/profile/:slug/adult" component={Assessment} />
-              <Route path="/profile/:slug/discover" component={DiscoverAssessment} />
-              <Route path="/profile/:slug/explore" component={ExploreAssessment} />
-              <Route path="/profile/:slug/develop" component={DevelopAssessment} />
-              <Route path="/discover/result/:token" component={DiscoverResult} />
-              <Route path="/explore/result/:token" component={ExploreResult} />
-              <Route path="/develop/result/:token" component={DevelopResult} />
+              <Route path="/profile/:slug/discover" component={YouthPathwayStub} />
+              <Route path="/profile/:slug/explore" component={YouthPathwayStub} />
+              <Route path="/profile/:slug/develop" component={YouthPathwayStub} />
+              <Route path="/discover/result/:token" component={YouthPathwayStub} />
+              <Route path="/explore/result/:token" component={YouthPathwayStub} />
+              <Route path="/develop/result/:token" component={YouthPathwayStub} />
               <Route path="/journey/:token" component={PublicJourneyPage} />
               
               <Route component={NotFound} />

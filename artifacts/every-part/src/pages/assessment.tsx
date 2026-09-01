@@ -987,6 +987,8 @@ const assessmentSchema = z.object({
     capacityThisSeason: z.string(),
     currentlyServing: z.string(),
     alreadyAsked: z.string(),
+    servingLoadCount: z.string(),
+    servingLoadFeel: z.string(),
   }),
   spiritualHealth: z.object({
     prayer: z.string(),
@@ -1162,6 +1164,8 @@ const defaultValues: Values = {
     capacityThisSeason: "",
     currentlyServing: "",
     alreadyAsked: "",
+    servingLoadCount: "",
+    servingLoadFeel: "",
   },
   spiritualHealth: {
     prayer: "",
@@ -3350,6 +3354,18 @@ export default function Assessment() {
                           "Yes — another team",
                           "Yes — not sure who",
                         ]}
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.servingLoadCount"
+                        label="How many serving roles are you carrying right now?"
+                        options={["None", "One", "Two", "Three or more"]}
+                      />
+                      <SelectField
+                        form={form}
+                        name="availabilityDetails.servingLoadFeel"
+                        label="How does that load feel?"
+                        options={["Fine", "Stretched", "Overloaded"]}
                       />
                     </>
                   )}
