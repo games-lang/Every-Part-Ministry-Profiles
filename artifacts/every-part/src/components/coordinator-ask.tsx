@@ -8,6 +8,7 @@ function hasValues(value: unknown) {
 }
 
 function textOf(value: unknown) {
+  
   if (typeof value === "string") return value.trim();
   if (typeof value === "number") return String(value);
   return "";

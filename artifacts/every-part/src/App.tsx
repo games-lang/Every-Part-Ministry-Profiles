@@ -19,9 +19,16 @@ import Teams from '@/pages/teams';
 import Assessment from '@/pages/assessment';
 import AgeGateway from '@/pages/age-gateway';
 import YouthPathwayStub from '@/pages/youth-pathway-stub';
+import DiscoverGate from '@/pages/discover-gate';
+import DiscoverAssessment from '@/pages/discover-assessment';
+
 import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
+
+const DiscoverRoute = ({ params }: { params: { slug: string } }) => (
+    <DiscoverGate params={params} Page={DiscoverAssessment} />
+  );
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -209,7 +216,7 @@ function ClerkProviderWithRoutes() {
               
               <Route path="/profile/:slug" component={AgeGateway} />
               <Route path="/profile/:slug/adult" component={Assessment} />
-              <Route path="/profile/:slug/discover" component={YouthPathwayStub} />
+              <Route path="/profile/:slug/discover" component={DiscoverRoute} />
               <Route path="/profile/:slug/explore" component={YouthPathwayStub} />
               <Route path="/profile/:slug/develop" component={YouthPathwayStub} />
               <Route path="/discover/result/:token" component={YouthPathwayStub} />

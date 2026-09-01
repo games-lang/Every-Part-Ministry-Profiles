@@ -60,6 +60,11 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
 
     const pathway = calculatePathway(calculatedAge);
 
+    if (pathway === "discover" && !isSignedIn) {
+            setError("A parent or coordinator must sign in");
+            return;
+    }
+    
     if (pathway === "too-young") {
       setError("This version begins at age 6.");
       return;

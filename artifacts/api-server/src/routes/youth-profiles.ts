@@ -44,6 +44,12 @@ function optionalUserId(req: Parameters<typeof getAuth>[0]): string | null {
 }
 
 router.post("/youth-profiles", async (req, res): Promise<void> => {
+if (!optionalUserId(req)) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+}
+
+  
   // Use both generated boundary validation and the stricter server-owned
   // allowlist. The generated schema deliberately cannot express every nested
   // youth answer constraint.
