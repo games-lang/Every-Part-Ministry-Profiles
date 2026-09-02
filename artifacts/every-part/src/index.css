@@ -236,12 +236,34 @@
 .landing-link:hover { color: hsl(var(--secondary)); transform: translateX(3px); }
 .landing-focus:focus-visible { outline: 3px solid hsl(var(--secondary) / .7); outline-offset: 4px; }
 .landing-menu { animation: landing-menu-in .2s ease both; transform-origin: top; }
+.puzzle-cluster {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 9rem;
+  aspect-ratio: 1;
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 10px 18px hsl(var(--foreground) / .1));
+}
+.puzzle-cluster--sm { width: 4.25rem; }
+.puzzle-cluster__piece {
+  width: calc(100% + .55rem);
+  height: calc(100% + .55rem);
+  margin: -.275rem;
+  transition: transform .3s ease;
+}
+.puzzle-cluster__piece--offset { transform: translateY(.16rem); }
+.puzzle-cluster--sm .puzzle-cluster__piece { width: calc(100% + .3rem); height: calc(100% + .3rem); margin: -.15rem; }
+.puzzle-cluster--sm .puzzle-cluster__piece--offset { transform: translateY(.1rem); }
+.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(1) { transform: translate(-.2rem, -.2rem) rotate(-3deg); }
+.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(2) { transform: translate(.2rem, -.1rem) rotate(3deg); }
+.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(3) { transform: translate(-.15rem, .2rem) rotate(2deg); }
+.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(4) { transform: translate(.2rem, .15rem) rotate(-3deg); }
 @keyframes landing-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes landing-menu-in { from { opacity: 0; transform: scaleY(.96); } to { opacity: 1; transform: scaleY(1); } }
 @media (prefers-reduced-motion: reduce) {
   .landing-reveal { opacity: 1; transform: none; }
   .landing-reveal.is-visible { animation: none; }
-  .landing-card, .landing-link, .landing-menu { transition: none; animation: none; }
+  .landing-card, .landing-link, .landing-menu, .puzzle-cluster__piece { transition: none; animation: none; }
 }
 
 @layer utilities {

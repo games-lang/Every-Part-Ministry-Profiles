@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
+import { PuzzleCluster } from "@/components/puzzle-cluster";
 
 const plans = [
   {
@@ -278,6 +279,7 @@ export default function PricingPage() {
 
       <main>
         <section className="relative overflow-hidden bg-primary px-5 pb-20 pt-16 text-primary-foreground sm:px-8 sm:pb-28 sm:pt-24">
+          <PuzzleCluster className="pointer-events-none absolute -right-8 top-14 opacity-40 sm:right-8 sm:top-16" />
           <div className="pointer-events-none absolute -right-20 -top-28 h-96 w-96 rounded-full border-[40px] border-secondary/25" aria-hidden="true" />
           <div className="pointer-events-none absolute bottom-[-10rem] left-[38%] h-80 w-80 rounded-full border-[28px] border-[hsl(var(--landing-cyan)/.18)]" aria-hidden="true" />
           <div className="relative mx-auto max-w-7xl">

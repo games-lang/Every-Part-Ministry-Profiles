@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
+import { PuzzleCluster } from "@/components/puzzle-cluster";
 
 const pathway = [
   {
@@ -253,6 +254,7 @@ export default function LandingPage() {
 
             <Reveal className="[animation-delay:.16s]">
               <div className="relative mx-auto w-full max-w-[510px] lg:mr-0">
+                <PuzzleCluster className="absolute -right-10 -top-16 z-0 opacity-55 sm:-right-16 sm:-top-20" />
                 <div className="absolute -right-4 -top-8 h-40 w-40 rounded-full border-[22px] border-secondary/70 sm:-right-10 sm:-top-10 sm:h-56 sm:w-56 sm:border-[30px]" aria-hidden="true" />
                 <div className="relative rounded-[2rem] border border-primary/10 bg-primary p-5 text-primary-foreground shadow-[0_30px_70px_hsl(var(--foreground)/.2)] sm:p-7">
                   <div className="flex items-center justify-between border-b border-white/15 pb-5 text-[11px] uppercase tracking-[.18em] text-[hsl(var(--landing-slate))]">
@@ -292,7 +294,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="scroll-mt-24 px-5 py-24 sm:px-8 lg:py-32">
+         <section id="how-it-works" className="relative scroll-mt-24 px-5 py-24 sm:px-8 lg:py-32">
+           <PuzzleCluster size="sm" className="pointer-events-none absolute right-[8%] top-12 hidden opacity-25 lg:block" />
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
               <Reveal><Eyebrow>Why churches need a clearer view</Eyebrow></Reveal>
