@@ -1,0 +1,232 @@
+Add an AI-powered assistant to the Every Part church dashboard called **PartFinder**.
+
+PartFinder should function as a ministry placement and volunteer discovery assistant for pastors and church leaders. It should not feel like a generic chatbot. It should be deeply integrated with the church’s Every Part data and help leaders understand their people, discover volunteers, build teams, identify ministry gaps, and develop leaders.
+
+Place PartFinder prominently within the pastor/admin dashboard with a clean chat interface.
+
+Use this introductory language:
+
+**Meet PartFinder**
+Your ministry placement assistant.
+
+Ask questions about your people, ministry needs, volunteer opportunities, leadership development, and church-wide serving trends. PartFinder uses Ministry Profile information to help you discover possible connections while leaving final decisions to prayer, pastoral wisdom, and personal conversation.
+
+Include suggested starter prompts such as:
+
+* Find volunteers
+* Build a ministry team
+* Discover potential leaders
+* Find people who are not serving
+* Show ministry gaps
+* Who completed a profile but still needs follow-up?
+* Who may be overloaded or serving too much?
+* What trends do you see in our congregation?
+
+PartFinder should be able to answer natural-language questions such as:
+
+“Who are five people who may be a good fit for kids ministry?”
+
+“Who has leadership gifts but is not currently serving?”
+
+“Find people who care about teenagers and are available Wednesday nights.”
+
+“Who might make a good mentor?”
+
+“Who has administration gifts and prefers behind-the-scenes ministry?”
+
+“Build me a potential team for Vacation Bible School.”
+
+“Who might be ready to move from volunteer to team leader?”
+
+“What percentage of our congregation is currently serving?”
+
+“Which age groups are least engaged in ministry?”
+
+“What ministry areas have the largest number of interested people who are not currently serving?”
+
+“I need a leader, two helpers, an administrator, and a hospitality person for a new ministry. Who should I consider?”
+
+PartFinder should analyze relevant Every Part Ministry Profile data, including, when available:
+
+* Spiritual gifts
+* APEST results
+* Personality / “How You Tend to Operate”
+* Passions
+* Ministry interests
+* Previous serving experience
+* Current ministry involvement
+* Leadership experience
+* Availability
+* Preferred serving frequency
+* Age or life stage
+* Generational information
+* Family situation
+* Language
+* Congregation/service connection
+* Transportation
+* Openness to missions, retreats, mentoring, leadership, etc.
+* Spiritual maturity
+* Time at the church
+* Ministry journey/history
+* Past Ministry Profile results
+* Current ministry roles
+* Follow-up status
+
+When PartFinder recommends a person, NEVER simply declare that the person “should” serve in a ministry.
+
+Instead use language such as:
+
+“Strong potential match”
+“Worth considering”
+“May be a good person to talk with”
+“Possible fit”
+“Based on their profile…”
+
+Every recommendation should explain WHY the person was suggested.
+
+Example:
+
+**Sarah M. — Strong Potential Match**
+
+Spiritual Gifts: Helps, Mercy
+Passions: Children, Families
+Serving Style: Relational and collaborative
+Availability: Sunday mornings
+Current Ministry: Not currently serving
+
+**Why PartFinder suggested Sarah:**
+Sarah’s interests in children and families align closely with this ministry need. Her Helps and Mercy gifts may support a caring, relational role, and her current availability matches Sunday morning ministry.
+
+Add an optional “View Profile” button beside each recommendation.
+
+PartFinder should also be able to identify church-wide patterns.
+
+For example:
+
+**Ministry Insights**
+
+37% of members who completed a Ministry Profile are not currently serving.
+
+14 people expressed a strong passion for children or youth ministry but are not currently serving in those areas.
+
+The congregation has many people with Helps and Mercy gifts but relatively few people involved in care ministries.
+
+Adults ages 18–29 currently have lower ministry participation than other age groups.
+
+Several current ministry leaders are serving in multiple roles and may benefit from additional team support.
+
+PartFinder should distinguish between:
+
+1. **Find People**
+   Identify possible volunteers for a specific ministry need.
+
+2. **Build a Team**
+   Create a balanced potential ministry team using complementary gifts, personalities, experience, availability, ages, and strengths.
+
+3. **Discover Leaders**
+   Identify people who may have potential for future ministry leadership.
+
+4. **Engage the Unengaged**
+   Identify people who have completed profiles but are not currently serving.
+
+5. **Ministry Gaps**
+   Analyze ministries that may lack volunteers or where member interests are not currently being utilized.
+
+6. **Follow-Up**
+   Identify members who completed profiles but have not yet met with a pastor or ministry leader.
+
+7. **Volunteer Health**
+   Identify people who may be serving in many roles or carrying heavy ministry loads.
+
+8. **Church Insights**
+   Provide aggregate observations about serving, gifts, generations, participation, and ministry interests.
+
+Allow a pastor to describe a ministry need in plain language.
+
+Example:
+
+“We want to start an English class for immigrants on Tuesday nights. We need one relational leader, two patient helpers, one person who is organized, and someone passionate about immigrants.”
+
+PartFinder should respond with a potential team, explain the role each person could fill, and explain the reasoning.
+
+Include safeguards.
+
+PartFinder should NEVER make final ministry-placement decisions.
+
+PartFinder should never imply that a person is spiritually superior or inferior based on their profile.
+
+PartFinder should avoid making sensitive psychological judgments.
+
+PartFinder should not reveal confidential profile information beyond what the logged-in church leader is authorized to view.
+
+PartFinder should remind leaders when appropriate that recommendations should be confirmed through:
+
+* Prayer
+* Personal conversation
+* The volunteer’s willingness
+* Ministry leader input
+* Church safeguarding policies
+* Background checks when applicable
+* Training requirements
+
+When suggesting someone for children, youth, vulnerable-adult, financial, counseling, transportation, or other sensitive ministries, prominently remind the leader that profile matching does not replace the church’s screening, background check, interview, reference, or safeguarding process.
+
+Design the interface to fit the existing Every Part brand.
+
+Use the Every Part puzzle-piece visual language subtly within PartFinder. For example, the PartFinder icon could be a small puzzle piece combined with a search/spark element.
+
+PartFinder responses should feel encouraging, pastoral, clear, and practical rather than robotic.
+
+Do not overstate confidence.
+
+Use match labels such as:
+
+Excellent Potential Match
+Strong Potential Match
+Possible Match
+Worth Exploring
+
+If match scoring is implemented, the score should be explainable. Do not present an unexplained AI score.
+
+For example:
+
+**Strong Potential Match — 86%**
+
+Why:
+
+* Passion alignment: High
+* Gift alignment: High
+* Availability: Exact match
+* Experience: Moderate
+* Current workload: Low
+
+Allow the pastor to expand “Why this match?” to see additional reasoning.
+
+Add quick actions after recommendations:
+
+* View Profile
+* Compare Candidates
+* Add to Ministry Prospect List
+* Mark for Follow-Up
+* Create a Team
+* Ask PartFinder More
+
+Create a “PartFinder Insights” section on the dashboard that can proactively surface a small number of useful observations without requiring the pastor to open the chatbot.
+
+Examples:
+
+“7 members interested in youth ministry are not currently serving.”
+
+“3 potential leaders have completed profiles this month.”
+
+“Your hospitality team has 5 potential new volunteers.”
+
+“12 Ministry Profiles are awaiting pastoral follow-up.”
+
+Make all AI functionality tenant-aware so PartFinder only analyzes data belonging to the currently authenticated church.
+
+Architect PartFinder so future functionality could include Ministry Journey history, generational engagement insights, ministry opportunity postings, automated follow-up suggestions, and AI-assisted ministry team planning.
+
+The goal of PartFinder is not to replace pastoral discernment.
+
+Its purpose is to help churches better see the gifts, passions, availability, experiences, and potential already present within the Body of Christ so that every person has an opportunity to discover and live out their part.
