@@ -28,42 +28,42 @@ const pathway = [
     icon: Cross,
     title: "Pray",
     description:
-      "Begin with prayer. Ask God to help you see people as he sees them, not simply as open positions to fill.",
+      "Begin with prayer and see people as God sees them.",
   },
   {
     number: "02",
     icon: BookOpen,
     title: "Set Up",
     description:
-      "Shape a Ministry Profile around your church, your teams, and the places people can meaningfully contribute.",
+      "Create a thoughtful process your church can own.",
   },
   {
     number: "03",
     icon: Sparkles,
     title: "Discover",
     description:
-      "Invite people to reflect on their story, gifts, passions, experience, rhythms, and the way they are growing.",
+      "Invite people to name gifts, passions, and availability.",
   },
   {
     number: "04",
     icon: Compass,
     title: "Discern",
     description:
-      "Use the profile as a doorway into a real conversation about calling, readiness, capacity, and the season someone is in.",
+      "Turn reflections into a conversation about calling.",
   },
   {
     number: "05",
     icon: Network,
     title: "Connect",
     description:
-      "Explore ministry opportunities together and find a place where a person and a team can serve one another well.",
+      "Connect people with meaningful places to serve.",
   },
   {
     number: "06",
     icon: Orbit,
     title: "Develop",
     description:
-      "Follow up after someone begins. Notice what is healthy, encourage growth, and make room for the next step.",
+      "Keep noticing, growing, and revisiting the journey.",
   },
 ];
 
@@ -343,11 +343,12 @@ export default function LandingPage() {
               </Reveal>
             </div>
 
-            <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-14 grid gap-x-3 gap-y-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-2">
               {pathway.map((step, index) => (
                 <Reveal key={step.title} className={index > 2 ? "[animation-delay:.08s]" : ""}>
                   <PuzzlePiece
                     tone={(["navy", "teal", "sage", "gold", "teal", "navy"] as const)[index]}
+                    variant={index % 2 === 0 ? "forward" : "reverse"}
                     className="landing-card group"
                   >
                     <div className="flex items-start justify-between">
@@ -356,8 +357,8 @@ export default function LandingPage() {
                         <step.icon className="h-5 w-5" />
                       </span>
                     </div>
-                    <h3 className="mt-auto pt-16 font-serif text-3xl font-semibold tracking-[-.05em]">{step.title}</h3>
-                    <p className="mt-4 text-sm leading-6 text-muted-foreground">{step.description}</p>
+                    <h3 className="mx-auto mt-7 max-w-[12rem] text-center font-serif text-3xl font-semibold tracking-[-.05em]">{step.title}</h3>
+                    <p className="mx-auto mt-3 max-w-[15rem] text-center text-sm leading-6 text-muted-foreground">{step.description}</p>
                   </PuzzlePiece>
                 </Reveal>
               ))}
