@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
 import { ShareProfileCard } from "@/components/share-profile-card";
+import { AppFeedbackForm } from "@/components/app-feedback-form";
 import { AppFeedbackInbox } from "@/pages/app-admin";
 
 function buildPublicProfileUrl(profilePath: string) {
@@ -156,6 +157,8 @@ export default function Dashboard() {
           </Button>
         </CardContent>
       </Card>
+
+      <AppFeedbackForm sourcePage="dashboard" />
 
       <div className="grid md:grid-cols-3 gap-8">
         {/* Recent Profiles */}
