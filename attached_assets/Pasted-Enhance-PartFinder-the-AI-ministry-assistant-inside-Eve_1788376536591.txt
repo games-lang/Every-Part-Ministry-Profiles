@@ -1,0 +1,462 @@
+Enhance **PartFinder**, the AI ministry assistant inside Every Part, so that it can also get to know the pastor or church leader using it and provide increasingly personalized leadership suggestions over time.
+
+The goal is for PartFinder to become more than a volunteer-matching assistant. It should become a personalized ministry leadership assistant that helps pastors notice opportunities, delegate more effectively, develop leaders, follow up with people, identify blind spots, and make better use of the gifts already present in their church.
+
+PartFinder should NEVER replace pastoral wisdom, prayer, relationships, or human decision-making. Its role is to surface helpful observations, questions, and possibilities.
+
+## 1. Create a Pastor Leadership Profile
+
+Add a dedicated area called:
+
+**My Leadership Profile**
+
+This is separate from the pastor’s regular Ministry Profile.
+
+The Leadership Profile should allow the pastor to intentionally tell PartFinder about themselves and their ministry context.
+
+Include questions such as:
+
+* What are your three biggest ministry priorities right now?
+* What areas of ministry energize you most?
+* What areas of ministry tend to drain you?
+* What responsibilities do you wish you could delegate more effectively?
+* What are the biggest challenges currently facing your church?
+* What areas of your church do you most want to strengthen?
+* What kinds of leaders do you want to develop?
+* Are there particular generations you want to engage more effectively?
+* Are there ministries you want to start, rebuild, or expand?
+* What do you feel are your strongest leadership tendencies?
+* What leadership skills would you like to grow in?
+* How do you prefer to communicate with your team?
+* Do you tend to make decisions quickly or prefer more time to process?
+* Do you prefer big-picture strategy, detailed planning, relational leadership, or a combination?
+* What does a healthy ministry week look like for you?
+* What responsibilities are currently taking more of your time than you would like?
+* What do you wish your church did better?
+* What ministry goals do you have for the next 3 months?
+* What goals do you have for the next year?
+
+Also ask:
+
+**How would you like PartFinder to help you?**
+
+Allow the pastor to select options such as:
+
+* Help me find volunteers
+* Help me delegate
+* Help me develop leaders
+* Help me identify people I may be overlooking
+* Help me engage younger generations
+* Help me improve volunteer retention
+* Help me follow up with people
+* Help me strengthen ministry teams
+* Help me spot ministry gaps
+* Help me think strategically
+* Help me protect my time
+* Help me recognize potential burnout
+* Help me challenge assumptions
+* Help me think through new ministry ideas
+
+## 2. Let the Pastor Choose PartFinder’s Coaching Style
+
+Add a setting called:
+
+**How should PartFinder communicate with you?**
+
+Options could include:
+
+### Encouraging
+
+Supportive and positive while still making useful suggestions.
+
+### Balanced
+
+Encouraging but willing to raise concerns or point out overlooked opportunities.
+
+### Direct
+
+Clear, concise, and willing to challenge the pastor when data suggests something needs attention.
+
+Also allow:
+
+**Response Length**
+
+* Brief
+* Standard
+* Detailed
+
+PartFinder should respect these preferences when generating responses.
+
+## 3. Allow PartFinder to Remember Useful Leadership Context
+
+PartFinder should gradually learn relevant information from conversations with the pastor.
+
+For example, if the pastor says:
+
+“Our biggest priority this year is developing young leaders.”
+
+PartFinder may remember:
+
+**Leadership Priority: Develop younger leaders**
+
+If the pastor says:
+
+“I really struggle with administration.”
+
+PartFinder may remember:
+
+**Leadership Growth Area: Administration**
+
+If the pastor says:
+
+“I want our church to become much better at following up with new people.”
+
+PartFinder may remember:
+
+**Church Priority: Improve newcomer follow-up**
+
+However, PartFinder should NOT secretly build an invisible psychological profile.
+
+Create a visible section called:
+
+**What PartFinder Knows About Me**
+
+Show information PartFinder has remembered, such as:
+
+### Current Priorities
+
+* Develop younger leaders
+* Increase volunteer participation
+* Improve pastoral follow-up
+
+### Leadership Strengths
+
+* Vision
+* Relational leadership
+* Preaching
+
+### Areas Where I Want Help
+
+* Administration
+* Delegation
+* Team development
+
+### Current Ministry Goals
+
+* Build a stronger kids ministry team
+* Increase young adult participation
+* Develop new ministry leaders
+
+Allow the pastor to:
+
+* Edit remembered information
+* Delete individual items
+* Add new information
+* Turn personalized memory off
+
+The pastor should always know what PartFinder is remembering.
+
+## 4. Personalized Leadership Suggestions
+
+PartFinder should combine:
+
+* The Pastor Leadership Profile
+* The pastor’s stated ministry priorities
+* Church Ministry Profile data
+* Current ministry teams
+* Volunteer involvement
+* Ministry needs
+* Leadership pipeline
+* Follow-up status
+* Generational participation
+* Current workload
+* Serving patterns
+
+to provide personalized suggestions.
+
+Examples:
+
+“You’ve said developing younger leaders is one of your priorities. I found 6 adults under 30 who show leadership potential and are currently lightly involved in ministry. Would you like to see them?”
+
+“You’ve mentioned that administration tends to drain you. There are three people in your congregation with strong Administration and Leadership gifts who may be worth considering for greater responsibility.”
+
+“You’ve said you want to increase involvement among young adults. Currently, adults ages 18–29 have the lowest serving participation in your congregation. There are 12 young adults who completed Ministry Profiles but are not currently serving.”
+
+“You appear to be personally involved in several responsibilities that may be delegatable. Would you like me to identify potential people who could help carry some of them?”
+
+“You’ve identified children’s ministry as a major priority. Eleven people have expressed strong interest in children or families, but only four are currently serving in those ministries.”
+
+“Your ministry profile follow-up list has grown to 18 people. Based on your stated goal of relational follow-up, you may want to consider assigning some conversations to trusted ministry leaders.”
+
+## 5. Add a PartFinder Leadership Brief
+
+Create a dashboard card called:
+
+**Your PartFinder Brief**
+
+This should contain 3–5 short, high-value observations personalized to the pastor.
+
+For example:
+
+**This Week**
+
+**Leadership Opportunity**
+3 potential emerging leaders completed profiles recently.
+
+**Delegation Opportunity**
+4 people with strong Administration gifts are currently lightly involved.
+
+**Follow-Up**
+9 Ministry Profiles are waiting for pastoral follow-up.
+
+**Young Adult Engagement**
+7 young adults interested in ministry are currently not serving.
+
+**Volunteer Health**
+2 team leaders are serving in four or more ministry roles.
+
+Keep this section concise.
+
+Do not overwhelm the pastor with alerts.
+
+Prioritize suggestions based on the pastor’s stated goals.
+
+## 6. Allow PartFinder to Ask Helpful Questions
+
+PartFinder should occasionally ask strategic questions rather than only giving answers.
+
+Examples:
+
+“You’ve told me leadership development is a priority. What would success look like for you one year from now?”
+
+“You currently have several strong volunteers who are not leading anything. Would you like to explore which ones may be ready for greater responsibility?”
+
+“You’ve been recruiting heavily for children’s ministry. Would you also like me to look at volunteer retention in that ministry?”
+
+“You’ve said you want to delegate more. What responsibility currently takes the most time that you wish someone else could own?”
+
+These questions should feel helpful, not intrusive.
+
+Do not constantly interrupt the pastor with questions.
+
+## 7. Help the Pastor Delegate
+
+Add a PartFinder ability called:
+
+**Help Me Delegate**
+
+The pastor can enter something like:
+
+“I spend too much time organizing our monthly outreach events.”
+
+PartFinder should help identify:
+
+* What parts of the responsibility could be delegated
+* What roles may be needed
+* Which members might be worth considering
+* Why each person may fit
+* What conversations the pastor may need to have
+
+Example:
+
+**Possible Outreach Coordination Team**
+
+Event Coordinator — potential leadership/administration fit
+
+Hospitality Lead — strong hospitality and helps alignment
+
+Volunteer Coordinator — relational person with leadership tendencies
+
+Communication Support — someone comfortable with communication or technology
+
+PartFinder should always present these as possibilities, not assignments.
+
+## 8. Help Develop Leaders
+
+Create a capability called:
+
+**Leadership Pipeline**
+
+PartFinder should help identify people who may be ready for greater responsibility based on appropriate data such as:
+
+* Leadership gifts
+* Serving consistency
+* Experience
+* Ministry involvement
+* Willingness to lead
+* Spiritual maturity indicators
+* Previous leadership
+* APEST tendencies
+* Ministry interests
+
+Use cautious language.
+
+Examples:
+
+“Potential Emerging Leader”
+
+“Worth a Leadership Conversation”
+
+“May Be Ready for Greater Responsibility”
+
+Do NOT label someone as spiritually mature or immature based solely on AI interpretation.
+
+## 9. Help the Pastor Notice Blind Spots
+
+PartFinder may surface respectful observations when relevant.
+
+Examples:
+
+“You’ve said young adult engagement is a priority, but most of your current recruiting efforts appear focused on established adult volunteers.”
+
+“You currently rely heavily on a small group of highly involved volunteers. Developing additional people may reduce pressure on those leaders.”
+
+“Several members have gifts related to mercy and care, but the church currently has relatively few structured opportunities in those areas.”
+
+“You’ve identified delegation as a goal, but you are currently listed as responsible for a large number of ministry areas.”
+
+Phrase observations as possibilities rather than criticism.
+
+Use wording such as:
+
+“One thing you may want to consider…”
+
+“I noticed something that may be worth exploring…”
+
+“Based on the information available…”
+
+“You may want to take a closer look at…”
+
+Never shame the pastor.
+
+## 10. Pastor Check-Ins
+
+Allow PartFinder to offer an optional periodic leadership check-in.
+
+For example:
+
+**Monthly Leadership Check-In**
+
+Ask:
+
+* What went well this month?
+* What felt difficult?
+* Where did you feel stretched too thin?
+* Did you see anyone growing as a leader?
+* Is there a ministry area that needs attention?
+* Have your priorities changed?
+* What would be most helpful for PartFinder to focus on this month?
+
+Use the answers to update the Leadership Profile only when the pastor understands and agrees that relevant information is being remembered.
+
+## 11. Privacy and Trust
+
+Pastor personalization must be transparent.
+
+PartFinder should never make secret personality diagnoses.
+
+It should not infer sensitive personal characteristics.
+
+It should not attempt to function as a therapist, counselor, or spiritual authority.
+
+The pastor must be able to see and control remembered information.
+
+Include:
+
+**Manage PartFinder Memory**
+
+Options:
+
+* View what PartFinder remembers
+* Edit memories
+* Delete memories
+* Clear all personalized memory
+* Pause personalization
+
+PartFinder should distinguish between:
+
+**Church Data**
+Information stored in Every Part about the congregation.
+
+**Leadership Preferences**
+Information the pastor intentionally shares to improve PartFinder recommendations.
+
+## 12. Never Present AI as God’s Voice
+
+This is especially important because Every Part is a Christian ministry product.
+
+PartFinder must NEVER say:
+
+“God is telling you…”
+
+“God wants this person to serve…”
+
+“This is God’s calling for them…”
+
+“You should definitely choose this person.”
+
+Instead say:
+
+“This may be worth prayerfully exploring.”
+
+“This person’s profile suggests a potential fit.”
+
+“This could be a good conversation to have.”
+
+“Consider this alongside prayer, pastoral wisdom, and the person’s own sense of calling.”
+
+PartFinder exists to support discernment, not replace it.
+
+## 13. PartFinder Identity
+
+PartFinder should consistently communicate its role as:
+
+**PartFinder**
+Your Every Part ministry leadership assistant.
+
+Optional subtitle:
+
+**Helping you see the people, possibilities, and patterns already present in your church.**
+
+PartFinder should help answer three major questions:
+
+### Who?
+
+Who might be ready to serve, lead, help, mentor, or grow?
+
+### Where?
+
+Where are the church’s ministry opportunities, gaps, and needs?
+
+### What Next?
+
+What might the pastor consider doing next?
+
+The long-term goal is for PartFinder to feel like a trusted ministry leadership assistant that understands both the people in the church and the priorities of the pastor.
+
+It should help pastors move from:
+
+“I need volunteers.”
+
+to:
+
+“I understand the people God has placed in our church, I know where they may flourish, and I have a clearer idea of how to help them take their next step.”
+
+Build this feature in a way that can expand later into additional areas such as:
+
+* Ministry goal tracking
+* Volunteer retention insights
+* Leadership development plans
+* Team health
+* Generational engagement strategies
+* Ministry opportunity creation
+* Pastor task delegation
+* Church-wide serving goals
+* Ministry Journey insights
+* Annual ministry planning
+* Suggested pastoral follow-up
+* Personalized dashboard insights
+
+The central philosophy remains:
+
+**Every person has a part. PartFinder helps pastors see the possibilities.**
