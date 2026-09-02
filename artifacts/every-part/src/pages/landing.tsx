@@ -254,20 +254,20 @@ export default function LandingPage() {
 
             <Reveal className="[animation-delay:.16s]">
               <div className="relative mx-auto w-full max-w-[510px] lg:mr-0">
-                <PuzzleCluster className="absolute -right-10 -top-16 z-0 opacity-55 sm:-right-16 sm:-top-20" />
                 <div className="absolute -right-4 -top-8 h-40 w-40 rounded-full border-[22px] border-secondary/70 sm:-right-10 sm:-top-10 sm:h-56 sm:w-56 sm:border-[30px]" aria-hidden="true" />
                 <div className="relative rounded-[2rem] border border-primary/10 bg-primary p-5 text-primary-foreground shadow-[0_30px_70px_hsl(var(--foreground)/.2)] sm:p-7">
+                  <PuzzleCluster size="sm" className="pointer-events-none absolute bottom-5 right-5 z-0 opacity-15" />
                   <div className="flex items-center justify-between border-b border-white/15 pb-5 text-[11px] uppercase tracking-[.18em] text-[hsl(var(--landing-slate))]">
                     <span>Ministry Profile / Sarah</span>
                     <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-secondary" /> In conversation</span>
                   </div>
-                  <div className="py-8 sm:py-12">
+                  <div className="relative z-10 py-8 sm:py-12">
                     <p className="text-sm text-[hsl(var(--landing-slate))]">A question worth asking</p>
                     <p className="mt-4 max-w-sm font-serif text-3xl leading-[1.05] tracking-[-.055em] sm:text-4xl">
                       Where do you notice God giving you energy to help others?
                     </p>
                   </div>
-                  <div className="flex items-center justify-between border-t border-white/15 pt-5 text-sm text-[hsl(var(--landing-slate))]">
+                  <div className="relative z-10 flex items-center justify-between border-t border-white/15 pt-5 text-sm text-[hsl(var(--landing-slate))]">
                     <span>Thoughtful questions</span>
                     <ArrowRight className="h-4 w-4 text-secondary" />
                   </div>
@@ -294,8 +294,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-         <section id="how-it-works" className="relative scroll-mt-24 px-5 py-24 sm:px-8 lg:py-32">
-           <PuzzleCluster size="sm" className="pointer-events-none absolute right-[8%] top-12 hidden opacity-25 lg:block" />
+         <section id="how-it-works" className="scroll-mt-24 px-5 py-24 sm:px-8 lg:py-32">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-end">
               <Reveal><Eyebrow>Why churches need a clearer view</Eyebrow></Reveal>

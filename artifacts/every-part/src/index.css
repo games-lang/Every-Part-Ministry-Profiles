@@ -254,10 +254,6 @@
 .puzzle-cluster__piece--offset { transform: translateY(.16rem); }
 .puzzle-cluster--sm .puzzle-cluster__piece { width: calc(100% + .3rem); height: calc(100% + .3rem); margin: -.15rem; }
 .puzzle-cluster--sm .puzzle-cluster__piece--offset { transform: translateY(.1rem); }
-.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(1) { transform: translate(-.2rem, -.2rem) rotate(-3deg); }
-.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(2) { transform: translate(.2rem, -.1rem) rotate(3deg); }
-.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(3) { transform: translate(-.15rem, .2rem) rotate(2deg); }
-.puzzle-cluster:hover .puzzle-cluster__piece:nth-child(4) { transform: translate(.2rem, .15rem) rotate(-3deg); }
 @keyframes landing-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes landing-menu-in { from { opacity: 0; transform: scaleY(.96); } to { opacity: 1; transform: scaleY(1); } }
 @media (prefers-reduced-motion: reduce) {
