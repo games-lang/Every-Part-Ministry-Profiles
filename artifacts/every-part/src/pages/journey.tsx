@@ -37,6 +37,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { PuzzleCluster } from "@/components/puzzle-cluster";
 
 const profileLabels: Record<string, string> = {
   discover: "Discover",
@@ -91,6 +92,7 @@ function Intro({ journey, publicView }: { journey: JourneyResponse; publicView: 
       <div className="h-2 bg-gradient-to-r from-primary via-chart-3 to-secondary" />
       <div className="relative p-6 sm:p-9">
         <div className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full border-[22px] border-secondary/10" />
+        <PuzzleCluster size="sm" className="pointer-events-none absolute bottom-4 right-7 opacity-15" />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[.19em] text-primary"><HeartHandshake className="h-4 w-4" />A ministry story in motion</div>

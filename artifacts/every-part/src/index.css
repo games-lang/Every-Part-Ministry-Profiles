@@ -254,6 +254,27 @@
 .puzzle-cluster__piece--offset { transform: translateY(.16rem); }
 .puzzle-cluster--sm .puzzle-cluster__piece { width: calc(100% + .3rem); height: calc(100% + .3rem); margin: -.15rem; }
 .puzzle-cluster--sm .puzzle-cluster__piece--offset { transform: translateY(.1rem); }
+.puzzle-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: none;
+}
+.puzzle-backdrop__cluster {
+  position: absolute;
+}
+.puzzle-backdrop__cluster--top {
+  top: 5.5rem;
+  right: -2rem;
+  opacity: .14;
+}
+.puzzle-backdrop__cluster--bottom {
+  bottom: 1rem;
+  left: -1rem;
+  opacity: .1;
+  transform: rotate(9deg) scale(1.15);
+}
 @keyframes landing-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes landing-menu-in { from { opacity: 0; transform: scaleY(.96); } to { opacity: 1; transform: scaleY(1); } }
 @media (prefers-reduced-motion: reduce) {

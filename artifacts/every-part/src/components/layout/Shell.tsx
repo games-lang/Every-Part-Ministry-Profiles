@@ -5,6 +5,7 @@ import { LayoutDashboard, Settings, Users, ArrowRight, UsersRound } from "lucide
 import { useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/brand";
+import { PuzzleCluster } from "@/components/puzzle-cluster";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -18,7 +19,8 @@ export function Shell({ children }: { children: ReactNode }) {
   const { data: health } = useHealthCheck();
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col">
+    <div className="relative min-h-screen overflow-hidden bg-muted/30 flex flex-col">
+      <PuzzleCluster size="sm" className="pointer-events-none absolute -bottom-3 left-[-1rem] z-0 opacity-25" />
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur-xl">
         <div className="container mx-auto flex min-h-16 items-center justify-between gap-4 px-4 py-3">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-8 gap-y-3">
@@ -66,11 +68,11 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
       </header>
       
-      <main className="flex-1 flex flex-col">
+      <main className="relative z-10 flex-1 flex flex-col">
         {children}
       </main>
 
-      <footer className="mt-auto py-6 border-t border-border/50 text-center">
+      <footer className="relative z-10 mt-auto py-6 border-t border-border/50 text-center">
         <div className="container mx-auto px-4 flex items-center justify-between text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Every Part</p>
           <div className="flex items-center gap-2">

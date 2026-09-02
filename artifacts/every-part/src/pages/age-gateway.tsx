@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, ChevronRight, User, AlertCircle } from "lucide-react";
+import { PuzzleCluster } from "@/components/puzzle-cluster";
 import { differenceInYears, isValid, parseISO } from "date-fns";
 
 export default function AgeGateway({ params }: { params: { slug: string } }) {
@@ -114,7 +115,9 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
   );
 
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center py-12 px-4 bg-background ep-landing">
+    <div className="relative min-h-[100dvh] flex flex-col items-center overflow-hidden py-12 px-4 bg-background ep-landing">
+      <PuzzleCluster className="pointer-events-none absolute -right-10 top-10 opacity-25" />
+      <PuzzleCluster size="sm" className="pointer-events-none absolute -bottom-2 -left-4 opacity-20" />
       <div className="w-full max-w-md space-y-8 landing-reveal">
         <div className="text-center space-y-4">
           {church.logoUrl ? (

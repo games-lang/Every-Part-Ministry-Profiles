@@ -26,6 +26,7 @@ import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
 import { Brand } from '@/components/brand';
+import { PuzzleBackdrop } from '@/components/puzzle-cluster';
 
 const DiscoverRoute = ({ params }: { params: { slug: string } }) => (
     <DiscoverGate params={params} Page={DiscoverAssessment} />
@@ -188,6 +189,7 @@ function ClerkProviderWithRoutes() {
       routerPush={(to) => setLocation(stripBase(to))}
       routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
     >
+      <PuzzleBackdrop />
       <QueryClientProvider client={queryClient}>
         <ClerkQueryClientCacheInvalidator />
         <TooltipProvider>

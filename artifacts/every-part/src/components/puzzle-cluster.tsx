@@ -26,3 +26,12 @@ export function PuzzleCluster({ size = "lg", className = "" }: PuzzleClusterProp
     </div>
   );
 }
+
+export function PuzzleBackdrop() {
+  return (
+    <div className="puzzle-backdrop" aria-hidden="true">
+      <PuzzleCluster className="puzzle-backdrop__cluster puzzle-backdrop__cluster--top" />
+      <PuzzleCluster size="sm" className="puzzle-backdrop__cluster puzzle-backdrop__cluster--bottom" />
+    </div>
+  );
+}
