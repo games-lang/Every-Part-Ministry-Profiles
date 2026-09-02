@@ -236,6 +236,30 @@
 .landing-link:hover { color: hsl(var(--secondary)); transform: translateX(3px); }
 .landing-focus:focus-visible { outline: 3px solid hsl(var(--secondary) / .7); outline-offset: 4px; }
 .landing-menu { animation: landing-menu-in .2s ease both; transform-origin: top; }
+.pathway-puzzle-piece {
+  --puzzle-wash: 183 23% 91%;
+  --puzzle-line: 183 56% 35%;
+  position: relative;
+  min-height: 300px;
+  filter: drop-shadow(0 12px 18px hsl(var(--foreground) / .05));
+}
+.pathway-puzzle-piece__shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: hsl(var(--puzzle-wash));
+  stroke: hsl(var(--puzzle-line) / .45);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.pathway-puzzle-piece--navy { --puzzle-wash: 210 42% 92%; --puzzle-line: 210 64% 25%; }
+.pathway-puzzle-piece--teal { --puzzle-wash: 183 31% 90%; --puzzle-line: 183 56% 35%; }
+.pathway-puzzle-piece--sage { --puzzle-wash: 101 24% 90%; --puzzle-line: 101 23% 45%; }
+.pathway-puzzle-piece--gold { --puzzle-wash: 42 70% 91%; --puzzle-line: 42 76% 43%; }
+.pathway-puzzle-piece:hover { filter: drop-shadow(0 18px 26px hsl(var(--foreground) / .12)); }
+.pathway-puzzle-piece:hover .pathway-puzzle-piece__shape { stroke: hsl(var(--puzzle-line)); }
 .puzzle-cluster {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -280,7 +304,7 @@
 @media (prefers-reduced-motion: reduce) {
   .landing-reveal { opacity: 1; transform: none; }
   .landing-reveal.is-visible { animation: none; }
-  .landing-card, .landing-link, .landing-menu, .puzzle-cluster__piece { transition: none; animation: none; }
+  .landing-card, .landing-link, .landing-menu, .puzzle-cluster__piece, .pathway-puzzle-piece { transition: none; animation: none; }
 }
 
 @layer utilities {
