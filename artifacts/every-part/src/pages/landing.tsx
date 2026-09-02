@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { PuzzleCluster } from "@/components/puzzle-cluster";
-import { PuzzlePiece } from "@/components/puzzle-piece";
 
 const pathway = [
   {
@@ -346,19 +345,16 @@ export default function LandingPage() {
             <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {pathway.map((step, index) => (
                 <Reveal key={step.title} className={index > 2 ? "[animation-delay:.08s]" : ""}>
-                  <PuzzlePiece
-                    tone={(["navy", "teal", "sage", "gold", "teal", "navy"] as const)[index]}
-                    className="landing-card group"
-                  >
+                  <article className="landing-card group flex min-h-[270px] flex-col rounded-[1.5rem] border border-border bg-card p-7 sm:p-8">
                     <div className="flex items-start justify-between">
                       <span className="text-xs font-bold tracking-[.15em] text-muted-foreground">{step.number}</span>
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(var(--puzzle-wash))] text-[hsl(var(--puzzle-line))] transition group-hover:bg-secondary group-hover:text-secondary-foreground">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-primary transition group-hover:bg-secondary group-hover:text-secondary-foreground">
                         <step.icon className="h-5 w-5" />
                       </span>
                     </div>
                     <h3 className="mt-auto pt-16 font-serif text-3xl font-semibold tracking-[-.05em]">{step.title}</h3>
                     <p className="mt-4 text-sm leading-6 text-muted-foreground">{step.description}</p>
-                  </PuzzlePiece>
+                  </article>
                 </Reveal>
               ))}
             </div>
