@@ -200,7 +200,7 @@ export default function LandingPage() {
             <a href="#ministry-profile" className="landing-focus landing-link rounded-md px-1 py-2">Ministry Profile</a>
             <a href="#for-churches" className="landing-focus landing-link rounded-md px-1 py-2">For Churches</a>
             <Link href="/pricing" className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-home-pricing">Pricing</Link>
-            <Link href="/sign-in" className="landing-focus landing-link rounded-md px-1 py-2">Login</Link>
+            <Link href="/sign-in" className="landing-focus landing-link rounded-md px-1 py-2">Leader sign in</Link>
             <Link href="/sign-up" className="landing-focus ml-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">
               Try Every Part <ArrowUpRight className="h-4 w-4" />
             </Link>
@@ -223,7 +223,7 @@ export default function LandingPage() {
               <a href="#ministry-profile" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Ministry Profile</a>
               <a href="#for-churches" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">For Churches</a>
               <Link href="/pricing" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-home-mobile-pricing">Pricing</Link>
-              <Link href="/sign-in" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Login</Link>
+               <Link href="/sign-in" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Leader sign in</Link>
               <Link href="/sign-up" onClick={closeMenu} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
             </div>
           </nav>
@@ -595,7 +595,7 @@ export default function LandingPage() {
             <a href="#ministry-profile" className="landing-focus landing-link rounded-md">Ministry Profile</a>
             <a href="#for-churches" className="landing-focus landing-link rounded-md">For Churches</a>
             <Link href="/pricing" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-pricing">Pricing</Link>
-            <Link href="/sign-in" className="landing-focus landing-link rounded-md">Login</Link>
+            <Link href="/sign-in" className="landing-focus landing-link rounded-md">Leader sign in</Link>
           </div>
         </div>
         <div className="mx-auto mt-10 flex max-w-7xl items-center justify-between border-t border-border pt-5 text-xs text-muted-foreground">

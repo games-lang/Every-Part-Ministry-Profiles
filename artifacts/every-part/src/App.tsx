@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
-import { Switch, Route, useLocation, Router as WouterRouter, Redirect } from 'wouter';
+import { Switch, Route, useLocation, Router as WouterRouter, Redirect, Link } from 'wouter';
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Button } from "@/components/ui/button";
 
 // Pages
 import LandingPage from '@/pages/landing';
@@ -105,6 +106,10 @@ function SignInPage() {
   const [feedback, setFeedback] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const feedbackMutation = useCreateAppFeedback();
+  const requestedRedirect = new URLSearchParams(window.location.search).get("redirect_url");
+  const fallbackRedirectUrl = requestedRedirect === `${basePath}/app-admin`
+    ? requestedRedirect
+    : `${basePath}/dashboard`;
 
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
@@ -115,8 +120,20 @@ function SignInPage() {
           routing="path"
           path={`${basePath}/sign-in`}
           signUpUrl={`${basePath}/sign-up`}
-          fallbackRedirectUrl={`${basePath}/dashboard`}
+          fallbackRedirectUrl={fallbackRedirectUrl}
         />
+        <section className="mt-5 rounded-2xl border border-primary/15 bg-primary/[.04] p-5 shadow-sm sm:p-6" aria-labelledby="admin-inbox-title">
+          <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">Every Part team</p>
+          <h2 id="admin-inbox-title" className="mt-2 font-serif text-xl font-semibold tracking-tight text-foreground">
+            Looking for the private feedback inbox?
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            Sign in first, then we’ll take you directly to suggestions and problem reports from pastors.
+          </p>
+          <Button asChild variant="outline" className="mt-4 rounded-full border-primary/20 bg-background">
+            <Link href="/app-admin">Open admin inbox</Link>
+          </Button>
+        </section>
         <section
           className="mt-5 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6"
           aria-labelledby="sign-in-feedback-title"
@@ -324,7 +341,7 @@ function ClerkProviderWithRoutes() {
                   <AppAdminRoute />
                 </Show>
                 <Show when="signed-out">
-                  <Redirect to="/sign-in" />
+                  <Redirect to={`/sign-in?redirect_url=${encodeURIComponent(`${basePath}/app-admin`)}`} />
                 </Show>
               </Route>
               
