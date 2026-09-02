@@ -197,9 +197,9 @@ function AccessDenied() {
           <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary/20 text-primary">
             <ShieldCheck className="h-5 w-5" />
           </div>
-          <CardTitle className="font-serif text-3xl">App administrator access required</CardTitle>
+          <CardTitle className="font-serif text-3xl">EveryPart CEO access required</CardTitle>
           <CardDescription className="leading-6">
-            This area is reserved for the Every Part team. Your account is signed in, but it is not currently on the app administrator allowlist.
+            This area is reserved for the EveryPart CEO. Your account is signed in, but it is not currently on the EveryPart CEO allowlist.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -213,7 +213,7 @@ function AccessDenied() {
                 </Button>
               </div>
               <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                Add this exact ID to the secure <span className="font-medium text-foreground">EVERY_PART_APP_ADMIN_USER_IDS</span> secret, then refresh the app.
+                 Add this exact ID to the secure <span className="font-medium text-foreground">EVERY_PART_APP_ADMIN_USER_IDS</span> secret, then refresh the app.
               </p>
             </div>
           )}
@@ -254,7 +254,7 @@ export function AppFeedbackInbox() {
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-accent">
               <ShieldCheck className="h-4 w-4" />
-              App administration
+              EveryPart CEO
             </p>
             <h2 className="font-serif text-3xl font-semibold tracking-[-.04em] sm:text-4xl">Suggestions & improvements</h2>
             <p className="mt-2 max-w-2xl text-muted-foreground">
@@ -346,7 +346,7 @@ export function AppFeedbackInbox() {
             <CardHeader>
               <CardTitle className="text-destructive">Feedback could not be loaded</CardTitle>
               <CardDescription>
-                Confirm that your account is configured as an Every Part app administrator, then try again.
+                 Confirm that your account is configured as the EveryPart CEO, then try again.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -361,7 +361,7 @@ export function AppFeedbackInbox() {
               <CheckCircle2 className="h-10 w-10 text-accent" />
               <h2 className="mt-4 font-serif text-2xl font-semibold">Nothing here yet</h2>
               <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                New suggestions and problem reports submitted from the sign-in page will appear in this inbox.
+                 New suggestions and problem reports submitted from the dashboard or sign-in page will appear in this inbox.
               </p>
             </CardContent>
           </Card>
@@ -390,7 +390,7 @@ export function AppAdminRoute() {
   if (isLoading) {
     return (
       <div className="flex min-h-[100dvh] items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">Checking app administrator access…</p>
+        <p className="text-sm text-muted-foreground">Checking EveryPart CEO access…</p>
       </div>
     );
   }

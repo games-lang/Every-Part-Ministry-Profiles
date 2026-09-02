@@ -153,11 +153,11 @@ function SignInPage() {
               Continue to your Every Part workspace
             </h1>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Open the private feedback inbox, or return to your church dashboard.
+              Open the private EveryPart CEO inbox, or return to your church dashboard.
             </p>
             <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
               <Button asChild className="rounded-full">
-                <Link href="/app-admin">Open admin inbox</Link>
+                <Link href="/app-admin">Open EveryPart CEO inbox</Link>
               </Button>
               <Button asChild variant="outline" className="rounded-full">
                 <Link href="/dashboard">Church dashboard</Link>
@@ -166,15 +166,15 @@ function SignInPage() {
           </section>
         </Show>
         <section className="mt-5 rounded-2xl border border-primary/15 bg-primary/[.04] p-5 shadow-sm sm:p-6" aria-labelledby="admin-inbox-title">
-          <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">Every Part team</p>
+          <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">EveryPart CEO</p>
           <h2 id="admin-inbox-title" className="mt-2 font-serif text-xl font-semibold tracking-tight text-foreground">
-            Looking for the private feedback inbox?
+            Looking for the private EveryPart CEO inbox?
           </h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
             Sign in first, then we’ll take you directly to suggestions and problem reports from pastors.
           </p>
           <Button asChild variant="outline" className="mt-4 rounded-full border-primary/20 bg-background">
-            <Link href="/app-admin">Open admin inbox</Link>
+            <Link href="/app-admin">Open EveryPart CEO inbox</Link>
           </Button>
         </section>
         <AppFeedbackForm sourcePage="sign-in" className="mt-5" />

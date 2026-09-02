@@ -62,7 +62,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   data-testid="link-app-admin"
                 >
                   <ShieldCheck className="h-4 w-4" />
-                  Feedback inbox
+                  EveryPart CEO
                 </Link>
               )}
             </nav>
