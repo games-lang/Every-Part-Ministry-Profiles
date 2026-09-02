@@ -1264,6 +1264,34 @@ export const GetPublicPersonInviteResponse = zod.object({
 
 
 /**
+ * @summary List schedule shifts assigned to a completed profile
+ */
+export const ListProfileScheduleParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const listProfileScheduleResponseScheduledDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const listProfileScheduleResponseStartTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const listProfileScheduleResponseEndTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+
+
+export const ListProfileScheduleResponseItem = zod.object({
+  "id": zod.int(),
+  "teamId": zod.int(),
+  "profileId": zod.int().nullable(),
+  "volunteerName": zod.string().nullable(),
+  "scheduledDate": zod.string().regex(listProfileScheduleResponseScheduledDateRegExp),
+  "startTime": zod.string().regex(listProfileScheduleResponseStartTimeRegExp),
+  "endTime": zod.string().regex(listProfileScheduleResponseEndTimeRegExp).nullable(),
+  "role": zod.string(),
+  "notes": zod.string().nullable(),
+  "isCancelled": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const ListProfileScheduleResponse = zod.array(ListProfileScheduleResponseItem)
+
+
+/**
  * @summary Get the authenticated leader journey for a profile
  */
 export const GetProfileJourneyParams = zod.object({

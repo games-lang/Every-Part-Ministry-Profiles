@@ -2049,6 +2049,83 @@ export function useGetPublicPersonInvite<TData = Awaited<ReturnType<typeof getPu
 
 
 
+export const getListProfileScheduleUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}/schedule`
+}
+
+/**
+ * @summary List schedule shifts assigned to a completed profile
+ */
+export const listProfileSchedule = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<TeamScheduleItem[]> => {
+
+  return customFetch<TeamScheduleItem[]>(getListProfileScheduleUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListProfileScheduleQueryKey = (id: number,) => {
+    return [
+    `/api/profiles/${id}/schedule`
+    ] as const;
+    }
+
+
+export const getListProfileScheduleQueryOptions = <TData = Awaited<ReturnType<typeof listProfileSchedule>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfileSchedule>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListProfileScheduleQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listProfileSchedule>>> = ({ signal }) => listProfileSchedule(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listProfileSchedule>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListProfileScheduleQueryResult = NonNullable<Awaited<ReturnType<typeof listProfileSchedule>>>
+export type ListProfileScheduleQueryError = ErrorType<void>
+
+
+/**
+ * @summary List schedule shifts assigned to a completed profile
+ */
+
+export function useListProfileSchedule<TData = Awaited<ReturnType<typeof listProfileSchedule>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfileSchedule>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListProfileScheduleQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
 export const getGetProfileJourneyUrl = (id: number,) => {
 
 

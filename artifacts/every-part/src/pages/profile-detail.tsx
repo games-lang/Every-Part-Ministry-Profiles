@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { personalitySummarySentence } from "@/lib/personality-prose";
 import { CoordinatorAsk, hasValues } from "@/components/coordinator-ask";
 import { toast } from "@/hooks/use-toast";
+import { ProfileSchedule } from "@/components/profile-schedule";
 
 const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
@@ -412,6 +413,9 @@ export default function ProfileDetail() {
      <>
        <CoordinatorAsk profile={profile} />
        <TeamAssignment profileId={profile.id} teamId={profile.teamId} />
+        {profile.profileType === "adult" && (
+          <ProfileSchedule profileId={profile.id} />
+        )}
        <div className="space-y-8">
          {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age range" value={basic.ageRange}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div></div>}{subsectionEnabled("aboutYou","lifeExperiences")&&hasValues(profile.lifeExperiences)&&<div className="no-print"><h3 className="font-medium mb-2">Pastoral notes (not for print)</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
           {sectionEnabled("apest")&&<Section title="How You Minister"><p className="mb-3 text-sm text-muted-foreground">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest} isEnabled={subsection=>subsectionEnabled("apest",subsection)}/></Section>}

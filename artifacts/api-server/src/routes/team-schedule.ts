@@ -7,6 +7,8 @@ import {
   DeleteTeamScheduleParams,
   ListTeamScheduleParams,
   ListTeamScheduleResponse,
+  ListProfileScheduleParams,
+  ListProfileScheduleResponse,
   UpdateTeamScheduleBody,
   UpdateTeamScheduleParams,
   UpdateTeamScheduleResponse,
@@ -63,7 +65,6 @@ function shiftResponse(
 
 async function getVolunteerName(
   profileId: number | null,
-  teamId: number,
   churchId: number,
 ): Promise<string | null> {
   if (profileId === null) return null;
@@ -77,7 +78,6 @@ async function getVolunteerName(
       and(
         eq(ministryProfilesTable.id, profileId),
         eq(ministryProfilesTable.churchId, churchId),
-        eq(ministryProfilesTable.teamId, teamId),
         eq(ministryProfilesTable.profileType, "adult"),
       ),
     )
@@ -91,7 +91,7 @@ async function scheduleResponse(
 ) {
   return shiftResponse(
     shift,
-    await getVolunteerName(shift.profileId, shift.teamId, churchId),
+    await getVolunteerName(shift.profileId, churchId),
   );
 }
 
@@ -159,6 +159,56 @@ router.get("/teams/:id/schedule", async (req, res): Promise<void> => {
     );
   res.json(
     ListTeamScheduleResponse.parse(
+      await Promise.all(shifts.map((shift) => scheduleResponse(shift, church.id))),
+    ),
+  );
+});
+
+router.get("/profiles/:id/schedule", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+  const params = ListProfileScheduleParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  const church = await getOrCreateChurch(userId);
+  const [profile] = await db
+    .select({
+      id: ministryProfilesTable.id,
+      profileType: ministryProfilesTable.profileType,
+    })
+    .from(ministryProfilesTable)
+    .where(
+      and(
+        eq(ministryProfilesTable.id, params.data.id),
+        eq(ministryProfilesTable.churchId, church.id),
+      ),
+    )
+    .limit(1);
+  if (!profile) {
+    res.status(404).json({ error: "Profile not found" });
+    return;
+  }
+  if (profile.profileType !== "adult") {
+    res.json([]);
+    return;
+  }
+  const shifts = await db
+    .select()
+    .from(ministryTeamSchedulesTable)
+    .where(
+      and(
+        eq(ministryTeamSchedulesTable.profileId, profile.id),
+        eq(ministryTeamSchedulesTable.churchId, church.id),
+      ),
+    )
+    .orderBy(
+      asc(ministryTeamSchedulesTable.scheduledDate),
+      asc(ministryTeamSchedulesTable.startTime),
+    );
+  res.json(
+    ListProfileScheduleResponse.parse(
       await Promise.all(shifts.map((shift) => scheduleResponse(shift, church.id))),
     ),
   );

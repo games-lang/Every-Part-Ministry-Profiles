@@ -555,6 +555,29 @@ paths:
                 $ref: "#/components/schemas/PublicPersonInvite"
         "404":
           description: Invitation not found or expired
+  /profiles/{id}/schedule:
+    get:
+      operationId: listProfileSchedule
+      tags: [profiles]
+      summary: List schedule shifts assigned to a completed profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Profile schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamScheduleItem"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Profile not found
   /profiles/{id}/journey:
     get:
       operationId: getProfileJourney
