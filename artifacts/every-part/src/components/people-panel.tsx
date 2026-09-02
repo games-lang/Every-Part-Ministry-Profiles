@@ -426,7 +426,7 @@ export function PeoplePanel() {
 
       <div className="flex items-end justify-between gap-4 border-b border-border/50 pb-3">
         <div>
-          <h2 className="font-serif text-2xl font-medium">People & invites</h2>
+          <h2 className="font-serif text-2xl font-medium">Add people</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {people?.length ?? 0} {people?.length === 1 ? "person" : "people"} added by your church
           </p>
