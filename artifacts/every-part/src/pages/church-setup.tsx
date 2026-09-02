@@ -231,14 +231,14 @@ const CONFIG_SECTIONS: ConfigDef[] = [
   },
   {
     key: "apest",
-    label: "Fivefold / APEST",
-    description: "Discover Apostolic, Prophetic, Evangelistic, Shepherding, and Teaching expressions.",
+    label: "How You Minister",
+    description: "Reflect on the ways people tend to contribute, connect, care, and help others grow.",
     subsections: [
-      { key: "apest.builder", label: "Apostolic / Builder" },
-      { key: "apest.insight", label: "Prophetic / Insight" },
-      { key: "apest.connector", label: "Evangelistic / Connector" },
-      { key: "apest.caregiver", label: "Shepherding / Caregiver" },
-      { key: "apest.teacher", label: "Teaching / Educator" }
+      { key: "apest.builder", label: "Starting and building new ministry" },
+      { key: "apest.insight", label: "Noticing what needs attention" },
+      { key: "apest.connector", label: "Connecting people with faith" },
+      { key: "apest.caregiver", label: "Caring for people over time" },
+      { key: "apest.teacher", label: "Making ideas clear" }
     ]
   },
   {

@@ -68,7 +68,7 @@ const pathway = [
 
 const dimensions = [
   ["Spiritual Gifts", "How has the Holy Spirit equipped me?"],
-  ["APEST", "How do I tend to contribute to the mission of the Church?"],
+  ["How You Minister", "How do I tend to contribute to the mission of the Church?"],
   ["How You Tend to Operate", "How do I naturally relate, decide, organize, and work with others?"],
   ["Passions", "Who or what has God placed on my heart?"],
   ["Skills & Experience", "What has God already developed in me?"],
@@ -424,7 +424,7 @@ export default function LandingPage() {
                   </div>
                   <div className="mt-8 grid gap-5 sm:grid-cols-2">
                     <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Top spiritual gifts</p><div className="mt-3 flex flex-wrap gap-2">{["Encouragement", "Mercy", "Helps"].map((item) => <span key={item} className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold">{item}</span>)}</div></div>
-                    <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">APEST contribution</p><p className="mt-3 font-semibold">Shepherd</p></div>
+                    <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">How she tends to minister</p><p className="mt-3 font-semibold">Caring for people over time</p></div>
                     <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">How she tends to operate</p><div className="mt-3 flex flex-wrap gap-2">{["Relational", "Reflective", "Organized", "People-centered"].map((item) => <span key={item} className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold">{item}</span>)}</div></div>
                     <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Passions</p><div className="mt-3 flex flex-wrap gap-2">{["Young Adults", "People in Crisis", "New Believers"].map((item) => <span key={item} className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold">{item}</span>)}</div></div>
                   </div>

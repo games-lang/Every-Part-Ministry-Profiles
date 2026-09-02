@@ -199,7 +199,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
     !requireGroup(
       configuration.sections.apest && hasEnabledSubsections("apest", configuration),
       parsed.data.assessmentSections?.apest,
-      "APEST responses",
+      "How you minister responses",
     ) ||
     !requireGroup(
       configuration.sections.naturalStrengths && hasEnabledSubsections("naturalStrengths", configuration),
