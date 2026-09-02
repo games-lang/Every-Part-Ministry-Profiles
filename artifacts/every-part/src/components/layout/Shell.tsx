@@ -5,6 +5,7 @@ import { LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck }
 import { useGetAppAdminAccess, useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/brand";
+import { PublicAiAssistant } from "@/components/public-ai-assistant";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -98,6 +99,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </footer>
+      <PublicAiAssistant />
     </div>
   );
 }
