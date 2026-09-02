@@ -935,6 +935,8 @@ export interface ProfileInput {
   profileType: ProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /** @nullable */
+  inviteToken?: string | null;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];
@@ -957,6 +959,112 @@ export interface ProfileInput {
   assessmentSections?: AssessmentSectionsInput;
 }
 
+export interface MinistryPersonInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  firstName: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  lastName: string;
+  /**
+     * @maxLength 320
+     * @nullable
+     */
+  email?: string | null;
+  /**
+     * @maxLength 60
+     * @nullable
+     */
+  phone?: string | null;
+  /**
+     * @maxLength 200
+     * @nullable
+     */
+  addressLine1?: string | null;
+  /**
+     * @maxLength 200
+     * @nullable
+     */
+  addressLine2?: string | null;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  city?: string | null;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  state?: string | null;
+  /**
+     * @maxLength 30
+     * @nullable
+     */
+  postalCode?: string | null;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  country?: string | null;
+}
+
+export type MinistryPersonInviteStatus = typeof MinistryPersonInviteStatus[keyof typeof MinistryPersonInviteStatus];
+
+
+export const MinistryPersonInviteStatus = {
+  pending: 'pending',
+  completed: 'completed',
+  expired: 'expired',
+  revoked: 'revoked',
+} as const;
+
+export interface MinistryPerson {
+  id: number;
+  firstName: string;
+  lastName: string;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  phone: string | null;
+  /** @nullable */
+  addressLine1: string | null;
+  /** @nullable */
+  addressLine2: string | null;
+  /** @nullable */
+  city: string | null;
+  /** @nullable */
+  state: string | null;
+  /** @nullable */
+  postalCode: string | null;
+  /** @nullable */
+  country: string | null;
+  inviteToken: string;
+  inviteStatus: MinistryPersonInviteStatus;
+  inviteExpiresAt: string;
+  /** @nullable */
+  inviteSentAt: string | null;
+  source: string;
+  /** @nullable */
+  profileId: number | null;
+  isArchived: boolean;
+  createdAt: string;
+}
+
+export interface PublicPersonInvite {
+  churchSlug: string;
+  churchName: string;
+  firstName: string;
+  lastName: string;
+  /** @nullable */
+  email: string | null;
+  /** @nullable */
+  phone: string | null;
+  inviteExpiresAt: string;
+}
 export type DiscoverProfileInputProfileType = typeof DiscoverProfileInputProfileType[keyof typeof DiscoverProfileInputProfileType];
 
 

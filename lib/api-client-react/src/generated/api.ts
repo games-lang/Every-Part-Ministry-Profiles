@@ -42,6 +42,8 @@ import type {
   JourneyEntryUpdateInput,
   JourneyResponse,
   ListProfilesParams,
+  MinistryPerson,
+  MinistryPersonInput,
   MinistryProfile,
   MinistryTeam,
   ProfileInput,
@@ -49,6 +51,7 @@ import type {
   ProfileTeamAssignment,
   ProfileTeamUpdateInput,
   PublicChurch,
+  PublicPersonInvite,
   TeamCreateInput,
   TeamSuggestionsInput,
   TeamSuggestionsResponse,
@@ -1421,6 +1424,314 @@ export const useCreateProfile = <TError = ErrorType<void>,
       > => {
       return useMutation(getCreateProfileMutationOptions(options));
     }
+
+export const getListPeopleUrl = () => {
+
+
+
+
+  return `/api/people`
+}
+
+/**
+ * @summary List people and Ministry Profile invitation status for the signed-in church
+ */
+export const listPeople = async ( options?: Parameters<typeof customFetch>[1]): Promise<MinistryPerson[]> => {
+
+  return customFetch<MinistryPerson[]>(getListPeopleUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListPeopleQueryKey = () => {
+    return [
+    `/api/people`
+    ] as const;
+    }
+
+
+export const getListPeopleQueryOptions = <TData = Awaited<ReturnType<typeof listPeople>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPeople>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListPeopleQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listPeople>>> = ({ signal }) => listPeople({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listPeople>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListPeopleQueryResult = NonNullable<Awaited<ReturnType<typeof listPeople>>>
+export type ListPeopleQueryError = ErrorType<void>
+
+
+/**
+ * @summary List people and Ministry Profile invitation status for the signed-in church
+ */
+
+export function useListPeople<TData = Awaited<ReturnType<typeof listPeople>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPeople>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListPeopleQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreatePersonUrl = () => {
+
+
+
+
+  return `/api/people`
+}
+
+/**
+ * @summary Add a person and create a private Ministry Profile invitation
+ */
+export const createPerson = async (ministryPersonInput: MinistryPersonInput, options?: Parameters<typeof customFetch>[1]): Promise<MinistryPerson> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<MinistryPerson>(getCreatePersonUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(ministryPersonInput)
+  }
+);}
+
+
+
+
+
+export const getCreatePersonMutationKey = () => ['createPerson'] as const;
+
+export const getCreatePersonMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPerson>>, TError,CreatePersonMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPerson>>, TError,CreatePersonMutationVariables, TContext> => {
+
+const mutationKey = getCreatePersonMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPerson>>, CreatePersonMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createPerson(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreatePersonMutationResult = NonNullable<Awaited<ReturnType<typeof createPerson>>>
+    export type CreatePersonMutationBody = BodyType<MinistryPersonInput>
+    export type CreatePersonMutationError = ErrorType<void>
+    export type CreatePersonMutationVariables = {data: BodyType<MinistryPersonInput>}
+
+    /**
+ * @summary Add a person and create a private Ministry Profile invitation
+ */
+export const useCreatePerson = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPerson>>, TError,CreatePersonMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createPerson>>,
+        TError,
+        CreatePersonMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreatePersonMutationOptions(options));
+    }
+
+export const getCreatePersonInviteUrl = (id: number,) => {
+
+
+
+
+  return `/api/people/${id}/invite`
+}
+
+/**
+ * @summary Renew a person's private Ministry Profile invitation
+ */
+export const createPersonInvite = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<MinistryPerson> => {
+
+  return customFetch<MinistryPerson>(getCreatePersonInviteUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCreatePersonInviteMutationKey = () => ['createPersonInvite'] as const;
+
+export const getCreatePersonInviteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPersonInvite>>, TError,CreatePersonInviteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPersonInvite>>, TError,CreatePersonInviteMutationVariables, TContext> => {
+
+const mutationKey = getCreatePersonInviteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPersonInvite>>, CreatePersonInviteMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  createPersonInvite(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreatePersonInviteMutationResult = NonNullable<Awaited<ReturnType<typeof createPersonInvite>>>
+
+    export type CreatePersonInviteMutationError = ErrorType<void>
+    export type CreatePersonInviteMutationVariables = {id: number}
+
+    /**
+ * @summary Renew a person's private Ministry Profile invitation
+ */
+export const useCreatePersonInvite = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPersonInvite>>, TError,CreatePersonInviteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createPersonInvite>>,
+        TError,
+        CreatePersonInviteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreatePersonInviteMutationOptions(options));
+    }
+
+export const getGetPublicPersonInviteUrl = (token: string,) => {
+
+
+
+
+  return `/api/people/invites/${token}`
+}
+
+/**
+ * @summary Validate a private Ministry Profile invitation
+ */
+export const getPublicPersonInvite = async (token: string, options?: Parameters<typeof customFetch>[1]): Promise<PublicPersonInvite> => {
+
+  return customFetch<PublicPersonInvite>(getGetPublicPersonInviteUrl(token),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPublicPersonInviteQueryKey = (token: string,) => {
+    return [
+    `/api/people/invites/${token}`
+    ] as const;
+    }
+
+
+export const getGetPublicPersonInviteQueryOptions = <TData = Awaited<ReturnType<typeof getPublicPersonInvite>>, TError = ErrorType<void>>(token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicPersonInvite>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPublicPersonInviteQueryKey(token);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicPersonInvite>>> = ({ signal }) => getPublicPersonInvite(token, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPublicPersonInvite>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPublicPersonInviteQueryResult = NonNullable<Awaited<ReturnType<typeof getPublicPersonInvite>>>
+export type GetPublicPersonInviteQueryError = ErrorType<void>
+
+
+/**
+ * @summary Validate a private Ministry Profile invitation
+ */
+
+export function useGetPublicPersonInvite<TData = Awaited<ReturnType<typeof getPublicPersonInvite>>, TError = ErrorType<void>>(
+ token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicPersonInvite>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPublicPersonInviteQueryOptions(token,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getGetProfileJourneyUrl = (id: number,) => {
 

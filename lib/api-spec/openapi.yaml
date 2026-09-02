@@ -16,6 +16,8 @@ tags:
     description: Pastor and administrator dashboard operations
   - name: profiles
     description: Ministry Profile submissions and results
+  - name: people
+    description: Church people and Ministry Profile invitations
   - name: teams
     description: Church ministry team management
   - name: youth-profiles
@@ -376,6 +378,83 @@ paths:
           description: Invalid profile
         "404":
           description: Church not found
+  /people:
+    get:
+      operationId: listPeople
+      tags: [people]
+      summary: List people and Ministry Profile invitation status for the signed-in church
+      responses:
+        "200":
+          description: People and invitations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MinistryPerson"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: createPerson
+      tags: [people]
+      summary: Add a person and create a private Ministry Profile invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MinistryPersonInput"
+      responses:
+        "201":
+          description: Person and invitation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MinistryPerson"
+        "400":
+          description: Invalid person
+        "401":
+          description: Unauthorized
+  /people/{id}/invite:
+    post:
+      operationId: createPersonInvite
+      tags: [people]
+      summary: Renew a person's private Ministry Profile invitation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Renewed invitation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MinistryPerson"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Person not found
+  /people/invites/{token}:
+    get:
+      operationId: getPublicPersonInvite
+      tags: [people]
+      summary: Validate a private Ministry Profile invitation
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Public invitation details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicPersonInvite"
+        "404":
+          description: Invitation not found or expired
   /profiles/{id}/journey:
     get:
       operationId: getProfileJourney
@@ -1229,6 +1308,7 @@ components:
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [adult] }
         journeyToken: { type: ["string", "null"], format: uuid }
+        inviteToken: { type: ["string", "null"], format: uuid }
         basicInformation:
           $ref: "#/components/schemas/BasicInformationInput"
         churchConnection:
@@ -1278,6 +1358,55 @@ components:
         preferredContact: { type: ["string", "null"] }
         familySituation: { type: ["string", "null"] }
         transportation: { type: ["string", "null"] }
+    MinistryPersonInput:
+      type: object
+      required: [firstName, lastName]
+      additionalProperties: false
+      properties:
+        firstName: { type: string, minLength: 1, maxLength: 120 }
+        lastName: { type: string, minLength: 1, maxLength: 120 }
+        email: { type: ["string", "null"], format: email, maxLength: 320 }
+        phone: { type: ["string", "null"], maxLength: 60 }
+        addressLine1: { type: ["string", "null"], maxLength: 200 }
+        addressLine2: { type: ["string", "null"], maxLength: 200 }
+        city: { type: ["string", "null"], maxLength: 120 }
+        state: { type: ["string", "null"], maxLength: 120 }
+        postalCode: { type: ["string", "null"], maxLength: 30 }
+        country: { type: ["string", "null"], maxLength: 120 }
+    MinistryPerson:
+      type: object
+      required: [id, firstName, lastName, email, phone, addressLine1, addressLine2, city, state, postalCode, country, inviteToken, inviteStatus, inviteExpiresAt, inviteSentAt, source, profileId, isArchived, createdAt]
+      properties:
+        id: { type: integer }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: ["string", "null"], format: email }
+        phone: { type: ["string", "null"] }
+        addressLine1: { type: ["string", "null"] }
+        addressLine2: { type: ["string", "null"] }
+        city: { type: ["string", "null"] }
+        state: { type: ["string", "null"] }
+        postalCode: { type: ["string", "null"] }
+        country: { type: ["string", "null"] }
+        inviteToken: { type: string, format: uuid }
+        inviteStatus: { type: string, enum: [pending, completed, expired, revoked] }
+        inviteExpiresAt: { type: string, format: date-time }
+        inviteSentAt: { type: ["string", "null"], format: date-time }
+        source: { type: string }
+        profileId: { type: ["integer", "null"] }
+        isArchived: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    PublicPersonInvite:
+      type: object
+      required: [churchSlug, churchName, firstName, lastName, email, phone, inviteExpiresAt]
+      properties:
+        churchSlug: { type: string }
+        churchName: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: ["string", "null"], format: email }
+        phone: { type: ["string", "null"] }
+        inviteExpiresAt: { type: string, format: date-time }
     ChurchConnection:
       type: object
       required: [attendanceLength, connectionLevel, followingJesusLength, servedBefore, previousService]

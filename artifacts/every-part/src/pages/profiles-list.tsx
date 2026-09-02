@@ -11,6 +11,7 @@ import { Search, User, Mail, Calendar, Sparkles, AlertCircle, HeartHandshake, Ch
 import { useDebounce } from "@/hooks/use-debounce";
 import { useForm } from "react-hook-form";
 import { EmptyState } from "@/components/empty-state";
+import { PeoplePanel } from "@/components/people-panel";
 
 const AVAILABILITY_OPTIONS = [
   "Sunday mornings",
@@ -112,9 +113,10 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
 
 export default function ProfilesList() {
   const [location] = useLocation();
-  const [activeTab, setActiveTab] = useState<"directory" | "match">(() => {
+  const [activeTab, setActiveTab] = useState<"directory" | "people" | "match">(() => {
     const query = location.split("?")[1] ?? "";
-    return new URLSearchParams(query).get("view") === "match" ? "match" : "directory";
+    const view = new URLSearchParams(query).get("view");
+    return view === "match" ? "match" : view === "people" ? "people" : "directory";
   });
 
   // Directory state
@@ -172,10 +174,22 @@ export default function ProfilesList() {
             <Sparkles className="w-4 h-4" />
             Find Matches
           </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "people"}
+            onClick={() => setActiveTab("people")}
+            className={`flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${activeTab === "people" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            <User className="h-4 w-4" />
+            People & invites
+          </button>
         </div>
       </div>
 
-      {activeTab === "directory" ? (
+      {activeTab === "people" ? (
+        <PeoplePanel />
+      ) : activeTab === "directory" ? (
         <div className="space-y-6 animate-in fade-in duration-300">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">

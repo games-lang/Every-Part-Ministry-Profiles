@@ -76,6 +76,10 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
     if (mode === "birthdate") {
       searchParams.set("birthdate", birthdate);
     }
+    const inviteToken = new URLSearchParams(window.location.search).get("invite");
+    if (inviteToken) {
+      searchParams.set("invite", inviteToken);
+    }
 
     setLocation(`/profile/${slug}/${pathway}?${searchParams.toString()}`);
   };

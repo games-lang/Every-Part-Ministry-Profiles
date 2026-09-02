@@ -18,6 +18,7 @@ import {
   churchAdminsTable,
   db,
   ministryProfilesTable,
+  ministryPeopleTable,
   ministryTeamsTable,
 } from "@workspace/db";
 import { requireUserId } from "../lib/auth";
@@ -248,62 +249,114 @@ router.post("/profiles", async (req, res): Promise<void> => {
     res.status(400).json({ error: "The journey link is invalid or no longer available." });
     return;
   }
+  if (parsed.data.inviteToken) {
+    const [invite] = await db
+      .select()
+      .from(ministryPeopleTable)
+      .where(
+        and(
+          eq(ministryPeopleTable.inviteToken, parsed.data.inviteToken),
+          eq(ministryPeopleTable.churchId, church.id),
+          eq(ministryPeopleTable.inviteStatus, "pending"),
+          eq(ministryPeopleTable.isArchived, false),
+        ),
+      )
+      .limit(1);
+    if (!invite || invite.inviteExpiresAt.getTime() <= Date.now()) {
+      res.status(400).json({ error: "This Ministry Profile invitation is invalid or expired." });
+      return;
+    }
+  }
   const churchConnection = parsed.data.churchConnection;
   const skills = parsed.data.skills;
-  const [created] = await db
-    .insert(ministryProfilesTable)
-    .values({
-      churchId: church.id,
-      journeyId: journey.id,
-      personKey: journey.accessToken,
-      profileType: "adult",
-      recommendedProfileType,
-      profileTypeOverridden,
-      age: parsed.data.age,
-      // OpenAPI's date validator returns a Date; database date columns retain
-      // a calendar-day string to avoid timezone shifts.
-      birthdate: parsed.data.birthdate
-        ? parsed.data.birthdate.toISOString().slice(0, 10)
-        : null,
-      firstName: basicInformation.firstName,
-      lastName: basicInformation.lastName,
-      email: basicInformation.email,
-       phone: basicInformation.phone ?? null,
-       ageRange: personalInformationEnabled ? basicInformation.ageRange ?? null : null,
-       preferredContact: personalInformationEnabled ? basicInformation.preferredContact ?? null : null,
-       familySituation: personalInformationEnabled ? basicInformation.familySituation ?? null : null,
-       transportation: personalInformationEnabled ? basicInformation.transportation ?? null : null,
-       attendanceLength: churchConnectionEnabled ? churchConnection?.attendanceLength ?? null : null,
-       connectionLevel: churchConnectionEnabled ? churchConnection?.connectionLevel ?? null : null,
-       followingJesusLength: churchConnectionEnabled ? churchConnection?.followingJesusLength ?? null : null,
-       servedBefore: churchConnectionEnabled ? churchConnection?.servedBefore ?? null : null,
-       previousService: churchConnectionEnabled ? churchConnection?.previousService ?? null : null,
-       passions: passionsEnabled ? parsed.data.passions ?? [] : [],
-       interests: interestsEnabled ? parsed.data.interests ?? [] : [],
-       servingFrequency: availabilityEnabled ? parsed.data.servingFrequency ?? null : null,
-       availability: availabilityEnabled ? parsed.data.availability ?? [] : [],
-       occupation: skillsEnabled ? skills?.occupation ?? null : null,
-       uniqueSkills: skillsEnabled ? skills?.uniqueSkills ?? null : null,
-       previousMinistryExperience: skillsEnabled ? skills?.previousMinistryExperience ?? null : null,
-       leadershipExperience: skillsEnabled ? skills?.leadershipExperience ?? null : null,
-       missionTripExperience: skillsEnabled ? skills?.missionTripExperience ?? null : null,
-       lifeExperience: skillsEnabled ? skills?.lifeExperience ?? null : null,
-       languages: personalInformationEnabled ? parsed.data.languages ?? null : null,
-       churchDetails: churchConnectionEnabled ? parsed.data.churchDetails ?? null : null,
-       skillsDetails: skillsEnabled ? parsed.data.skillsDetails ?? null : null,
-       lifeExperiences: lifeExperiencesEnabled ? parsed.data.lifeExperiences ?? null : null,
-       availabilityDetails: availabilityEnabled ? parsed.data.availabilityDetails ?? null : null,
-       ministryPreferences: configuration.sections.personalityStrengths && configuration.subsections["personalityStrengths.ministryPreferences"] ? parsed.data.ministryPreferences ?? null : null,
-       apest: filterAssessmentSection("apest", parsed.data.assessmentSections?.apest, configuration),
-       spiritualGifts: filterAssessmentSection("spiritualGifts", parsed.data.assessmentSections?.spiritualGifts, configuration),
-       personalityStrengths: filterAssessmentSection("personalityStrengths", parsed.data.assessmentSections?.personalityStrengths, configuration),
-       naturalStrengths: filterAssessmentSection("naturalStrengths", parsed.data.assessmentSections?.naturalStrengths, configuration),
-       spiritualHealth: filterAssessmentSection("spiritualHealth", parsed.data.assessmentSections?.spiritualHealth, configuration),
-       assessmentConfigurationSnapshot: configuration,
-    })
-    .returning();
+  let created;
+  try {
+    created = await db.transaction(async (tx) => {
+      const [profile] = await tx
+        .insert(ministryProfilesTable)
+        .values({
+          churchId: church.id,
+          journeyId: journey.id,
+          personKey: journey.accessToken,
+          profileType: "adult",
+          recommendedProfileType,
+          profileTypeOverridden,
+          age: parsed.data.age,
+          // OpenAPI's date validator returns a Date; database date columns retain
+          // a calendar-day string to avoid timezone shifts.
+          birthdate: parsed.data.birthdate
+            ? parsed.data.birthdate.toISOString().slice(0, 10)
+            : null,
+          firstName: basicInformation.firstName,
+          lastName: basicInformation.lastName,
+          email: basicInformation.email,
+          phone: basicInformation.phone ?? null,
+          ageRange: personalInformationEnabled ? basicInformation.ageRange ?? null : null,
+          preferredContact: personalInformationEnabled ? basicInformation.preferredContact ?? null : null,
+          familySituation: personalInformationEnabled ? basicInformation.familySituation ?? null : null,
+          transportation: personalInformationEnabled ? basicInformation.transportation ?? null : null,
+          attendanceLength: churchConnectionEnabled ? churchConnection?.attendanceLength ?? null : null,
+          connectionLevel: churchConnectionEnabled ? churchConnection?.connectionLevel ?? null : null,
+          followingJesusLength: churchConnectionEnabled ? churchConnection?.followingJesusLength ?? null : null,
+          servedBefore: churchConnectionEnabled ? churchConnection?.servedBefore ?? null : null,
+          previousService: churchConnectionEnabled ? churchConnection?.previousService ?? null : null,
+          passions: passionsEnabled ? parsed.data.passions ?? [] : [],
+          interests: interestsEnabled ? parsed.data.interests ?? [] : [],
+          servingFrequency: availabilityEnabled ? parsed.data.servingFrequency ?? null : null,
+          availability: availabilityEnabled ? parsed.data.availability ?? [] : [],
+          occupation: skillsEnabled ? skills?.occupation ?? null : null,
+          uniqueSkills: skillsEnabled ? skills?.uniqueSkills ?? null : null,
+          previousMinistryExperience: skillsEnabled ? skills?.previousMinistryExperience ?? null : null,
+          leadershipExperience: skillsEnabled ? skills?.leadershipExperience ?? null : null,
+          missionTripExperience: skillsEnabled ? skills?.missionTripExperience ?? null : null,
+          lifeExperience: skillsEnabled ? skills?.lifeExperience ?? null : null,
+          languages: personalInformationEnabled ? parsed.data.languages ?? null : null,
+          churchDetails: churchConnectionEnabled ? parsed.data.churchDetails ?? null : null,
+          skillsDetails: skillsEnabled ? parsed.data.skillsDetails ?? null : null,
+          lifeExperiences: lifeExperiencesEnabled ? parsed.data.lifeExperiences ?? null : null,
+          availabilityDetails: availabilityEnabled ? parsed.data.availabilityDetails ?? null : null,
+          ministryPreferences: configuration.sections.personalityStrengths && configuration.subsections["personalityStrengths.ministryPreferences"] ? parsed.data.ministryPreferences ?? null : null,
+          apest: filterAssessmentSection("apest", parsed.data.assessmentSections?.apest, configuration),
+          spiritualGifts: filterAssessmentSection("spiritualGifts", parsed.data.assessmentSections?.spiritualGifts, configuration),
+          personalityStrengths: filterAssessmentSection("personalityStrengths", parsed.data.assessmentSections?.personalityStrengths, configuration),
+          naturalStrengths: filterAssessmentSection("naturalStrengths", parsed.data.assessmentSections?.naturalStrengths, configuration),
+          spiritualHealth: filterAssessmentSection("spiritualHealth", parsed.data.assessmentSections?.spiritualHealth, configuration),
+          assessmentConfigurationSnapshot: configuration,
+        })
+        .returning();
 
-  if (!created) throw new Error("Unable to create Ministry Profile");
+      if (!profile) throw new Error("Unable to create Ministry Profile");
+      if (parsed.data.inviteToken) {
+        const [linkedPerson] = await tx
+          .update(ministryPeopleTable)
+          .set({
+            profileId: profile.id,
+            inviteStatus: "completed",
+          })
+          .where(
+            and(
+              eq(ministryPeopleTable.inviteToken, parsed.data.inviteToken),
+              eq(ministryPeopleTable.churchId, church.id),
+              eq(ministryPeopleTable.inviteStatus, "pending"),
+            ),
+          )
+          .returning({ id: ministryPeopleTable.id });
+        if (!linkedPerson) {
+          throw new Error("MINISTRY_PROFILE_INVITE_ALREADY_USED");
+        }
+      }
+      return profile;
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "MINISTRY_PROFILE_INVITE_ALREADY_USED"
+    ) {
+      res.status(400).json({ error: "This Ministry Profile invitation is invalid or expired." });
+      return;
+    }
+    throw error;
+  }
   await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(CreateProfileResponse.parse(profileResponse(created)));
 });

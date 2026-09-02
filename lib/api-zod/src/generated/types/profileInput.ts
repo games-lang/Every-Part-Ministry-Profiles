@@ -29,6 +29,8 @@ export interface ProfileInput {
   profileType: ProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /** @nullable */
+  inviteToken?: string | null;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];

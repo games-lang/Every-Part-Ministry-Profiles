@@ -791,6 +791,7 @@ export const CreateProfileBody = zod.object({
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['adult']),
   "journeyToken": zod.uuid().nullish(),
+  "inviteToken": zod.uuid().nullish(),
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
   "lastName": zod.string().min(1),
@@ -995,6 +996,142 @@ export const CreateProfileResponse = zod.object({
 }),
   "youth": zod.record(zod.string(), zod.unknown()).nullable()
 }))
+
+
+/**
+ * @summary List people and Ministry Profile invitation status for the signed-in church
+ */
+export const ListPeopleResponseItem = zod.object({
+  "id": zod.int(),
+  "firstName": zod.string(),
+  "lastName": zod.string(),
+  "email": zod.email().nullable(),
+  "phone": zod.string().nullable(),
+  "addressLine1": zod.string().nullable(),
+  "addressLine2": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "postalCode": zod.string().nullable(),
+  "country": zod.string().nullable(),
+  "inviteToken": zod.uuid(),
+  "inviteStatus": zod.enum(['pending', 'completed', 'expired', 'revoked']),
+  "inviteExpiresAt": zod.coerce.date(),
+  "inviteSentAt": zod.coerce.date().nullable(),
+  "source": zod.string(),
+  "profileId": zod.int().nullable(),
+  "isArchived": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const ListPeopleResponse = zod.array(ListPeopleResponseItem)
+
+
+/**
+ * @summary Add a person and create a private Ministry Profile invitation
+ */
+export const createPersonBodyFirstNameMax = 120;
+
+export const createPersonBodyLastNameMax = 120;
+
+export const createPersonBodyEmailMax = 320;
+
+export const createPersonBodyPhoneMax = 60;
+
+export const createPersonBodyAddressLine1Max = 200;
+
+export const createPersonBodyAddressLine2Max = 200;
+
+export const createPersonBodyCityMax = 120;
+
+export const createPersonBodyStateMax = 120;
+
+export const createPersonBodyPostalCodeMax = 30;
+
+export const createPersonBodyCountryMax = 120;
+
+
+
+export const CreatePersonBody = zod.object({
+  "firstName": zod.string().min(1).max(createPersonBodyFirstNameMax),
+  "lastName": zod.string().min(1).max(createPersonBodyLastNameMax),
+  "email": zod.email().max(createPersonBodyEmailMax).nullish(),
+  "phone": zod.string().max(createPersonBodyPhoneMax).nullish(),
+  "addressLine1": zod.string().max(createPersonBodyAddressLine1Max).nullish(),
+  "addressLine2": zod.string().max(createPersonBodyAddressLine2Max).nullish(),
+  "city": zod.string().max(createPersonBodyCityMax).nullish(),
+  "state": zod.string().max(createPersonBodyStateMax).nullish(),
+  "postalCode": zod.string().max(createPersonBodyPostalCodeMax).nullish(),
+  "country": zod.string().max(createPersonBodyCountryMax).nullish()
+})
+
+export const CreatePersonResponse = zod.object({
+  "id": zod.int(),
+  "firstName": zod.string(),
+  "lastName": zod.string(),
+  "email": zod.email().nullable(),
+  "phone": zod.string().nullable(),
+  "addressLine1": zod.string().nullable(),
+  "addressLine2": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "postalCode": zod.string().nullable(),
+  "country": zod.string().nullable(),
+  "inviteToken": zod.uuid(),
+  "inviteStatus": zod.enum(['pending', 'completed', 'expired', 'revoked']),
+  "inviteExpiresAt": zod.coerce.date(),
+  "inviteSentAt": zod.coerce.date().nullable(),
+  "source": zod.string(),
+  "profileId": zod.int().nullable(),
+  "isArchived": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Renew a person's private Ministry Profile invitation
+ */
+export const CreatePersonInviteParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const CreatePersonInviteResponse = zod.object({
+  "id": zod.int(),
+  "firstName": zod.string(),
+  "lastName": zod.string(),
+  "email": zod.email().nullable(),
+  "phone": zod.string().nullable(),
+  "addressLine1": zod.string().nullable(),
+  "addressLine2": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "postalCode": zod.string().nullable(),
+  "country": zod.string().nullable(),
+  "inviteToken": zod.uuid(),
+  "inviteStatus": zod.enum(['pending', 'completed', 'expired', 'revoked']),
+  "inviteExpiresAt": zod.coerce.date(),
+  "inviteSentAt": zod.coerce.date().nullable(),
+  "source": zod.string(),
+  "profileId": zod.int().nullable(),
+  "isArchived": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Validate a private Ministry Profile invitation
+ */
+export const GetPublicPersonInviteParams = zod.object({
+  "token": zod.uuid()
+})
+
+export const GetPublicPersonInviteResponse = zod.object({
+  "churchSlug": zod.string(),
+  "churchName": zod.string(),
+  "firstName": zod.string(),
+  "lastName": zod.string(),
+  "email": zod.email().nullable(),
+  "phone": zod.string().nullable(),
+  "inviteExpiresAt": zod.coerce.date()
+})
 
 
 /**
@@ -1942,4 +2079,3 @@ export const UpdateProfileTeamResponse = zod.object({
   "teamId": zod.int().nullable(),
   "teamName": zod.string().nullable()
 })
-

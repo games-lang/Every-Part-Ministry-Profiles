@@ -14,6 +14,7 @@ import {
   useGetPublicChurch,
   getGetPublicChurchQueryKey,
   useCreateProfile,
+  useGetPublicPersonInvite,
   type AssessmentConfiguration,
   type ProfileInput,
 } from "@workspace/api-client-react";
@@ -1452,6 +1453,7 @@ export default function Assessment() {
   const ageQuery = searchParams.get("age");
   const age = ageQuery ? Number(ageQuery) : NaN;
   const birthdate = searchParams.get("birthdate") || undefined;
+  const inviteToken = searchParams.get("invite");
 
   const {
     data: church,
@@ -1464,6 +1466,12 @@ export default function Assessment() {
     },
   });
   const createProfile = useCreateProfile();
+  const { data: invitedPerson } = useGetPublicPersonInvite(inviteToken ?? "", {
+    query: {
+      enabled: Boolean(inviteToken),
+      queryKey: [`/api/people/invites/${inviteToken ?? ""}`],
+    },
+  });
   const [started, setStarted] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [submitError, setSubmitError] = useState("");
@@ -1503,6 +1511,15 @@ export default function Assessment() {
   const submissionStarted = useRef(false);
   const initializedGiftConfig = useRef<string | null>(null);
   const form = useForm<Values>({ defaultValues });
+  const invitationApplied = useRef(false);
+  useEffect(() => {
+    if (!invitedPerson || invitationApplied.current) return;
+    invitationApplied.current = true;
+    form.setValue("basicInformation.firstName", invitedPerson.firstName);
+    form.setValue("basicInformation.lastName", invitedPerson.lastName);
+    form.setValue("basicInformation.email", invitedPerson.email ?? "");
+    form.setValue("basicInformation.phone", invitedPerson.phone ?? "");
+  }, [form, invitedPerson]);
   const configuration = church?.assessmentConfiguration;
   const passionOptions = configuration?.passions ?? OPTIONS.passions;
   const ministryInterestOptions =
@@ -2093,6 +2110,7 @@ export default function Assessment() {
     const payload: ProfileInput = {
       churchSlug: slug,
       journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
+      inviteToken: inviteToken || undefined,
       basicInformation: {
         firstName: data.basicInformation.firstName,
         lastName: data.basicInformation.lastName,

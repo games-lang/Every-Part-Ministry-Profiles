@@ -15,9 +15,9 @@ import {
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
-import { churchesTable } from "./churches.ts";
-import { ministryTeamsTable } from "./ministry-teams.ts";
-import { ministryJourneysTable } from "./ministry-journeys.ts";
+import { churchesTable } from "./churches";
+import { ministryTeamsTable } from "./ministry-teams";
+import { ministryJourneysTable } from "./ministry-journeys";
 
 export const ministryProfilesTable = pgTable("ministry_profiles", {
   id: serial("id").primaryKey(),

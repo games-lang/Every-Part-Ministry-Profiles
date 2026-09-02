@@ -7,6 +7,7 @@ import storageRouter from "./storage";
 import teamsRouter from "./teams";
 import youthProfilesRouter from "./youth-profiles";
 import journeysRouter from "./journeys";
+import peopleRouter from "./people";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(storageRouter);
 router.use(teamsRouter);
 router.use(youthProfilesRouter);
 router.use(journeysRouter);
+router.use(peopleRouter);
 
 export default router;
