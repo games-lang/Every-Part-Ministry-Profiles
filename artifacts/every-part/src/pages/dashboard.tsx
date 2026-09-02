@@ -1,6 +1,10 @@
-import { useGetAppAdminAccess, useGetDashboardSummary } from "@workspace/api-client-react";
+import {
+  useGetAppAdminAccess,
+  useGetDashboardSummary,
+  useGetPartFinderLeadershipProfile,
+} from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Users, UsersRound } from "lucide-react";
+import { BrainCircuit, FileText, Lightbulb, ListChecks, Users, UsersRound } from "lucide-react";
 import { Link, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +22,42 @@ function buildPublicProfileUrl(profilePath: string) {
 export default function Dashboard() {
   const { data: summary, isLoading, error } = useGetDashboardSummary();
   const { data: appAdminAccess } = useGetAppAdminAccess();
+  const { data: leadershipProfile } = useGetPartFinderLeadershipProfile();
+  const unassignedProfileCount =
+    (summary?.totalProfiles ?? 0) - (summary?.assignedProfileCount ?? 0);
+  const partFinderBrief = leadershipProfile?.configured &&
+    leadershipProfile.personalizationEnabled
+    ? [
+        leadershipProfile.priorities[0]
+          ? {
+              label: "Your priority",
+              text: `Keep “${leadershipProfile.priorities[0]}” in view as you plan next steps.`,
+              icon: Lightbulb,
+            }
+          : null,
+        unassignedProfileCount > 0
+          ? {
+              label: "Follow-up opportunity",
+              text: `${unassignedProfileCount} completed ${unassignedProfileCount === 1 ? "profile is" : "profiles are"} not currently assigned to a team.`,
+              icon: Users,
+            }
+          : null,
+        leadershipProfile.delegationNeeds
+          ? {
+              label: "Delegation focus",
+              text: "You identified a responsibility you want to delegate. Ask PartFinder to help break it into possible roles.",
+              icon: ListChecks,
+            }
+          : null,
+        leadershipProfile.helpPreferences.includes("develop-leaders")
+          ? {
+              label: "Leadership development",
+              text: "Ask PartFinder which existing profile signals may be worth exploring in a leadership conversation.",
+              icon: BrainCircuit,
+            }
+          : null,
+      ].filter(Boolean).slice(0, 4)
+    : [];
 
   if (error) {
     return (
@@ -88,6 +128,74 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="overflow-hidden border-primary/20 bg-primary/[0.035] shadow-sm">
+        <CardHeader className="flex flex-row items-start justify-between gap-4 pb-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">
+              This week
+            </p>
+            <CardTitle className="mt-1 font-serif text-2xl">
+              Your PartFinder Brief
+            </CardTitle>
+          </div>
+          <Button variant="outline" size="sm" asChild className="shrink-0">
+            <Link href="/leadership-profile">
+              {leadershipProfile?.configured ? "Manage profile" : "Personalize"}
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {!leadershipProfile?.configured ? (
+            <div className="flex items-start gap-3 rounded-xl border border-dashed border-primary/25 bg-background/70 p-4">
+              <BrainCircuit className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <div>
+                <p className="font-medium">Make PartFinder more useful to you</p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  Share your current ministry priorities and preferred coaching
+                  style to receive a focused leadership brief.
+                </p>
+              </div>
+            </div>
+          ) : !leadershipProfile.personalizationEnabled ? (
+            <p className="text-sm text-muted-foreground">
+              Personalization is paused. Your saved leadership profile is not
+              being used for this brief or PartFinder responses.
+            </p>
+          ) : partFinderBrief.length > 0 ? (
+            <div className="grid gap-3 md:grid-cols-2">
+              {partFinderBrief.map((item) => {
+                if (!item) return null;
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.label}
+                    className="flex gap-3 rounded-xl border border-border/70 bg-background/80 p-4"
+                  >
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <div>
+                      <p className="text-sm font-semibold">{item.label}</p>
+                      <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                        {item.text}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Add a priority or choose how you want PartFinder to help, and
+              your brief will begin taking shape here.
+            </p>
+          )}
+          <p className="mt-4 text-xs leading-5 text-muted-foreground">
+            PartFinder surfaces possibilities, not decisions. Consider every
+            suggestion alongside prayer, pastoral wisdom, relationships, and
+            each person’s own sense of calling.
+          </p>
+        </CardContent>
+      </Card>
 
       {!isLoading && summary?.church.profileUrl && (
         <ShareProfileCard

@@ -79,6 +79,170 @@ export const ChatWithPartFinderResponse = zod.object({
 
 
 /**
+ * @summary Get the signed-in leader's transparent PartFinder profile
+ */
+export const getPartFinderLeadershipProfileResponseOnePrioritiesItemMax = 160;
+
+export const getPartFinderLeadershipProfileResponseOnePrioritiesMax = 3;
+
+export const getPartFinderLeadershipProfileResponseOneEnergizingAreasMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneDrainingAreasMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneDelegationNeedsMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneChurchChallengesMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneStrengthenAreasMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneLeadersToDevelopMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneLeadershipStrengthsItemMax = 100;
+
+export const getPartFinderLeadershipProfileResponseOneLeadershipStrengthsMax = 8;
+
+export const getPartFinderLeadershipProfileResponseOneGrowthAreasItemMax = 100;
+
+export const getPartFinderLeadershipProfileResponseOneGrowthAreasMax = 8;
+
+export const getPartFinderLeadershipProfileResponseOneGoals3MonthsMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneGoals1YearMax = 1000;
+
+export const getPartFinderLeadershipProfileResponseOneHelpPreferencesMax = 14;
+
+
+
+export const GetPartFinderLeadershipProfileResponse = zod.object({
+  "priorities": zod.array(zod.string().min(1).max(getPartFinderLeadershipProfileResponseOnePrioritiesItemMax)).max(getPartFinderLeadershipProfileResponseOnePrioritiesMax),
+  "energizingAreas": zod.string().max(getPartFinderLeadershipProfileResponseOneEnergizingAreasMax),
+  "drainingAreas": zod.string().max(getPartFinderLeadershipProfileResponseOneDrainingAreasMax),
+  "delegationNeeds": zod.string().max(getPartFinderLeadershipProfileResponseOneDelegationNeedsMax),
+  "churchChallenges": zod.string().max(getPartFinderLeadershipProfileResponseOneChurchChallengesMax),
+  "strengthenAreas": zod.string().max(getPartFinderLeadershipProfileResponseOneStrengthenAreasMax),
+  "leadersToDevelop": zod.string().max(getPartFinderLeadershipProfileResponseOneLeadersToDevelopMax),
+  "leadershipStrengths": zod.array(zod.string().min(1).max(getPartFinderLeadershipProfileResponseOneLeadershipStrengthsItemMax)).max(getPartFinderLeadershipProfileResponseOneLeadershipStrengthsMax),
+  "growthAreas": zod.array(zod.string().min(1).max(getPartFinderLeadershipProfileResponseOneGrowthAreasItemMax)).max(getPartFinderLeadershipProfileResponseOneGrowthAreasMax),
+  "goals3Months": zod.string().max(getPartFinderLeadershipProfileResponseOneGoals3MonthsMax),
+  "goals1Year": zod.string().max(getPartFinderLeadershipProfileResponseOneGoals1YearMax),
+  "helpPreferences": zod.array(zod.enum(['find-volunteers', 'delegate', 'develop-leaders', 'notice-overlooked-people', 'engage-younger-generations', 'improve-retention', 'follow-up', 'strengthen-teams', 'spot-gaps', 'think-strategically', 'protect-time', 'notice-burnout', 'challenge-assumptions', 'explore-new-ideas'])).max(getPartFinderLeadershipProfileResponseOneHelpPreferencesMax),
+  "coachingStyle": zod.enum(['encouraging', 'balanced', 'direct']),
+  "responseLength": zod.enum(['brief', 'standard', 'detailed']),
+  "personalizationEnabled": zod.boolean()
+}).and(zod.object({
+  "configured": zod.boolean(),
+  "updatedAt": zod.coerce.date().nullable()
+}))
+
+
+/**
+ * @summary Save the signed-in leader's transparent PartFinder profile
+ */
+export const updatePartFinderLeadershipProfileBodyPrioritiesItemMax = 160;
+
+export const updatePartFinderLeadershipProfileBodyPrioritiesMax = 3;
+
+export const updatePartFinderLeadershipProfileBodyEnergizingAreasMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyDrainingAreasMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyDelegationNeedsMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyChurchChallengesMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyStrengthenAreasMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyLeadersToDevelopMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyLeadershipStrengthsItemMax = 100;
+
+export const updatePartFinderLeadershipProfileBodyLeadershipStrengthsMax = 8;
+
+export const updatePartFinderLeadershipProfileBodyGrowthAreasItemMax = 100;
+
+export const updatePartFinderLeadershipProfileBodyGrowthAreasMax = 8;
+
+export const updatePartFinderLeadershipProfileBodyGoals3MonthsMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyGoals1YearMax = 1000;
+
+export const updatePartFinderLeadershipProfileBodyHelpPreferencesMax = 14;
+
+
+
+export const UpdatePartFinderLeadershipProfileBody = zod.object({
+  "priorities": zod.array(zod.string().min(1).max(updatePartFinderLeadershipProfileBodyPrioritiesItemMax)).max(updatePartFinderLeadershipProfileBodyPrioritiesMax),
+  "energizingAreas": zod.string().max(updatePartFinderLeadershipProfileBodyEnergizingAreasMax),
+  "drainingAreas": zod.string().max(updatePartFinderLeadershipProfileBodyDrainingAreasMax),
+  "delegationNeeds": zod.string().max(updatePartFinderLeadershipProfileBodyDelegationNeedsMax),
+  "churchChallenges": zod.string().max(updatePartFinderLeadershipProfileBodyChurchChallengesMax),
+  "strengthenAreas": zod.string().max(updatePartFinderLeadershipProfileBodyStrengthenAreasMax),
+  "leadersToDevelop": zod.string().max(updatePartFinderLeadershipProfileBodyLeadersToDevelopMax),
+  "leadershipStrengths": zod.array(zod.string().min(1).max(updatePartFinderLeadershipProfileBodyLeadershipStrengthsItemMax)).max(updatePartFinderLeadershipProfileBodyLeadershipStrengthsMax),
+  "growthAreas": zod.array(zod.string().min(1).max(updatePartFinderLeadershipProfileBodyGrowthAreasItemMax)).max(updatePartFinderLeadershipProfileBodyGrowthAreasMax),
+  "goals3Months": zod.string().max(updatePartFinderLeadershipProfileBodyGoals3MonthsMax),
+  "goals1Year": zod.string().max(updatePartFinderLeadershipProfileBodyGoals1YearMax),
+  "helpPreferences": zod.array(zod.enum(['find-volunteers', 'delegate', 'develop-leaders', 'notice-overlooked-people', 'engage-younger-generations', 'improve-retention', 'follow-up', 'strengthen-teams', 'spot-gaps', 'think-strategically', 'protect-time', 'notice-burnout', 'challenge-assumptions', 'explore-new-ideas'])).max(updatePartFinderLeadershipProfileBodyHelpPreferencesMax),
+  "coachingStyle": zod.enum(['encouraging', 'balanced', 'direct']),
+  "responseLength": zod.enum(['brief', 'standard', 'detailed']),
+  "personalizationEnabled": zod.boolean()
+})
+
+export const updatePartFinderLeadershipProfileResponseOnePrioritiesItemMax = 160;
+
+export const updatePartFinderLeadershipProfileResponseOnePrioritiesMax = 3;
+
+export const updatePartFinderLeadershipProfileResponseOneEnergizingAreasMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneDrainingAreasMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneDelegationNeedsMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneChurchChallengesMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneStrengthenAreasMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneLeadersToDevelopMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneLeadershipStrengthsItemMax = 100;
+
+export const updatePartFinderLeadershipProfileResponseOneLeadershipStrengthsMax = 8;
+
+export const updatePartFinderLeadershipProfileResponseOneGrowthAreasItemMax = 100;
+
+export const updatePartFinderLeadershipProfileResponseOneGrowthAreasMax = 8;
+
+export const updatePartFinderLeadershipProfileResponseOneGoals3MonthsMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneGoals1YearMax = 1000;
+
+export const updatePartFinderLeadershipProfileResponseOneHelpPreferencesMax = 14;
+
+
+
+export const UpdatePartFinderLeadershipProfileResponse = zod.object({
+  "priorities": zod.array(zod.string().min(1).max(updatePartFinderLeadershipProfileResponseOnePrioritiesItemMax)).max(updatePartFinderLeadershipProfileResponseOnePrioritiesMax),
+  "energizingAreas": zod.string().max(updatePartFinderLeadershipProfileResponseOneEnergizingAreasMax),
+  "drainingAreas": zod.string().max(updatePartFinderLeadershipProfileResponseOneDrainingAreasMax),
+  "delegationNeeds": zod.string().max(updatePartFinderLeadershipProfileResponseOneDelegationNeedsMax),
+  "churchChallenges": zod.string().max(updatePartFinderLeadershipProfileResponseOneChurchChallengesMax),
+  "strengthenAreas": zod.string().max(updatePartFinderLeadershipProfileResponseOneStrengthenAreasMax),
+  "leadersToDevelop": zod.string().max(updatePartFinderLeadershipProfileResponseOneLeadersToDevelopMax),
+  "leadershipStrengths": zod.array(zod.string().min(1).max(updatePartFinderLeadershipProfileResponseOneLeadershipStrengthsItemMax)).max(updatePartFinderLeadershipProfileResponseOneLeadershipStrengthsMax),
+  "growthAreas": zod.array(zod.string().min(1).max(updatePartFinderLeadershipProfileResponseOneGrowthAreasItemMax)).max(updatePartFinderLeadershipProfileResponseOneGrowthAreasMax),
+  "goals3Months": zod.string().max(updatePartFinderLeadershipProfileResponseOneGoals3MonthsMax),
+  "goals1Year": zod.string().max(updatePartFinderLeadershipProfileResponseOneGoals1YearMax),
+  "helpPreferences": zod.array(zod.enum(['find-volunteers', 'delegate', 'develop-leaders', 'notice-overlooked-people', 'engage-younger-generations', 'improve-retention', 'follow-up', 'strengthen-teams', 'spot-gaps', 'think-strategically', 'protect-time', 'notice-burnout', 'challenge-assumptions', 'explore-new-ideas'])).max(updatePartFinderLeadershipProfileResponseOneHelpPreferencesMax),
+  "coachingStyle": zod.enum(['encouraging', 'balanced', 'direct']),
+  "responseLength": zod.enum(['brief', 'standard', 'detailed']),
+  "personalizationEnabled": zod.boolean()
+}).and(zod.object({
+  "configured": zod.boolean(),
+  "updatedAt": zod.coerce.date().nullable()
+}))
+
+
+/**
  * Save a suggestion or problem report from the public sign-in experience
  * @summary Submit public feedback
  */

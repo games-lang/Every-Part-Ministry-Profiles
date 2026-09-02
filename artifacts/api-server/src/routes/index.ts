@@ -13,6 +13,7 @@ import feedbackRouter from "./feedback";
 import assistantRouter from "./assistant";
 import profileHelperRouter from "./profile-helper";
 import partFinderRouter from "./partfinder";
+import partFinderLeadershipProfileRouter from "./partfinder-leadership-profile";
 
 const router: IRouter = Router();
 
@@ -30,5 +31,6 @@ router.use(feedbackRouter);
 router.use(assistantRouter);
 router.use(profileHelperRouter);
 router.use(partFinderRouter);
+router.use(partFinderLeadershipProfileRouter);
 
 export default router;

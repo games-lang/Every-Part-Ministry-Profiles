@@ -95,6 +95,91 @@ export interface PartFinderResponse {
   advisory: string;
 }
 
+export type PartFinderHelpPreference = typeof PartFinderHelpPreference[keyof typeof PartFinderHelpPreference];
+
+
+export const PartFinderHelpPreference = {
+  'find-volunteers': 'find-volunteers',
+  delegate: 'delegate',
+  'develop-leaders': 'develop-leaders',
+  'notice-overlooked-people': 'notice-overlooked-people',
+  'engage-younger-generations': 'engage-younger-generations',
+  'improve-retention': 'improve-retention',
+  'follow-up': 'follow-up',
+  'strengthen-teams': 'strengthen-teams',
+  'spot-gaps': 'spot-gaps',
+  'think-strategically': 'think-strategically',
+  'protect-time': 'protect-time',
+  'notice-burnout': 'notice-burnout',
+  'challenge-assumptions': 'challenge-assumptions',
+  'explore-new-ideas': 'explore-new-ideas',
+} as const;
+
+export type PartFinderLeadershipProfileInputCoachingStyle = typeof PartFinderLeadershipProfileInputCoachingStyle[keyof typeof PartFinderLeadershipProfileInputCoachingStyle];
+
+
+export const PartFinderLeadershipProfileInputCoachingStyle = {
+  encouraging: 'encouraging',
+  balanced: 'balanced',
+  direct: 'direct',
+} as const;
+
+export type PartFinderLeadershipProfileInputResponseLength = typeof PartFinderLeadershipProfileInputResponseLength[keyof typeof PartFinderLeadershipProfileInputResponseLength];
+
+
+export const PartFinderLeadershipProfileInputResponseLength = {
+  brief: 'brief',
+  standard: 'standard',
+  detailed: 'detailed',
+} as const;
+
+export interface PartFinderLeadershipProfileInput {
+  /**
+     * @maxItems 3
+     * @items.minLength 1
+     * @items.maxLength 160
+     */
+  priorities: string[];
+  /** @maxLength 1000 */
+  energizingAreas: string;
+  /** @maxLength 1000 */
+  drainingAreas: string;
+  /** @maxLength 1000 */
+  delegationNeeds: string;
+  /** @maxLength 1000 */
+  churchChallenges: string;
+  /** @maxLength 1000 */
+  strengthenAreas: string;
+  /** @maxLength 1000 */
+  leadersToDevelop: string;
+  /**
+     * @maxItems 8
+     * @items.minLength 1
+     * @items.maxLength 100
+     */
+  leadershipStrengths: string[];
+  /**
+     * @maxItems 8
+     * @items.minLength 1
+     * @items.maxLength 100
+     */
+  growthAreas: string[];
+  /** @maxLength 1000 */
+  goals3Months: string;
+  /** @maxLength 1000 */
+  goals1Year: string;
+  /** @maxItems 14 */
+  helpPreferences: PartFinderHelpPreference[];
+  coachingStyle: PartFinderLeadershipProfileInputCoachingStyle;
+  responseLength: PartFinderLeadershipProfileInputResponseLength;
+  personalizationEnabled: boolean;
+}
+
+export type PartFinderLeadershipProfile = PartFinderLeadershipProfileInput & ({
+  configured: boolean;
+  updatedAt: string | null;
+});
+
 export interface HealthStatus {
   status: string;
 }

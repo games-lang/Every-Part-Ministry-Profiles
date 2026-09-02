@@ -14,6 +14,7 @@ import LandingPage from '@/pages/landing';
 import PricingPage from '@/pages/pricing';
 import { AppAdminRoute } from '@/pages/app-admin';
 import Dashboard from '@/pages/dashboard';
+import LeadershipProfilePage from '@/pages/leadership-profile';
 import ChurchSetup from '@/pages/church-setup';
 import ChurchOnboarding from '@/pages/church-onboarding';
 import ProfilesList from '@/pages/profiles-list';
@@ -288,6 +289,9 @@ function ClerkProviderWithRoutes() {
               </Route>
               <Route path="/church-setup">
                 <AuthenticatedRoute component={ChurchSetup} />
+              </Route>
+              <Route path="/leadership-profile">
+                <AuthenticatedRoute component={LeadershipProfilePage} />
               </Route>
               <Route path="/church-onboarding">
                 <AuthenticatedRoute component={ChurchOnboarding} />

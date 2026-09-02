@@ -54,6 +54,8 @@ import type {
   MinistryProfile,
   MinistryTeam,
   PartFinderInput,
+  PartFinderLeadershipProfile,
+  PartFinderLeadershipProfileInput,
   PartFinderResponse,
   ProfileHelperInput,
   ProfileHelperResponse,
@@ -341,6 +343,163 @@ export const useChatWithPartFinder = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getChatWithPartFinderMutationOptions(options));
+    }
+
+export const getGetPartFinderLeadershipProfileUrl = () => {
+
+
+
+
+  return `/api/partfinder/leadership-profile`
+}
+
+/**
+ * @summary Get the signed-in leader's transparent PartFinder profile
+ */
+export const getPartFinderLeadershipProfile = async ( options?: Parameters<typeof customFetch>[1]): Promise<PartFinderLeadershipProfile> => {
+
+  return customFetch<PartFinderLeadershipProfile>(getGetPartFinderLeadershipProfileUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPartFinderLeadershipProfileQueryKey = () => {
+    return [
+    `/api/partfinder/leadership-profile`
+    ] as const;
+    }
+
+
+export const getGetPartFinderLeadershipProfileQueryOptions = <TData = Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPartFinderLeadershipProfileQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>> = ({ signal }) => getPartFinderLeadershipProfile({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPartFinderLeadershipProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>>
+export type GetPartFinderLeadershipProfileQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the signed-in leader's transparent PartFinder profile
+ */
+
+export function useGetPartFinderLeadershipProfile<TData = Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPartFinderLeadershipProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPartFinderLeadershipProfileQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdatePartFinderLeadershipProfileUrl = () => {
+
+
+
+
+  return `/api/partfinder/leadership-profile`
+}
+
+/**
+ * @summary Save the signed-in leader's transparent PartFinder profile
+ */
+export const updatePartFinderLeadershipProfile = async (partFinderLeadershipProfileInput: PartFinderLeadershipProfileInput, options?: Parameters<typeof customFetch>[1]): Promise<PartFinderLeadershipProfile> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<PartFinderLeadershipProfile>(getUpdatePartFinderLeadershipProfileUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(partFinderLeadershipProfileInput)
+  }
+);}
+
+
+
+
+
+export const getUpdatePartFinderLeadershipProfileMutationKey = () => ['updatePartFinderLeadershipProfile'] as const;
+
+export const getUpdatePartFinderLeadershipProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePartFinderLeadershipProfile>>, TError,UpdatePartFinderLeadershipProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePartFinderLeadershipProfile>>, TError,UpdatePartFinderLeadershipProfileMutationVariables, TContext> => {
+
+const mutationKey = getUpdatePartFinderLeadershipProfileMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePartFinderLeadershipProfile>>, UpdatePartFinderLeadershipProfileMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  updatePartFinderLeadershipProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePartFinderLeadershipProfileMutationResult = NonNullable<Awaited<ReturnType<typeof updatePartFinderLeadershipProfile>>>
+    export type UpdatePartFinderLeadershipProfileMutationBody = BodyType<PartFinderLeadershipProfileInput>
+    export type UpdatePartFinderLeadershipProfileMutationError = ErrorType<void>
+    export type UpdatePartFinderLeadershipProfileMutationVariables = {data: BodyType<PartFinderLeadershipProfileInput>}
+
+    /**
+ * @summary Save the signed-in leader's transparent PartFinder profile
+ */
+export const useUpdatePartFinderLeadershipProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePartFinderLeadershipProfile>>, TError,UpdatePartFinderLeadershipProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updatePartFinderLeadershipProfile>>,
+        TError,
+        UpdatePartFinderLeadershipProfileMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdatePartFinderLeadershipProfileMutationOptions(options));
     }
 
 export const getCreateAppFeedbackUrl = () => {

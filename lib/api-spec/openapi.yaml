@@ -88,6 +88,41 @@ paths:
           description: Unauthorized
         "502":
           description: AI service unavailable
+  /partfinder/leadership-profile:
+    get:
+      operationId: getPartFinderLeadershipProfile
+      tags: [assistant]
+      summary: Get the signed-in leader's transparent PartFinder profile
+      responses:
+        "200":
+          description: Leadership profile and personalization preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartFinderLeadershipProfile"
+        "401":
+          description: Unauthorized
+    put:
+      operationId: updatePartFinderLeadershipProfile
+      tags: [assistant]
+      summary: Save the signed-in leader's transparent PartFinder profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartFinderLeadershipProfileInput"
+      responses:
+        "200":
+          description: Updated leadership profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartFinderLeadershipProfile"
+        "400":
+          description: Invalid leadership profile
+        "401":
+          description: Unauthorized
   /feedback:
     post:
       operationId: createAppFeedback
@@ -1171,6 +1206,116 @@ components:
         advisory:
           type: string
       required: [mode, answer, recommendations, advisory]
+    PartFinderHelpPreference:
+      type: string
+      enum:
+        - find-volunteers
+        - delegate
+        - develop-leaders
+        - notice-overlooked-people
+        - engage-younger-generations
+        - improve-retention
+        - follow-up
+        - strengthen-teams
+        - spot-gaps
+        - think-strategically
+        - protect-time
+        - notice-burnout
+        - challenge-assumptions
+        - explore-new-ideas
+    PartFinderLeadershipProfileInput:
+      type: object
+      properties:
+        priorities:
+          type: array
+          maxItems: 3
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 160
+        energizingAreas:
+          type: string
+          maxLength: 1000
+        drainingAreas:
+          type: string
+          maxLength: 1000
+        delegationNeeds:
+          type: string
+          maxLength: 1000
+        churchChallenges:
+          type: string
+          maxLength: 1000
+        strengthenAreas:
+          type: string
+          maxLength: 1000
+        leadersToDevelop:
+          type: string
+          maxLength: 1000
+        leadershipStrengths:
+          type: array
+          maxItems: 8
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+        growthAreas:
+          type: array
+          maxItems: 8
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+        goals3Months:
+          type: string
+          maxLength: 1000
+        goals1Year:
+          type: string
+          maxLength: 1000
+        helpPreferences:
+          type: array
+          maxItems: 14
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/PartFinderHelpPreference"
+        coachingStyle:
+          type: string
+          enum: [encouraging, balanced, direct]
+        responseLength:
+          type: string
+          enum: [brief, standard, detailed]
+        personalizationEnabled:
+          type: boolean
+      required:
+        - priorities
+        - energizingAreas
+        - drainingAreas
+        - delegationNeeds
+        - churchChallenges
+        - strengthenAreas
+        - leadersToDevelop
+        - leadershipStrengths
+        - growthAreas
+        - goals3Months
+        - goals1Year
+        - helpPreferences
+        - coachingStyle
+        - responseLength
+        - personalizationEnabled
+    PartFinderLeadershipProfile:
+      allOf:
+        - $ref: "#/components/schemas/PartFinderLeadershipProfileInput"
+        - type: object
+          properties:
+            configured:
+              type: boolean
+            updatedAt:
+              type: string
+              format: date-time
+              nullable: true
+          required: [configured, updatedAt]
     HealthStatus:
       type: object
       properties:
