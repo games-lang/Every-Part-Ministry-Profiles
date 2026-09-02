@@ -69,3 +69,24 @@ export const DEFAULT_MINISTRY_CUSTOMIZATION: MinistryCustomization = {
   customTradition: null,
   ...STANDARD_MINISTRY_LABELS,
 };
+
+const TRADITION_GIFT_EXCLUSIONS: Partial<
+  Record<MinistryCustomizationTradition, string[]>
+> = {
+  // This is a starting point only. Churches can add these gifts back locally.
+  nazarene: ["Tongues", "Interpretation of Tongues"],
+};
+
+export function recommendedSpiritualGifts(
+  tradition: MinistryCustomizationTradition,
+  allGiftNames: readonly string[],
+) {
+  const excluded = new Set(TRADITION_GIFT_EXCLUSIONS[tradition] ?? []);
+  return allGiftNames.filter((gift) => !excluded.has(gift));
+}
+
+export function excludedSpiritualGifts(
+  tradition: MinistryCustomizationTradition,
+) {
+  return TRADITION_GIFT_EXCLUSIONS[tradition] ?? [];
+}

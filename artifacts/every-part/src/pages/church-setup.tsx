@@ -41,6 +41,8 @@ import {
   CHURCH_TRADITIONS,
   DEFAULT_MINISTRY_CUSTOMIZATION,
   STANDARD_MINISTRY_LABELS,
+  excludedSpiritualGifts,
+  recommendedSpiritualGifts,
   recommendedMinistryLabels,
 } from "@/lib/ministry-customization";
 
@@ -656,8 +658,16 @@ export default function ChurchSetup() {
     form.setValue("ministryCustomization.mode", mode, { shouldDirty: true });
     if (mode === "standard") {
       setCustomizationLabels(STANDARD_MINISTRY_LABELS);
+      form.setValue("enabledSpiritualGifts", [...ALL_GIFT_NAMES], {
+        shouldDirty: true,
+      });
     } else if (mode === "tradition") {
       setCustomizationLabels(recommendedMinistryLabels(churchTradition));
+      form.setValue(
+        "enabledSpiritualGifts",
+        recommendedSpiritualGifts(churchTradition, ALL_GIFT_NAMES),
+        { shouldDirty: true },
+      );
     }
   };
 
@@ -667,6 +677,11 @@ export default function ChurchSetup() {
     });
     if (customizationMode === "tradition") {
       setCustomizationLabels(recommendedMinistryLabels(tradition));
+      form.setValue(
+        "enabledSpiritualGifts",
+        recommendedSpiritualGifts(tradition, ALL_GIFT_NAMES),
+        { shouldDirty: true },
+      );
     }
   };
 
@@ -1070,8 +1085,34 @@ export default function ChurchSetup() {
                                   <span className="text-sm text-muted-foreground">{field.value.length} enabled</span>
                                 </div>
                                 <FormDescription>
-                                  Select at least 3 gifts. Members will answer all three reflections for each enabled gift; gift wording cannot be edited here.
+                                  Select at least 3 gifts. Members will answer
+                                  all three reflections for each enabled gift.
+                                  Your church controls the final list.
                                 </FormDescription>
+                                {customizationMode === "tradition" &&
+                                  excludedSpiritualGifts(churchTradition).length >
+                                    0 && (
+                                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-primary">
+                                      <p className="font-medium">
+                                        Tradition-based starting point
+                                      </p>
+                                      <p className="mt-1 text-primary/80">
+                                        For{" "}
+                                        {
+                                          CHURCH_TRADITIONS.find(
+                                            (item) =>
+                                              item.value === churchTradition,
+                                          )?.label
+                                        }
+                                        , the suggested list leaves out{" "}
+                                        {excludedSpiritualGifts(
+                                          churchTradition,
+                                        ).join(" and ")}
+                                        . You can add them back if they fit
+                                        your church.
+                                      </p>
+                                    </div>
+                                  )}
                                 <div className="grid gap-2 sm:grid-cols-2">
                                   {SPIRITUAL_GIFTS.map(([name, meaning]) => {
                                     const checked = field.value.includes(name);
