@@ -31,6 +31,7 @@ type MatchFormValues = {
 
 type MatchResponse = NonNullable<ReturnType<typeof useFindVolunteerMatches>["data"]>;
 type Candidate = MatchResponse["candidates"][number];
+type DirectoryFilter = "all" | "completed" | "needs-profile";
 
 function CandidateCard({ candidate }: { candidate: Candidate }) {
   const isStrong = candidate.matchLevel === "Strong fit";
@@ -201,9 +202,10 @@ export default function ProfilesList() {
 
   // Directory state
   const [searchTerm, setSearchTerm] = useState("");
+  const [directoryFilter, setDirectoryFilter] = useState<DirectoryFilter>("all");
   const debouncedSearch = useDebounce(searchTerm, 300);
   const { data: profiles, isLoading: isLoadingProfiles, error: profilesError } = useListProfiles({ search: debouncedSearch || undefined });
-  const { data: people } = useListPeople();
+  const { data: people, isLoading: isLoadingPeople, error: peopleError } = useListPeople();
   const { data: teams } = useListTeams();
   const teamNames = new Map(teams?.map((team) => [team.id, team.name]) ?? []);
   const pendingPeople = (people ?? []).filter((person) => {
@@ -214,6 +216,8 @@ export default function ProfilesList() {
         .includes(debouncedSearch.toLowerCase());
     return person.source === "manual" && !person.profileId && person.inviteStatus !== "completed" && matchesSearch;
   });
+  const showCompletedProfiles = directoryFilter !== "needs-profile";
+  const showPendingPeople = directoryFilter !== "completed";
 
   // Match state
   const matchMutation = useFindVolunteerMatches();
@@ -290,15 +294,50 @@ export default function ProfilesList() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+           <div className="flex shrink-0 items-center gap-1 rounded-lg border border-border/60 bg-muted/40 p-1" role="group" aria-label="Filter profiles by completion status">
+             {([
+               ["all", "All"],
+               ["completed", "Finished"],
+               ["needs-profile", "Needs profile"],
+             ] as const).map(([value, label]) => (
+               <button
+                 key={value}
+                 type="button"
+                 aria-pressed={directoryFilter === value}
+                 onClick={() => setDirectoryFilter(value)}
+                 className={`rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                   directoryFilter === value
+                     ? "bg-background text-foreground shadow-sm"
+                     : "text-muted-foreground hover:text-foreground"
+                 }`}
+               >
+                 {label}
+               </button>
+             ))}
+           </div>
           </div>
 
-          <PendingPeopleSection people={pendingPeople} />
+          {showPendingPeople && peopleError && (
+            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+              People who still need a profile could not be loaded right now.
+            </div>
+          )}
+          {showPendingPeople && isLoadingPeople ? (
+            <div className="grid gap-3">
+              <Card className="p-5">
+                <Skeleton className="h-5 w-52" />
+                <Skeleton className="mt-3 h-4 w-80" />
+              </Card>
+            </div>
+          ) : showPendingPeople ? (
+            <PendingPeopleSection people={pendingPeople} />
+          ) : null}
 
-          {profilesError ? (
+          {showCompletedProfiles && profilesError ? (
             <div className="bg-destructive/10 text-destructive p-4 rounded-lg border border-destructive/20">
               Failed to load profiles. Please try again.
             </div>
-          ) : isLoadingProfiles ? (
+          ) : showCompletedProfiles && isLoadingProfiles ? (
             <div className="grid gap-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Card key={i} className="p-6">
@@ -316,7 +355,7 @@ export default function ProfilesList() {
                 </Card>
               ))}
             </div>
-          ) : profiles && profiles.length > 0 ? (
+          ) : showCompletedProfiles && profiles && profiles.length > 0 ? (
             <div className="grid gap-4">
                {profiles.map((profile) => (
                  <Card key={profile.id} className="group relative overflow-hidden border-border/70 transition-all hover:border-primary/30 hover:shadow-md">
@@ -389,15 +428,43 @@ export default function ProfilesList() {
                 </Card>
               ))}
             </div>
-          ) : (
+          ) : showCompletedProfiles ? (
              <EmptyState
                icon={User}
-               title={searchTerm ? "No profiles match that search" : "No profiles yet"}
-               description={searchTerm ? "Try a name, email, or skill with a little more room." : "Share your church profile link to invite the first person into a thoughtful reflection."}
+                title={
+                  directoryFilter === "completed"
+                    ? searchTerm
+                      ? "No finished profiles match that search"
+                      : "No finished profiles yet"
+                    : searchTerm
+                      ? "No profiles match that search"
+                      : "No profiles yet"
+                }
+                description={
+                  directoryFilter === "completed"
+                    ? searchTerm
+                      ? "Try a name, email, or skill with a little more room."
+                      : "Completed Ministry Profiles will appear here once people finish their reflection."
+                    : searchTerm
+                      ? "Try a name, email, or skill with a little more room."
+                      : "Share your church profile link to invite the first person into a thoughtful reflection."
+                }
                actionLabel={searchTerm ? "Clear search" : undefined}
                onAction={searchTerm ? () => setSearchTerm("") : undefined}
              />
-          )}
+          ) : !isLoadingPeople && !peopleError && pendingPeople.length === 0 ? (
+            <EmptyState
+              icon={CheckCircle2}
+              title={searchTerm ? "No people need a profile matching that search" : "Everyone has finished their profile"}
+              description={
+                searchTerm
+                  ? "Try a different name, email, or phone number."
+                  : "People added manually will appear here until they complete their Ministry Profile."
+              }
+              actionLabel={searchTerm ? "Clear search" : undefined}
+              onAction={searchTerm ? () => setSearchTerm("") : undefined}
+            />
+          ) : null}
         </div>
       ) : (
         <div className="grid lg:grid-cols-12 gap-8 animate-in fade-in duration-300">
