@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Copy, ExternalLink, Printer, QrCode } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, Printer, QrCode } from "lucide-react";
 
 type ShareProfileCardProps = {
   churchName: string;
@@ -17,8 +17,20 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function downloadName(churchName: string) {
+  const safeName = churchName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 64);
+  return `${safeName || "church"}-ministry-profile-qr.png`;
+}
+
 export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardProps) {
   const [copied, setCopied] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const [downloadError, setDownloadError] = useState(false);
   const [printBlocked, setPrintBlocked] = useState(false);
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=24&data=${encodeURIComponent(profileUrl)}`;
 
@@ -29,6 +41,33 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
       window.setTimeout(() => setCopied(false), 2200);
     } catch {
       setCopied(false);
+    }
+  };
+
+  const downloadQrCode = async () => {
+    setIsDownloading(true);
+    setDownloaded(false);
+    setDownloadError(false);
+
+    try {
+      const response = await fetch(qrImageUrl);
+      if (!response.ok) throw new Error("QR code download failed");
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = objectUrl;
+      downloadLink.download = downloadName(churchName);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      setDownloaded(true);
+      window.setTimeout(() => setDownloaded(false), 2500);
+    } catch {
+      setDownloadError(true);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -167,6 +206,22 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               {copied ? "Copied" : "Copy link"}
             </Button>
+            <Button
+              type="button"
+              onClick={downloadQrCode}
+              variant="outline"
+              disabled={isDownloading}
+              data-testid="button-download-profile-qr"
+            >
+              {isDownloading ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : downloaded ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {isDownloading ? "Preparing…" : downloaded ? "Downloaded" : "Download QR"}
+            </Button>
             <Button type="button" onClick={printSlide} variant="secondary" data-testid="button-print-profile-slide">
               <Printer className="h-4 w-4" />
               Print slide
@@ -181,6 +236,11 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
           {printBlocked && (
             <p className="text-sm text-destructive" role="alert">
               Your browser blocked the slide window. Allow pop-ups for Every Part and try again.
+            </p>
+          )}
+          {downloadError && (
+            <p className="text-sm text-destructive" role="alert">
+              The QR download was blocked. Try again, or right-click the QR image and choose “Save image as…”.
             </p>
           )}
           <p className="text-xs leading-relaxed text-muted-foreground">
