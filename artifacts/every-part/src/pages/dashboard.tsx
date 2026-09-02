@@ -5,6 +5,13 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
+import { ShareProfileCard } from "@/components/share-profile-card";
+
+function buildPublicProfileUrl(profilePath: string) {
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const normalizedPath = profilePath.startsWith("/") ? profilePath : `/${profilePath}`;
+  return `${window.location.origin}${basePath}${normalizedPath}`;
+}
 
 export default function Dashboard() {
   const { data: summary, isLoading, error } = useGetDashboardSummary();
@@ -37,9 +44,9 @@ export default function Dashboard() {
               Settings
             </Link>
           </Button>
-          {summary?.church.slug && (
+           {summary?.church.profileUrl && (
             <Button className="font-medium bg-primary hover:bg-primary/90" asChild>
-              <a href={`/profile/${summary.church.slug}`} target="_blank" rel="noopener noreferrer">
+               <a href={buildPublicProfileUrl(summary.church.profileUrl)} target="_blank" rel="noopener noreferrer">
                 View Public Link <ArrowRight className="w-4 h-4 ml-2" />
               </a>
             </Button>
@@ -100,13 +107,22 @@ export default function Dashboard() {
               <div>
                  <div className="font-serif text-2xl font-medium">{summary?.church.name}</div>
                 <div className="text-sm text-muted-foreground truncate">
-                  Share link: https://every-part-ministry-profiles.replit.app/profile/{summary?.church.slug}
+                   Share link: {summary?.church.profileUrl
+                     ? buildPublicProfileUrl(summary.church.profileUrl)
+                     : "Preparing your link..."}
                 </div>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
+
+       {!isLoading && summary?.church.profileUrl && (
+         <ShareProfileCard
+           churchName={summary.church.name}
+           profileUrl={buildPublicProfileUrl(summary.church.profileUrl)}
+         />
+       )}
 
       <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-md">
         <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
@@ -197,7 +213,11 @@ export default function Dashboard() {
                  />
                  <div className="-mt-10 pb-10 text-center">
                    <Button variant="link" className="text-primary" asChild>
-                     <a href={`/profile/${summary?.church.slug}`} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={summary?.church.profileUrl ? buildPublicProfileUrl(summary.church.profileUrl) : "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                        Fill out a test profile
                      </a>
                    </Button>
