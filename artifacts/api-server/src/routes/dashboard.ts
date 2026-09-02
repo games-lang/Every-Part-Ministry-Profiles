@@ -23,6 +23,7 @@ function counts(values: string[][]) {
 router.get("/dashboard/summary", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
   if (!userId) return;
+  res.setHeader("Cache-Control", "no-store");
 
   const church = await getOrCreateChurch(userId);
   const profiles = await db

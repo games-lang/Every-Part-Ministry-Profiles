@@ -51,6 +51,7 @@ function adminResponse(admin: typeof churchAdminsTable.$inferSelect) {
 router.get("/church", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
   if (!userId) return;
+  res.setHeader("Cache-Control", "no-store");
 
   const church = await getOrCreateChurch(userId);
   const [result] = await db
@@ -64,6 +65,7 @@ router.get("/church", async (req, res): Promise<void> => {
 router.patch("/church", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
   if (!userId) return;
+  res.setHeader("Cache-Control", "no-store");
 
   const parsed = UpdateMyChurchBody.safeParse(req.body);
   if (!parsed.success) {
