@@ -1,0 +1,430 @@
+# Add Denomination / Church Tradition Customization to Every Part
+
+I want to expand **Every Part** so that churches from different Christian traditions can use the platform while having the Ministry Profile, terminology, recommendations, and AI matching reflect their own theology and church structure.
+
+The goal is NOT to create completely separate apps or completely separate Ministry Profiles for every denomination.
+
+Instead, Every Part should have:
+
+**One universal core Ministry Profile + denomination/tradition-aware customization.**
+
+## 1. Add Church Tradition Setup
+
+During the initial church/ministry account setup, ask:
+
+### “What Christian tradition best describes your church?”
+
+Include options such as:
+
+* Wesleyan / Holiness
+* Nazarene
+* Methodist
+* Baptist
+* Pentecostal / Charismatic
+* Assemblies of God
+* Presbyterian / Reformed
+* Lutheran
+* Anglican / Episcopal
+* Catholic
+* Eastern Orthodox
+* Non-Denominational
+* Independent Evangelical
+* Other
+
+Allow churches to choose “Other” and enter their denomination/tradition manually.
+
+Then ask:
+
+### “Would you like Every Part to customize terminology and ministry recommendations based on your tradition?”
+
+Options:
+
+* Yes — use recommended settings for our tradition
+* Let me customize the settings myself
+* Use Every Part Standard settings
+
+## 2. Create Three Customization Levels
+
+Every church should be able to operate using one of three levels:
+
+### A. Every Part Standard
+
+Uses broad Christian terminology that can work across many churches.
+
+### B. Tradition Template
+
+Loads recommended terminology and ministry assumptions based on the selected church tradition.
+
+### C. Church Custom
+
+Allows the church administrator to override specific settings, terminology, ministry roles, and eligibility rules.
+
+Church Custom settings should always override denomination defaults.
+
+## 3. Keep the Majority of the Ministry Profile Universal
+
+Approximately 80–90% of the Ministry Profile should remain consistent across churches.
+
+Universal sections may include:
+
+* Prayer / spiritual preparation
+* Personal information
+* Ministry experience
+* Spiritual strengths / gifts / charisms
+* Passions
+* Personality / how you tend to operate
+* Ministry interests
+* Availability
+* Spiritual growth
+* Leadership potential
+* Life stage
+* Previous service experience
+* Preferred ways of serving
+* Training interests
+
+Only the parts that genuinely need theological or organizational customization should change.
+
+## 4. Add “Our Ministry Convictions” Settings
+
+Create an administrator section called:
+
+# Our Ministry Convictions
+
+Explain:
+
+“Every church has unique beliefs, terminology, leadership structures, and ministry practices. These settings help Every Part make recommendations that fit your church. Every Part does not determine your church’s theology — your church does.”
+
+Allow administrators to configure areas such as:
+
+### Spiritual Gifts / Charisms
+
+Ask:
+
+“How does your church typically describe God-given abilities for ministry?”
+
+Options could include:
+
+* Spiritual Gifts
+* Charisms
+* Ministry Gifts
+* Spiritual Strengths
+* Gifts and Calling
+* Custom terminology
+
+Then ask:
+
+“Does your church teach that all New Testament spiritual gifts continue today?”
+
+Options:
+
+* Yes
+* No
+* Our church does not take an official position
+* Customize
+
+Do NOT make Every Part argue for a theological position.
+
+Use the church’s selected position when presenting explanations and ministry recommendations.
+
+## 5. Leadership and Ministry Eligibility
+
+Allow churches to set their own ministry eligibility rules.
+
+Possible settings could include:
+
+* Who may serve as pastors?
+* Who may serve as elders?
+* Who may preach?
+* Who may teach adults?
+* Who may lead small groups?
+* Who may serve in sacramental/liturgical roles?
+* Which roles require membership?
+* Which roles require baptism?
+* Which roles require background checks?
+* Which roles require pastoral approval?
+* Which roles require training or certification?
+* Which roles have age requirements?
+
+These settings should NOT be framed as Every Part deciding what is right.
+
+Instead state:
+
+“Every Part uses your church’s ministry policies when suggesting possible areas of service.”
+
+## 6. Catholic Customization
+
+If a church selects Catholic, modify appropriate terminology and recommendations.
+
+Potential terminology changes:
+
+“Spiritual Gifts” may be displayed as:
+
+**Charisms & Gifts for Service**
+
+Where appropriate, emphasize:
+
+* vocation
+* charisms
+* discipleship
+* parish life
+* service
+* spiritual formation
+* stewardship of gifts
+
+Potential Catholic ministry categories could include:
+
+* Hospitality
+* Lector
+* Music ministry
+* Choir
+* Catechesis / religious education
+* Youth ministry
+* Children’s ministry
+* Outreach
+* Service to the poor
+* Prayer ministries
+* Parish administration
+* Small faith communities
+* Marriage/family ministry
+* Senior ministry
+* Communications
+* Facilities
+* Stewardship
+* Extraordinary Minister roles where the parish permits
+* Other parish-specific ministries
+
+IMPORTANT:
+
+Do not automatically recommend someone for ordained ministry or sacramental roles based only on an assessment.
+
+For roles governed by Catholic teaching or diocesan/parish requirements, clearly label:
+
+“Additional church approval, formation, or eligibility requirements may apply.”
+
+Allow Catholic parishes to define these requirements themselves.
+
+## 7. Eastern Orthodox Customization
+
+If a church selects Eastern Orthodox, adjust terminology and ministry categories respectfully.
+
+Ask optionally:
+
+### “Which Orthodox jurisdiction is your parish connected with?”
+
+Possible options:
+
+* Greek Orthodox
+* Antiochian Orthodox
+* Orthodox Church in America
+* Serbian Orthodox
+* Romanian Orthodox
+* Russian Orthodox
+* Ukrainian Orthodox
+* Other
+* Prefer not to specify
+
+Do not assume practices are identical between all Orthodox jurisdictions.
+
+Use parish-admin settings whenever possible.
+
+Potential ministry categories could include:
+
+* Hospitality
+* Parish outreach
+* Charitable ministry
+* Religious education
+* Youth ministry
+* Children’s ministry
+* Choir
+* Chanting
+* Parish administration
+* Communications
+* Facilities
+* Fellowship ministries
+* Care ministries
+* Community service
+* Prayer-related service
+* Other parish-defined ministries
+
+Liturgical or altar-related ministries should only appear when enabled by the parish administrator.
+
+Use wording such as:
+
+“This ministry may have parish-specific eligibility, blessing, training, or approval requirements.”
+
+## 8. Protestant Tradition Templates
+
+Create similar templates for Protestant traditions.
+
+Examples:
+
+### Wesleyan-Holiness / Nazarene
+
+Use language around:
+
+* grace
+* holiness
+* sanctification
+* discipleship
+* calling
+* mission
+* service
+* spiritual gifts
+
+### Pentecostal / Charismatic
+
+Allow greater emphasis on gifts such as:
+
+* prophecy
+* healing
+* tongues
+* interpretation
+* discernment
+
+ONLY if enabled by the church.
+
+### Baptist / Reformed / Cessationist Churches
+
+Allow churches to disable or modify charismatic gift recommendations while still keeping gifts such as:
+
+* teaching
+* administration
+* mercy
+* leadership
+* helps
+* generosity
+* evangelism
+* shepherding
+* service
+
+Do not label one position as more biblical than another.
+
+## 9. AI Ministry Matching Must Respect Church Settings
+
+Every Part’s AI ministry assistant should use:
+
+* Ministry Profile results
+* Spiritual gifts / charisms
+* Personality
+* Passions
+* Availability
+* Experience
+* Spiritual maturity
+* Ministry interests
+* Leadership indicators
+* Church ministry openings
+* Church tradition
+* Church-defined convictions
+* Ministry eligibility requirements
+
+Example pastor request:
+
+“Who might be a good fit for our preaching development team?”
+
+The AI should NOT simply list the highest teaching scores.
+
+It should consider:
+
+1. Teaching and communication strengths
+2. Spiritual maturity
+3. Leadership potential
+4. Previous experience
+5. Interest in preaching
+6. Availability
+7. Church-defined preaching requirements
+8. Required training or pastoral approval
+
+Then explain WHY each person may be worth talking with.
+
+Use wording such as:
+
+“Based on their profile, this person may be worth a conversation about this ministry.”
+
+Avoid statements such as:
+
+“God is calling this person to preach.”
+
+Every Part can help identify possibilities, but should never claim divine certainty.
+
+## 10. Important Theological Principle
+
+Build this principle throughout the platform:
+
+# Every Part does not decide your church’s theology.
+
+Your church defines its beliefs, ministry practices, leadership requirements, and terminology.
+
+Every Part helps apply those convictions consistently when helping people discover ways to serve.
+
+## 11. Profile Experience for Members
+
+Members should NOT have to answer complicated denominational questions.
+
+Those settings should primarily be completed by church administrators.
+
+When members complete their profile, the wording should automatically reflect the church’s setup.
+
+For example:
+
+A Protestant church might display:
+
+### Spiritual Gifts
+
+A Catholic parish might display:
+
+### Charisms & Gifts for Service
+
+Another church might display:
+
+### How God Has Equipped You to Serve
+
+The underlying profile system can still use the same database structure when possible.
+
+## 12. Administrator Preview
+
+Add a feature allowing administrators to preview:
+
+### “See the Ministry Profile as a Member”
+
+This will allow leaders to see exactly how their denomination and custom settings affect:
+
+* questions
+* terminology
+* explanations
+* ministry recommendations
+
+## 13. Default Approach
+
+Do not attempt to create dozens of completely unique assessments.
+
+Build the architecture around:
+
+**Universal Every Part Profile**
++
+**Tradition Template**
++
+**Church-Specific Overrides**
+
+The universal profile should contain most questions.
+
+Tradition settings should modify terminology, explanations, ministry categories, and recommendation rules where appropriate.
+
+Church-specific settings should override everything else.
+
+## 14. Every Part Brand Philosophy
+
+Keep the core Every Part identity centered around:
+
+**1 Corinthians 12 — many parts, one body.**
+
+Every Part exists to help churches know their people, help people understand how God has uniquely equipped them, and help every person find meaningful ways to contribute to the life and mission of their church.
+
+Possible language:
+
+### Built for your church.
+
+Different churches have different traditions, structures, terminology, and ministry practices.
+
+Every Part adapts to your church while keeping the same goal:
+
+**Helping every person discover their part in the Body of Christ.**
