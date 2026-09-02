@@ -18,6 +18,7 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
+import { Brand } from "@/components/brand";
 
 const pathway = [
   {
@@ -133,19 +134,6 @@ function Reveal({
     <div ref={ref} className={`landing-reveal ${className}`}>
       {children}
     </div>
-  );
-}
-
-function Brand({ compact = false }: { compact?: boolean }) {
-  return (
-    <span className="flex items-center gap-3">
-      <span className={`flex items-center justify-center rounded-xl bg-primary font-serif font-bold text-primary-foreground ${compact ? "h-8 w-8 text-sm" : "h-9 w-9 text-lg"}`}>
-        E
-      </span>
-      <span className={`font-serif font-semibold tracking-[-.045em] ${compact ? "text-base" : "text-lg"}`}>
-        Every Part
-      </span>
-    </span>
   );
 }
 

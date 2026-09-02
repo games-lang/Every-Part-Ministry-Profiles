@@ -14,6 +14,7 @@ import { Link } from "wouter";
 import {
   Archive,
   ArchiveRestore,
+  CheckCircle2,
   Info,
   Lightbulb,
   Loader2,

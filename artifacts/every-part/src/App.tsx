@@ -25,6 +25,7 @@ import DiscoverAssessment from '@/pages/discover-assessment';
 import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
+import { Brand } from '@/components/brand';
 
 const DiscoverRoute = ({ params }: { params: { slug: string } }) => (
     <DiscoverGate params={params} Page={DiscoverAssessment} />
@@ -100,6 +101,7 @@ function SignInPage() {
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-secondary/10 via-background to-background pointer-events-none" />
       <div className="relative z-10 w-full max-w-md">
+        <Brand className="mb-7 justify-center" />
         <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} />
       </div>
     </div>
@@ -111,6 +113,7 @@ function SignUpPage() {
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
       <div className="relative z-10 w-full max-w-md">
+        <Brand className="mb-7 justify-center" />
         <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
       </div>
     </div>

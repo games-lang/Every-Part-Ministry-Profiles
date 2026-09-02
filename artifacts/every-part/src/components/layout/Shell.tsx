@@ -4,6 +4,7 @@ import { UserButton } from "@clerk/react";
 import { LayoutDashboard, Settings, Users, ArrowRight, UsersRound } from "lucide-react";
 import { useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
+import { Brand } from "@/components/brand";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -21,13 +22,8 @@ export function Shell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur-xl">
         <div className="container mx-auto flex min-h-16 items-center justify-between gap-4 px-4 py-3">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-8 gap-y-3">
-            <Link href="/dashboard" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-serif text-lg font-bold group-hover:bg-accent transition-colors">
-                E
-              </div>
-              <span className="font-serif text-xl font-medium tracking-tight text-foreground">
-                Every Part
-              </span>
+            <Link href="/dashboard" className="group flex items-center rounded-xl">
+              <Brand />
             </Link>
             
             <nav className="order-3 flex w-full max-w-full items-center gap-1 overflow-x-auto md:order-none md:w-auto">

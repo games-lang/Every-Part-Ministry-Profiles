@@ -15,6 +15,7 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
+import { Brand } from "@/components/brand";
 
 const plans = [
   {
@@ -198,19 +199,6 @@ function Reveal({
     >
       {children}
     </div>
-  );
-}
-
-function Brand() {
-  return (
-    <span className="flex items-center gap-3">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary font-serif text-lg font-bold text-primary-foreground">
-        E
-      </span>
-      <span className="font-serif text-lg font-semibold tracking-[-.045em]">
-        Every Part
-      </span>
-    </span>
   );
 }
 
