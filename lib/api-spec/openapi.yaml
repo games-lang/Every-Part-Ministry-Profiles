@@ -320,6 +320,106 @@ paths:
           description: Invalid suggestion request
         "401":
           description: Unauthorized
+  /teams/{id}/schedule:
+    get:
+      operationId: listTeamSchedule
+      tags: [teams]
+      summary: List schedule shifts for a church team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Team schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamScheduleItem"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Team not found
+    post:
+      operationId: createTeamSchedule
+      tags: [teams]
+      summary: Schedule a volunteer shift for a church team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamScheduleInput"
+      responses:
+        "201":
+          description: Created schedule shift
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamScheduleItem"
+        "400":
+          description: Invalid schedule shift
+        "401":
+          description: Unauthorized
+        "404":
+          description: Team or volunteer not found
+  /team-schedule/{id}:
+    patch:
+      operationId: updateTeamSchedule
+      tags: [teams]
+      summary: Update a team schedule shift
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamScheduleUpdate"
+      responses:
+        "200":
+          description: Updated schedule shift
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamScheduleItem"
+        "400":
+          description: Invalid schedule shift
+        "401":
+          description: Unauthorized
+        "404":
+          description: Schedule shift not found
+    delete:
+      operationId: deleteTeamSchedule
+      tags: [teams]
+      summary: Remove a team schedule shift
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Schedule shift removed
+        "401":
+          description: Unauthorized
+        "404":
+          description: Schedule shift not found
   /profiles:
     get:
       operationId: listProfiles
@@ -1002,6 +1102,61 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TeamMember"
+    TeamScheduleItem:
+      type: object
+      required: [id, teamId, profileId, volunteerName, scheduledDate, startTime, endTime, role, notes, isCancelled, createdAt]
+      properties:
+        id: { type: integer }
+        teamId: { type: integer }
+        profileId: { type: ["integer", "null"] }
+        volunteerName: { type: ["string", "null"] }
+        scheduledDate:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        startTime:
+          type: string
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+        endTime:
+          type: ["string", "null"]
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+        role: { type: string }
+        notes: { type: ["string", "null"] }
+        isCancelled: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    TeamScheduleInput:
+      type: object
+      required: [scheduledDate, startTime, role]
+      additionalProperties: false
+      properties:
+        scheduledDate:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        startTime:
+          type: string
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+        endTime:
+          type: ["string", "null"]
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+        role: { type: string, minLength: 1, maxLength: 120 }
+        profileId: { type: ["integer", "null"] }
+        notes: { type: ["string", "null"], maxLength: 1000 }
+    TeamScheduleUpdate:
+      type: object
+      additionalProperties: false
+      properties:
+        scheduledDate:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        startTime:
+          type: string
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+        endTime:
+          type: ["string", "null"]
+          pattern: '^([01]\d|2[0-3]):[0-5]\d$'
+        role: { type: string, minLength: 1, maxLength: 120 }
+        profileId: { type: ["integer", "null"] }
+        notes: { type: ["string", "null"], maxLength: 1000 }
+        isCancelled: { type: boolean }
     TeamMember:
       type: object
       required: [id, memberName, email, completedAt]

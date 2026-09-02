@@ -1,12 +1,16 @@
 import { useState } from "react";
 import {
   getGetDashboardSummaryQueryKey,
+  getListProfilesQueryKey,
   getListTeamsQueryKey,
   type MinistryTeam,
+  type ProfileListItem,
   type TeamSuggestion,
   useCreateTeam,
   useGenerateTeamSuggestions,
+  useListProfiles,
   useListTeams,
+  useUpdateProfileTeam,
   useUpdateTeam,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -22,6 +26,7 @@ import {
   Plus,
   Sparkles,
   Users,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +61,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { EmptyState } from "@/components/empty-state";
+import { TeamSchedule } from "@/components/team-schedule";
 
 type EditorState =
   | {
@@ -386,12 +392,153 @@ function TeamSuggestions({
   );
 }
 
+function TeamMemberPicker({
+  team,
+  profiles,
+  teamNames,
+  isLoadingProfiles,
+}: {
+  team: MinistryTeam;
+  profiles: ProfileListItem[];
+  teamNames: Map<number, string>;
+  isLoadingProfiles: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const updateProfileTeam = useUpdateProfileTeam();
+  const [open, setOpen] = useState(false);
+  const [selectedProfileId, setSelectedProfileId] = useState("");
+  const availableProfiles = profiles.filter(
+    (profile) => profile.profileType === "adult" && profile.teamId !== team.id,
+  );
+  const selectedProfile = availableProfiles.find(
+    (profile) => profile.id === Number(selectedProfileId),
+  );
+
+  const close = () => {
+    if (updateProfileTeam.isPending) return;
+    setOpen(false);
+    setSelectedProfileId("");
+  };
+  const addPerson = () => {
+    if (!selectedProfile) {
+      toast({
+        title: "Choose a person",
+        description: "Select a completed adult profile to add to this team.",
+        variant: "destructive",
+      });
+      return;
+    }
+    updateProfileTeam.mutate(
+      { id: selectedProfile.id, data: { teamId: team.id } },
+      {
+        onSuccess: async () => {
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() }),
+            queryClient.invalidateQueries({ queryKey: getListProfilesQueryKey() }),
+            queryClient.invalidateQueries({
+              queryKey: getGetDashboardSummaryQueryKey(),
+            }),
+          ]);
+          setOpen(false);
+          setSelectedProfileId("");
+          toast({ title: `${selectedProfile.memberName} added to ${team.name}` });
+        },
+        onError: () =>
+          toast({
+            title: "Unable to add person to team",
+            description: "The assignment could not be saved. Please try again.",
+            variant: "destructive",
+          }),
+      },
+    );
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(nextOpen) => (nextOpen ? setOpen(true) : close())}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => {
+          setSelectedProfileId("");
+          setOpen(true);
+        }}
+      >
+        <UserPlus className="mr-2 h-4 w-4" />
+        Add person
+      </Button>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add someone to {team.name}</DialogTitle>
+          <DialogDescription>
+            Choose a completed adult Ministry Profile to add to this pastor-led
+            team.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 py-2">
+          <Label htmlFor={`team-member-${team.id}`}>Person</Label>
+          {isLoadingProfiles ? (
+            <Skeleton className="h-10 w-full" />
+          ) : availableProfiles.length > 0 ? (
+            <select
+              id={`team-member-${team.id}`}
+              value={selectedProfileId}
+              onChange={(event) => setSelectedProfileId(event.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <option value="">Choose a person</option>
+              {availableProfiles.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile.memberName}
+                  {profile.teamId
+                    ? ` · Currently on ${teamNames.get(profile.teamId) ?? "another team"}`
+                    : ""}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+              All completed adult profiles are already assigned to this team.
+            </div>
+          )}
+          {selectedProfile?.teamId && (
+            <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+              This will move {selectedProfile.memberName} from{" "}
+              {teamNames.get(selectedProfile.teamId) ?? "their current team"}.
+              Each profile can have one current team.
+            </p>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={close} disabled={updateProfileTeam.isPending}>
+            Cancel
+          </Button>
+          <Button
+            onClick={addPerson}
+            disabled={isLoadingProfiles || !selectedProfile || updateProfileTeam.isPending}
+          >
+            {updateProfileTeam.isPending && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Add to team
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function TeamCard({
   team,
   onEdit,
+  profiles,
+  teamNames,
+  isLoadingProfiles,
 }: {
   team: MinistryTeam;
   onEdit: () => void;
+  profiles: ProfileListItem[];
+  teamNames: Map<number, string>;
+  isLoadingProfiles: boolean;
 }) {
   const queryClient = useQueryClient();
   const updateTeam = useUpdateTeam();
@@ -464,9 +611,19 @@ function TeamCard({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-3 flex items-center gap-2 text-sm font-medium">
-            <Users className="h-4 w-4 text-primary" />
-            {team.memberCount} {team.memberCount === 1 ? "member" : "members"}
+          <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Users className="h-4 w-4 text-primary" />
+              {team.memberCount} {team.memberCount === 1 ? "member" : "members"}
+            </div>
+            {!team.isArchived && (
+              <TeamMemberPicker
+                team={team}
+                profiles={profiles}
+                teamNames={teamNames}
+                isLoadingProfiles={isLoadingProfiles}
+              />
+            )}
           </div>
           {team.members.length ? (
             <div className="divide-y rounded-xl border border-border/60 bg-background">
@@ -488,6 +645,7 @@ function TeamCard({
               No profiles are assigned to this team yet.
             </div>
           )}
+          <TeamSchedule team={team} />
         </CardContent>
       </Card>
 
@@ -517,9 +675,11 @@ function TeamCard({
 
 export default function Teams() {
   const { data: teams, isLoading, error } = useListTeams();
+  const { data: profiles, isLoading: isLoadingProfiles } = useListProfiles();
   const [editor, setEditor] = useState<EditorState>(null);
   const activeTeams = teams?.filter((team) => !team.isArchived) ?? [];
   const archivedTeams = teams?.filter((team) => team.isArchived) ?? [];
+  const teamNames = new Map(teams?.map((team) => [team.id, team.name]) ?? []);
 
   return (
     <div className="container mx-auto max-w-6xl space-y-8 px-4 py-8">
@@ -569,6 +729,9 @@ export default function Teams() {
               key={team.id}
               team={team}
               onEdit={() => setEditor({ mode: "edit", team })}
+              profiles={profiles ?? []}
+              teamNames={teamNames}
+              isLoadingProfiles={isLoadingProfiles}
             />
           ))}
         </div>
@@ -596,6 +759,9 @@ export default function Teams() {
                 key={team.id}
                 team={team}
                 onEdit={() => setEditor({ mode: "edit", team })}
+                profiles={profiles ?? []}
+                teamNames={teamNames}
+                isLoadingProfiles={isLoadingProfiles}
               />
             ))}
           </div>

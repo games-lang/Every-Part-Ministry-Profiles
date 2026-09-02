@@ -7,7 +7,7 @@ Each completed Ministry Profile may have one current team assignment. Assignment
 
 **Why:** Teams are a practical next step for pastoral discernment, not an automated placement system or serving-history model. Preserving assignments when a team is archived avoids silently losing organizational context.
 
-**How to apply:** Keep team and profile writes scoped to the same church at both the API and database levels. Do not add multi-team membership, automatic assignment, scheduling, messaging, or team task tracking without a new explicit product decision.
+**How to apply:** Keep team, profile, and schedule writes scoped to the same church at both the API and database levels. Scheduling is pastor-managed and must not infer placement, send messages, or alter team assignments.
 
 Church access is a separate membership relation keyed by Clerk user ID. The original church owner remains the protected owner, while other existing Clerk users can be added or removed as pastor admins.
 

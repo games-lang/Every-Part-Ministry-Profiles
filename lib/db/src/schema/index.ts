@@ -20,6 +20,7 @@
 export * from "./churches";
 export * from "./church-admins";
 export * from "./ministry-teams";
+export * from "./ministry-team-schedules";
 export * from "./ministry-profiles";
 export * from "./ministry-journeys";
 export * from "./ministry-people";

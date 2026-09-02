@@ -297,6 +297,78 @@ export interface MinistryTeam {
   members: TeamMember[];
 }
 
+export interface TeamScheduleItem {
+  id: number;
+  teamId: number;
+  /** @nullable */
+  profileId: number | null;
+  /** @nullable */
+  volunteerName: string | null;
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  scheduledDate: string;
+  /** @pattern ^([01]\d|2[0-3]):[0-5]\d$ */
+  startTime: string;
+  /**
+     * @nullable
+     * @pattern ^([01]\d|2[0-3]):[0-5]\d$
+     */
+  endTime: string | null;
+  role: string;
+  /** @nullable */
+  notes: string | null;
+  isCancelled: boolean;
+  createdAt: string;
+}
+
+export interface TeamScheduleInput {
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  scheduledDate: string;
+  /** @pattern ^([01]\d|2[0-3]):[0-5]\d$ */
+  startTime: string;
+  /**
+     * @nullable
+     * @pattern ^([01]\d|2[0-3]):[0-5]\d$
+     */
+  endTime?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  role: string;
+  /** @nullable */
+  profileId?: number | null;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  notes?: string | null;
+}
+
+export interface TeamScheduleUpdate {
+  /** @pattern ^\d{4}-\d{2}-\d{2}$ */
+  scheduledDate?: string;
+  /** @pattern ^([01]\d|2[0-3]):[0-5]\d$ */
+  startTime?: string;
+  /**
+     * @nullable
+     * @pattern ^([01]\d|2[0-3]):[0-5]\d$
+     */
+  endTime?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  role?: string;
+  /** @nullable */
+  profileId?: number | null;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  notes?: string | null;
+  isCancelled?: boolean;
+}
+
 export interface TeamCreateInput {
   /**
      * @minLength 1
@@ -1065,6 +1137,7 @@ export interface PublicPersonInvite {
   phone: string | null;
   inviteExpiresAt: string;
 }
+
 export type DiscoverProfileInputProfileType = typeof DiscoverProfileInputProfileType[keyof typeof DiscoverProfileInputProfileType];
 
 

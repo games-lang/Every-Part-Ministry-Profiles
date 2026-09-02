@@ -53,6 +53,9 @@ import type {
   PublicChurch,
   PublicPersonInvite,
   TeamCreateInput,
+  TeamScheduleInput,
+  TeamScheduleItem,
+  TeamScheduleUpdate,
   TeamSuggestionsInput,
   TeamSuggestionsResponse,
   TeamUpdateInput,
@@ -1259,6 +1262,319 @@ export const useGenerateTeamSuggestions = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getGenerateTeamSuggestionsMutationOptions(options));
+    }
+
+export const getListTeamScheduleUrl = (id: number,) => {
+
+
+
+
+  return `/api/teams/${id}/schedule`
+}
+
+/**
+ * @summary List schedule shifts for a church team
+ */
+export const listTeamSchedule = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<TeamScheduleItem[]> => {
+
+  return customFetch<TeamScheduleItem[]>(getListTeamScheduleUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTeamScheduleQueryKey = (id: number,) => {
+    return [
+    `/api/teams/${id}/schedule`
+    ] as const;
+    }
+
+
+export const getListTeamScheduleQueryOptions = <TData = Awaited<ReturnType<typeof listTeamSchedule>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTeamSchedule>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTeamScheduleQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTeamSchedule>>> = ({ signal }) => listTeamSchedule(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTeamSchedule>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListTeamScheduleQueryResult = NonNullable<Awaited<ReturnType<typeof listTeamSchedule>>>
+export type ListTeamScheduleQueryError = ErrorType<void>
+
+
+/**
+ * @summary List schedule shifts for a church team
+ */
+
+export function useListTeamSchedule<TData = Awaited<ReturnType<typeof listTeamSchedule>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTeamSchedule>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListTeamScheduleQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateTeamScheduleUrl = (id: number,) => {
+
+
+
+
+  return `/api/teams/${id}/schedule`
+}
+
+/**
+ * @summary Schedule a volunteer shift for a church team
+ */
+export const createTeamSchedule = async (id: number,
+    teamScheduleInput: TeamScheduleInput, options?: Parameters<typeof customFetch>[1]): Promise<TeamScheduleItem> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<TeamScheduleItem>(getCreateTeamScheduleUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(teamScheduleInput)
+  }
+);}
+
+
+
+
+
+export const getCreateTeamScheduleMutationKey = () => ['createTeamSchedule'] as const;
+
+export const getCreateTeamScheduleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTeamSchedule>>, TError,CreateTeamScheduleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTeamSchedule>>, TError,CreateTeamScheduleMutationVariables, TContext> => {
+
+const mutationKey = getCreateTeamScheduleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTeamSchedule>>, CreateTeamScheduleMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  createTeamSchedule(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTeamScheduleMutationResult = NonNullable<Awaited<ReturnType<typeof createTeamSchedule>>>
+    export type CreateTeamScheduleMutationBody = BodyType<TeamScheduleInput>
+    export type CreateTeamScheduleMutationError = ErrorType<void>
+    export type CreateTeamScheduleMutationVariables = {id: number;data: BodyType<TeamScheduleInput>}
+
+    /**
+ * @summary Schedule a volunteer shift for a church team
+ */
+export const useCreateTeamSchedule = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTeamSchedule>>, TError,CreateTeamScheduleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createTeamSchedule>>,
+        TError,
+        CreateTeamScheduleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateTeamScheduleMutationOptions(options));
+    }
+
+export const getUpdateTeamScheduleUrl = (id: number,) => {
+
+
+
+
+  return `/api/team-schedule/${id}`
+}
+
+/**
+ * @summary Update a team schedule shift
+ */
+export const updateTeamSchedule = async (id: number,
+    teamScheduleUpdate: TeamScheduleUpdate, options?: Parameters<typeof customFetch>[1]): Promise<TeamScheduleItem> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<TeamScheduleItem>(getUpdateTeamScheduleUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(teamScheduleUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateTeamScheduleMutationKey = () => ['updateTeamSchedule'] as const;
+
+export const getUpdateTeamScheduleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTeamSchedule>>, TError,UpdateTeamScheduleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTeamSchedule>>, TError,UpdateTeamScheduleMutationVariables, TContext> => {
+
+const mutationKey = getUpdateTeamScheduleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTeamSchedule>>, UpdateTeamScheduleMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTeamSchedule(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTeamScheduleMutationResult = NonNullable<Awaited<ReturnType<typeof updateTeamSchedule>>>
+    export type UpdateTeamScheduleMutationBody = BodyType<TeamScheduleUpdate>
+    export type UpdateTeamScheduleMutationError = ErrorType<void>
+    export type UpdateTeamScheduleMutationVariables = {id: number;data: BodyType<TeamScheduleUpdate>}
+
+    /**
+ * @summary Update a team schedule shift
+ */
+export const useUpdateTeamSchedule = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTeamSchedule>>, TError,UpdateTeamScheduleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateTeamSchedule>>,
+        TError,
+        UpdateTeamScheduleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateTeamScheduleMutationOptions(options));
+    }
+
+export const getDeleteTeamScheduleUrl = (id: number,) => {
+
+
+
+
+  return `/api/team-schedule/${id}`
+}
+
+/**
+ * @summary Remove a team schedule shift
+ */
+export const deleteTeamSchedule = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteTeamScheduleUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTeamScheduleMutationKey = () => ['deleteTeamSchedule'] as const;
+
+export const getDeleteTeamScheduleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTeamSchedule>>, TError,DeleteTeamScheduleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTeamSchedule>>, TError,DeleteTeamScheduleMutationVariables, TContext> => {
+
+const mutationKey = getDeleteTeamScheduleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTeamSchedule>>, DeleteTeamScheduleMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTeamSchedule(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTeamScheduleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTeamSchedule>>>
+
+    export type DeleteTeamScheduleMutationError = ErrorType<void>
+    export type DeleteTeamScheduleMutationVariables = {id: number}
+
+    /**
+ * @summary Remove a team schedule shift
+ */
+export const useDeleteTeamSchedule = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTeamSchedule>>, TError,DeleteTeamScheduleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTeamSchedule>>,
+        TError,
+        DeleteTeamScheduleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteTeamScheduleMutationOptions(options));
     }
 
 export const getListProfilesUrl = (params?: ListProfilesParams,) => {

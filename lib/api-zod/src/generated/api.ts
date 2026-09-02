@@ -736,6 +736,135 @@ export const GenerateTeamSuggestionsResponse = zod.object({
 
 
 /**
+ * @summary List schedule shifts for a church team
+ */
+export const ListTeamScheduleParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const listTeamScheduleResponseScheduledDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const listTeamScheduleResponseStartTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const listTeamScheduleResponseEndTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+
+
+export const ListTeamScheduleResponseItem = zod.object({
+  "id": zod.int(),
+  "teamId": zod.int(),
+  "profileId": zod.int().nullable(),
+  "volunteerName": zod.string().nullable(),
+  "scheduledDate": zod.string().regex(listTeamScheduleResponseScheduledDateRegExp),
+  "startTime": zod.string().regex(listTeamScheduleResponseStartTimeRegExp),
+  "endTime": zod.string().regex(listTeamScheduleResponseEndTimeRegExp).nullable(),
+  "role": zod.string(),
+  "notes": zod.string().nullable(),
+  "isCancelled": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const ListTeamScheduleResponse = zod.array(ListTeamScheduleResponseItem)
+
+
+/**
+ * @summary Schedule a volunteer shift for a church team
+ */
+export const CreateTeamScheduleParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const createTeamScheduleBodyScheduledDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const createTeamScheduleBodyStartTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const createTeamScheduleBodyEndTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const createTeamScheduleBodyRoleMax = 120;
+
+export const createTeamScheduleBodyNotesMax = 1000;
+
+
+
+export const CreateTeamScheduleBody = zod.object({
+  "scheduledDate": zod.string().regex(createTeamScheduleBodyScheduledDateRegExp),
+  "startTime": zod.string().regex(createTeamScheduleBodyStartTimeRegExp),
+  "endTime": zod.string().regex(createTeamScheduleBodyEndTimeRegExp).nullish(),
+  "role": zod.string().min(1).max(createTeamScheduleBodyRoleMax),
+  "profileId": zod.int().nullish(),
+  "notes": zod.string().max(createTeamScheduleBodyNotesMax).nullish()
+})
+
+export const createTeamScheduleResponseScheduledDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const createTeamScheduleResponseStartTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const createTeamScheduleResponseEndTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+
+
+export const CreateTeamScheduleResponse = zod.object({
+  "id": zod.int(),
+  "teamId": zod.int(),
+  "profileId": zod.int().nullable(),
+  "volunteerName": zod.string().nullable(),
+  "scheduledDate": zod.string().regex(createTeamScheduleResponseScheduledDateRegExp),
+  "startTime": zod.string().regex(createTeamScheduleResponseStartTimeRegExp),
+  "endTime": zod.string().regex(createTeamScheduleResponseEndTimeRegExp).nullable(),
+  "role": zod.string(),
+  "notes": zod.string().nullable(),
+  "isCancelled": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a team schedule shift
+ */
+export const UpdateTeamScheduleParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const updateTeamScheduleBodyScheduledDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const updateTeamScheduleBodyStartTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const updateTeamScheduleBodyEndTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const updateTeamScheduleBodyRoleMax = 120;
+
+export const updateTeamScheduleBodyNotesMax = 1000;
+
+
+
+export const UpdateTeamScheduleBody = zod.object({
+  "scheduledDate": zod.string().regex(updateTeamScheduleBodyScheduledDateRegExp).optional(),
+  "startTime": zod.string().regex(updateTeamScheduleBodyStartTimeRegExp).optional(),
+  "endTime": zod.string().regex(updateTeamScheduleBodyEndTimeRegExp).nullish(),
+  "role": zod.string().min(1).max(updateTeamScheduleBodyRoleMax).optional(),
+  "profileId": zod.int().nullish(),
+  "notes": zod.string().max(updateTeamScheduleBodyNotesMax).nullish(),
+  "isCancelled": zod.boolean().optional()
+})
+
+export const updateTeamScheduleResponseScheduledDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const updateTeamScheduleResponseStartTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const updateTeamScheduleResponseEndTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+
+
+export const UpdateTeamScheduleResponse = zod.object({
+  "id": zod.int(),
+  "teamId": zod.int(),
+  "profileId": zod.int().nullable(),
+  "volunteerName": zod.string().nullable(),
+  "scheduledDate": zod.string().regex(updateTeamScheduleResponseScheduledDateRegExp),
+  "startTime": zod.string().regex(updateTeamScheduleResponseStartTimeRegExp),
+  "endTime": zod.string().regex(updateTeamScheduleResponseEndTimeRegExp).nullable(),
+  "role": zod.string(),
+  "notes": zod.string().nullable(),
+  "isCancelled": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Remove a team schedule shift
+ */
+export const DeleteTeamScheduleParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const DeleteTeamScheduleResponse = zod.void()
+
+
+/**
  * @summary List completed Ministry Profiles for the signed-in church
  */
 export const ListProfilesQueryParams = zod.object({

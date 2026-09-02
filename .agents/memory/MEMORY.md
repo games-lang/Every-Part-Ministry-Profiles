@@ -6,6 +6,6 @@
 - [Personality reflection framing](personality-reflection-framing.md) — show seven flexible ministry-focused spectra; never branded types, rigid labels, or calling limitations.
 - [AI ministry assistance boundaries](ai-volunteer-matching-boundaries.md) — send only canonical aggregates or evidence-qualified signals; keep all displayed claims local and advisory.
 - [Object storage upload validation](object-storage-upload-validation.md) — treat signed-upload metadata as untrusted; validate owned bytes before purpose-specific public serving.
-- [Church team assignments](church-team-assignments.md) — profiles have one pastor-led current team; archiving preserves assignments and tenant integrity is enforced in the database.
+- [Church team assignments](church-team-assignments.md) — profiles have one pastor-led current team; scheduling is a separate pastor-managed activity with tenant integrity.
 - [Youth profile safety](youth-profile-safety.md) — minor pathways require server-enforced age routing, guardian consent, private leader access, and strict separation from adult AI/team flows.
 - [Development database migration workflow](db-migration-workflow.md) — use tracked SQL migrations; Drizzle push can block on named-schema prompts without a TTY.
