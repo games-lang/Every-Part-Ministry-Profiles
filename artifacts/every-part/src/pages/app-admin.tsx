@@ -20,6 +20,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
+import { PublicAiAssistant } from "@/components/public-ai-assistant";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -415,6 +416,7 @@ export function AppAdminRoute() {
       <main className="container mx-auto max-w-6xl px-4 py-8 sm:py-10">
         <AppFeedbackInbox />
       </main>
+      <PublicAiAssistant />
     </div>
   );
 }
