@@ -406,6 +406,10 @@ export default function ProfileDetail() {
      </div>
    </header>
 
+    {profile.profileType === "adult" && (
+      <ProfileHelper profileId={profile.id} memberName={profile.memberName} />
+    )}
+
    {profile.profileType === 'discover' ? (
      <DiscoverProfileView profile={profile} />
    ) : profile.profileType === 'explore' ? (
@@ -413,9 +417,6 @@ export default function ProfileDetail() {
    ) : (
      <>
        <CoordinatorAsk profile={profile} />
-       {profile.profileType === "adult" && (
-         <ProfileHelper profileId={profile.id} memberName={profile.memberName} />
-       )}
        <TeamAssignment profileId={profile.id} teamId={profile.teamId} />
         {profile.profileType === "adult" && (
           <ProfileSchedule profileId={profile.id} />

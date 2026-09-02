@@ -60,7 +60,11 @@ export function ProfileHelper({
   }
 
   return (
-    <section className="no-print space-y-3" aria-labelledby="profile-helper-title">
+    <section
+      id="profile-helper"
+      className="no-print space-y-3 scroll-mt-6"
+      aria-labelledby="profile-helper-title"
+    >
       <div className="flex flex-wrap items-center gap-2">
         <h2 id="profile-helper-title" className="font-serif text-2xl font-medium">
           Profile helper
