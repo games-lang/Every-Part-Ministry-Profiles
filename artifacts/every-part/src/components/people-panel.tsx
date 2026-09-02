@@ -392,7 +392,7 @@ export function PeoplePanel() {
             <div>
               <h2 className="font-serif text-xl font-medium">Invite someone to reflect</h2>
               <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Add a person once, keep their contact details with your church, and give them a private link to complete the profile in their own words.
+                Add a person once, keep their contact details with your church, and give them a private link to complete their Ministry Profile.
               </p>
             </div>
           </div>
