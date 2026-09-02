@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useUser } from "@clerk/react";
 import {
   getGetAppFeedbackQueryKey,
   useGetAppAdminAccess,
@@ -178,6 +179,17 @@ function FeedbackCard({
 }
 
 function AccessDenied() {
+  const { user } = useUser();
+  const [copied, setCopied] = useState(false);
+  const currentUserId = user?.id;
+
+  const copyUserId = async () => {
+    if (!currentUserId) return;
+    await navigator.clipboard.writeText(currentUserId);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
+
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12">
       <Card className="w-full max-w-lg border-border/70 shadow-sm">
@@ -187,10 +199,24 @@ function AccessDenied() {
           </div>
           <CardTitle className="font-serif text-3xl">App administrator access required</CardTitle>
           <CardDescription className="leading-6">
-            This area is reserved for the Every Part team. If you believe you should have access, ask the app owner to add your Clerk user ID to the app administrator allowlist.
+            This area is reserved for the Every Part team. Your account is signed in, but it is not currently on the app administrator allowlist.
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {currentUserId && (
+            <div className="mb-5 rounded-2xl border border-border/70 bg-muted/50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[.12em] text-muted-foreground">Signed-in Clerk user ID</p>
+              <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <code className="min-w-0 flex-1 break-all rounded-lg bg-background px-3 py-2 text-xs text-foreground">{currentUserId}</code>
+                <Button type="button" variant="outline" size="sm" onClick={() => void copyUserId()} className="shrink-0 rounded-full">
+                  {copied ? "Copied" : "Copy ID"}
+                </Button>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                Add this exact ID to the secure <span className="font-medium text-foreground">EVERY_PART_APP_ADMIN_USER_IDS</span> secret, then refresh the app.
+              </p>
+            </div>
+          )}
           <Button variant="outline" asChild className="rounded-full">
             <Link href="/dashboard">Return to church dashboard</Link>
           </Button>

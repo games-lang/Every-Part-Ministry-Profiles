@@ -60,12 +60,14 @@ router.get("/admin/access", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
   if (!userId) return;
 
+  res.set("Cache-Control", "no-store");
   res.json(GetAppAdminAccessResponse.parse({ isAdmin: isAppAdminUser(userId) }));
 });
 
 router.get("/admin/feedback", async (req, res): Promise<void> => {
   if (!requireAppAdmin(req, res)) return;
 
+  res.set("Cache-Control", "no-store");
   const feedback = await db
     .select()
     .from(appFeedbackTable)
@@ -110,6 +112,7 @@ router.patch("/admin/feedback/:id", async (req, res): Promise<void> => {
     return;
   }
 
+  res.set("Cache-Control", "no-store");
   res.json(UpdateAppFeedbackResponse.parse(feedbackResponse(updated)));
 });
 

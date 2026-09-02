@@ -111,7 +111,12 @@ function SignInPage() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-secondary/10 via-background to-background pointer-events-none" />
       <div className="relative z-10 w-full max-w-md">
         <Brand className="mb-7 justify-center" />
-        <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} />
+        <SignIn
+          routing="path"
+          path={`${basePath}/sign-in`}
+          signUpUrl={`${basePath}/sign-up`}
+          fallbackRedirectUrl={`${basePath}/dashboard`}
+        />
         <section
           className="mt-5 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6"
           aria-labelledby="sign-in-feedback-title"
