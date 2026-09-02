@@ -2417,3 +2417,33 @@ export const UpdateProfileTeamResponse = zod.object({
 })
 
 
+/**
+ * Generates conversation-oriented guidance from safe structured profile signals
+ * @summary Ask a pastor-facing helper about a completed adult profile
+ */
+export const ChatWithProfileHelperParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+export const chatWithProfileHelperBodyMessagesItemContentMax = 1500;
+
+export const chatWithProfileHelperBodyMessagesMax = 8;
+
+
+
+export const ChatWithProfileHelperBody = zod.object({
+  "messages": zod.array(zod.object({
+  "role": zod.enum(['user', 'assistant']),
+  "content": zod.string().min(1).max(chatWithProfileHelperBodyMessagesItemContentMax)
+})).min(1).max(chatWithProfileHelperBodyMessagesMax)
+})
+
+export const chatWithProfileHelperResponseAnswerMax = 5000;
+
+
+
+export const ChatWithProfileHelperResponse = zod.object({
+  "answer": zod.string().min(1).max(chatWithProfileHelperResponseAnswerMax)
+})
+
+

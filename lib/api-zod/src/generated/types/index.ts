@@ -164,6 +164,8 @@ export * from './ministryProfileRecommendedProfileType';
 export * from './ministryProfileYouth';
 export * from './ministryProfileYouthResponses';
 export * from './ministryTeam';
+export * from './profileHelperInput';
+export * from './profileHelperResponse';
 export * from './profileInput';
 export * from './profileInputAvailabilityDetails';
 export * from './profileInputChurchDetails';

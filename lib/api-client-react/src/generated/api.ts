@@ -53,6 +53,8 @@ import type {
   MinistryPersonInput,
   MinistryProfile,
   MinistryTeam,
+  ProfileHelperInput,
+  ProfileHelperResponse,
   ProfileInput,
   ProfileListItem,
   ProfileTeamAssignment,
@@ -3641,5 +3643,87 @@ export const useUpdateProfileTeam = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getUpdateProfileTeamMutationOptions(options));
+    }
+
+export const getChatWithProfileHelperUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}/helper`
+}
+
+/**
+ * Generates conversation-oriented guidance from safe structured profile signals
+ * @summary Ask a pastor-facing helper about a completed adult profile
+ */
+export const chatWithProfileHelper = async (id: number,
+    profileHelperInput: ProfileHelperInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfileHelperResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<ProfileHelperResponse>(getChatWithProfileHelperUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(profileHelperInput)
+  }
+);}
+
+
+
+
+
+export const getChatWithProfileHelperMutationKey = () => ['chatWithProfileHelper'] as const;
+
+export const getChatWithProfileHelperMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatWithProfileHelper>>, TError,ChatWithProfileHelperMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof chatWithProfileHelper>>, TError,ChatWithProfileHelperMutationVariables, TContext> => {
+
+const mutationKey = getChatWithProfileHelperMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chatWithProfileHelper>>, ChatWithProfileHelperMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  chatWithProfileHelper(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChatWithProfileHelperMutationResult = NonNullable<Awaited<ReturnType<typeof chatWithProfileHelper>>>
+    export type ChatWithProfileHelperMutationBody = BodyType<ProfileHelperInput>
+    export type ChatWithProfileHelperMutationError = ErrorType<void>
+    export type ChatWithProfileHelperMutationVariables = {id: number;data: BodyType<ProfileHelperInput>}
+
+    /**
+ * @summary Ask a pastor-facing helper about a completed adult profile
+ */
+export const useChatWithProfileHelper = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatWithProfileHelper>>, TError,ChatWithProfileHelperMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof chatWithProfileHelper>>,
+        TError,
+        ChatWithProfileHelperMutationVariables,
+        TContext
+      > => {
+      return useMutation(getChatWithProfileHelperMutationOptions(options));
     }
 

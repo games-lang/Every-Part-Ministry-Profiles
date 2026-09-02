@@ -30,6 +30,22 @@ export interface AssistantChatInput {
   messages: AssistantChatMessage[];
 }
 
+export interface ProfileHelperInput {
+  /**
+     * @minItems 1
+     * @maxItems 8
+     */
+  messages: AssistantChatMessage[];
+}
+
+export interface ProfileHelperResponse {
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  answer: string;
+}
+
 export interface HealthStatus {
   status: string;
 }
