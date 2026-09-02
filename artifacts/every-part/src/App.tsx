@@ -52,6 +52,26 @@ const clerkPubKey = publishableKeyFromHost(
 
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const adminReturnStorageKey = "every-part:admin-return";
+const adminPath = `${basePath}/app-admin`;
+
+function rememberAdminReturn() {
+  try {
+    window.sessionStorage.setItem(adminReturnStorageKey, adminPath);
+  } catch {
+    // Continue with Clerk's normal fallback if session storage is unavailable.
+  }
+}
+
+function getRememberedAdminReturn() {
+  try {
+    return window.sessionStorage.getItem(adminReturnStorageKey) === adminPath
+      ? adminPath
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 function stripBase(path: string): string {
   return basePath && path.startsWith(basePath)
@@ -106,22 +126,49 @@ function SignInPage() {
   const [feedback, setFeedback] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const feedbackMutation = useCreateAppFeedback();
-  const requestedRedirect = new URLSearchParams(window.location.search).get("redirect_url");
-  const fallbackRedirectUrl = requestedRedirect === `${basePath}/app-admin`
-    ? requestedRedirect
-    : `${basePath}/dashboard`;
+  const queryRedirect = new URLSearchParams(window.location.search).get("redirect_url");
+  const requestedAdminRedirect = queryRedirect === adminPath || queryRedirect === "/app-admin";
+  const rememberedAdminRedirect = getRememberedAdminReturn();
+  const fallbackRedirectUrl = requestedAdminRedirect
+    ? adminPath
+    : rememberedAdminRedirect ?? `${basePath}/dashboard`;
+
+  useEffect(() => {
+    if (requestedAdminRedirect) rememberAdminReturn();
+  }, [requestedAdminRedirect]);
 
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-secondary/10 via-background to-background pointer-events-none" />
       <div className="relative z-10 w-full max-w-md">
         <Brand className="mb-7 justify-center" />
-        <SignIn
-          routing="path"
-          path={`${basePath}/sign-in`}
-          signUpUrl={`${basePath}/sign-up`}
-          fallbackRedirectUrl={fallbackRedirectUrl}
-        />
+        <Show when="signed-out">
+          <SignIn
+            routing="path"
+            path={`${basePath}/sign-in`}
+            signUpUrl={`${basePath}/sign-up`}
+            fallbackRedirectUrl={fallbackRedirectUrl}
+          />
+        </Show>
+        <Show when="signed-in">
+          <section className="rounded-2xl border border-border bg-card p-6 text-center shadow-sm" aria-labelledby="already-signed-in-title">
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">You’re already signed in</p>
+            <h1 id="already-signed-in-title" className="mt-2 font-serif text-2xl font-semibold tracking-tight text-foreground">
+              Continue to your Every Part workspace
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Open the private feedback inbox, or return to your church dashboard.
+            </p>
+            <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
+              <Button asChild className="rounded-full">
+                <Link href="/app-admin">Open admin inbox</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full">
+                <Link href="/dashboard">Church dashboard</Link>
+              </Button>
+            </div>
+          </section>
+        </Show>
         <section className="mt-5 rounded-2xl border border-primary/15 bg-primary/[.04] p-5 shadow-sm sm:p-6" aria-labelledby="admin-inbox-title">
           <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">Every Part team</p>
           <h2 id="admin-inbox-title" className="mt-2 font-serif text-xl font-semibold tracking-tight text-foreground">
@@ -282,10 +329,12 @@ function ClerkQueryClientCacheInvalidator() {
 }
 
 function HomeRedirect() {
+  const pendingAdminReturn = getRememberedAdminReturn();
+
   return (
     <>
       <Show when="signed-in">
-        <Redirect to="/dashboard" />
+        <Redirect to={pendingAdminReturn ? "/app-admin" : "/dashboard"} />
       </Show>
       <Show when="signed-out">
         <LandingPage />
@@ -341,7 +390,7 @@ function ClerkProviderWithRoutes() {
                   <AppAdminRoute />
                 </Show>
                 <Show when="signed-out">
-                  <Redirect to={`/sign-in?redirect_url=${encodeURIComponent(`${basePath}/app-admin`)}`} />
+                  <Redirect to={`/sign-in?redirect_url=${encodeURIComponent(adminPath)}`} />
                 </Show>
               </Route>
               

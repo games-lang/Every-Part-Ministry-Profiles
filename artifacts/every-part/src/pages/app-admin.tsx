@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@clerk/react";
 import {
   getGetAppFeedbackQueryKey,
@@ -378,6 +378,14 @@ export function AppFeedbackInbox() {
 
 export function AppAdminRoute() {
   const { data: access, isLoading, error } = useGetAppAdminAccess();
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.removeItem("every-part:admin-return");
+    } catch {
+      // Nothing else is needed if session storage is unavailable.
+    }
+  }, []);
 
   if (isLoading) {
     return (
