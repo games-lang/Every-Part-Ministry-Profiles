@@ -12,6 +12,7 @@ import peopleRouter from "./people";
 import feedbackRouter from "./feedback";
 import assistantRouter from "./assistant";
 import profileHelperRouter from "./profile-helper";
+import partFinderRouter from "./partfinder";
 
 const router: IRouter = Router();
 
@@ -28,5 +29,6 @@ router.use(peopleRouter);
 router.use(feedbackRouter);
 router.use(assistantRouter);
 router.use(profileHelperRouter);
+router.use(partFinderRouter);
 
 export default router;

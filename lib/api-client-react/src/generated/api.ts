@@ -53,6 +53,8 @@ import type {
   MinistryPersonInput,
   MinistryProfile,
   MinistryTeam,
+  PartFinderInput,
+  PartFinderResponse,
   ProfileHelperInput,
   ProfileHelperResponse,
   ProfileInput,
@@ -258,6 +260,87 @@ export const useChatWithAssistant = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getChatWithAssistantMutationOptions(options));
+    }
+
+export const getChatWithPartFinderUrl = () => {
+
+
+
+
+  return `/api/assistant/partfinder`
+}
+
+/**
+ * Uses tenant-scoped adult profile signals for advisory volunteer discovery and church insights
+ * @summary Ask the authenticated PartFinder ministry discovery assistant
+ */
+export const chatWithPartFinder = async (partFinderInput: PartFinderInput, options?: Parameters<typeof customFetch>[1]): Promise<PartFinderResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<PartFinderResponse>(getChatWithPartFinderUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(partFinderInput)
+  }
+);}
+
+
+
+
+
+export const getChatWithPartFinderMutationKey = () => ['chatWithPartFinder'] as const;
+
+export const getChatWithPartFinderMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatWithPartFinder>>, TError,ChatWithPartFinderMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof chatWithPartFinder>>, TError,ChatWithPartFinderMutationVariables, TContext> => {
+
+const mutationKey = getChatWithPartFinderMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chatWithPartFinder>>, ChatWithPartFinderMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  chatWithPartFinder(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChatWithPartFinderMutationResult = NonNullable<Awaited<ReturnType<typeof chatWithPartFinder>>>
+    export type ChatWithPartFinderMutationBody = BodyType<PartFinderInput>
+    export type ChatWithPartFinderMutationError = ErrorType<void>
+    export type ChatWithPartFinderMutationVariables = {data: BodyType<PartFinderInput>}
+
+    /**
+ * @summary Ask the authenticated PartFinder ministry discovery assistant
+ */
+export const useChatWithPartFinder = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatWithPartFinder>>, TError,ChatWithPartFinderMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof chatWithPartFinder>>,
+        TError,
+        ChatWithPartFinderMutationVariables,
+        TContext
+      > => {
+      return useMutation(getChatWithPartFinderMutationOptions(options));
     }
 
 export const getCreateAppFeedbackUrl = () => {

@@ -289,13 +289,17 @@ async function rankWithOpenAi(
   candidates: SafeCandidate[],
   criteria: MatchCriteria,
 ): Promise<{ rankings: AiRanking[] } | null> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return null;
-
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const apiKey =
+      process.env.AI_INTEGRATIONS_OPENAI_API_KEY ?? process.env.OPENAI_API_KEY;
+    if (!apiKey) return null;
+    const baseUrl = (
+      process.env.AI_INTEGRATIONS_OPENAI_BASE_URL ??
+      "https://api.openai.com/v1"
+    ).replace(/\/$/, "");
+    const response = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -442,9 +446,8 @@ export async function findVolunteerMatches(
     candidates: deterministic
       .slice(0, MAX_RESULTS)
       .map((candidate) => publicCandidate(candidate, candidate.score, candidate.reasons)),
-    summary: process.env.OPENAI_API_KEY
-      ? "AI matching was temporarily unavailable, so these suggestions use profile overlap and availability."
-      : "AI assistance is not currently available, so these suggestions use profile overlap and availability.",
+    summary:
+      "AI matching was temporarily unavailable, so these suggestions use profile overlap and availability.",
     advisory: ADVISORY,
     usedAi: false,
   };

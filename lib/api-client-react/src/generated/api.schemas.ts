@@ -46,6 +46,55 @@ export interface ProfileHelperResponse {
   answer: string;
 }
 
+export interface PartFinderInput {
+  /**
+     * @minItems 1
+     * @maxItems 10
+     */
+  messages: AssistantChatMessage[];
+}
+
+export type PartFinderRecommendationMatchLabel = typeof PartFinderRecommendationMatchLabel[keyof typeof PartFinderRecommendationMatchLabel];
+
+
+export const PartFinderRecommendationMatchLabel = {
+  Strong_potential_match: 'Strong potential match',
+  Possible_match: 'Possible match',
+  Worth_exploring: 'Worth exploring',
+} as const;
+
+export interface PartFinderRecommendation {
+  id: number;
+  memberName: string;
+  matchLabel: PartFinderRecommendationMatchLabel;
+  /** @maxItems 4 */
+  reasons: string[];
+  interests: string[];
+  passions: string[];
+  availability: string[];
+}
+
+export type PartFinderResponseMode = typeof PartFinderResponseMode[keyof typeof PartFinderResponseMode];
+
+
+export const PartFinderResponseMode = {
+  'find-people': 'find-people',
+  'church-insights': 'church-insights',
+  guidance: 'guidance',
+} as const;
+
+export interface PartFinderResponse {
+  mode: PartFinderResponseMode;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  answer: string;
+  /** @maxItems 6 */
+  recommendations: PartFinderRecommendation[];
+  advisory: string;
+}
+
 export interface HealthStatus {
   status: string;
 }

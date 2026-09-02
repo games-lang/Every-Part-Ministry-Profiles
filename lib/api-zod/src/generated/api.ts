@@ -38,6 +38,47 @@ export const ChatWithAssistantResponse = zod.unknown()
 
 
 /**
+ * Uses tenant-scoped adult profile signals for advisory volunteer discovery and church insights
+ * @summary Ask the authenticated PartFinder ministry discovery assistant
+ */
+export const chatWithPartFinderBodyMessagesItemContentMax = 1500;
+
+export const chatWithPartFinderBodyMessagesMax = 10;
+
+
+
+export const ChatWithPartFinderBody = zod.object({
+  "messages": zod.array(zod.object({
+  "role": zod.enum(['user', 'assistant']),
+  "content": zod.string().min(1).max(chatWithPartFinderBodyMessagesItemContentMax)
+})).min(1).max(chatWithPartFinderBodyMessagesMax)
+})
+
+export const chatWithPartFinderResponseAnswerMax = 5000;
+
+export const chatWithPartFinderResponseRecommendationsItemReasonsMax = 4;
+
+export const chatWithPartFinderResponseRecommendationsMax = 6;
+
+
+
+export const ChatWithPartFinderResponse = zod.object({
+  "mode": zod.enum(['find-people', 'church-insights', 'guidance']),
+  "answer": zod.string().min(1).max(chatWithPartFinderResponseAnswerMax),
+  "recommendations": zod.array(zod.object({
+  "id": zod.int(),
+  "memberName": zod.string(),
+  "matchLabel": zod.enum(['Strong potential match', 'Possible match', 'Worth exploring']),
+  "reasons": zod.array(zod.string()).max(chatWithPartFinderResponseRecommendationsItemReasonsMax),
+  "interests": zod.array(zod.string()),
+  "passions": zod.array(zod.string()),
+  "availability": zod.array(zod.string())
+})).max(chatWithPartFinderResponseRecommendationsMax),
+  "advisory": zod.string()
+})
+
+
+/**
  * Save a suggestion or problem report from the public sign-in experience
  * @summary Submit public feedback
  */
