@@ -22,6 +22,8 @@ tags:
     description: Church ministry team management
   - name: youth-profiles
     description: Guardian-consented youth discovery profiles
+  - name: app-admin
+    description: Every Part app administrator feedback operations
 paths:
   /healthz:
     get:
@@ -36,6 +38,91 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /feedback:
+    post:
+      operationId: createAppFeedback
+      tags: [app-admin]
+      summary: Submit public feedback
+      description: Save a suggestion or problem report from the public sign-in experience
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppFeedbackInput"
+      responses:
+        "201":
+          description: Feedback saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppFeedbackSubmission"
+        "400":
+          description: Invalid feedback
+  /admin/access:
+    get:
+      operationId: getAppAdminAccess
+      tags: [app-admin]
+      summary: Check app administrator access
+      responses:
+        "200":
+          description: App administrator access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppAdminAccess"
+        "401":
+          description: Unauthorized
+  /admin/feedback:
+    get:
+      operationId: getAppFeedback
+      tags: [app-admin]
+      summary: List app feedback
+      description: List suggestions and problem reports for Every Part app administrators
+      responses:
+        "200":
+          description: App feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppFeedbackList"
+        "401":
+          description: Unauthorized
+        "403":
+          description: App administrator access required
+  /admin/feedback/{id}:
+    patch:
+      operationId: updateAppFeedback
+      tags: [app-admin]
+      summary: Update an app feedback item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppFeedbackUpdateInput"
+      responses:
+        "200":
+          description: Updated feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppFeedback"
+        "400":
+          description: Invalid feedback update
+        "401":
+          description: Unauthorized
+        "403":
+          description: App administrator access required
+        "404":
+          description: Feedback item not found
   /church:
     get:
       operationId: getMyChurch
@@ -913,6 +1000,84 @@ components:
           type: string
       required:
         - status
+    AppAdminAccess:
+      type: object
+      properties:
+        isAdmin: { type: boolean }
+      required: [isAdmin]
+    AppFeedbackInput:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [suggestion, fix]
+        message:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        contactEmail:
+          type: ["string", "null"]
+          format: email
+        sourcePage:
+          type: string
+          maxLength: 120
+      required: [type, message]
+    AppFeedbackSubmission:
+      type: object
+      properties:
+        id: { type: integer }
+        status:
+          type: string
+          enum: [new, reviewing, resolved, dismissed]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, status, createdAt]
+    AppFeedback:
+      type: object
+      properties:
+        id: { type: integer }
+        type:
+          type: string
+          enum: [suggestion, fix]
+        message: { type: string }
+        contactEmail:
+          type: ["string", "null"]
+          format: email
+        sourcePage: { type: string }
+        status:
+          type: string
+          enum: [new, reviewing, resolved, dismissed]
+        adminResponse:
+          type: ["string", "null"]
+        respondedAt:
+          type: ["string", "null"]
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, type, message, sourcePage, status, createdAt, updatedAt]
+    AppFeedbackList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppFeedback"
+      required: [items]
+    AppFeedbackUpdateInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [new, reviewing, resolved, dismissed]
+        adminResponse:
+          type: ["string", "null"]
+          maxLength: 5000
+      required: [status]
     Church:
       type: object
       required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt]

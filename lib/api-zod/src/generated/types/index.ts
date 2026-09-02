@@ -6,6 +6,17 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './appAdminAccess';
+export * from './appFeedback';
+export * from './appFeedbackInput';
+export * from './appFeedbackInputType';
+export * from './appFeedbackList';
+export * from './appFeedbackStatus';
+export * from './appFeedbackSubmission';
+export * from './appFeedbackSubmissionStatus';
+export * from './appFeedbackType';
+export * from './appFeedbackUpdateInput';
+export * from './appFeedbackUpdateInputStatus';
 export * from './assessmentConfiguration';
 export * from './assessmentConfigurationSections';
 export * from './assessmentConfigurationSubsections';

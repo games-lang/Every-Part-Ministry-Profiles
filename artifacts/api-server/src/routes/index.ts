@@ -9,6 +9,7 @@ import teamScheduleRouter from "./team-schedule";
 import youthProfilesRouter from "./youth-profiles";
 import journeysRouter from "./journeys";
 import peopleRouter from "./people";
+import feedbackRouter from "./feedback";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(teamScheduleRouter);
 router.use(youthProfilesRouter);
 router.use(journeysRouter);
 router.use(peopleRouter);
+router.use(feedbackRouter);
 
 export default router;

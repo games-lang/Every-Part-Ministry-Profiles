@@ -9,6 +9,104 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface AppAdminAccess {
+  isAdmin: boolean;
+}
+
+export type AppFeedbackInputType = typeof AppFeedbackInputType[keyof typeof AppFeedbackInputType];
+
+
+export const AppFeedbackInputType = {
+  suggestion: 'suggestion',
+  fix: 'fix',
+} as const;
+
+export interface AppFeedbackInput {
+  type: AppFeedbackInputType;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  message: string;
+  /** @nullable */
+  contactEmail?: string | null;
+  /** @maxLength 120 */
+  sourcePage?: string;
+}
+
+export type AppFeedbackSubmissionStatus = typeof AppFeedbackSubmissionStatus[keyof typeof AppFeedbackSubmissionStatus];
+
+
+export const AppFeedbackSubmissionStatus = {
+  new: 'new',
+  reviewing: 'reviewing',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
+
+export interface AppFeedbackSubmission {
+  id: number;
+  status: AppFeedbackSubmissionStatus;
+  createdAt: string;
+}
+
+export type AppFeedbackType = typeof AppFeedbackType[keyof typeof AppFeedbackType];
+
+
+export const AppFeedbackType = {
+  suggestion: 'suggestion',
+  fix: 'fix',
+} as const;
+
+export type AppFeedbackStatus = typeof AppFeedbackStatus[keyof typeof AppFeedbackStatus];
+
+
+export const AppFeedbackStatus = {
+  new: 'new',
+  reviewing: 'reviewing',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
+
+export interface AppFeedback {
+  id: number;
+  type: AppFeedbackType;
+  message: string;
+  /** @nullable */
+  contactEmail?: string | null;
+  sourcePage: string;
+  status: AppFeedbackStatus;
+  /** @nullable */
+  adminResponse?: string | null;
+  /** @nullable */
+  respondedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AppFeedbackList {
+  items: AppFeedback[];
+}
+
+export type AppFeedbackUpdateInputStatus = typeof AppFeedbackUpdateInputStatus[keyof typeof AppFeedbackUpdateInputStatus];
+
+
+export const AppFeedbackUpdateInputStatus = {
+  new: 'new',
+  reviewing: 'reviewing',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
+
+export interface AppFeedbackUpdateInput {
+  status: AppFeedbackUpdateInputStatus;
+  /**
+     * @maxLength 5000
+     * @nullable
+     */
+  adminResponse?: string | null;
+}
+
 export type SpiritualGiftName = typeof SpiritualGiftName[keyof typeof SpiritualGiftName];
 
 

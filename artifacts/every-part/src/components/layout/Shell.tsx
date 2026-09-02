@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { UserButton } from "@clerk/react";
-import { LayoutDashboard, Settings, Users, ArrowRight, UsersRound } from "lucide-react";
-import { useHealthCheck } from "@workspace/api-client-react";
+import { LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck } from "lucide-react";
+import { useGetAppAdminAccess, useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/brand";
 
@@ -16,6 +16,7 @@ const navItems = [
 export function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { data: health } = useHealthCheck();
+  const { data: adminAccess } = useGetAppAdminAccess();
 
   return (
     <div className="ep-shell flex min-h-[100dvh] flex-col">
@@ -49,6 +50,21 @@ export function Shell({ children }: { children: ReactNode }) {
                   </Link>
                 );
               })}
+              {adminAccess?.isAdmin && (
+                <Link
+                  href="/app-admin"
+                  aria-current={location === "/app-admin" ? "page" : undefined}
+                  className={`relative flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-offset-1 ${
+                    location === "/app-admin"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                  data-testid="link-app-admin"
+                >
+                  <ShieldCheck className="h-4 w-4" />
+                  App Feedback
+                </Link>
+              )}
             </nav>
           </div>
           

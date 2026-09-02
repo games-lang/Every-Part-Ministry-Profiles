@@ -18,6 +18,91 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
+ * Save a suggestion or problem report from the public sign-in experience
+ * @summary Submit public feedback
+ */
+export const createAppFeedbackBodyMessageMax = 5000;
+
+export const createAppFeedbackBodySourcePageMax = 120;
+
+
+
+export const CreateAppFeedbackBody = zod.object({
+  "type": zod.enum(['suggestion', 'fix']),
+  "message": zod.string().min(1).max(createAppFeedbackBodyMessageMax),
+  "contactEmail": zod.email().nullish(),
+  "sourcePage": zod.string().max(createAppFeedbackBodySourcePageMax).optional()
+})
+
+export const CreateAppFeedbackResponse = zod.object({
+  "id": zod.int(),
+  "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Check app administrator access
+ */
+export const GetAppAdminAccessResponse = zod.object({
+  "isAdmin": zod.boolean()
+})
+
+
+/**
+ * List suggestions and problem reports for Every Part app administrators
+ * @summary List app feedback
+ */
+export const GetAppFeedbackResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.int(),
+  "type": zod.enum(['suggestion', 'fix']),
+  "message": zod.string(),
+  "contactEmail": zod.email().nullish(),
+  "sourcePage": zod.string(),
+  "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
+  "adminResponse": zod.string().nullish(),
+  "respondedAt": zod.coerce.date().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Update an app feedback item
+ */
+
+
+
+export const UpdateAppFeedbackParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const updateAppFeedbackBodyAdminResponseMax = 5000;
+
+
+
+export const UpdateAppFeedbackBody = zod.object({
+  "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
+  "adminResponse": zod.string().max(updateAppFeedbackBodyAdminResponseMax).nullish()
+})
+
+export const UpdateAppFeedbackResponse = zod.object({
+  "id": zod.int(),
+  "type": zod.enum(['suggestion', 'fix']),
+  "message": zod.string(),
+  "contactEmail": zod.email().nullish(),
+  "sourcePage": zod.string(),
+  "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
+  "adminResponse": zod.string().nullish(),
+  "respondedAt": zod.coerce.date().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
  * @summary Get the signed-in administrator's church
  */
 export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');

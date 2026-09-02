@@ -24,3 +24,4 @@ export * from "./ministry-team-schedules";
 export * from "./ministry-profiles";
 export * from "./ministry-journeys";
 export * from "./ministry-people";
+export * from "./app-feedback";

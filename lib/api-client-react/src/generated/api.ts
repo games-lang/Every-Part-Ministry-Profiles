@@ -20,6 +20,12 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AppAdminAccess,
+  AppFeedback,
+  AppFeedbackInput,
+  AppFeedbackList,
+  AppFeedbackSubmission,
+  AppFeedbackUpdateInput,
   Church,
   ChurchAdmin,
   ChurchAdminAccess,
@@ -169,6 +175,323 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
 
 
+
+export const getCreateAppFeedbackUrl = () => {
+
+
+
+
+  return `/api/feedback`
+}
+
+/**
+ * Save a suggestion or problem report from the public sign-in experience
+ * @summary Submit public feedback
+ */
+export const createAppFeedback = async (appFeedbackInput: AppFeedbackInput, options?: Parameters<typeof customFetch>[1]): Promise<AppFeedbackSubmission> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<AppFeedbackSubmission>(getCreateAppFeedbackUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(appFeedbackInput)
+  }
+);}
+
+
+
+
+
+export const getCreateAppFeedbackMutationKey = () => ['createAppFeedback'] as const;
+
+export const getCreateAppFeedbackMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAppFeedback>>, TError,CreateAppFeedbackMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAppFeedback>>, TError,CreateAppFeedbackMutationVariables, TContext> => {
+
+const mutationKey = getCreateAppFeedbackMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAppFeedback>>, CreateAppFeedbackMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAppFeedback(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAppFeedbackMutationResult = NonNullable<Awaited<ReturnType<typeof createAppFeedback>>>
+    export type CreateAppFeedbackMutationBody = BodyType<AppFeedbackInput>
+    export type CreateAppFeedbackMutationError = ErrorType<void>
+    export type CreateAppFeedbackMutationVariables = {data: BodyType<AppFeedbackInput>}
+
+    /**
+ * @summary Submit public feedback
+ */
+export const useCreateAppFeedback = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAppFeedback>>, TError,CreateAppFeedbackMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAppFeedback>>,
+        TError,
+        CreateAppFeedbackMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateAppFeedbackMutationOptions(options));
+    }
+
+export const getGetAppAdminAccessUrl = () => {
+
+
+
+
+  return `/api/admin/access`
+}
+
+/**
+ * @summary Check app administrator access
+ */
+export const getAppAdminAccess = async ( options?: Parameters<typeof customFetch>[1]): Promise<AppAdminAccess> => {
+
+  return customFetch<AppAdminAccess>(getGetAppAdminAccessUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAppAdminAccessQueryKey = () => {
+    return [
+    `/api/admin/access`
+    ] as const;
+    }
+
+
+export const getGetAppAdminAccessQueryOptions = <TData = Awaited<ReturnType<typeof getAppAdminAccess>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAppAdminAccess>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAppAdminAccessQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAppAdminAccess>>> = ({ signal }) => getAppAdminAccess({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAppAdminAccess>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAppAdminAccessQueryResult = NonNullable<Awaited<ReturnType<typeof getAppAdminAccess>>>
+export type GetAppAdminAccessQueryError = ErrorType<void>
+
+
+/**
+ * @summary Check app administrator access
+ */
+
+export function useGetAppAdminAccess<TData = Awaited<ReturnType<typeof getAppAdminAccess>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAppAdminAccess>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAppAdminAccessQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetAppFeedbackUrl = () => {
+
+
+
+
+  return `/api/admin/feedback`
+}
+
+/**
+ * List suggestions and problem reports for Every Part app administrators
+ * @summary List app feedback
+ */
+export const getAppFeedback = async ( options?: Parameters<typeof customFetch>[1]): Promise<AppFeedbackList> => {
+
+  return customFetch<AppFeedbackList>(getGetAppFeedbackUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAppFeedbackQueryKey = () => {
+    return [
+    `/api/admin/feedback`
+    ] as const;
+    }
+
+
+export const getGetAppFeedbackQueryOptions = <TData = Awaited<ReturnType<typeof getAppFeedback>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAppFeedback>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAppFeedbackQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAppFeedback>>> = ({ signal }) => getAppFeedback({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAppFeedback>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAppFeedbackQueryResult = NonNullable<Awaited<ReturnType<typeof getAppFeedback>>>
+export type GetAppFeedbackQueryError = ErrorType<void>
+
+
+/**
+ * @summary List app feedback
+ */
+
+export function useGetAppFeedback<TData = Awaited<ReturnType<typeof getAppFeedback>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAppFeedback>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAppFeedbackQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateAppFeedbackUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/feedback/${id}`
+}
+
+/**
+ * @summary Update an app feedback item
+ */
+export const updateAppFeedback = async (id: number,
+    appFeedbackUpdateInput: AppFeedbackUpdateInput, options?: Parameters<typeof customFetch>[1]): Promise<AppFeedback> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<AppFeedback>(getUpdateAppFeedbackUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(appFeedbackUpdateInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateAppFeedbackMutationKey = () => ['updateAppFeedback'] as const;
+
+export const getUpdateAppFeedbackMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAppFeedback>>, TError,UpdateAppFeedbackMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAppFeedback>>, TError,UpdateAppFeedbackMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAppFeedbackMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAppFeedback>>, UpdateAppFeedbackMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAppFeedback(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAppFeedbackMutationResult = NonNullable<Awaited<ReturnType<typeof updateAppFeedback>>>
+    export type UpdateAppFeedbackMutationBody = BodyType<AppFeedbackUpdateInput>
+    export type UpdateAppFeedbackMutationError = ErrorType<void>
+    export type UpdateAppFeedbackMutationVariables = {id: number;data: BodyType<AppFeedbackUpdateInput>}
+
+    /**
+ * @summary Update an app feedback item
+ */
+export const useUpdateAppFeedback = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAppFeedback>>, TError,UpdateAppFeedbackMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAppFeedback>>,
+        TError,
+        UpdateAppFeedbackMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAppFeedbackMutationOptions(options));
+    }
 
 export const getGetMyChurchUrl = () => {
 

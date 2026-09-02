@@ -11,6 +11,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 // Pages
 import LandingPage from '@/pages/landing';
 import PricingPage from '@/pages/pricing';
+import { AppAdminRoute } from '@/pages/app-admin';
 import Dashboard from '@/pages/dashboard';
 import ChurchSetup from '@/pages/church-setup';
 import ChurchOnboarding from '@/pages/church-onboarding';
@@ -28,6 +29,7 @@ import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
 import { Brand } from '@/components/brand';
+import { useCreateAppFeedback } from "@workspace/api-client-react";
 
 const DiscoverRoute = ({ params }: { params: { slug: string } }) => (
     <DiscoverGate params={params} Page={DiscoverAssessment} />
@@ -101,17 +103,8 @@ const clerkAppearance = {
 function SignInPage() {
   const [feedbackType, setFeedbackType] = useState<"suggestion" | "fix">("suggestion");
   const [feedback, setFeedback] = useState("");
-
-  const feedbackSubject =
-    feedbackType === "suggestion"
-      ? "Every Part suggestion"
-      : "Every Part issue to fix";
-  const feedbackBody = feedback.trim()
-    ? `${feedback.trim()}\n\nSent from the Every Part sign-in page.`
-    : "";
-  const feedbackHref = feedbackBody
-    ? `mailto:hello@everypart.org?subject=${encodeURIComponent(feedbackSubject)}&body=${encodeURIComponent(feedbackBody)}`
-    : undefined;
+  const [contactEmail, setContactEmail] = useState("");
+  const feedbackMutation = useCreateAppFeedback();
 
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
@@ -141,9 +134,23 @@ function SignInPage() {
             className="mt-5 space-y-4"
             onSubmit={(event) => {
               event.preventDefault();
-              if (feedbackHref) {
-                window.location.href = feedbackHref;
-              }
+              if (!feedback.trim() || feedbackMutation.isPending) return;
+              feedbackMutation.mutate(
+                {
+                  data: {
+                    type: feedbackType,
+                    message: feedback.trim(),
+                    contactEmail: contactEmail.trim() || undefined,
+                    sourcePage: "sign-in",
+                  },
+                },
+                {
+                  onSuccess: () => {
+                    setFeedback("");
+                    setContactEmail("");
+                  },
+                },
+              );
             }}
           >
             <div>
@@ -162,6 +169,20 @@ function SignInPage() {
               </select>
             </div>
             <div>
+              <label htmlFor="sign-in-feedback-email" className="text-sm font-medium text-foreground">
+                Email for a reply <span className="font-normal text-muted-foreground">(optional)</span>
+              </label>
+              <input
+                id="sign-in-feedback-email"
+                type="email"
+                value={contactEmail}
+                onChange={(event) => setContactEmail(event.target.value)}
+                placeholder="you@example.com"
+                className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground/80 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                data-testid="input-sign-in-feedback-email"
+              />
+            </div>
+            <div>
               <label htmlFor="sign-in-feedback-message" className="text-sm font-medium text-foreground">
                 Tell us what you’re thinking
               </label>
@@ -177,16 +198,24 @@ function SignInPage() {
               />
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs leading-5 text-muted-foreground">
-                This opens your email app with a draft addressed to Every Part.
+              <p
+                className={`text-xs leading-5 ${feedbackMutation.isError ? "text-destructive" : feedbackMutation.isSuccess ? "text-primary" : "text-muted-foreground"}`}
+                role={feedbackMutation.isError || feedbackMutation.isSuccess ? "status" : undefined}
+                data-testid="status-sign-in-feedback"
+              >
+                {feedbackMutation.isError
+                  ? "We couldn’t save that yet. Please try again."
+                  : feedbackMutation.isSuccess
+                    ? "Thanks—your feedback is now with the Every Part team."
+                    : "Your note goes directly to the Every Part team."}
               </p>
               <button
                 type="submit"
-                disabled={!feedback.trim()}
+                disabled={!feedback.trim() || feedbackMutation.isPending}
                 className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-45"
                 data-testid="button-send-sign-in-feedback"
               >
-                Open email draft
+                {feedbackMutation.isPending ? "Saving…" : "Send feedback"}
               </button>
             </div>
           </form>
@@ -285,6 +314,14 @@ function ClerkProviderWithRoutes() {
               <Route path="/pricing" component={PricingPage} />
               <Route path="/sign-in/*?" component={SignInPage} />
               <Route path="/sign-up/*?" component={SignUpPage} />
+              <Route path="/app-admin">
+                <Show when="signed-in">
+                  <AppAdminRoute />
+                </Show>
+                <Show when="signed-out">
+                  <Redirect to="/sign-in" />
+                </Show>
+              </Route>
               
               <Route path="/dashboard">
                 <AuthenticatedRoute component={Dashboard} />
