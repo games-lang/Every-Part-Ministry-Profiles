@@ -1,6 +1,6 @@
 import { useGetAppAdminAccess, useGetDashboardSummary } from "@workspace/api-client-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, FileText, Settings, Sparkles, Users, UsersRound } from "lucide-react";
+import { FileText, Users, UsersRound } from "lucide-react";
 import { Link, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,8 +33,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto max-w-6xl space-y-9 px-4 py-8 sm:py-10">
-      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+    <div className="container mx-auto max-w-6xl space-y-8 px-4 py-8 sm:py-10">
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="mb-2 text-xs font-bold uppercase tracking-[.18em] text-accent">A pastoral overview</p>
           <h1 className="font-serif text-4xl font-semibold tracking-[-.04em]">Dashboard</h1>
@@ -43,25 +43,9 @@ export default function Dashboard() {
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="font-medium" asChild>
-            <Link href="/church-setup">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Link>
-          </Button>
-           {summary?.church.profileUrl && (
-            <Button className="font-medium bg-primary hover:bg-primary/90" asChild>
-               <a href={buildPublicProfileUrl(summary.church.profileUrl)} target="_blank" rel="noopener noreferrer">
-                View Public Link <ArrowRight className="w-4 h-4 ml-2" />
-              </a>
-            </Button>
-          )}
-        </div>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4" aria-label="Church overview metrics">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3" aria-label="Church overview metrics">
         <Card className="border-border/70 border-l-4 border-l-accent shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Profiles</CardTitle>
@@ -78,6 +62,20 @@ export default function Dashboard() {
 
         <Card className="border-border/70 border-l-4 border-l-secondary shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Assigned Profiles</CardTitle>
+            <UsersRound className="w-4 h-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="h-8 w-16" />
+            ) : (
+              <div className="font-serif text-4xl font-semibold tracking-[-.04em]" data-testid="metric-assigned-profiles">{summary?.assignedProfileCount || 0}</div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/70 border-l-4 border-l-primary shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Active Teams</CardTitle>
             <UsersRound className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
@@ -85,86 +83,27 @@ export default function Dashboard() {
             {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
-              <div className="space-y-2">
-                <div className="font-serif text-4xl font-semibold tracking-[-.04em]" data-testid="metric-active-teams">{summary?.activeTeamCount || 0}</div>
-                <p className="text-xs text-muted-foreground">
-                  {summary?.assignedProfileCount || 0} profiles assigned
-                </p>
-                <Button variant="link" className="h-auto p-0 text-primary" asChild>
-                  <Link href="/teams">Manage teams</Link>
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/70 bg-card shadow-sm md:col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Church Details</CardTitle>
-            <FileText className="w-4 h-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-2">
-                <Skeleton className="h-5 w-48" />
-                <Skeleton className="h-4 w-32" />
-              </div>
-            ) : (
-              <div>
-                 <div className="font-serif text-2xl font-medium">{summary?.church.name}</div>
-                <div className="text-sm text-muted-foreground truncate">
-                   Share link: {summary?.church.profileUrl
-                     ? buildPublicProfileUrl(summary.church.profileUrl)
-                     : "Preparing your link..."}
-                </div>
-              </div>
+              <div className="font-serif text-4xl font-semibold tracking-[-.04em]" data-testid="metric-active-teams">{summary?.activeTeamCount || 0}</div>
             )}
           </CardContent>
         </Card>
       </div>
 
-       {!isLoading && summary?.church.profileUrl && (
-         <ShareProfileCard
-           churchName={summary.church.name}
-           profileUrl={buildPublicProfileUrl(summary.church.profileUrl)}
-         />
-       )}
+      {!isLoading && summary?.church.profileUrl && (
+        <ShareProfileCard
+          churchName={summary.church.name}
+          profileUrl={buildPublicProfileUrl(summary.church.profileUrl)}
+        />
+      )}
 
-      <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-md">
-        <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-           <div className="flex items-start gap-4">
-             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
-               <Sparkles className="h-5 w-5 text-secondary-foreground" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-xl text-primary-foreground">
-                Find volunteers for a ministry need
-              </CardTitle>
-              <CardDescription className="mt-1.5 max-w-2xl leading-relaxed text-primary-foreground/75">
-                Describe a role and explore members whose gifts, passions, and availability may align.
-              </CardDescription>
-            </div>
-          </div>
-          <Button
-            variant="secondary"
-            className="w-full shrink-0 font-medium sm:w-auto"
-            asChild
-          >
-            <Link href="/profiles?view=match">
-              Find Volunteers
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
-
-      <AppFeedbackForm sourcePage="dashboard" />
-
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid gap-6 md:grid-cols-3">
         {/* Recent Profiles */}
-        <div className="md:col-span-2 space-y-4">
+        <div className="space-y-4 md:col-span-2">
           <div className="flex items-center justify-between">
-            <h2 className="font-serif text-xl font-medium tracking-tight">Recent Profiles</h2>
+            <div>
+              <h2 className="font-serif text-xl font-medium tracking-tight">Recent Profiles</h2>
+              <p className="mt-1 text-sm text-muted-foreground">The latest people ready for a pastoral conversation.</p>
+            </div>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/profiles">View all</Link>
             </Button>
@@ -237,59 +176,56 @@ export default function Dashboard() {
 
         {/* Aggregated Data */}
         <div className="space-y-4">
-          <h2 className="font-serif text-xl font-medium tracking-tight">Top Interests</h2>
+          <div>
+            <h2 className="font-serif text-xl font-medium tracking-tight">Church signals</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Themes rising from completed profiles.</p>
+          </div>
           <Card className="border-border/60 shadow-sm">
-            <CardContent className="p-0">
-              {isLoading ? (
-                <div className="p-4 space-y-4">
-                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-4 w-full" />)}
-                </div>
-              ) : summary?.topInterests && summary.topInterests.length > 0 ? (
-                <ul className="divide-y divide-border/60">
-                  {summary.topInterests.map((item, i) => (
-                    <li key={i} className="p-4 flex items-center justify-between">
-                      <span className="font-medium text-sm">{item.label}</span>
-                      <span className="text-xs font-medium px-2 py-1 bg-muted rounded-full text-muted-foreground">
-                        {item.count}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="p-8 text-center text-sm text-muted-foreground">
-                  Not enough data to show trends.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <h2 className="font-serif text-xl font-medium tracking-tight mt-8">Top Passions</h2>
-          <Card className="border-border/60 shadow-sm">
-            <CardContent className="p-0">
-              {isLoading ? (
-                <div className="p-4 space-y-4">
-                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-4 w-full" />)}
-                </div>
-              ) : summary?.topPassions && summary.topPassions.length > 0 ? (
-                <ul className="divide-y divide-border/60">
-                  {summary.topPassions.map((item, i) => (
-                    <li key={i} className="p-4 flex items-center justify-between">
-                      <span className="font-medium text-sm">{item.label}</span>
-                      <span className="text-xs font-medium px-2 py-1 bg-muted rounded-full text-muted-foreground">
-                        {item.count}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="p-8 text-center text-sm text-muted-foreground">
-                  Not enough data to show trends.
-                </div>
-              )}
+            <CardContent className="space-y-6 p-5">
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">Top interests</h3>
+                {isLoading ? (
+                  <div className="mt-3 space-y-3">
+                    {[1, 2, 3].map(i => <Skeleton key={i} className="h-4 w-full" />)}
+                  </div>
+                ) : summary?.topInterests && summary.topInterests.length > 0 ? (
+                  <ul className="mt-3 space-y-2.5">
+                    {summary.topInterests.map((item, i) => (
+                      <li key={i} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="font-medium">{item.label}</span>
+                        <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-sm text-muted-foreground">Not enough data yet.</p>
+                )}
+              </div>
+              <div className="border-t border-border/60 pt-5">
+                <h3 className="text-sm font-semibold text-foreground">Top passions</h3>
+                {isLoading ? (
+                  <div className="mt-3 space-y-3">
+                    {[1, 2, 3].map(i => <Skeleton key={i} className="h-4 w-full" />)}
+                  </div>
+                ) : summary?.topPassions && summary.topPassions.length > 0 ? (
+                  <ul className="mt-3 space-y-2.5">
+                    {summary.topPassions.map((item, i) => (
+                      <li key={i} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="font-medium">{item.label}</span>
+                        <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">{item.count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-sm text-muted-foreground">Not enough data yet.</p>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <AppFeedbackForm sourcePage="dashboard" />
 
       {appAdminAccess?.isAdmin && (
         <section className="border-t border-border/70 pt-10" aria-labelledby="dashboard-feedback-heading">
