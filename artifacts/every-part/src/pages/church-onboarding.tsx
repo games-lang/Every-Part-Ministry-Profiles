@@ -5,8 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  getGetDashboardSummaryQueryKey,
+  getGetMyChurchQueryKey,
   useGetMyChurch,
   useUpdateMyChurch,
+  type DashboardSummary,
   type MinistryCustomizationTradition,
   type SpiritualGiftName,
 } from "@workspace/api-client-react";
@@ -126,7 +129,15 @@ export default function ChurchOnboarding() {
         onboardingCompleted: true,
       },
     }, {
-      onSuccess: async () => {
+      onSuccess: async (updatedChurch) => {
+        // Update both cached responses before navigating. Otherwise the
+        // dashboard can briefly render its previous null completion state and
+        // redirect back into onboarding.
+        queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+        queryClient.setQueryData<DashboardSummary | undefined>(
+          getGetDashboardSummaryQueryKey(),
+          (current) => current ? { ...current, church: updatedChurch } : current,
+        );
         await queryClient.invalidateQueries();
         toast({ title: "Your church is ready", description: "You can change these settings any time in Church Setup." });
         setLocation("/dashboard");
@@ -141,7 +152,12 @@ export default function ChurchOnboarding() {
 
   const skip = () => {
     updateChurch.mutate({ data: { onboardingCompleted: true } }, {
-      onSuccess: () => {
+      onSuccess: (updatedChurch) => {
+        queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+        queryClient.setQueryData<DashboardSummary | undefined>(
+          getGetDashboardSummaryQueryKey(),
+          (current) => current ? { ...current, church: updatedChurch } : current,
+        );
         queryClient.invalidateQueries();
         setLocation("/dashboard");
       },
