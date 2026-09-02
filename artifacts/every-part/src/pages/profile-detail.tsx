@@ -18,6 +18,7 @@ import { personalitySummarySentence } from "@/lib/personality-prose";
 import { CoordinatorAsk, hasValues } from "@/components/coordinator-ask";
 import { toast } from "@/hooks/use-toast";
 import { ProfileSchedule } from "@/components/profile-schedule";
+import { ProfileHelper } from "@/components/profile-helper";
 
 const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
@@ -412,6 +413,9 @@ export default function ProfileDetail() {
    ) : (
      <>
        <CoordinatorAsk profile={profile} />
+       {profile.profileType === "adult" && (
+         <ProfileHelper profileId={profile.id} memberName={profile.memberName} />
+       )}
        <TeamAssignment profileId={profile.id} teamId={profile.teamId} />
         {profile.profileType === "adult" && (
           <ProfileSchedule profileId={profile.id} />
