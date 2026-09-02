@@ -82,6 +82,8 @@ const problemCards = [
   ["The Same People Serve", "A small group of faithful volunteers often carries most of the ministry load."],
   ["People Don’t Know Where to Begin", "Many people are willing to serve but are unsure where they belong."],
   ["Leaders Are Guessing", "Church leaders often recruit from the people they already know instead of seeing the full potential of the congregation."],
+  ["Potential Leaders Go Unnoticed", "Emerging leaders can remain unseen when there is no shared language for noticing their gifts and readiness."],
+  ["The Fit May Have Changed", "A role that once fit may not match someone’s gifts, capacity, or current season anymore."],
 ];
 
 const leaderBenefits = [
@@ -93,6 +95,7 @@ const leaderBenefits = [
   "Discover overlooked abilities",
   "Track profile completion",
   "Build healthier ministry teams",
+  "Follow development over time",
 ];
 
 function Reveal({
@@ -171,6 +174,19 @@ export default function LandingPage() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  useEffect(() => {
+    document.title = "Every Part | Help people discover their part";
+    const description =
+      "Every Part helps churches prayerfully discover how God has shaped their people and connect them with meaningful places to serve and grow.";
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "description");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", description);
+  }, []);
+
   return (
     <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
       <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-xl">
@@ -247,7 +263,7 @@ export default function LandingPage() {
               <Reveal className="[animation-delay:.4s]">
                 <div className="mt-10 flex items-center gap-3 text-sm text-muted-foreground">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(var(--landing-cyan))] text-primary"><Heart className="h-4 w-4" /></span>
-                  <span>A ministry conversation, not a personality label.</span>
+                   <span>A prayerful ministry mobilization platform—not just a spiritual gifts test.</span>
                 </div>
               </Reveal>
             </div>
@@ -311,7 +327,7 @@ export default function LandingPage() {
             </div>
 
             <Reveal className="mt-16">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {problemCards.map(([title, description], index) => (
                   <article key={title} className="landing-card flex min-h-[250px] flex-col rounded-[1.5rem] border border-border bg-card p-7">
                     <span className="text-xs font-bold tracking-[.15em] text-secondary">0{index + 1}</span>
@@ -524,6 +540,9 @@ export default function LandingPage() {
               <p className="mt-7 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
                  Every Part uses church-controlled access and permission-based leader access to support responsible handling of member information. Profiles are designed to protect sensitive profile information and give leaders secure accounts for the ministry conversations their church chooses to have.
               </p>
+               <p className="mt-6 max-w-xl border-l-2 border-secondary pl-5 text-base leading-7 text-[hsl(var(--landing-light-text))]">
+                 Every Part is designed to assist ministry leaders—not replace prayer, pastoral relationships, or the work of the Holy Spirit.
+               </p>
             </Reveal>
             <Reveal className="[animation-delay:.12s]">
               <div className="grid gap-4 sm:grid-cols-2">

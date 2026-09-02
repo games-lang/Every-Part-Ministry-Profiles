@@ -4,11 +4,9 @@ import {
   ArrowRight,
   ArrowUpRight,
   Check,
-  Compass,
   ChevronDown,
   CircleHelp,
   Cross,
-  HeartHandshake,
   Menu,
   Network,
   Sparkles,
@@ -20,108 +18,63 @@ import { PuzzleCluster } from "@/components/puzzle-cluster";
 
 const plans = [
   {
-    id: "free",
-    name: "Free",
+    id: "starter",
+    name: "Starter",
     eyebrow: "Begin gently",
-    profileLimit: "10",
-    limitLabel: "active profiles",
+    profileLimit: "A few",
+    limitLabel: "people to begin with",
     price: "$0",
     cadence: "per month",
     description: "A simple place to begin exploring Every Part with your church.",
     icon: Cross,
     tone: "light",
     valueNote: "No card required",
-    action: "Start free",
+    action: "Start here",
     href: "/sign-up",
   },
   {
-    id: "25-profiles",
-    name: "25 Profiles",
+    id: "growing",
+    name: "Growing",
     eyebrow: "Start small",
-    profileLimit: "25",
-    limitLabel: "active profiles",
-    price: "$4.99",
+    profileLimit: "More",
+    limitLabel: "room for your teams",
+    price: "Preview",
     cadence: "per month",
     description: "For a small team beginning a shared ministry conversation.",
     icon: Sparkles,
     tone: "light",
-    valueNote: "20¢ per included profile",
-    action: "Choose 25",
+    valueNote: "Flexible church pricing",
+    action: "Explore Growing",
     href: "/sign-up",
   },
   {
-    id: "50-profiles",
-    name: "50 Profiles",
-    eyebrow: "Find your rhythm",
-    profileLimit: "50",
-    limitLabel: "active profiles",
-    price: "$9.99",
+    id: "complete",
+    name: "Complete",
+    eyebrow: "See the whole church",
+    profileLimit: "Church-wide",
+    limitLabel: "ministry conversations",
+    price: "Preview",
     cadence: "per month",
-    description: "Room for a growing group to discover gifts and places to serve.",
+    description: "For churches ready to build a fuller rhythm of discovery, connection, and development.",
     icon: Network,
-    tone: "light",
-    valueNote: "20¢ per included profile",
-    action: "Choose 50",
-    href: "/sign-up",
-  },
-  {
-    id: "100-profiles",
-    name: "100 Profiles",
-    eyebrow: "Most churches begin here",
-    profileLimit: "100",
-    limitLabel: "active profiles",
-    price: "$14.99",
-    cadence: "per month",
-    description: "A comfortable starting point for a church-wide ministry rhythm.",
-    icon: Compass,
     tone: "featured",
-    valueNote: "15¢ per included profile",
-    action: "Choose 100",
+    valueNote: "Whole-church perspective",
+    action: "Explore Complete",
     href: "/sign-up",
   },
   {
-    id: "250-profiles",
-    name: "250 Profiles",
-    eyebrow: "Make room",
-    profileLimit: "250",
-    limitLabel: "active profiles",
-    price: "$19.99",
-    cadence: "per month",
-    description: "For churches making room for more people to be seen and invited.",
+    id: "network",
+    name: "Network",
+    eyebrow: "Grow across churches",
+    profileLimit: "Multiple",
+    limitLabel: "churches or campuses",
+    price: "Custom",
+    cadence: "conversation",
+    description: "For multi-campus churches, networks, and denominations shaping ministry together.",
     icon: UsersRound,
-    tone: "light",
-    valueNote: "8¢ per included profile",
-    action: "Choose 250",
-    href: "/sign-up",
-  },
-  {
-    id: "500-profiles",
-    name: "500 Profiles",
-    eyebrow: "Wider reach",
-    profileLimit: "500",
-    limitLabel: "active profiles",
-    price: "$24.99",
-    cadence: "per month",
-    description: "A generous runway for a fuller picture of your congregation.",
-    icon: Network,
-    tone: "light",
-    valueNote: "5¢ per included profile",
-    action: "Choose 500",
-    href: "/sign-up",
-  },
-  {
-    id: "unlimited",
-    name: "Unlimited",
-    eyebrow: "One church, no cap",
-    profileLimit: "∞",
-    limitLabel: "active profiles",
-    price: "$29.99",
-    cadence: "per month",
-    description: "No profile limit for one church as Every Part grows with you.",
-    icon: HeartHandshake,
     tone: "dark",
-    valueNote: "No profile limit",
-    action: "Choose unlimited",
+    valueNote: "Built around your context",
+    action: "Talk with us",
     href: "/sign-up",
   },
 ];
@@ -144,7 +97,7 @@ const faqs = [
   {
     question: "What does Start Free include?",
     answer:
-      "The Free plan includes up to 10 active Ministry Profiles. It is a low-pressure way to set up your church and begin exploring with your leaders. Exact plan limits will be confirmed before any billing begins.",
+      "The Starter plan is a low-pressure way to set up your church and begin exploring with your leaders. Exact profile capacity and plan limits will be confirmed before any billing begins.",
   },
   {
     question: "What does an active profile mean?",
@@ -395,8 +348,8 @@ export default function PricingPage() {
                 );
               })}
             </div>
-             <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
-               Placeholder pricing shown in USD per month. Profile limits refer to active Ministry Profiles. Final plan details will be confirmed before billing is enabled.
+                <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
+               Preview labels and pricing are illustrative. Final plan details will be confirmed before billing is enabled.
             </p>
           </div>
         </section>
@@ -413,7 +366,7 @@ export default function PricingPage() {
               <Reveal className="pricing-compare-heading">
                 <div>
                    <h2 className="max-w-3xl font-serif text-4xl font-semibold leading-[.96] tracking-[-.065em] sm:text-6xl">Choose your capacity. Keep the whole conversation.</h2>
-                   <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">Every profile limit comes with the full Every Part experience. The plan you choose changes the room you have to invite people in—not the care you bring to the conversation.</p>
+                    <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">Every plan is built around the full Every Part experience. The plan you choose changes the room you have to invite people in—not the care you bring to the conversation.</p>
                 </div>
               </Reveal>
             </div>
@@ -428,8 +381,8 @@ export default function PricingPage() {
                    </div>
                  ))}
               </div>
-               <p className="mt-6 text-sm leading-6 text-muted-foreground" data-testid="text-active-profile-definition">
-                 Active profiles are the people your church is currently including in ministry conversations. Archived and historical profiles will be handled clearly before billing is enabled.
+                <p className="mt-6 text-sm leading-6 text-muted-foreground" data-testid="text-active-profile-definition">
+                  Plan capacity, archival rules, and billing details will be handled clearly with churches before billing is enabled.
                </p>
             </Reveal>
           </div>
