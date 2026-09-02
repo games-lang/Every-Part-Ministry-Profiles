@@ -199,6 +199,8 @@ export interface Church {
   enabledSpiritualGifts?: SpiritualGiftName[] | null;
   assessmentConfiguration: AssessmentConfiguration;
   ministryCustomization: MinistryCustomization;
+  /** @nullable */
+  onboardingCompletedAt: string | null;
 }
 
 export interface ChurchUpdate {
@@ -223,6 +225,7 @@ export interface ChurchUpdate {
   enabledSpiritualGifts?: SpiritualGiftName[];
   assessmentConfiguration?: AssessmentConfiguration;
   ministryCustomization?: MinistryCustomization;
+  onboardingCompleted?: boolean;
 }
 
 export type ChurchAdminRole = typeof ChurchAdminRole[keyof typeof ChurchAdminRole];

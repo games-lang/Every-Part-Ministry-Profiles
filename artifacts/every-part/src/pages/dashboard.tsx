@@ -1,7 +1,7 @@
 import { useGetDashboardSummary } from "@workspace/api-client-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, FileText, Settings, Sparkles, Users, UsersRound } from "lucide-react";
-import { Link } from "wouter";
+import { Link, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
@@ -24,6 +24,9 @@ export default function Dashboard() {
         </div>
       </div>
     );
+  }
+  if (summary?.church && !summary.church.onboardingCompletedAt) {
+    return <Redirect to="/church-onboarding" />;
   }
 
   return (

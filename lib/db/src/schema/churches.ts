@@ -27,6 +27,9 @@ export const churchesTable = pgTable(
     enabledSpiritualGifts: jsonb("enabled_spiritual_gifts").$type<string[]>(),
     assessmentConfiguration: jsonb("assessment_configuration").$type<unknown>(),
     ministryCustomization: jsonb("ministry_customization").$type<unknown>(),
+    onboardingCompletedAt: timestamp("onboarding_completed_at", {
+      withTimezone: true,
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

@@ -101,5 +101,6 @@ export function churchResponse(
     enabledSpiritualGifts: church.enabledSpiritualGifts,
     assessmentConfiguration: configuration,
     ministryCustomization: customization,
+    onboardingCompletedAt: church.onboardingCompletedAt,
   };
 }

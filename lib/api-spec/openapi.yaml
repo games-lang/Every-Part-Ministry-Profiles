@@ -915,7 +915,7 @@ components:
         - status
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt]
       properties:
         id: { type: integer }
         name: { type: string }
@@ -942,6 +942,9 @@ components:
           $ref: "#/components/schemas/AssessmentConfiguration"
         ministryCustomization:
           $ref: "#/components/schemas/MinistryCustomization"
+        onboardingCompletedAt:
+          type: ["string", "null"]
+          format: date-time
     ChurchUpdate:
       type: object
       properties:
@@ -969,6 +972,8 @@ components:
           $ref: "#/components/schemas/AssessmentConfiguration"
         ministryCustomization:
           $ref: "#/components/schemas/MinistryCustomization"
+        onboardingCompleted:
+          type: boolean
     ChurchAdmin:
       type: object
       required: [id, name, email, role, createdAt]

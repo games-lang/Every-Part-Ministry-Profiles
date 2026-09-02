@@ -112,11 +112,13 @@ router.patch("/church", async (req, res): Promise<void> => {
       return;
     }
   }
+  const { onboardingCompleted, ...churchUpdate } = parsed.data;
   const [updated] = await db
     .update(churchesTable)
     .set({
-      ...parsed.data,
+      ...churchUpdate,
       ...(customization ? { ministryCustomization: customization } : {}),
+      ...(onboardingCompleted ? { onboardingCompletedAt: new Date() } : {}),
     })
     .where(eq(churchesTable.id, church.id))
     .returning();

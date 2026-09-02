@@ -31,4 +31,5 @@ export interface ChurchUpdate {
   enabledSpiritualGifts?: SpiritualGiftName[];
   assessmentConfiguration?: AssessmentConfiguration;
   ministryCustomization?: MinistryCustomization;
+  onboardingCompleted?: boolean;
 }

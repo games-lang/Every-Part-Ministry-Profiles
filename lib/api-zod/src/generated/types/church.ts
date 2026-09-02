@@ -31,4 +31,6 @@ export interface Church {
   enabledSpiritualGifts?: SpiritualGiftName[] | null;
   assessmentConfiguration: AssessmentConfiguration;
   ministryCustomization: MinistryCustomization;
+  /** @nullable */
+  onboardingCompletedAt: Date | null;
 }

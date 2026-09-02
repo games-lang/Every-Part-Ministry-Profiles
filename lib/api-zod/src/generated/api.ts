@@ -122,7 +122,8 @@ export const GetMyChurchResponse = zod.object({
   "customTradition": zod.string().max(getMyChurchResponseMinistryCustomizationCustomTraditionMax).nullable(),
   "spiritualGiftsLabel": zod.string().min(1).max(getMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(getMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
-})
+}),
+  "onboardingCompletedAt": zod.coerce.date().nullable()
 })
 
 
@@ -231,7 +232,8 @@ export const UpdateMyChurchBody = zod.object({
   "customTradition": zod.string().max(updateMyChurchBodyMinistryCustomizationCustomTraditionMax).nullable(),
   "spiritualGiftsLabel": zod.string().min(1).max(updateMyChurchBodyMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(updateMyChurchBodyMinistryCustomizationMinistryInterestsLabelMax)
-}).optional()
+}).optional(),
+  "onboardingCompleted": zod.boolean().optional()
 })
 
 export const updateMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
@@ -336,7 +338,8 @@ export const UpdateMyChurchResponse = zod.object({
   "customTradition": zod.string().max(updateMyChurchResponseMinistryCustomizationCustomTraditionMax).nullable(),
   "spiritualGiftsLabel": zod.string().min(1).max(updateMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(updateMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
-})
+}),
+  "onboardingCompletedAt": zod.coerce.date().nullable()
 })
 
 
@@ -651,7 +654,8 @@ export const GetDashboardSummaryResponse = zod.object({
   "customTradition": zod.string().max(getDashboardSummaryResponseChurchMinistryCustomizationCustomTraditionMax).nullable(),
   "spiritualGiftsLabel": zod.string().min(1).max(getDashboardSummaryResponseChurchMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(getDashboardSummaryResponseChurchMinistryCustomizationMinistryInterestsLabelMax)
-})
+}),
+  "onboardingCompletedAt": zod.coerce.date().nullable()
 }),
   "totalProfiles": zod.int(),
   "recentProfiles": zod.array(zod.object({
