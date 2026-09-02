@@ -115,7 +115,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
 
   return (
     <div className="min-h-[100dvh] flex flex-col items-center py-12 px-4 bg-background ep-landing">
-      <div className="w-full max-w-md space-y-8 landing-reveal">
+      <div className="w-full max-w-md space-y-8 landing-reveal is-visible">
         <div className="text-center space-y-4">
           {church.logoUrl ? (
             <img src={church.logoUrl} alt={church.name} className="h-16 mx-auto object-contain" />
@@ -141,6 +141,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
                 <div className="flex bg-muted/50 p-1 rounded-lg border border-border/50">
                   <button
                     type="button"
+                    aria-pressed={mode === "age"}
                     onClick={() => setMode("age")}
                     className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all ${
                       mode === "age" 
@@ -152,6 +153,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
                   </button>
                   <button
                     type="button"
+                    aria-pressed={mode === "birthdate"}
                     onClick={() => setMode("birthdate")}
                     className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all ${
                       mode === "birthdate" 

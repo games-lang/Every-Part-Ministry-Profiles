@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, User, Mail, Calendar, Sparkles, AlertCircle, HeartHandshake, CheckCircle2, Info, Loader2, UsersRound } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useForm } from "react-hook-form";
+import { EmptyState } from "@/components/empty-state";
 
 const AVAILABILITY_OPTIONS = [
   "Sunday mornings",
@@ -41,7 +42,7 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
     : "bg-muted text-muted-foreground border-border";
 
   return (
-    <Card className="overflow-hidden hover:border-primary/30 transition-all shadow-sm hover:shadow-md group relative">
+    <Card className="group relative overflow-hidden border-border/70 shadow-sm transition-all hover:border-primary/30 hover:shadow-md">
       <div className="absolute top-0 left-0 w-1 h-full bg-transparent group-hover:bg-secondary/70 transition-colors" />
       <div className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
@@ -53,7 +54,12 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
               </Badge>
             </div>
             <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-              <span className="font-medium bg-muted px-2 py-0.5 rounded text-foreground/70">{candidate.score}% alignment</span>
+               <span className="flex items-center gap-2 font-medium text-foreground/70">
+                 <span className="h-1.5 w-16 overflow-hidden rounded-full bg-muted-foreground/20" role="img" aria-label={`${candidate.score}% alignment`}>
+                   <span className="block h-full rounded-full bg-accent" style={{ width: `${candidate.score}%` }} />
+                 </span>
+                 <span>{candidate.score}% alignment</span>
+               </span>
               {candidate.servingFrequency && (
                 <>
                   <span className="w-1 h-1 rounded-full bg-border" />
@@ -62,10 +68,11 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
               )}
             </div>
           </div>
-          <Link href={`/profiles/${candidate.id}`}>
-            <Button variant="outline" size="sm" className="shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-              View Profile
-            </Button>
+           <Link
+             href={`/profiles/${candidate.id}`}
+             className="inline-flex shrink-0 items-center justify-center rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+           >
+             View Profile
           </Link>
         </div>
 
@@ -151,7 +158,7 @@ export default function ProfilesList() {
             role="tab"
             aria-selected={activeTab === "directory"}
             onClick={() => setActiveTab("directory")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${activeTab === "directory" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+             className={`rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${activeTab === "directory" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
           >
             Directory
           </button>
@@ -160,7 +167,7 @@ export default function ProfilesList() {
             role="tab"
             aria-selected={activeTab === "match"}
             onClick={() => setActiveTab("match")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all flex items-center gap-1.5 ${activeTab === "match" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+             className={`flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${activeTab === "match" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
           >
             <Sparkles className="w-4 h-4" />
             Find Matches
@@ -206,23 +213,24 @@ export default function ProfilesList() {
             </div>
           ) : profiles && profiles.length > 0 ? (
             <div className="grid gap-4">
-              {profiles.map((profile) => (
-                <Card key={profile.id} className="overflow-hidden hover:border-primary/30 hover:shadow-md transition-all group relative">
+               {profiles.map((profile) => (
+                 <Card key={profile.id} className="group relative overflow-hidden border-border/70 transition-all hover:border-primary/30 hover:shadow-md">
                   <div className="absolute top-0 left-0 w-1 h-full bg-transparent group-hover:bg-secondary/70 transition-colors" />
-                  <Link href={`/profiles/${profile.id}`} className="block p-6">
-                    <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                   <div className="flex flex-col gap-5 p-6 md:flex-row md:items-center md:gap-6">
+                     <Link href={`/profiles/${profile.id}`} className="min-w-0 flex-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                       <div className="flex items-start gap-4 md:items-center">
                       <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                         <User className="w-6 h-6" />
                       </div>
 
-                      <div className="flex-1 space-y-1.5">
+                       <div className="min-w-0 flex-1 space-y-1.5">
                         <div className="flex items-center justify-between">
                           <h3 className="font-serif text-xl font-medium group-hover:text-primary transition-colors">
                             {profile.memberName}
                           </h3>
-                          <div className="md:hidden">
-                            <Button variant="secondary" size="sm">View</Button>
-                          </div>
+                           <span className="rounded-md bg-secondary/20 px-2.5 py-1 text-xs font-semibold text-foreground md:hidden">
+                             View
+                           </span>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
@@ -265,30 +273,25 @@ export default function ProfilesList() {
                           )}
                         </div>
                       </div>
-
-                      <div className="hidden md:block shrink-0">
-                        <Button variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                          View Profile
-                        </Button>
-                      </div>
-                    </div>
-                  </Link>
+                       </div>
+                     </Link>
+                     <div className="hidden shrink-0 md:block">
+                       <Button variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                         <Link href={`/profiles/${profile.id}`}>View Profile</Link>
+                       </Button>
+                     </div>
+                   </div>
                 </Card>
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-card rounded-xl border border-border/60">
-              <User className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
-              <h3 className="font-serif text-xl font-medium mb-2">No profiles found</h3>
-              <p className="text-muted-foreground">
-                {searchTerm ? "Try adjusting your search terms." : "Share your church assessment link to get started."}
-              </p>
-              {searchTerm && (
-                <Button variant="outline" onClick={() => setSearchTerm("")} className="mt-6">
-                  Clear Search
-                </Button>
-              )}
-            </div>
+             <EmptyState
+               icon={User}
+               title={searchTerm ? "No profiles match that search" : "No profiles yet"}
+               description={searchTerm ? "Try a name, email, or skill with a little more room." : "Share your church profile link to invite the first person into a thoughtful reflection."}
+               actionLabel={searchTerm ? "Clear search" : undefined}
+               onAction={searchTerm ? () => setSearchTerm("") : undefined}
+             />
           )}
         </div>
       ) : (

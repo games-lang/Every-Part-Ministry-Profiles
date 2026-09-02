@@ -55,6 +55,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
+import { EmptyState } from "@/components/empty-state";
 
 type EditorState =
   | {
@@ -199,7 +200,7 @@ function TeamSuggestionCard({
             {suggestion.purpose}
           </CardDescription>
         </div>
-        <Button variant="ghost" size="sm" onClick={onDismiss}>
+              <Button variant="ghost" size="sm" onClick={onDismiss} aria-label={`Dismiss ${suggestion.name} suggestion`}>
           Dismiss
         </Button>
       </CardHeader>
@@ -235,7 +236,7 @@ function TeamSuggestionCard({
                   <div className="min-w-0">
                     <Link
                       href={`/profiles/${candidate.id}`}
-                      className="font-medium text-primary hover:underline"
+                  className="rounded-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {candidate.memberName}
                     </Link>
@@ -470,10 +471,10 @@ function TeamCard({
           {team.members.length ? (
             <div className="divide-y rounded-xl border border-border/60 bg-background">
               {team.members.map((member) => (
-                <Link
+                  <Link
                   key={member.id}
                   href={`/profiles/${member.id}`}
-                  className="flex flex-col gap-1 px-4 py-3 transition-colors hover:bg-muted/40 sm:flex-row sm:items-center sm:justify-between"
+                    className="flex flex-col gap-1 px-4 py-3 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:flex-row sm:items-center sm:justify-between"
                 >
                   <span className="font-medium">{member.memberName}</span>
                   <span className="text-sm text-muted-foreground">
@@ -572,24 +573,13 @@ export default function Teams() {
           ))}
         </div>
       ) : (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center px-6 py-14 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Users className="h-7 w-7" />
-            </div>
-            <h2 className="mt-5 font-serif text-2xl font-medium">
-              Create your first ministry team
-            </h2>
-            <p className="mt-2 max-w-lg text-muted-foreground">
-              Add the teams already serving in your church, then assign
-              profiles as leaders discern the right fit together.
-            </p>
-            <Button className="mt-6" onClick={() => setEditor({ mode: "create" })}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create team
-            </Button>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={Users}
+          title="Create your first ministry team"
+          description="Add the teams already serving in your church, then assign profiles as leaders discern the right fit together."
+          actionLabel="Create team"
+          onAction={() => setEditor({ mode: "create" })}
+        />
       )}
 
       {archivedTeams.length > 0 && (

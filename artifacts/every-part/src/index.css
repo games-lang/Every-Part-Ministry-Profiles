@@ -70,51 +70,51 @@
   --elevate-1: rgba(18, 35, 68, 0.03);
   --elevate-2: rgba(18, 35, 68, 0.08);
 
-  /* Every Part brand: navy, teal, sage, and mustard */
-  --background: 48 33% 97%;
-  --foreground: 210 64% 19%;
-  --border: 208 20% 82%;
+  /* Every Part brand: parchment, ink, quiet teal, and warm gold */
+  --background: 42 35% 96%;
+  --foreground: 204 38% 19%;
+  --border: 38 19% 82%;
   
-  --card: 48 38% 99%;
-  --card-foreground: 210 64% 19%;
-  --card-border: 208 20% 86%;
+  --card: 42 43% 99%;
+  --card-foreground: 204 38% 19%;
+  --card-border: 38 19% 86%;
   
-  --sidebar: 210 64% 15%;
-  --sidebar-foreground: 48 33% 97%;
-  --sidebar-border: 211 44% 24%;
-  --sidebar-primary: 48 33% 97%;
-  --sidebar-primary-foreground: 210 64% 19%;
-  --sidebar-accent: 183 56% 35%;
-  --sidebar-accent-foreground: 48 33% 97%;
-  --sidebar-ring: 48 33% 97%;
+  --sidebar: 204 38% 19%;
+  --sidebar-foreground: 42 35% 96%;
+  --sidebar-border: 204 27% 29%;
+  --sidebar-primary: 42 35% 96%;
+  --sidebar-primary-foreground: 204 38% 19%;
+  --sidebar-accent: 174 34% 38%;
+  --sidebar-accent-foreground: 42 35% 96%;
+  --sidebar-ring: 42 35% 96%;
   
-  --popover: 48 38% 99%;
-  --popover-foreground: 210 64% 19%;
-  --popover-border: 208 20% 86%;
+  --popover: 42 43% 99%;
+  --popover-foreground: 204 38% 19%;
+  --popover-border: 38 19% 86%;
   
-  --primary: 210 64% 19%;
-  --primary-foreground: 48 33% 97%;
+  --primary: 204 38% 19%;
+  --primary-foreground: 42 35% 96%;
   
-  --secondary: 42 84% 54%;
-  --secondary-foreground: 210 64% 16%;
+  --secondary: 40 72% 61%;
+  --secondary-foreground: 204 38% 16%;
   
-  --muted: 183 23% 91%;
-  --muted-foreground: 210 22% 40%;
+  --muted: 39 25% 91%;
+  --muted-foreground: 204 16% 42%;
   
-  --accent: 183 56% 35%;
-  --accent-foreground: 48 33% 97%;
+  --accent: 174 34% 38%;
+  --accent-foreground: 42 35% 96%;
   
   --destructive: 0 70% 45%;
   --destructive-foreground: 48 33% 97%;
   
-  --input: 208 20% 82%;
-  --ring: 183 56% 35%;
+  --input: 38 19% 82%;
+  --ring: 174 34% 38%;
   
-  --chart-1: 42 84% 54%;
-  --chart-2: 183 56% 35%;
-  --chart-3: 101 23% 57%;
-  --chart-4: 210 64% 35%;
-  --chart-5: 195 49% 48%;
+  --chart-1: 40 72% 61%;
+  --chart-2: 174 34% 38%;
+  --chart-3: 103 25% 53%;
+  --chart-4: 204 38% 31%;
+  --chart-5: 22 51% 55%;
 
   --app-font-sans: 'DM Sans', sans-serif;
   --app-font-serif: 'Space Grotesk', sans-serif;
@@ -197,9 +197,38 @@
   body {
     @apply font-sans antialiased bg-background text-foreground selection:bg-secondary/20 selection:text-secondary;
   }
+  :focus-visible {
+    outline: 3px solid hsl(var(--secondary));
+    outline-offset: 3px;
+  }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif font-medium tracking-tight;
   }
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: .75rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  border-radius: .6rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: .65rem .9rem;
+  font-size: .8rem;
+  font-weight: 700;
+  transition: transform .2s ease;
+}
+.skip-link:focus { transform: translateY(0); }
+.ep-shell {
+  background:
+    radial-gradient(circle at 100% 0%, hsl(var(--secondary) / .11), transparent 24rem),
+    hsl(var(--background));
+}
+.brand-rule {
+  height: .2rem;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)));
 }
 
 .ep-landing {
@@ -354,4 +383,5 @@
 @media (prefers-reduced-motion: reduce) {
   .journey-rise { animation: none; }
   .journey-card { transition: none; }
+  .skip-link { transition: none; }
 }

@@ -46,7 +46,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { personalitySummarySentence } from "@/lib/personality-prose";
-import { Progress } from "@/components/ui/progress";
+import { ProfileParts } from "@/components/profile-parts";
 
 function hexToHsl(hex: string) {
   const value = hex.replace("#", "");
@@ -1544,6 +1544,17 @@ export default function Assessment() {
     ),
   ];
   const currentStep = stepKeys[stepIndex] ?? "identity";
+  const progressLabels: Record<string, string> = {
+    identity: "Start",
+    aboutYou: "About you",
+    apest: "How you minister",
+    spiritualGifts: "Gifts",
+    passionsInterests: "Passions",
+    naturalStrengths: "Strengths",
+    personalityStrengths: "How you operate",
+    spiritualHealth: "Spiritual health",
+    connectionAvailability: "Connection",
+  };
   // Kept solely while rendering the existing assessment copy below; navigation is keyed by currentStep.
   const step = (
     {
@@ -2331,9 +2342,9 @@ export default function Assessment() {
       </div>
     );
   return (
-    <div style={brandStyle} className="min-h-screen bg-muted/20">
-      <header className="sticky top-0 z-10 bg-background border-b">
-        <div className="max-w-3xl mx-auto p-4 flex items-center justify-between gap-4">
+    <div style={brandStyle} className="min-h-[100dvh] bg-muted/20">
+      <header className="sticky top-0 z-10 border-b border-border/80 bg-background/95 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4">
           <div className="flex min-w-0 items-center gap-3">
             {churchLogo && (
               <img
@@ -2344,13 +2355,19 @@ export default function Assessment() {
             )}
             <strong className="truncate">{church.name}</strong>
           </div>
-          <span className="shrink-0 text-sm text-muted-foreground">
+          <span className="shrink-0 text-sm font-medium text-muted-foreground" aria-live="polite">
             Step {stepIndex + 1} of {stepKeys.length}
           </span>
         </div>
-        <Progress value={((stepIndex + 1) / stepKeys.length) * 100} />
+        <div className="mx-auto max-w-3xl px-4 pb-3">
+          <ProfileParts
+            parts={stepKeys.map((key) => ({ label: progressLabels[key] ?? key }))}
+            current={stepIndex + 1}
+            label="Your reflection"
+          />
+        </div>
       </header>
-      <main className="max-w-3xl mx-auto p-4 md:p-10">
+      <main className="mx-auto max-w-3xl p-4 md:p-10">
         <AssessmentConfigurationContext.Provider
           value={{ configuration: configuration!, step: currentStep }}
         >
@@ -2499,7 +2516,7 @@ export default function Assessment() {
                   {step === 2 && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">
-                        How you minister
+                        How You Minister
                       </Heading>
                       <p
                         className="text-sm text-muted-foreground"

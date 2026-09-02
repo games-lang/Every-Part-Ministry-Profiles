@@ -1,0 +1,368 @@
+I want to strengthen the visual branding throughout the Every Part website/app.
+
+Our primary logo concept uses multiple people forming a circle around a cross. The meaning is that many different people make up one body, with Christ at the center.
+
+I also want to incorporate a secondary visual theme of **puzzle pieces** throughout the platform because it reinforces the idea behind Every Part: every person has a unique place, gifts, calling, and contribution within the Body of Christ.
+
+Please update the design system and user experience using the following direction.
+
+## 1. KEEP THE MAIN BRAND CLEAN
+
+Do not turn the entire website into a puzzle theme.
+
+The primary visual identity should remain modern, professional, warm, ministry-focused, and trustworthy.
+
+Use puzzle pieces as a subtle supporting brand element rather than the main graphic everywhere.
+
+The site should still feel appropriate for pastors, church leaders, ministry staff, adults, teens, and families.
+
+Avoid making the puzzle pieces look childish, cartoonish, or like a children's game.
+
+## 2. BRAND MEANING
+
+The visual system should reinforce this core idea:
+
+**Every person has a part to play in the Body of Christ.**
+
+Supporting ideas:
+
+* Every person matters.
+* Every gift matters.
+* Every calling matters.
+* Every part is different.
+* Every part belongs.
+* Every part contributes to the whole.
+* Christ is at the center.
+* Churches are healthiest when every part is connected and serving.
+
+Use 1 Corinthians 12 as the biblical inspiration behind the branding, especially the idea:
+
+**“Now you are the body of Christ, and each one of you is a part of it.” — 1 Corinthians 12:27**
+
+## 3. CREATE A SUBTLE PUZZLE-PIECE VISUAL LANGUAGE
+
+Develop a reusable puzzle-piece design element that can appear throughout the app.
+
+The puzzle pieces should:
+
+* Have rounded, modern edges.
+* Match the Every Part brand colors.
+* Feel clean and professional.
+* Work both individually and connected together.
+* Sometimes be outlined instead of filled.
+* Occasionally appear partially off the edge of a section as a subtle background graphic.
+* Be usable at very low opacity for decorative backgrounds.
+* Never interfere with readability.
+
+Do not use random stock puzzle graphics.
+
+Create one consistent puzzle-piece style that becomes part of the Every Part design system.
+
+## 4. USE PUZZLE PIECES TO REPRESENT THE MINISTRY PROFILE
+
+Consider using connected puzzle pieces to visually represent the different components that make up a person's Ministry Profile.
+
+For example, individual pieces could represent areas such as:
+
+* Spiritual Gifts
+* APEST
+* Personality / How You Tend to Operate
+* Passions
+* Experience
+* Spiritual Health
+* Availability
+* Ministry Interests
+
+As someone completes sections of their profile, pieces could subtly become completed, colored, or connected.
+
+The goal is to visually communicate:
+
+**“We are discovering the different parts of how God has shaped you.”**
+
+Do not make the profile feel like a game. Keep the experience mature and encouraging.
+
+## 5. PROFILE COMPLETION VISUAL
+
+Explore replacing or supplementing a standard percentage progress bar with a tasteful puzzle-style profile progress indicator.
+
+For example:
+
+An incomplete profile could show several outlined puzzle pieces.
+
+As sections are completed, those pieces become filled with the Every Part brand colors.
+
+When the profile is complete, the pieces come together into one unified shape.
+
+Include normal percentage/progress text as well so that accessibility and clarity are maintained.
+
+Example:
+
+**Your Ministry Profile — 75% Complete**
+
+Visual: 6 of 8 pieces connected.
+
+## 6. DASHBOARD
+
+Bring the puzzle-piece concept subtly into the church/member dashboard.
+
+Potential ideas:
+
+* Small puzzle icons beside major profile categories.
+* A “Your Part” card that summarizes the person's ministry profile.
+* Connected pieces representing Gifts + Passions + Personality + Experience.
+* A completed puzzle-style visual when a person has completed their profile.
+* Very subtle oversized puzzle outlines in background areas.
+
+Avoid clutter.
+
+The dashboard should remain highly functional and easy to scan.
+
+## 7. MINISTRY MATCHING
+
+The puzzle concept could be especially useful when showing why someone may be a good fit for a ministry opportunity.
+
+For example:
+
+**Why This Ministry May Fit You**
+
+Show several small connected pieces:
+
+Spiritual Gifts
+
+* Passions
+* Personality
+* Availability
+  = Potential Ministry Fit
+
+This should visually communicate that ministry placement is based on several parts of the person rather than one test score.
+
+Do not imply that the system can perfectly determine God's calling.
+
+Use language such as:
+
+“Potential Fit”
+“Explore This Opportunity”
+“Why This May Fit”
+“Areas of Alignment”
+
+## 8. CHURCH LEADER EXPERIENCE
+
+For pastors and ministry leaders, consider using the puzzle visual when reviewing members.
+
+Example:
+
+**Understanding Sarah's Ministry Profile**
+
+Show several pieces forming a whole:
+
+Gifts
+Passions
+Personality
+Experience
+Availability
+Spiritual Health
+
+This reinforces that leaders should look at the whole person instead of assigning someone to ministry based on only one characteristic.
+
+## 9. MINISTRY TEAMS
+
+Puzzle pieces could also represent members joining ministry teams.
+
+For example, on a ministry team page, individual people could visually be represented as different pieces contributing to the team's mission.
+
+Possible language:
+
+**Every team needs different parts.**
+
+or
+
+**Different gifts. One mission.**
+
+Keep this subtle and professional.
+
+## 10. EMPTY STATES
+
+Use puzzle imagery thoughtfully when information is missing.
+
+Instead of generic empty-state illustrations, consider something like a single outlined puzzle piece with messaging such as:
+
+**There's still more to discover.**
+
+or
+
+**Complete this part of your profile.**
+
+or
+
+**Your part is becoming clearer.**
+
+## 11. ONBOARDING
+
+During onboarding, introduce the visual idea early.
+
+Possible onboarding sequence:
+
+**You Have a Part**
+
+God has uniquely shaped every believer.
+
+↓
+
+**Discover Your Part**
+
+Explore your gifts, passions, personality, experience, and availability.
+
+↓
+
+**See How the Parts Connect**
+
+Every Part helps you and your church leaders understand where you may thrive in ministry.
+
+↓
+
+**Put Your Part Into Practice**
+
+Meet with a ministry leader and explore opportunities to serve.
+
+Use subtle connecting puzzle-piece animations or illustrations between these steps if appropriate.
+
+## 12. HOMEPAGE
+
+Use puzzle elements sparingly on the public homepage.
+
+Potential locations:
+
+* Behind the “Discover Your Part” section.
+* As a divider between sections.
+* Around the ministry profile explanation.
+* Near the “How Every Part Works” pathway.
+* As subtle accents around testimonials or statistics.
+
+Do not scatter puzzle pieces randomly across the entire page.
+
+Every visual element should reinforce the story.
+
+## 13. THE EVERY PART PATHWAY
+
+The current process should visually feel connected:
+
+1. **Pray**
+   Ask God how He has shaped and called you.
+
+2. **Discover**
+   Complete your Ministry Profile.
+
+3. **Discuss**
+   Meet with a church leader to talk through your profile.
+
+4. **Connect**
+   Explore a ministry team that fits your gifts, passions, calling, and availability.
+
+5. **Serve**
+   Put your gifts into practice as part of the Body of Christ.
+
+Consider giving each step its own puzzle piece. As users move through the pathway, the pieces visually connect.
+
+At the final step, the pieces form one unified image or shape.
+
+## 14. MICRO-ANIMATIONS
+
+Where appropriate, use subtle animation.
+
+Examples:
+
+* Two pieces gently connect after completing a profile section.
+* A puzzle piece fills with color when a section is completed.
+* Connected pieces gently settle into place.
+* Hovering over a profile category slightly highlights its piece.
+
+Animations should be subtle, quick, and professional.
+
+Respect reduced-motion accessibility settings.
+
+Do not use bouncing, spinning, or overly playful animations.
+
+## 15. BRAND COLORS
+
+Use the colors from the selected Every Part logo as the foundation for the UI.
+
+The primary color should remain a strong deep navy.
+
+Secondary colors can include:
+
+* Teal
+* Green
+* Warm gold
+
+Use the colors intentionally rather than equally everywhere.
+
+Deep navy should provide stability and professionalism.
+
+Teal can represent discovery/growth.
+
+Green can represent serving/flourishing.
+
+Gold can be used selectively for calling, completion, or emphasis.
+
+## 16. IMPORTANT DESIGN PRINCIPLE
+
+The site should communicate:
+
+**Many parts. One body. Christ at the center.**
+
+The puzzle pieces communicate that the parts fit together.
+
+The people/circle logo communicates that those “parts” are actual people—not test results or data.
+
+Keep both ideas working together.
+
+Do not replace the human-centered identity of Every Part with puzzle imagery.
+
+## 17. RESPONSIVE DESIGN
+
+Make sure all puzzle-inspired elements work well on:
+
+* Desktop
+* Tablet
+* Mobile phones
+
+Decorative pieces should disappear or simplify on small screens when needed.
+
+Never sacrifice readability or usability for decorative branding.
+
+## 18. ACCESSIBILITY
+
+Puzzle graphics should never be the only way information is communicated.
+
+Always accompany visual progress with text.
+
+Maintain strong color contrast.
+
+Do not rely solely on different colors to distinguish profile categories.
+
+Decorative puzzle pieces should be ignored by screen readers where appropriate.
+
+## 19. DESIGN SYSTEM
+
+Please create reusable components/classes for these brand elements instead of designing each implementation independently.
+
+Examples:
+
+* PuzzlePiece
+* PuzzleProgress
+* PuzzleSectionAccent
+* ConnectedPieces
+* ProfilePart
+* MinistryFitPieces
+
+This should allow us to use the Every Part visual language consistently as the platform grows.
+
+## OVERALL GOAL
+
+When someone uses Every Part, I want the design itself to quietly reinforce the message:
+
+**God has uniquely shaped you. You have a part. Your part matters. And when every part serves together, the Body of Christ becomes stronger.**
+
+Use the selected people-around-the-cross logo as the primary identity and puzzle pieces as a secondary visual metaphor throughout the experience.
+
+Please first audit the existing Every Part interface and identify the best places to introduce these elements without making the site cluttered. Then implement the branding consistently across the existing design rather than redesigning unrelated functionality.

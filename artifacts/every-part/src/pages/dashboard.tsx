@@ -4,6 +4,7 @@ import { ArrowRight, FileText, Settings, Sparkles, Users, UsersRound } from "luc
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/empty-state";
 
 export default function Dashboard() {
   const { data: summary, isLoading, error } = useGetDashboardSummary();
@@ -19,10 +20,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8 max-w-6xl">
+    <div className="container mx-auto max-w-6xl space-y-9 px-4 py-8 sm:py-10">
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl font-medium tracking-tight">Dashboard</h1>
+          <p className="mb-2 text-xs font-bold uppercase tracking-[.18em] text-accent">A pastoral overview</p>
+          <h1 className="font-serif text-4xl font-semibold tracking-[-.04em]">Dashboard</h1>
           <p className="text-muted-foreground mt-1">
             {isLoading ? "Loading your church overview..." : `Welcome back, ${summary?.church.adminName}`}
           </p>
@@ -46,8 +48,8 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-border/60 shadow-sm">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4" aria-label="Church overview metrics">
+        <Card className="border-border/70 border-l-4 border-l-accent shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Profiles</CardTitle>
             <Users className="w-4 h-4 text-muted-foreground" />
@@ -56,12 +58,12 @@ export default function Dashboard() {
             {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
-              <div className="text-3xl font-serif font-medium">{summary?.totalProfiles || 0}</div>
+              <div className="font-serif text-4xl font-semibold tracking-[-.04em]" data-testid="metric-total-profiles">{summary?.totalProfiles || 0}</div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/70 border-l-4 border-l-secondary shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Active Teams</CardTitle>
             <UsersRound className="w-4 h-4 text-muted-foreground" />
@@ -71,7 +73,7 @@ export default function Dashboard() {
               <Skeleton className="h-8 w-16" />
             ) : (
               <div className="space-y-2">
-                <div className="text-3xl font-serif font-medium">{summary?.activeTeamCount || 0}</div>
+                <div className="font-serif text-4xl font-semibold tracking-[-.04em]" data-testid="metric-active-teams">{summary?.activeTeamCount || 0}</div>
                 <p className="text-xs text-muted-foreground">
                   {summary?.assignedProfileCount || 0} profiles assigned
                 </p>
@@ -83,7 +85,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
         
-        <Card className="border-border/60 shadow-sm md:col-span-2">
+        <Card className="border-border/70 bg-card shadow-sm md:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Church Details</CardTitle>
             <FileText className="w-4 h-4 text-muted-foreground" />
@@ -96,7 +98,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div>
-                <div className="text-lg font-medium">{summary?.church.name}</div>
+                 <div className="font-serif text-2xl font-medium">{summary?.church.name}</div>
                 <div className="text-sm text-muted-foreground truncate">
                   Share link: https://every-part-ministry-profiles.replit.app/profile/{summary?.church.slug}
                 </div>
@@ -106,11 +108,11 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-sm">
+      <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-md">
         <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/10">
-              <Sparkles className="h-5 w-5 text-secondary" />
+           <div className="flex items-start gap-4">
+             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+               <Sparkles className="h-5 w-5 text-secondary-foreground" />
             </div>
             <div>
               <CardTitle className="font-serif text-xl text-primary-foreground">
@@ -144,7 +146,7 @@ export default function Dashboard() {
             </Button>
           </div>
           
-          <Card className="border-border/60 shadow-sm overflow-hidden">
+           <Card className="overflow-hidden border-border/70 shadow-sm">
             {isLoading ? (
               <div className="divide-y divide-border">
                 {[1, 2, 3].map(i => (
@@ -185,16 +187,22 @@ export default function Dashboard() {
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="p-12 text-center text-muted-foreground">
-                <FileText className="w-12 h-12 mx-auto text-muted mb-4" />
-                <p>No profiles have been submitted yet.</p>
-                <Button variant="link" className="mt-2 text-primary" asChild>
-                  <a href={`/profile/${summary?.church.slug}`} target="_blank" rel="noopener noreferrer">
-                    Fill out a test profile
-                  </a>
-                </Button>
-              </div>
+             ) : (
+               <>
+                 <EmptyState
+                   icon={FileText}
+                   title="Your first profile is still ahead"
+                   description="Share the church profile link with someone who would like to reflect on how they serve and connect."
+                   className="rounded-none border-0 bg-transparent"
+                 />
+                 <div className="-mt-10 pb-10 text-center">
+                   <Button variant="link" className="text-primary" asChild>
+                     <a href={`/profile/${summary?.church.slug}`} target="_blank" rel="noopener noreferrer">
+                       Fill out a test profile
+                     </a>
+                   </Button>
+                 </div>
+               </>
             )}
           </Card>
         </div>
