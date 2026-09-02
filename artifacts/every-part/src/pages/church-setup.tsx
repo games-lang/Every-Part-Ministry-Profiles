@@ -16,6 +16,9 @@ import {
   type UploadUrlRequestContentType,
   type AssessmentConfigurationSections,
   type AssessmentConfigurationSubsections,
+  type MinistryCustomization,
+  type MinistryCustomizationMode,
+  type MinistryCustomizationTradition,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -24,9 +27,22 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Copy, ExternalLink, ImagePlus, Loader2, Palette, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
+import { BookOpenCheck, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
+import {
+  CHURCH_TRADITIONS,
+  DEFAULT_MINISTRY_CUSTOMIZATION,
+  STANDARD_MINISTRY_LABELS,
+  recommendedMinistryLabels,
+} from "@/lib/ministry-customization";
 
 const sectionSchema = z.object({
   aboutYou: z.boolean(),
@@ -118,7 +134,39 @@ const churchFormSchema = z.object({
     subsections: subsectionSchema,
     passions: z.array(z.string().min(1).max(80)).max(100),
     ministryInterests: z.array(z.string().min(1).max(80)).max(100),
-  })
+  }),
+  ministryCustomization: z.object({
+    version: z.literal(1),
+    mode: z.enum(["standard", "tradition", "custom"]),
+    tradition: z.enum([
+      "wesleyanHoliness",
+      "nazarene",
+      "methodist",
+      "baptist",
+      "pentecostalCharismatic",
+      "assembliesOfGod",
+      "presbyterianReformed",
+      "lutheran",
+      "anglicanEpiscopal",
+      "catholic",
+      "easternOrthodox",
+      "nonDenominational",
+      "independentEvangelical",
+      "other",
+      "preferNotToSpecify",
+    ]),
+    customTradition: z.string().max(120),
+    spiritualGiftsLabel: z.string().trim().min(1).max(80),
+    ministryInterestsLabel: z.string().trim().min(1).max(80),
+  }).superRefine((value, context) => {
+    if (value.tradition === "other" && !value.customTradition.trim()) {
+      context.addIssue({
+        code: "custom",
+        path: ["customTradition"],
+        message: "Enter your church tradition",
+      });
+    }
+  }),
 });
 
 type ChurchFormValues = z.infer<typeof churchFormSchema>;
@@ -357,6 +405,10 @@ export default function ChurchSetup() {
         passions: [...GENERIC_PASSIONS],
         ministryInterests: [...GENERIC_MINISTRY_INTERESTS],
       },
+      ministryCustomization: {
+        ...DEFAULT_MINISTRY_CUSTOMIZATION,
+        customTradition: "",
+      },
     },
   });
 
@@ -382,6 +434,10 @@ export default function ChurchSetup() {
           passions: church.assessmentConfiguration?.passions || [...GENERIC_PASSIONS],
           ministryInterests: church.assessmentConfiguration?.ministryInterests || [...GENERIC_MINISTRY_INTERESTS],
         },
+        ministryCustomization: {
+          ...church.ministryCustomization,
+          customTradition: church.ministryCustomization.customTradition || "",
+        },
       });
       setLogoPath(church.logoUrl || null);
     }
@@ -402,6 +458,13 @@ export default function ChurchSetup() {
       address: data.address || null,
       logoUrl: logoPath,
       enabledSpiritualGifts: data.enabledSpiritualGifts as SpiritualGiftName[],
+      ministryCustomization: {
+        ...data.ministryCustomization,
+        customTradition:
+          data.ministryCustomization.tradition === "other"
+            ? data.ministryCustomization.customTradition.trim()
+            : null,
+      } as MinistryCustomization,
     };
 
     updateChurch.mutate(
@@ -548,6 +611,17 @@ export default function ChurchSetup() {
     });
   };
 
+  const primaryColor = form.watch("primaryColor");
+  const accentColor = form.watch("accentColor");
+  const customizationMode = form.watch("ministryCustomization.mode");
+  const churchTradition = form.watch("ministryCustomization.tradition");
+  const spiritualGiftsLabel = form.watch(
+    "ministryCustomization.spiritualGiftsLabel",
+  );
+  const ministryInterestsLabel = form.watch(
+    "ministryCustomization.ministryInterestsLabel",
+  );
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
@@ -558,9 +632,43 @@ export default function ChurchSetup() {
   }
 
   const logoUrl = logoPath;
-  const primaryColor = form.watch("primaryColor");
-  const accentColor = form.watch("accentColor");
   const logoPreview = localLogoPreview || savedLogoSource(logoUrl, church?.slug);
+
+  const setCustomizationLabels = (
+    labels: Pick<
+      MinistryCustomization,
+      "spiritualGiftsLabel" | "ministryInterestsLabel"
+    >,
+  ) => {
+    form.setValue(
+      "ministryCustomization.spiritualGiftsLabel",
+      labels.spiritualGiftsLabel,
+      { shouldDirty: true },
+    );
+    form.setValue(
+      "ministryCustomization.ministryInterestsLabel",
+      labels.ministryInterestsLabel,
+      { shouldDirty: true },
+    );
+  };
+
+  const changeCustomizationMode = (mode: MinistryCustomizationMode) => {
+    form.setValue("ministryCustomization.mode", mode, { shouldDirty: true });
+    if (mode === "standard") {
+      setCustomizationLabels(STANDARD_MINISTRY_LABELS);
+    } else if (mode === "tradition") {
+      setCustomizationLabels(recommendedMinistryLabels(churchTradition));
+    }
+  };
+
+  const changeTradition = (tradition: MinistryCustomizationTradition) => {
+    form.setValue("ministryCustomization.tradition", tradition, {
+      shouldDirty: true,
+    });
+    if (customizationMode === "tradition") {
+      setCustomizationLabels(recommendedMinistryLabels(tradition));
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
@@ -679,6 +787,204 @@ export default function ChurchSetup() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Card className="border-primary/20 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-serif text-xl">
+                <BookOpenCheck className="h-5 w-5 text-primary" />
+                Our Ministry Convictions
+              </CardTitle>
+              <CardDescription className="max-w-2xl leading-relaxed">
+                Every church has unique beliefs, terminology, leadership
+                structures, and ministry practices. These settings help Every
+                Part reflect your church. Every Part does not determine your
+                church&apos;s theology—your church does.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-7">
+              <div className="grid gap-6 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="ministryCustomization.tradition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tradition or affiliation</FormLabel>
+                      <FormDescription>
+                        This provides a starting point only. Your church remains
+                        in control.
+                      </FormDescription>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) =>
+                          changeTradition(
+                            value as MinistryCustomizationTradition,
+                          )
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose a tradition" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CHURCH_TRADITIONS.map((tradition) => (
+                            <SelectItem
+                              key={tradition.value}
+                              value={tradition.value}
+                            >
+                              {tradition.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="ministryCustomization.mode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customization level</FormLabel>
+                      <FormDescription>
+                        Choose how Every Part should determine member-facing
+                        language.
+                      </FormDescription>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) =>
+                          changeCustomizationMode(
+                            value as MinistryCustomizationMode,
+                          )
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="standard">
+                            Every Part Standard
+                          </SelectItem>
+                          <SelectItem value="tradition">
+                            Recommended for our tradition
+                          </SelectItem>
+                          <SelectItem value="custom">
+                            Church Custom
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {churchTradition === "other" && (
+                <FormField
+                  control={form.control}
+                  name="ministryCustomization.customTradition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Church tradition</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Enter your denomination or tradition"
+                          maxLength={120}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {customizationMode === "custom" && (
+                <div className="grid gap-6 rounded-xl border bg-muted/30 p-5 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="ministryCustomization.spiritualGiftsLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>God-given abilities terminology</FormLabel>
+                        <FormDescription>
+                          For example: Spiritual Gifts, Charisms, or Gifts for
+                          Service.
+                        </FormDescription>
+                        <FormControl>
+                          <Input {...field} maxLength={80} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="ministryCustomization.ministryInterestsLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ministry opportunities terminology</FormLabel>
+                        <FormDescription>
+                          For example: Ministry Interests, Parish Ministries, or
+                          Ways to Serve.
+                        </FormDescription>
+                        <FormControl>
+                          <Input {...field} maxLength={80} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              <div className="overflow-hidden rounded-xl border bg-background">
+                <div className="flex flex-col gap-3 border-b bg-muted/30 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="flex items-center gap-2 font-medium">
+                      <Eye className="h-4 w-4 text-primary" />
+                      See the Ministry Profile as a member
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      These are the labels members will see after you save.
+                    </p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <a
+                      href={`/profile/${church?.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open member view
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+                <div className="grid gap-4 p-5 sm:grid-cols-2">
+                  <div className="rounded-lg border p-4">
+                    <p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">
+                      Profile section
+                    </p>
+                    <p className="mt-2 font-serif text-xl">
+                      {spiritualGiftsLabel}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border p-4">
+                    <p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">
+                      Serving section
+                    </p>
+                    <p className="mt-2 font-serif text-xl">
+                      {ministryInterestsLabel}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-serif">Assessment Content</CardTitle>

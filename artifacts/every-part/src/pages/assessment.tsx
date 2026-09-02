@@ -1333,14 +1333,17 @@ function MultiSelect({
 function Heading({
   children,
   description,
+  configKey,
 }: {
   children: React.ReactNode;
   description?: string;
+  configKey?: keyof AssessmentConfiguration["subsections"];
 }) {
   const context = useContext(AssessmentConfigurationContext);
   const title = typeof children === "string" ? children : "";
-  const visible =
-    title === "About You"
+  const visible = configKey
+    ? (context?.configuration.subsections[configKey] ?? true)
+    : title === "About You"
       ? context?.step === "identity" || context?.step === "aboutYou"
       : title === "Skills & Experience"
         ? context?.step === "aboutYou" &&
@@ -1521,6 +1524,11 @@ export default function Assessment() {
     form.setValue("basicInformation.phone", invitedPerson.phone ?? "");
   }, [form, invitedPerson]);
   const configuration = church?.assessmentConfiguration;
+  const spiritualGiftsLabel =
+    church?.ministryCustomization.spiritualGiftsLabel ?? "Spiritual Gifts";
+  const ministryInterestsLabel =
+    church?.ministryCustomization.ministryInterestsLabel ??
+    "Ministry Interests";
   const passionOptions = configuration?.passions ?? OPTIONS.passions;
   const ministryInterestOptions =
     configuration?.ministryInterests ?? OPTIONS.interests;
@@ -2645,7 +2653,7 @@ export default function Assessment() {
                   {step === 3 && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your lived experience. This is a conversation starter, not a test of spiritual maturity or a placement decision. Choose “Not at all” when a statement does not fit.">
-                        How God has gifted you (Spiritual Gifts)
+                        {spiritualGiftsLabel}
                       </Heading>
                       <p
                         className="text-sm text-muted-foreground"
@@ -2775,7 +2783,9 @@ export default function Assessment() {
                         name="passions"
                         options={passionOptions}
                       />
-                      <Heading>Ministry Interests</Heading>
+                      <Heading configKey="passionsInterests.ministryInterests">
+                        {ministryInterestsLabel}
+                      </Heading>
                       <p className="text-sm text-muted-foreground">
                         Actual ministry areas you would like to explore.
                       </p>

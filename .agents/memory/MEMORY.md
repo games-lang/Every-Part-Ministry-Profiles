@@ -9,3 +9,4 @@
 - [Church team assignments](church-team-assignments.md) — profiles have one pastor-led current team; scheduling is a separate pastor-managed activity with tenant integrity.
 - [Youth profile safety](youth-profile-safety.md) — minor pathways require server-enforced age routing, guardian consent, private leader access, and strict separation from adult AI/team flows.
 - [Development database migration workflow](db-migration-workflow.md) — use tracked SQL migrations; Drizzle push can block on named-schema prompts without a TTY.
+- [Church tradition customization](church-tradition-customization.md) — tradition supplies optional wording defaults; church choices remain authoritative and are snapshotted per profile.

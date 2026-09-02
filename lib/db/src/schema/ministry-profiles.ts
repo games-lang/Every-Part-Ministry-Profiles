@@ -78,6 +78,9 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
   assessmentConfigurationSnapshot: jsonb(
     "assessment_configuration_snapshot",
   ).$type<unknown>(),
+  ministryCustomizationSnapshot: jsonb(
+    "ministry_customization_snapshot",
+  ).$type<unknown>(),
   completedAt: timestamp("completed_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

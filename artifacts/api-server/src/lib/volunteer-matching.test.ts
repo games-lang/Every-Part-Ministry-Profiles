@@ -65,6 +65,7 @@ function profile(
     availabilityDetails: { privateAvailability: "do not expose" },
     ministryPreferences: { privatePreference: "do not expose" },
     assessmentConfigurationSnapshot: null,
+    ministryCustomizationSnapshot: null,
     completedAt: new Date("2026-01-01T00:00:00.000Z"),
     ...overrides,
   };

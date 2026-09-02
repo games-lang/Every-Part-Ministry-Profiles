@@ -29,6 +29,7 @@ import {
   validateEnabledSpiritualGifts,
 } from "../lib/churches";
 import { assessmentConfiguration } from "../lib/assessment-configuration";
+import { ministryCustomization } from "../lib/ministry-customization";
 import {
   ObjectNotFoundError,
   ObjectStorageService,
@@ -87,6 +88,20 @@ router.patch("/church", async (req, res): Promise<void> => {
     });
     return;
   }
+  const customization =
+    parsed.data.ministryCustomization === undefined
+      ? undefined
+      : ministryCustomization(parsed.data.ministryCustomization);
+  if (
+    parsed.data.ministryCustomization !== undefined &&
+    !customization
+  ) {
+    res.status(400).json({
+      error:
+        "Ministry customization contains unsupported values or an incomplete custom tradition.",
+    });
+    return;
+  }
 
   const church = await getOrCreateChurch(userId);
   if (parsed.data.logoUrl) {
@@ -99,7 +114,10 @@ router.patch("/church", async (req, res): Promise<void> => {
   }
   const [updated] = await db
     .update(churchesTable)
-    .set(parsed.data)
+    .set({
+      ...parsed.data,
+      ...(customization ? { ministryCustomization: customization } : {}),
+    })
     .where(eq(churchesTable.id, church.id))
     .returning();
 
@@ -362,6 +380,14 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
     res.status(422).json({ error: "This church's spiritual gifts configuration is invalid. Please contact the church administrator." });
     return;
   }
+  const customization = ministryCustomization(church.ministryCustomization);
+  if (!customization) {
+    res.status(422).json({
+      error:
+        "This church's ministry customization is invalid. Please contact the church administrator.",
+    });
+    return;
+  }
 
   res.json(
     GetPublicChurchResponse.parse({
@@ -375,6 +401,7 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
       profileUrl: `/profile/${church.slug}`,
        enabledSpiritualGifts: enabledSpiritualGifts ?? activeSpiritualGifts(null)!,
        assessmentConfiguration: configuration,
+        ministryCustomization: customization,
     }),
   );
 });

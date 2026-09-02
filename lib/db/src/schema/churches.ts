@@ -26,6 +26,7 @@ export const churchesTable = pgTable(
     adminEmail: text("admin_email").notNull(),
     enabledSpiritualGifts: jsonb("enabled_spiritual_gifts").$type<string[]>(),
     assessmentConfiguration: jsonb("assessment_configuration").$type<unknown>(),
+    ministryCustomization: jsonb("ministry_customization").$type<unknown>(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

@@ -70,6 +70,7 @@ function profile(overrides: Partial<MinistryProfile> = {}): MinistryProfile {
     availabilityDetails: null,
     ministryPreferences: null,
     assessmentConfigurationSnapshot: null,
+    ministryCustomizationSnapshot: null,
     completedAt: new Date("2026-01-01T00:00:00.000Z"),
     ...overrides,
   };

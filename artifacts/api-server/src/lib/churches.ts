@@ -8,6 +8,10 @@ import {
   assessmentConfiguration,
   defaultAssessmentConfiguration,
 } from "./assessment-configuration";
+import {
+  defaultMinistryCustomization,
+  ministryCustomization,
+} from "./ministry-customization";
 export { activeSpiritualGifts, validateEnabledSpiritualGifts } from "./spiritual-gifts";
 
 function slugFromUserId(userId: string): string {
@@ -78,6 +82,9 @@ export function churchResponse(
   const configuration =
     assessmentConfiguration(church.assessmentConfiguration) ??
     defaultAssessmentConfiguration();
+  const customization =
+    ministryCustomization(church.ministryCustomization) ??
+    defaultMinistryCustomization();
   return {
     id: church.id,
     name: church.name,
@@ -93,5 +100,6 @@ export function churchResponse(
     completedProfileCount,
     enabledSpiritualGifts: church.enabledSpiritualGifts,
     assessmentConfiguration: configuration,
+    ministryCustomization: customization,
   };
 }

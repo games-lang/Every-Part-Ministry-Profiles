@@ -30,6 +30,12 @@ export const getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax 
 
 export const getMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
 
+export const getMyChurchResponseMinistryCustomizationCustomTraditionMax = 120;
+
+export const getMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax = 80;
+
+export const getMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax = 80;
+
 
 
 export const GetMyChurchResponse = zod.object({
@@ -108,6 +114,14 @@ export const GetMyChurchResponse = zod.object({
 }),
   "passions": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(getMyChurchResponseAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
+}),
+  "ministryCustomization": zod.object({
+  "version": zod.literal(1),
+  "mode": zod.enum(['standard', 'tradition', 'custom']),
+  "tradition": zod.enum(['wesleyanHoliness', 'nazarene', 'methodist', 'baptist', 'pentecostalCharismatic', 'assembliesOfGod', 'presbyterianReformed', 'lutheran', 'anglicanEpiscopal', 'catholic', 'easternOrthodox', 'nonDenominational', 'independentEvangelical', 'other', 'preferNotToSpecify']),
+  "customTradition": zod.string().max(getMyChurchResponseMinistryCustomizationCustomTraditionMax).nullable(),
+  "spiritualGiftsLabel": zod.string().min(1).max(getMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
+  "ministryInterestsLabel": zod.string().min(1).max(getMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
 })
 })
 
@@ -128,6 +142,12 @@ export const updateMyChurchBodyAssessmentConfigurationPassionsMax = 100;
 export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const updateMyChurchBodyMinistryCustomizationCustomTraditionMax = 120;
+
+export const updateMyChurchBodyMinistryCustomizationSpiritualGiftsLabelMax = 80;
+
+export const updateMyChurchBodyMinistryCustomizationMinistryInterestsLabelMax = 80;
 
 
 
@@ -203,6 +223,14 @@ export const UpdateMyChurchBody = zod.object({
 }),
   "passions": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationPassionsItemMax)).max(updateMyChurchBodyAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax)
+}).optional(),
+  "ministryCustomization": zod.object({
+  "version": zod.literal(1),
+  "mode": zod.enum(['standard', 'tradition', 'custom']),
+  "tradition": zod.enum(['wesleyanHoliness', 'nazarene', 'methodist', 'baptist', 'pentecostalCharismatic', 'assembliesOfGod', 'presbyterianReformed', 'lutheran', 'anglicanEpiscopal', 'catholic', 'easternOrthodox', 'nonDenominational', 'independentEvangelical', 'other', 'preferNotToSpecify']),
+  "customTradition": zod.string().max(updateMyChurchBodyMinistryCustomizationCustomTraditionMax).nullable(),
+  "spiritualGiftsLabel": zod.string().min(1).max(updateMyChurchBodyMinistryCustomizationSpiritualGiftsLabelMax),
+  "ministryInterestsLabel": zod.string().min(1).max(updateMyChurchBodyMinistryCustomizationMinistryInterestsLabelMax)
 }).optional()
 })
 
@@ -215,6 +243,12 @@ export const updateMyChurchResponseAssessmentConfigurationPassionsMax = 100;
 export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const updateMyChurchResponseMinistryCustomizationCustomTraditionMax = 120;
+
+export const updateMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax = 80;
+
+export const updateMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax = 80;
 
 
 
@@ -294,6 +328,14 @@ export const UpdateMyChurchResponse = zod.object({
 }),
   "passions": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(updateMyChurchResponseAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
+}),
+  "ministryCustomization": zod.object({
+  "version": zod.literal(1),
+  "mode": zod.enum(['standard', 'tradition', 'custom']),
+  "tradition": zod.enum(['wesleyanHoliness', 'nazarene', 'methodist', 'baptist', 'pentecostalCharismatic', 'assembliesOfGod', 'presbyterianReformed', 'lutheran', 'anglicanEpiscopal', 'catholic', 'easternOrthodox', 'nonDenominational', 'independentEvangelical', 'other', 'preferNotToSpecify']),
+  "customTradition": zod.string().max(updateMyChurchResponseMinistryCustomizationCustomTraditionMax).nullable(),
+  "spiritualGiftsLabel": zod.string().min(1).max(updateMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
+  "ministryInterestsLabel": zod.string().min(1).max(updateMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
 })
 })
 
@@ -355,6 +397,12 @@ export const getPublicChurchResponseAssessmentConfigurationPassionsMax = 100;
 export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const getPublicChurchResponseMinistryCustomizationCustomTraditionMax = 120;
+
+export const getPublicChurchResponseMinistryCustomizationSpiritualGiftsLabelMax = 80;
+
+export const getPublicChurchResponseMinistryCustomizationMinistryInterestsLabelMax = 80;
 
 
 
@@ -428,6 +476,14 @@ export const GetPublicChurchResponse = zod.object({
 }),
   "passions": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationPassionsItemMax)).max(getPublicChurchResponseAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax)
+}),
+  "ministryCustomization": zod.object({
+  "version": zod.literal(1),
+  "mode": zod.enum(['standard', 'tradition', 'custom']),
+  "tradition": zod.enum(['wesleyanHoliness', 'nazarene', 'methodist', 'baptist', 'pentecostalCharismatic', 'assembliesOfGod', 'presbyterianReformed', 'lutheran', 'anglicanEpiscopal', 'catholic', 'easternOrthodox', 'nonDenominational', 'independentEvangelical', 'other', 'preferNotToSpecify']),
+  "customTradition": zod.string().max(getPublicChurchResponseMinistryCustomizationCustomTraditionMax).nullable(),
+  "spiritualGiftsLabel": zod.string().min(1).max(getPublicChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
+  "ministryInterestsLabel": zod.string().min(1).max(getPublicChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
 })
 })
 
@@ -498,6 +554,12 @@ export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax
 export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const getDashboardSummaryResponseChurchMinistryCustomizationCustomTraditionMax = 120;
+
+export const getDashboardSummaryResponseChurchMinistryCustomizationSpiritualGiftsLabelMax = 80;
+
+export const getDashboardSummaryResponseChurchMinistryCustomizationMinistryInterestsLabelMax = 80;
 
 export const getDashboardSummaryResponseRecentProfilesItemAgeMin = 6;
 export const getDashboardSummaryResponseRecentProfilesItemAgeMax = 120;
@@ -581,6 +643,14 @@ export const GetDashboardSummaryResponse = zod.object({
 }),
   "passions": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax)
+}),
+  "ministryCustomization": zod.object({
+  "version": zod.literal(1),
+  "mode": zod.enum(['standard', 'tradition', 'custom']),
+  "tradition": zod.enum(['wesleyanHoliness', 'nazarene', 'methodist', 'baptist', 'pentecostalCharismatic', 'assembliesOfGod', 'presbyterianReformed', 'lutheran', 'anglicanEpiscopal', 'catholic', 'easternOrthodox', 'nonDenominational', 'independentEvangelical', 'other', 'preferNotToSpecify']),
+  "customTradition": zod.string().max(getDashboardSummaryResponseChurchMinistryCustomizationCustomTraditionMax).nullable(),
+  "spiritualGiftsLabel": zod.string().min(1).max(getDashboardSummaryResponseChurchMinistryCustomizationSpiritualGiftsLabelMax),
+  "ministryInterestsLabel": zod.string().min(1).max(getDashboardSummaryResponseChurchMinistryCustomizationMinistryInterestsLabelMax)
 })
 }),
   "totalProfiles": zod.int(),
@@ -2236,3 +2306,5 @@ export const UpdateProfileTeamResponse = zod.object({
   "teamId": zod.int().nullable(),
   "teamName": zod.string().nullable()
 })
+
+

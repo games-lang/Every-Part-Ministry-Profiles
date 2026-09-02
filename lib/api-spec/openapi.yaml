@@ -915,7 +915,7 @@ components:
         - status
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization]
       properties:
         id: { type: integer }
         name: { type: string }
@@ -940,6 +940,8 @@ components:
           uniqueItems: true
         assessmentConfiguration:
           $ref: "#/components/schemas/AssessmentConfiguration"
+        ministryCustomization:
+          $ref: "#/components/schemas/MinistryCustomization"
     ChurchUpdate:
       type: object
       properties:
@@ -965,6 +967,8 @@ components:
             $ref: "#/components/schemas/SpiritualGiftName"
         assessmentConfiguration:
           $ref: "#/components/schemas/AssessmentConfiguration"
+        ministryCustomization:
+          $ref: "#/components/schemas/MinistryCustomization"
     ChurchAdmin:
       type: object
       required: [id, name, email, role, createdAt]
@@ -991,7 +995,7 @@ components:
         canOverrideYouthPathway: { type: boolean }
     PublicChurch:
       type: object
-      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration]
+      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization]
       properties:
         name: { type: string }
         slug: { type: string }
@@ -1011,6 +1015,54 @@ components:
             $ref: "#/components/schemas/SpiritualGiftName"
         assessmentConfiguration:
           $ref: "#/components/schemas/AssessmentConfiguration"
+        ministryCustomization:
+          $ref: "#/components/schemas/MinistryCustomization"
+    MinistryCustomization:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - mode
+        - tradition
+        - customTradition
+        - spiritualGiftsLabel
+        - ministryInterestsLabel
+      properties:
+        version:
+          type: integer
+          enum: [1]
+        mode:
+          type: string
+          enum: [standard, tradition, custom]
+        tradition:
+          type: string
+          enum:
+            - wesleyanHoliness
+            - nazarene
+            - methodist
+            - baptist
+            - pentecostalCharismatic
+            - assembliesOfGod
+            - presbyterianReformed
+            - lutheran
+            - anglicanEpiscopal
+            - catholic
+            - easternOrthodox
+            - nonDenominational
+            - independentEvangelical
+            - other
+            - preferNotToSpecify
+        customTradition:
+          type: ["string", "null"]
+          maxLength: 120
+        spiritualGiftsLabel:
+          type: string
+          minLength: 1
+          maxLength: 80
+        ministryInterestsLabel:
+          type: string
+          minLength: 1
+          maxLength: 80
     UploadUrlRequest:
       type: object
       required: [name, size, contentType]

@@ -42,6 +42,7 @@ import {
   filterAssessmentSection,
   hasEnabledSubsections,
 } from "../lib/assessment-configuration";
+import { ministryCustomization } from "../lib/ministry-customization";
 import {
   ensureJourneyForProfile,
   getOrCreateJourney,
@@ -139,6 +140,14 @@ router.post("/profiles", async (req, res): Promise<void> => {
   if (!configuration) {
     res.status(400).json({
       error: "This church's assessment configuration is invalid. Please contact the church administrator.",
+    });
+    return;
+  }
+  const customization = ministryCustomization(church.ministryCustomization);
+  if (!customization) {
+    res.status(400).json({
+      error:
+        "This church's ministry customization is invalid. Please contact the church administrator.",
     });
     return;
   }
@@ -322,6 +331,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
           naturalStrengths: filterAssessmentSection("naturalStrengths", parsed.data.assessmentSections?.naturalStrengths, configuration),
           spiritualHealth: filterAssessmentSection("spiritualHealth", parsed.data.assessmentSections?.spiritualHealth, configuration),
           assessmentConfigurationSnapshot: configuration,
+          ministryCustomizationSnapshot: customization,
         })
         .returning();
 

@@ -119,6 +119,64 @@ export interface AssessmentConfiguration {
   ministryInterests: string[];
 }
 
+export type MinistryCustomizationVersion = typeof MinistryCustomizationVersion[keyof typeof MinistryCustomizationVersion];
+
+
+export const MinistryCustomizationVersion = {
+  NUMBER_1: 1,
+} as const;
+
+export type MinistryCustomizationMode = typeof MinistryCustomizationMode[keyof typeof MinistryCustomizationMode];
+
+
+export const MinistryCustomizationMode = {
+  standard: 'standard',
+  tradition: 'tradition',
+  custom: 'custom',
+} as const;
+
+export type MinistryCustomizationTradition = typeof MinistryCustomizationTradition[keyof typeof MinistryCustomizationTradition];
+
+
+export const MinistryCustomizationTradition = {
+  wesleyanHoliness: 'wesleyanHoliness',
+  nazarene: 'nazarene',
+  methodist: 'methodist',
+  baptist: 'baptist',
+  pentecostalCharismatic: 'pentecostalCharismatic',
+  assembliesOfGod: 'assembliesOfGod',
+  presbyterianReformed: 'presbyterianReformed',
+  lutheran: 'lutheran',
+  anglicanEpiscopal: 'anglicanEpiscopal',
+  catholic: 'catholic',
+  easternOrthodox: 'easternOrthodox',
+  nonDenominational: 'nonDenominational',
+  independentEvangelical: 'independentEvangelical',
+  other: 'other',
+  preferNotToSpecify: 'preferNotToSpecify',
+} as const;
+
+export interface MinistryCustomization {
+  version: MinistryCustomizationVersion;
+  mode: MinistryCustomizationMode;
+  tradition: MinistryCustomizationTradition;
+  /**
+     * @maxLength 120
+     * @nullable
+     */
+  customTradition: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  spiritualGiftsLabel: string;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  ministryInterestsLabel: string;
+}
+
 export interface Church {
   id: number;
   name: string;
@@ -140,6 +198,7 @@ export interface Church {
   /** @nullable */
   enabledSpiritualGifts?: SpiritualGiftName[] | null;
   assessmentConfiguration: AssessmentConfiguration;
+  ministryCustomization: MinistryCustomization;
 }
 
 export interface ChurchUpdate {
@@ -163,6 +222,7 @@ export interface ChurchUpdate {
   /** @minItems 3 */
   enabledSpiritualGifts?: SpiritualGiftName[];
   assessmentConfiguration?: AssessmentConfiguration;
+  ministryCustomization?: MinistryCustomization;
 }
 
 export type ChurchAdminRole = typeof ChurchAdminRole[keyof typeof ChurchAdminRole];
@@ -202,6 +262,7 @@ export interface PublicChurch {
   /** @minItems 3 */
   enabledSpiritualGifts: SpiritualGiftName[];
   assessmentConfiguration: AssessmentConfiguration;
+  ministryCustomization: MinistryCustomization;
 }
 
 export type UploadUrlRequestContentType = typeof UploadUrlRequestContentType[keyof typeof UploadUrlRequestContentType];
@@ -2048,3 +2109,4 @@ interest?: string;
 passion?: string;
 availability?: string;
 };
+
