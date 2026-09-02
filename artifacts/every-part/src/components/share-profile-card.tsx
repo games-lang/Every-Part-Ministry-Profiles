@@ -26,11 +26,74 @@ function downloadName(churchName: string) {
   return `${safeName || "church"}-ministry-profile-qr.png`;
 }
 
+function slideDownloadName(churchName: string) {
+  return downloadName(churchName).replace("-qr.png", "-slide.png");
+}
+
+function loadQrImage(url: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("QR code image failed to load"));
+    image.src = url;
+  });
+}
+
+function drawRoundedRect(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.arcTo(x + width, y, x + width, y + height, radius);
+  context.arcTo(x + width, y + height, x, y + height, radius);
+  context.arcTo(x, y + height, x, y, radius);
+  context.arcTo(x, y, x + width, y, radius);
+  context.closePath();
+}
+
+function drawWrappedText(
+  context: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines = 3,
+) {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  words.forEach((word) => {
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    if (context.measureText(candidate).width <= maxWidth || !currentLine) {
+      currentLine = candidate;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  });
+  if (currentLine) lines.push(currentLine);
+
+  lines.slice(0, maxLines).forEach((line, index) => {
+    context.fillText(line, x, y + index * lineHeight);
+  });
+}
+
 export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardProps) {
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
   const [downloadError, setDownloadError] = useState(false);
+  const [isDownloadingSlide, setIsDownloadingSlide] = useState(false);
+  const [slideDownloaded, setSlideDownloaded] = useState(false);
+  const [slideDownloadError, setSlideDownloadError] = useState(false);
   const [printBlocked, setPrintBlocked] = useState(false);
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=24&data=${encodeURIComponent(profileUrl)}`;
 
@@ -68,6 +131,100 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
       setDownloadError(true);
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const downloadSlide = async () => {
+    setIsDownloadingSlide(true);
+    setSlideDownloaded(false);
+    setSlideDownloadError(false);
+
+    try {
+      const qrImage = await loadQrImage(qrImageUrl);
+      const canvas = document.createElement("canvas");
+      canvas.width = 1920;
+      canvas.height = 1080;
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Canvas is unavailable");
+
+      const background = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+      background.addColorStop(0, "#f8f6ee");
+      background.addColorStop(1, "#f0f7f5");
+      context.fillStyle = background;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      context.fillStyle = "rgba(204, 166, 74, 0.24)";
+      context.beginPath();
+      context.arc(1750, 100, 280, 0, Math.PI * 2);
+      context.fill();
+
+      context.fillStyle = "#397f77";
+      context.font = "700 24px Arial, sans-serif";
+      context.letterSpacing = "5px";
+      context.fillText("A THOUGHTFUL NEXT STEP", 170, 215);
+
+      context.fillStyle = "#203746";
+      context.font = "700 112px Arial, sans-serif";
+      context.letterSpacing = "-3px";
+      context.fillText("Every person", 170, 390);
+      context.fillText("has a part.", 170, 515);
+
+      context.fillStyle = "#5b6b73";
+      context.font = "400 32px Arial, sans-serif";
+      context.letterSpacing = "0px";
+      drawWrappedText(
+        context,
+        "Discover the gifts, passions, and ways you may enjoy serving in your church community.",
+        170,
+        625,
+        720,
+        48,
+        3,
+      );
+
+      context.fillStyle = "#203746";
+      context.font = "700 30px Arial, sans-serif";
+      drawWrappedText(context, churchName, 170, 820, 720, 42, 2);
+
+      context.shadowColor = "rgba(32, 55, 70, 0.14)";
+      context.shadowBlur = 40;
+      context.shadowOffsetY = 18;
+      context.fillStyle = "#ffffff";
+      drawRoundedRect(context, 1190, 150, 560, 780, 30);
+      context.fill();
+      context.shadowColor = "transparent";
+      context.shadowBlur = 0;
+      context.shadowOffsetY = 0;
+
+      context.drawImage(qrImage, 1250, 210, 440, 440);
+      context.fillStyle = "#203746";
+      context.font = "700 26px Arial, sans-serif";
+      context.textAlign = "center";
+      drawWrappedText(context, "Scan to begin your Ministry Profile", 1470, 720, 450, 36, 2);
+      context.fillStyle = "#69777b";
+      context.font = "400 16px Arial, sans-serif";
+      drawWrappedText(context, profileUrl, 1470, 825, 450, 24, 3);
+      context.textAlign = "left";
+
+      const slideBlob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, "image/png");
+      });
+      if (!slideBlob) throw new Error("Slide export failed");
+
+      const objectUrl = URL.createObjectURL(slideBlob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = objectUrl;
+      downloadLink.download = slideDownloadName(churchName);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      setSlideDownloaded(true);
+      window.setTimeout(() => setSlideDownloaded(false), 2500);
+    } catch {
+      setSlideDownloadError(true);
+    } finally {
+      setIsDownloadingSlide(false);
     }
   };
 
@@ -226,6 +383,22 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
               <Printer className="h-4 w-4" />
               Print slide
             </Button>
+            <Button
+              type="button"
+              onClick={downloadSlide}
+              variant="secondary"
+              disabled={isDownloadingSlide}
+              data-testid="button-download-profile-slide"
+            >
+              {isDownloadingSlide ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : slideDownloaded ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {isDownloadingSlide ? "Preparing…" : slideDownloaded ? "Downloaded" : "Download slide"}
+            </Button>
             <Button type="button" variant="ghost" asChild>
               <a href={profileUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4" />
@@ -243,8 +416,13 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
               The QR download was blocked. Try again, or right-click the QR image and choose “Save image as…”.
             </p>
           )}
+          {slideDownloadError && (
+            <p className="text-sm text-destructive" role="alert">
+              The slide download could not be created. Try again, or use “Print slide” and choose “Save to PDF”.
+            </p>
+          )}
           <p className="text-xs leading-relaxed text-muted-foreground">
-            The slide includes your church name, a short invitation, and this same QR code. Choose “Save to PDF” in the print dialog if you want a digital copy.
+            The slide includes your church name, a short invitation, and this same QR code. Download it as a high-resolution PNG, or choose “Save to PDF” in the print dialog.
           </p>
         </div>
       </CardContent>
