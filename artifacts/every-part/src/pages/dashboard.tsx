@@ -1,4 +1,4 @@
-import { useGetDashboardSummary } from "@workspace/api-client-react";
+import { useGetAppAdminAccess, useGetDashboardSummary } from "@workspace/api-client-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, FileText, Settings, Sparkles, Users, UsersRound } from "lucide-react";
 import { Link, Redirect } from "wouter";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/empty-state";
 import { ShareProfileCard } from "@/components/share-profile-card";
+import { AppFeedbackInbox } from "@/pages/app-admin";
 
 function buildPublicProfileUrl(profilePath: string) {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -15,6 +16,7 @@ function buildPublicProfileUrl(profilePath: string) {
 
 export default function Dashboard() {
   const { data: summary, isLoading, error } = useGetDashboardSummary();
+  const { data: appAdminAccess } = useGetAppAdminAccess();
 
   if (error) {
     return (
@@ -285,6 +287,12 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+
+      {appAdminAccess?.isAdmin && (
+        <section className="border-t border-border/70 pt-10" aria-labelledby="dashboard-feedback-heading">
+          <AppFeedbackInbox />
+        </section>
+      )}
     </div>
   );
 }

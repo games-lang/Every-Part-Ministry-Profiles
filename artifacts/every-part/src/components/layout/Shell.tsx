@@ -52,17 +52,17 @@ export function Shell({ children }: { children: ReactNode }) {
               })}
               {adminAccess?.isAdmin && (
                 <Link
-                  href="/app-admin"
-                  aria-current={location === "/app-admin" ? "page" : undefined}
+                  href="/dashboard#feedback"
+                  aria-current={location === "/dashboard" ? "page" : undefined}
                   className={`relative flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-offset-1 ${
-                    location === "/app-admin"
+                    location === "/dashboard"
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                   data-testid="link-app-admin"
                 >
                   <ShieldCheck className="h-4 w-4" />
-                  App Feedback
+                  Feedback
                 </Link>
               )}
             </nav>

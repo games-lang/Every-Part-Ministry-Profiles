@@ -200,7 +200,7 @@ function AccessDenied() {
   );
 }
 
-function AppAdminDashboard() {
+export function AppFeedbackInbox() {
   const [statusFilter, setStatusFilter] = useState<"all" | AppFeedback["status"]>("all");
   const [typeFilter, setTypeFilter] = useState<"all" | AppFeedback["type"]>("all");
   const queryClient = useQueryClient();
@@ -223,29 +223,14 @@ function AppAdminDashboard() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background">
-      <header className="border-b border-border/80 bg-background/95">
-        <div className="container mx-auto flex min-h-16 items-center justify-between gap-4 px-4 py-3">
-          <Link href="/dashboard" className="rounded-xl" aria-label="Every Part church dashboard">
-            <Brand compact />
-          </Link>
-          <Button variant="outline" size="sm" asChild className="rounded-full">
-            <Link href="/dashboard">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Church dashboard
-            </Link>
-          </Button>
-        </div>
-      </header>
-
-      <main className="container mx-auto max-w-6xl space-y-8 px-4 py-8 sm:py-10">
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+    <div className="space-y-8" id="feedback">
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-accent">
               <ShieldCheck className="h-4 w-4" />
-              Every Part app administration
+              App administration
             </p>
-            <h1 className="font-serif text-4xl font-semibold tracking-[-.04em] sm:text-5xl">Suggestions & fixes</h1>
+            <h2 className="font-serif text-3xl font-semibold tracking-[-.04em] sm:text-4xl">Suggestions & improvements</h2>
             <p className="mt-2 max-w-2xl text-muted-foreground">
               Listen to what people are noticing, respond thoughtfully, and keep a clear record of improvements.
             </p>
@@ -260,9 +245,9 @@ function AppAdminDashboard() {
             <RefreshCw className={`mr-2 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-        </div>
+      </div>
 
-        <div className="grid gap-4 sm:grid-cols-3" aria-label="Feedback overview metrics">
+      <div className="grid gap-4 sm:grid-cols-3" aria-label="Feedback overview metrics">
           <Card className="border-border/70 border-l-4 border-l-primary shadow-sm">
             <CardHeader className="pb-2">
               <CardDescription>Open items</CardDescription>
@@ -281,9 +266,9 @@ function AppAdminDashboard() {
               <CardTitle className="font-serif text-4xl" data-testid="metric-fixes">{fixCount}</CardTitle>
             </CardHeader>
           </Card>
-        </div>
+      </div>
 
-        <Card className="border-border/70 shadow-sm">
+      <Card className="border-border/70 shadow-sm">
           <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
             <div className="flex items-center gap-3">
               <Inbox className="h-5 w-5 text-accent" />
@@ -318,9 +303,9 @@ function AppAdminDashboard() {
               </select>
             </div>
           </CardContent>
-        </Card>
+      </Card>
 
-        {isLoading ? (
+      {isLoading ? (
           <div className="space-y-4">
             {[1, 2].map((item) => (
               <Card key={item} className="border-border/70 p-6">
@@ -330,7 +315,7 @@ function AppAdminDashboard() {
               </Card>
             ))}
           </div>
-        ) : error ? (
+      ) : error ? (
           <Card className="border-destructive/30 bg-destructive/5">
             <CardHeader>
               <CardTitle className="text-destructive">Feedback could not be loaded</CardTitle>
@@ -344,7 +329,7 @@ function AppAdminDashboard() {
               </Button>
             </CardContent>
           </Card>
-        ) : filteredItems.length === 0 ? (
+      ) : filteredItems.length === 0 ? (
           <Card className="border-dashed border-border/80">
             <CardContent className="flex flex-col items-center justify-center px-6 py-16 text-center">
               <CheckCircle2 className="h-10 w-10 text-accent" />
@@ -354,14 +339,13 @@ function AppAdminDashboard() {
               </p>
             </CardContent>
           </Card>
-        ) : (
+      ) : (
           <div className="space-y-4">
             {filteredItems.map((item) => (
               <FeedbackCard key={item.id} item={item} onSaved={onSaved} />
             ))}
           </div>
-        )}
-      </main>
+      )}
     </div>
   );
 }
@@ -379,5 +363,24 @@ export function AppAdminRoute() {
 
   if (error || !access?.isAdmin) return <AccessDenied />;
 
-  return <AppAdminDashboard />;
+  return (
+    <div className="min-h-[100dvh] bg-background">
+      <header className="border-b border-border/80 bg-background/95">
+        <div className="container mx-auto flex min-h-16 items-center justify-between gap-4 px-4 py-3">
+          <Link href="/dashboard" className="rounded-xl" aria-label="Every Part church dashboard">
+            <Brand compact />
+          </Link>
+          <Button variant="outline" size="sm" asChild className="rounded-full">
+            <Link href="/dashboard">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Church dashboard
+            </Link>
+          </Button>
+        </div>
+      </header>
+      <main className="container mx-auto max-w-6xl px-4 py-8 sm:py-10">
+        <AppFeedbackInbox />
+      </main>
+    </div>
+  );
 }
