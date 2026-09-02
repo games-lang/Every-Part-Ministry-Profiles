@@ -26,6 +26,7 @@ import type {
   AppFeedbackList,
   AppFeedbackSubmission,
   AppFeedbackUpdateInput,
+  AssistantChatInput,
   Church,
   ChurchAdmin,
   ChurchAdminAccess,
@@ -175,6 +176,87 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
 
 
+
+export const getChatWithAssistantUrl = () => {
+
+
+
+
+  return `/api/assistant/chat`
+}
+
+/**
+ * Streams a product-guidance response for public website visitors
+ * @summary Chat with the public Every Part assistant
+ */
+export const chatWithAssistant = async (assistantChatInput: AssistantChatInput, options?: Parameters<typeof customFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<unknown>(getChatWithAssistantUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(assistantChatInput)
+  }
+);}
+
+
+
+
+
+export const getChatWithAssistantMutationKey = () => ['chatWithAssistant'] as const;
+
+export const getChatWithAssistantMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatWithAssistant>>, TError,ChatWithAssistantMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof chatWithAssistant>>, TError,ChatWithAssistantMutationVariables, TContext> => {
+
+const mutationKey = getChatWithAssistantMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chatWithAssistant>>, ChatWithAssistantMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  chatWithAssistant(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChatWithAssistantMutationResult = NonNullable<Awaited<ReturnType<typeof chatWithAssistant>>>
+    export type ChatWithAssistantMutationBody = BodyType<AssistantChatInput>
+    export type ChatWithAssistantMutationError = ErrorType<void>
+    export type ChatWithAssistantMutationVariables = {data: BodyType<AssistantChatInput>}
+
+    /**
+ * @summary Chat with the public Every Part assistant
+ */
+export const useChatWithAssistant = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatWithAssistant>>, TError,ChatWithAssistantMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof chatWithAssistant>>,
+        TError,
+        ChatWithAssistantMutationVariables,
+        TContext
+      > => {
+      return useMutation(getChatWithAssistantMutationOptions(options));
+    }
 
 export const getCreateAppFeedbackUrl = () => {
 

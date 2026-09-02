@@ -18,6 +18,26 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
+ * Streams a product-guidance response for public website visitors
+ * @summary Chat with the public Every Part assistant
+ */
+export const chatWithAssistantBodyMessagesItemContentMax = 1500;
+
+export const chatWithAssistantBodyMessagesMax = 12;
+
+
+
+export const ChatWithAssistantBody = zod.object({
+  "messages": zod.array(zod.object({
+  "role": zod.enum(['user', 'assistant']),
+  "content": zod.string().min(1).max(chatWithAssistantBodyMessagesItemContentMax)
+})).min(1).max(chatWithAssistantBodyMessagesMax)
+})
+
+export const ChatWithAssistantResponse = zod.unknown()
+
+
+/**
  * Save a suggestion or problem report from the public sign-in experience
  * @summary Submit public feedback
  */

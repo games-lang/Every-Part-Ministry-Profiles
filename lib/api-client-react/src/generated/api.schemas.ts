@@ -5,6 +5,31 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type AssistantChatMessageRole = typeof AssistantChatMessageRole[keyof typeof AssistantChatMessageRole];
+
+
+export const AssistantChatMessageRole = {
+  user: 'user',
+  assistant: 'assistant',
+} as const;
+
+export interface AssistantChatMessage {
+  role: AssistantChatMessageRole;
+  /**
+     * @minLength 1
+     * @maxLength 1500
+     */
+  content: string;
+}
+
+export interface AssistantChatInput {
+  /**
+     * @minItems 1
+     * @maxItems 12
+     */
+  messages: AssistantChatMessage[];
+}
+
 export interface HealthStatus {
   status: string;
 }

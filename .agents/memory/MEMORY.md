@@ -11,3 +11,4 @@
 - [Development database migration workflow](db-migration-workflow.md) — use tracked SQL migrations; Drizzle push can block on named-schema prompts without a TTY.
 - [Church tradition customization](church-tradition-customization.md) — tradition supplies optional wording defaults; church choices remain authoritative and are snapshotted per profile.
 - [Clerk signed-in route behavior](clerk-signed-in-route-behavior.md) — never render Clerk SignIn while a session is active; show an in-app continuation instead of triggering an automatic redirect.
+- [Landing-page fixed overlays](landing-fixed-overlays.md) — fixed launchers need explicit viewport positioning outside the landing overflow container or they can disappear.

@@ -10,6 +10,7 @@ import youthProfilesRouter from "./youth-profiles";
 import journeysRouter from "./journeys";
 import peopleRouter from "./people";
 import feedbackRouter from "./feedback";
+import assistantRouter from "./assistant";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(youthProfilesRouter);
 router.use(journeysRouter);
 router.use(peopleRouter);
 router.use(feedbackRouter);
+router.use(assistantRouter);
 
 export default router;

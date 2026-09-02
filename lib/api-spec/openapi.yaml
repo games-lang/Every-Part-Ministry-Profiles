@@ -24,6 +24,8 @@ tags:
     description: Guardian-consented youth discovery profiles
   - name: app-admin
     description: Every Part app administrator feedback operations
+  - name: assistant
+    description: Public Every Part website assistant
 paths:
   /healthz:
     get:
@@ -38,6 +40,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /assistant/chat:
+    post:
+      operationId: chatWithAssistant
+      tags: [assistant]
+      summary: Chat with the public Every Part assistant
+      description: Streams a product-guidance response for public website visitors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssistantChatInput"
+      responses:
+        "200":
+          description: Server-sent events containing assistant text chunks
+          content:
+            text/event-stream: {}
+        "400":
+          description: Invalid chat input
+        "429":
+          description: Too many requests
+        "502":
+          description: AI service unavailable
   /feedback:
     post:
       operationId: createAppFeedback
@@ -993,6 +1018,27 @@ paths:
           description: Profile or team not found
 components:
   schemas:
+    AssistantChatMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1500
+      required: [role, content]
+    AssistantChatInput:
+      type: object
+      properties:
+        messages:
+          type: array
+          minItems: 1
+          maxItems: 12
+          items:
+            $ref: "#/components/schemas/AssistantChatMessage"
+      required: [messages]
     HealthStatus:
       type: object
       properties:

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { PuzzleCluster } from "@/components/puzzle-cluster";
+import { PublicAiAssistant } from "@/components/public-ai-assistant";
 
 const pathway = [
   {
@@ -188,7 +189,8 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
+    <>
+      <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
       <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link href="/" className="landing-focus rounded-xl" aria-label="Every Part home" onClick={closeMenu}>
@@ -603,6 +605,8 @@ export default function LandingPage() {
           <span>Made for the work of helping people serve well.</span>
         </div>
       </footer>
-    </div>
+      </div>
+      <PublicAiAssistant />
+    </>
   );
 }
