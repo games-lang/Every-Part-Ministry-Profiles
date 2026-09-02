@@ -177,7 +177,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
   if (!initialAge || isNaN(initialAge) || initialAge < 9 || initialAge > 12) {
     return (
       <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
-        <Card className="w-full max-w-md border-border/60 shadow-lg text-center landing-reveal">
+        <Card className="w-full max-w-md border-border/60 shadow-lg text-center landing-reveal is-visible">
           <CardContent className="p-8">
             <h2 className="text-xl font-serif font-medium mb-3">Age Required</h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -622,7 +622,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           
           {currentSection === 1 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <User className="w-8 h-8 text-primary" />
@@ -704,7 +704,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
           )}
 
           {currentSection === 2 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
                   <Compass className="w-8 h-8 text-secondary" />
@@ -825,7 +825,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
           )}
 
           {currentSection === 3 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-chart-2/10 flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-chart-2" />
@@ -859,7 +859,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
           )}
 
           {currentSection === 4 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-chart-1/10 flex items-center justify-center mx-auto mb-4">
                   <HandHeart className="w-8 h-8 text-chart-1" />
@@ -893,7 +893,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
           )}
 
           {currentSection === 5 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-chart-3/10 flex items-center justify-center mx-auto mb-4">
                   <Sprout className="w-8 h-8 text-chart-3" />
@@ -946,7 +946,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
           )}
 
           {currentSection === 6 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-chart-4/10 flex items-center justify-center mx-auto mb-4">
                   <Lightbulb className="w-8 h-8 text-chart-4" />
@@ -1026,7 +1026,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
           )}
 
           {currentSection === 7 && (
-            <div className="space-y-6 landing-reveal">
+            <div className="space-y-6 landing-reveal is-visible">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <ShieldCheck className="w-8 h-8 text-primary" />

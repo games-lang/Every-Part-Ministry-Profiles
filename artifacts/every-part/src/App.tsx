@@ -21,6 +21,7 @@ import AgeGateway from '@/pages/age-gateway';
 import YouthPathwayStub from '@/pages/youth-pathway-stub';
 import DiscoverGate from '@/pages/discover-gate';
 import DiscoverAssessment from '@/pages/discover-assessment';
+import ExploreAssessment from '@/pages/explore-assessment';
 
 import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
@@ -220,7 +221,7 @@ function ClerkProviderWithRoutes() {
               <Route path="/profile/:slug" component={AgeGateway} />
               <Route path="/profile/:slug/adult" component={Assessment} />
               <Route path="/profile/:slug/discover" component={DiscoverRoute} />
-              <Route path="/profile/:slug/explore" component={YouthPathwayStub} />
+              <Route path="/profile/:slug/explore" component={ExploreAssessment} />
               <Route path="/profile/:slug/develop" component={YouthPathwayStub} />
               <Route path="/discover/result/:token" component={YouthPathwayStub} />
               <Route path="/explore/result/:token" component={YouthPathwayStub} />
