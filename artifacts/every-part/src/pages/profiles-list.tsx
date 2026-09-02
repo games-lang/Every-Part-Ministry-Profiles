@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useListProfiles, useFindVolunteerMatches, useListTeams } from "@workspace/api-client-react";
+import { useListProfiles, useFindVolunteerMatches, useListTeams, useListPeople, type MinistryPerson } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Search, User, Mail, Calendar, Sparkles, AlertCircle, HeartHandshake, CheckCircle2, Info, Loader2, UsersRound } from "lucide-react";
+import { Search, User, Mail, Calendar, Sparkles, AlertCircle, HeartHandshake, CheckCircle2, Info, Loader2, UsersRound, Clock3, ArrowRight } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useForm } from "react-hook-form";
 import { EmptyState } from "@/components/empty-state";
@@ -111,6 +111,86 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
   );
 }
 
+function PendingPeopleSection({ people }: { people: MinistryPerson[] }) {
+  if (people.length === 0) return null;
+
+  return (
+    <section className="space-y-3">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="font-serif text-2xl font-medium">Needs a profile</h2>
+            <Badge variant="secondary" className="bg-secondary/20 text-foreground">
+              {people.length}
+            </Badge>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">
+            People you added manually who have not completed their Ministry Profile yet.
+          </p>
+        </div>
+        <Link
+          href="/profiles?view=people"
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+        >
+          Manage invites
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+      <div className="grid gap-3">
+        {people.map((person) => {
+          const isExpired = person.inviteStatus === "expired";
+          return (
+            <Card key={person.id} className="border-primary/15 bg-primary/[0.02] shadow-sm">
+              <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="font-serif text-xl font-medium">
+                      {person.firstName} {person.lastName}
+                    </h3>
+                    <Badge
+                      variant="outline"
+                      className={
+                        isExpired
+                          ? "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300"
+                          : "border-primary/20 bg-primary/5 text-primary"
+                      }
+                    >
+                      <Clock3 className="mr-1 h-3.5 w-3.5" />
+                      {isExpired ? "Invite expired" : "Awaiting profile"}
+                    </Badge>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-muted-foreground">
+                    {person.email && (
+                      <span className="flex items-center gap-1.5">
+                        <Mail className="h-3.5 w-3.5" />
+                        {person.email}
+                      </span>
+                    )}
+                    {person.phone && (
+                      <span className="flex items-center gap-1.5">
+                        <span aria-hidden="true">•</span>
+                        {person.phone}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {isExpired
+                      ? "Renew their invite to give them a new private link."
+                      : `Invite expires ${new Date(person.inviteExpiresAt).toLocaleDateString()}.`}
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" className="shrink-0" asChild>
+                  <Link href="/profiles?view=people">View invite</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 export default function ProfilesList() {
   const [location] = useLocation();
   const [activeTab, setActiveTab] = useState<"directory" | "people" | "match">(() => {
@@ -123,8 +203,17 @@ export default function ProfilesList() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 300);
   const { data: profiles, isLoading: isLoadingProfiles, error: profilesError } = useListProfiles({ search: debouncedSearch || undefined });
+  const { data: people } = useListPeople();
   const { data: teams } = useListTeams();
   const teamNames = new Map(teams?.map((team) => [team.id, team.name]) ?? []);
+  const pendingPeople = (people ?? []).filter((person) => {
+    const matchesSearch =
+      !debouncedSearch ||
+      `${person.firstName} ${person.lastName} ${person.email ?? ""} ${person.phone ?? ""}`
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase());
+    return person.source === "manual" && !person.profileId && person.inviteStatus !== "completed" && matchesSearch;
+  });
 
   // Match state
   const matchMutation = useFindVolunteerMatches();
@@ -202,6 +291,8 @@ export default function ProfilesList() {
               />
             </div>
           </div>
+
+          <PendingPeopleSection people={pendingPeople} />
 
           {profilesError ? (
             <div className="bg-destructive/10 text-destructive p-4 rounded-lg border border-destructive/20">
