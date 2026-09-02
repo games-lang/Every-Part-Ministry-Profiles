@@ -1,11 +1,26 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Check, Copy, Download, ExternalLink, Printer, QrCode } from "lucide-react";
 
 type ShareProfileCardProps = {
   churchName: string;
   profileUrl: string;
+};
+
+type SlideContent = {
+  eyebrow: string;
+  headline: string;
+  message: string;
+  churchName: string;
+};
+
+const defaultSlideContent = {
+  eyebrow: "A thoughtful next step",
+  headline: "Every person has a part.",
+  message: "Discover the gifts, passions, and ways you may enjoy serving in your church community.",
 };
 
 function escapeHtml(value: string) {
@@ -87,6 +102,10 @@ function drawWrappedText(
 }
 
 export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardProps) {
+  const [slideContent, setSlideContent] = useState<SlideContent>({
+    ...defaultSlideContent,
+    churchName,
+  });
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
@@ -96,6 +115,20 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
   const [slideDownloadError, setSlideDownloadError] = useState(false);
   const [printBlocked, setPrintBlocked] = useState(false);
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=24&data=${encodeURIComponent(profileUrl)}`;
+
+  const updateSlideContent = <Key extends keyof SlideContent>(
+    key: Key,
+    value: SlideContent[Key],
+  ) => {
+    setSlideContent((current) => ({ ...current, [key]: value }));
+  };
+
+  const resetSlideContent = () => {
+    setSlideContent({
+      ...defaultSlideContent,
+      churchName,
+    });
+  };
 
   const copyLink = async () => {
     try {
@@ -161,20 +194,19 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
       context.fillStyle = "#397f77";
       context.font = "700 24px Arial, sans-serif";
       context.letterSpacing = "5px";
-      context.fillText("A THOUGHTFUL NEXT STEP", 170, 215);
+      context.fillText(slideContent.eyebrow.toUpperCase(), 170, 215);
 
       context.fillStyle = "#203746";
       context.font = "700 112px Arial, sans-serif";
       context.letterSpacing = "-3px";
-      context.fillText("Every person", 170, 390);
-      context.fillText("has a part.", 170, 515);
+      drawWrappedText(context, slideContent.headline, 170, 390, 800, 125, 2);
 
       context.fillStyle = "#5b6b73";
       context.font = "400 32px Arial, sans-serif";
       context.letterSpacing = "0px";
       drawWrappedText(
         context,
-        "Discover the gifts, passions, and ways you may enjoy serving in your church community.",
+        slideContent.message,
         170,
         625,
         720,
@@ -184,7 +216,7 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
 
       context.fillStyle = "#203746";
       context.font = "700 30px Arial, sans-serif";
-      drawWrappedText(context, churchName, 170, 820, 720, 42, 2);
+      drawWrappedText(context, slideContent.churchName, 170, 820, 720, 42, 2);
 
       context.shadowColor = "rgba(32, 55, 70, 0.14)";
       context.shadowBlur = 40;
@@ -201,9 +233,6 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
       context.font = "700 26px Arial, sans-serif";
       context.textAlign = "center";
       drawWrappedText(context, "Scan to begin your Ministry Profile", 1470, 720, 450, 36, 2);
-      context.fillStyle = "#69777b";
-      context.font = "400 16px Arial, sans-serif";
-      drawWrappedText(context, profileUrl, 1470, 825, 450, 24, 3);
       context.textAlign = "left";
 
       const slideBlob = await new Promise<Blob | null>((resolve) => {
@@ -236,8 +265,10 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
       return;
     }
 
-    const safeChurchName = escapeHtml(churchName);
-    const safeProfileUrl = escapeHtml(profileUrl);
+    const safeEyebrow = escapeHtml(slideContent.eyebrow);
+    const safeHeadline = escapeHtml(slideContent.headline);
+    const safeMessage = escapeHtml(slideContent.message);
+    const safeChurchName = escapeHtml(slideContent.churchName);
     const safeQrUrl = escapeHtml(qrImageUrl);
 
     printWindow.document.write(`<!doctype html>
@@ -295,21 +326,19 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
             }
             .qr-card img { display: block; width: 100%; height: auto; }
             .scan { margin: 1rem 0 0; font-size: clamp(16px, 1.5vw, 24px); font-weight: 700; }
-            .url { margin: .75rem 0 0; color: #69777b; font-size: clamp(10px, .9vw, 15px); word-break: break-all; }
           </style>
         </head>
         <body>
           <main class="slide">
             <section class="copy">
-              <p class="eyebrow">A thoughtful next step</p>
-              <h1>Every person has a part.</h1>
-              <p class="description">Discover the gifts, passions, and ways you may enjoy serving in your church community.</p>
+              <p class="eyebrow">${safeEyebrow}</p>
+              <h1>${safeHeadline}</h1>
+              <p class="description">${safeMessage}</p>
               <p class="church">${safeChurchName}</p>
             </section>
             <section class="qr-card">
               <img src="${safeQrUrl}" alt="QR code for the ${safeChurchName} Ministry Profile" />
               <p class="scan">Scan to begin your Ministry Profile</p>
-              <p class="url">${safeProfileUrl}</p>
             </section>
           </main>
         </body>
@@ -357,6 +386,58 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
             <p className="mt-1 break-all rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
               {profileUrl}
             </p>
+          </div>
+          <div className="space-y-3 rounded-xl border border-border/70 bg-muted/20 p-4" data-testid="slide-editor">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Edit your slide</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  These changes apply to the print and download versions. The public link stays inside the QR code.
+                </p>
+              </div>
+              <Button type="button" variant="ghost" size="sm" onClick={resetSlideContent}>
+                Reset
+              </Button>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-1.5 text-xs font-semibold text-foreground">
+                Eyebrow
+                <Input
+                  value={slideContent.eyebrow}
+                  onChange={(event) => updateSlideContent("eyebrow", event.target.value)}
+                  maxLength={48}
+                  className="bg-background text-sm font-normal"
+                />
+              </label>
+              <label className="space-y-1.5 text-xs font-semibold text-foreground">
+                Church name
+                <Input
+                  value={slideContent.churchName}
+                  onChange={(event) => updateSlideContent("churchName", event.target.value)}
+                  maxLength={80}
+                  className="bg-background text-sm font-normal"
+                />
+              </label>
+            </div>
+            <label className="block space-y-1.5 text-xs font-semibold text-foreground">
+              Headline
+              <Input
+                value={slideContent.headline}
+                onChange={(event) => updateSlideContent("headline", event.target.value)}
+                maxLength={80}
+                className="bg-background text-sm font-normal"
+              />
+            </label>
+            <label className="block space-y-1.5 text-xs font-semibold text-foreground">
+              Message
+              <Textarea
+                value={slideContent.message}
+                onChange={(event) => updateSlideContent("message", event.target.value)}
+                maxLength={180}
+                rows={3}
+                className="resize-y bg-background text-sm font-normal"
+              />
+            </label>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Button type="button" onClick={copyLink} variant="outline" data-testid="button-copy-profile-link">
