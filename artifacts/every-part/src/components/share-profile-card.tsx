@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, Copy, Download, ExternalLink, Printer, QrCode } from "lucide-react";
+import { Check, Code2, Copy, Download, ExternalLink, Pencil, Printer, QrCode } from "lucide-react";
 
 type ShareProfileCardProps = {
   churchName: string;
@@ -106,7 +106,10 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
     ...defaultSlideContent,
     churchName,
   });
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isEmbedOpen, setIsEmbedOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [embedCopied, setEmbedCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
   const [downloadError, setDownloadError] = useState(false);
@@ -115,6 +118,12 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
   const [slideDownloadError, setSlideDownloadError] = useState(false);
   const [printBlocked, setPrintBlocked] = useState(false);
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=24&data=${encodeURIComponent(profileUrl)}`;
+  const embedCode = `<iframe
+  src="${escapeHtml(profileUrl)}"
+  title="${escapeHtml(churchName)} Ministry Profile"
+  style="width: 100%; min-height: 760px; border: 0;"
+  loading="lazy"
+></iframe>`;
 
   const updateSlideContent = <Key extends keyof SlideContent>(
     key: Key,
@@ -128,6 +137,16 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
       ...defaultSlideContent,
       churchName,
     });
+  };
+
+  const copyEmbedCode = async () => {
+    try {
+      await navigator.clipboard.writeText(embedCode);
+      setEmbedCopied(true);
+      window.setTimeout(() => setEmbedCopied(false), 2500);
+    } catch {
+      setEmbedCopied(false);
+    }
   };
 
   const copyLink = async () => {
@@ -387,58 +406,6 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
               {profileUrl}
             </p>
           </div>
-          <div className="space-y-3 rounded-xl border border-border/70 bg-muted/20 p-4" data-testid="slide-editor">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-foreground">Edit your slide</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  These changes apply to the print and download versions. The public link stays inside the QR code.
-                </p>
-              </div>
-              <Button type="button" variant="ghost" size="sm" onClick={resetSlideContent}>
-                Reset
-              </Button>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="space-y-1.5 text-xs font-semibold text-foreground">
-                Eyebrow
-                <Input
-                  value={slideContent.eyebrow}
-                  onChange={(event) => updateSlideContent("eyebrow", event.target.value)}
-                  maxLength={48}
-                  className="bg-background text-sm font-normal"
-                />
-              </label>
-              <label className="space-y-1.5 text-xs font-semibold text-foreground">
-                Church name
-                <Input
-                  value={slideContent.churchName}
-                  onChange={(event) => updateSlideContent("churchName", event.target.value)}
-                  maxLength={80}
-                  className="bg-background text-sm font-normal"
-                />
-              </label>
-            </div>
-            <label className="block space-y-1.5 text-xs font-semibold text-foreground">
-              Headline
-              <Input
-                value={slideContent.headline}
-                onChange={(event) => updateSlideContent("headline", event.target.value)}
-                maxLength={80}
-                className="bg-background text-sm font-normal"
-              />
-            </label>
-            <label className="block space-y-1.5 text-xs font-semibold text-foreground">
-              Message
-              <Textarea
-                value={slideContent.message}
-                onChange={(event) => updateSlideContent("message", event.target.value)}
-                maxLength={180}
-                rows={3}
-                className="resize-y bg-background text-sm font-normal"
-              />
-            </label>
-          </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Button type="button" onClick={copyLink} variant="outline" data-testid="button-copy-profile-link">
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -480,6 +447,28 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
               )}
               {isDownloadingSlide ? "Preparing…" : slideDownloaded ? "Downloaded" : "Download slide"}
             </Button>
+            <Button
+              type="button"
+              variant={isEditorOpen ? "secondary" : "outline"}
+              onClick={() => setIsEditorOpen((open) => !open)}
+              aria-expanded={isEditorOpen}
+              aria-controls="slide-editor-panel"
+              data-testid="button-edit-profile-slide"
+            >
+              <Pencil className="h-4 w-4" />
+              {isEditorOpen ? "Close editor" : "Edit slide"}
+            </Button>
+            <Button
+              type="button"
+              variant={isEmbedOpen ? "secondary" : "outline"}
+              onClick={() => setIsEmbedOpen((open) => !open)}
+              aria-expanded={isEmbedOpen}
+              aria-controls="embed-code-panel"
+              data-testid="button-embed-profile"
+            >
+              <Code2 className="h-4 w-4" />
+              {isEmbedOpen ? "Close embed code" : "Embed code"}
+            </Button>
             <Button type="button" variant="ghost" asChild>
               <a href={profileUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4" />
@@ -487,6 +476,77 @@ export function ShareProfileCard({ churchName, profileUrl }: ShareProfileCardPro
               </a>
             </Button>
           </div>
+          {isEditorOpen && (
+            <div id="slide-editor-panel" className="space-y-3 rounded-xl border border-border/70 bg-muted/20 p-4" data-testid="slide-editor">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Edit your slide</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    These changes apply to the print and download versions. The public link stays inside the QR code.
+                  </p>
+                </div>
+                <Button type="button" variant="ghost" size="sm" onClick={resetSlideContent}>
+                  Reset
+                </Button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="space-y-1.5 text-xs font-semibold text-foreground">
+                  Eyebrow
+                  <Input
+                    value={slideContent.eyebrow}
+                    onChange={(event) => updateSlideContent("eyebrow", event.target.value)}
+                    maxLength={48}
+                    className="bg-background text-sm font-normal"
+                  />
+                </label>
+                <label className="space-y-1.5 text-xs font-semibold text-foreground">
+                  Church name
+                  <Input
+                    value={slideContent.churchName}
+                    onChange={(event) => updateSlideContent("churchName", event.target.value)}
+                    maxLength={80}
+                    className="bg-background text-sm font-normal"
+                  />
+                </label>
+              </div>
+              <label className="block space-y-1.5 text-xs font-semibold text-foreground">
+                Headline
+                <Input
+                  value={slideContent.headline}
+                  onChange={(event) => updateSlideContent("headline", event.target.value)}
+                  maxLength={80}
+                  className="bg-background text-sm font-normal"
+                />
+              </label>
+              <label className="block space-y-1.5 text-xs font-semibold text-foreground">
+                Message
+                <Textarea
+                  value={slideContent.message}
+                  onChange={(event) => updateSlideContent("message", event.target.value)}
+                  maxLength={180}
+                  rows={3}
+                  className="resize-y bg-background text-sm font-normal"
+                />
+              </label>
+            </div>
+          )}
+          {isEmbedOpen && (
+            <div id="embed-code-panel" className="space-y-3 rounded-xl border border-border/70 bg-muted/20 p-4" data-testid="embed-code-panel">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Add it to your website</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Paste this into an HTML block or custom-code section. It embeds the church’s age-based Ministry Profile entry point.
+                </p>
+              </div>
+              <pre className="overflow-x-auto rounded-lg border border-border/60 bg-background p-3 text-xs leading-relaxed text-foreground">
+                <code>{embedCode}</code>
+              </pre>
+              <Button type="button" variant="outline" size="sm" onClick={copyEmbedCode} data-testid="button-copy-embed-code">
+                {embedCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {embedCopied ? "Embed code copied" : "Copy embed code"}
+              </Button>
+            </div>
+          )}
           {printBlocked && (
             <p className="text-sm text-destructive" role="alert">
               Your browser blocked the slide window. Allow pop-ups for Every Part and try again.
