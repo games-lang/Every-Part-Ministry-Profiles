@@ -1,0 +1,369 @@
+# Add “Every Part Early Access” Beta Experience
+
+I want to launch **Every Part** in an intentional beta phase called:
+
+# Every Part Early Access
+
+The goal is to let a small group of churches begin using the platform in real ministry settings while clearly communicating that the product is still being improved based on real church feedback.
+
+Do NOT make the product feel unstable, experimental, or unfinished.
+
+The tone should be:
+
+* Professional
+* Warm
+* Ministry-focused
+* Collaborative
+* Confident
+* Transparent
+
+The message should be:
+
+**Every Part is ready to be used, but Early Access churches are helping shape and improve the platform before the broader public launch.**
+
+## 1. Add an Early Access Badge
+
+Add a small, tasteful badge in appropriate places that says:
+
+**Early Access**
+
+Possible locations:
+
+* Near the Every Part logo in the dashboard
+* In account/settings
+* On the church admin dashboard
+* On the About Every Part page
+
+Do not display the badge everywhere or make it distracting.
+
+The badge should feel similar to how modern software products label new or preview features.
+
+## 2. Add an Early Access Welcome Message
+
+When a church first joins during the Early Access period, show a short welcome message.
+
+Use language similar to:
+
+### Welcome to Every Part Early Access
+
+You are among the first churches helping shape Every Part.
+
+Every Part is designed to help people discover how God has equipped them and help church leaders connect them with meaningful opportunities to serve.
+
+During Early Access, you may occasionally notice features being improved, expanded, or refined.
+
+Your real-world experience and feedback will help us make Every Part better for churches everywhere.
+
+Thank you for helping build something designed to strengthen the Body of Christ.
+
+Include a button:
+
+**Continue to Every Part**
+
+Do not repeatedly show this message after the user has acknowledged it.
+
+## 3. Create an “About Early Access” Page
+
+Create a simple page accessible from the footer or settings called:
+
+**About Early Access**
+
+Include the following content:
+
+### What is Early Access?
+
+Every Part Early Access allows a small group of churches to begin using the platform before the full public launch.
+
+These churches help us learn how Every Part works in real ministry environments and help identify ways the platform can become clearer, more useful, and more effective.
+
+### Is Every Part ready to use?
+
+Yes.
+
+The core Every Part experience is designed to be used by real churches.
+
+However, during Early Access, some features may continue to evolve as we learn from participating churches.
+
+### Will my church data be used for testing?
+
+Church and member information should be treated according to Every Part's privacy and security policies.
+
+Early Access should NOT mean that private church or member information is publicly exposed or casually used for product experimentation.
+
+Feedback and usage patterns may be used to improve the platform, but privacy should remain a priority.
+
+### What kind of feedback is helpful?
+
+Examples include:
+
+* Something that was confusing
+* Something that was difficult to find
+* A feature that did not work as expected
+* A Ministry Profile question that was unclear
+* A Part Finder recommendation that was especially helpful or unhelpful
+* Something a pastor expected the platform to do
+* A feature that would make Every Part more useful in real ministry
+* Something members struggled to understand
+
+Since Every Part already has a feedback button, link users to that existing feedback system.
+
+## 4. Add Early Access Status to Church Accounts
+
+In the admin area, allow an account to have a status such as:
+
+* Early Access
+* Standard
+
+Initially, all churches joining during the beta period can automatically be assigned:
+
+**Early Access**
+
+This should allow Every Part to later identify which churches participated in the beta.
+
+Store useful fields such as:
+
+* Early Access start date
+* Church name
+* Primary administrator
+* Number of members invited
+* Number of Ministry Profiles started
+* Number of Ministry Profiles completed
+* Number of Part Finder conversations
+* Number of ministry opportunities created
+* Number of ministry matches reviewed
+
+Do not expose sensitive member information in aggregate beta analytics.
+
+## 5. Create an Early Access Admin Dashboard for the Platform Owner
+
+Create an internal owner-only dashboard called:
+
+# Early Access Overview
+
+This should help the Every Part platform owner understand how beta churches are actually using the product.
+
+Show metrics such as:
+
+### Churches
+
+* Total Early Access churches
+* Active churches
+* Churches inactive for 7+ days
+
+### Ministry Profiles
+
+* Profiles started
+* Profiles completed
+* Average completion rate
+* Average completion time if available
+
+### Part Finder
+
+* Number of conversations
+* Number of searches
+* Most frequently used types of searches
+
+### Opportunities
+
+* Opportunities created
+* Matches generated
+* Matches reviewed
+
+### Engagement
+
+* Admin logins
+* Member logins
+* Most-used features
+* Least-used major features
+
+Do not build an overly complicated analytics platform.
+
+The goal is simply to answer:
+
+**Are churches actually using Every Part, and where are they getting stuck?**
+
+## 6. Add Beta Issue Tracking
+
+Create an internal owner-only area where feedback and known problems can be categorized.
+
+Categories:
+
+* Bug
+* Confusing UX
+* Feature Request
+* Ministry Profile
+* Part Finder
+* Church Setup
+* Member Experience
+* Pastor Dashboard
+* Ministry Matching
+* Privacy / Permissions
+* Other
+
+Allow each issue to have:
+
+* Title
+* Description
+* Church that reported it
+* Date reported
+* Priority
+* Status
+
+Statuses:
+
+* New
+* Reviewing
+* Planned
+* In Progress
+* Resolved
+* Not Planned
+
+Priorities:
+
+* Critical
+* High
+* Medium
+* Low
+
+If possible, connect feedback submitted through the existing feedback button to this system.
+
+## 7. Track Repeated Feature Requests
+
+Create a simple method for identifying requests coming from multiple churches.
+
+For example:
+
+**Requested by 4 churches**
+
+This is important because repeated requests should be prioritized more heavily than isolated suggestions.
+
+Allow similar requests to be grouped together manually.
+
+## 8. Add an Early Access Health View
+
+For each Early Access church, show a simple internal health summary.
+
+Example:
+
+### Grace Community Church
+
+**Early Access Since:** August 15
+
+**Members Invited:** 47
+**Profiles Completed:** 31
+**Completion Rate:** 66%
+
+**Part Finder Conversations:** 18
+**Opportunities Created:** 6
+
+**Last Admin Activity:** Yesterday
+
+**Feedback Submitted:** 4 items
+
+Then show a simple health label:
+
+* Highly Active
+* Active
+* Low Activity
+* Needs Follow-Up
+
+Do not use complicated predictive scoring.
+
+## 9. Add Optional Check-In Prompts
+
+During Early Access, occasionally ask church administrators for very short feedback.
+
+Do NOT interrupt them frequently.
+
+Possible prompts:
+
+### After their first 5 completed profiles
+
+**How useful have the completed Ministry Profiles been so far?**
+
+* Very useful
+* Somewhat useful
+* Not very useful
+* Not sure yet
+
+### After using Part Finder several times
+
+**How useful were Part Finder's recommendations?**
+
+* Very useful
+* Somewhat useful
+* Not useful
+* I need more time
+
+### After approximately 30 days
+
+**Would you recommend Every Part to another church?**
+
+* Definitely
+* Probably
+* Not sure
+* Probably not
+
+Allow an optional comment.
+
+These responses should appear in the internal Early Access dashboard.
+
+## 10. Prepare for the End of Early Access
+
+Build the system so that churches can eventually transition from:
+
+**Early Access → Standard**
+
+without losing:
+
+* Accounts
+* Ministry Profiles
+* Part Finder history
+* Ministry opportunities
+* Church settings
+* Member information
+* Analytics
+
+When Early Access eventually ends, the platform owner should be able to change the church status without requiring churches to create new accounts.
+
+## 11. Founding Church Recognition
+
+Add an internal field:
+
+**Founding Church**
+
+This can later be used if we decide to give Early Access churches benefits such as:
+
+* Discounted pricing
+* Locked-in pricing
+* Extended free access
+* Founding Church badge
+* Early access to future features
+
+Do not automatically promise any permanent pricing or discounts yet.
+
+Simply make the system capable of identifying these churches later.
+
+## 12. Keep the Experience Simple
+
+Do not let the beta infrastructure distract from the core Every Part experience.
+
+The primary workflow should remain:
+
+**Church Setup → Invite People → Complete Ministry Profiles → Review Profiles → Use Part Finder → Connect People to Ministry**
+
+Early Access tools should mostly operate quietly in the background.
+
+The goal is not to create a “beta-testing app.”
+
+The goal is to create a polished ministry platform that is currently being refined with the help of a small group of real churches.
+
+## Core Early Access Message
+
+Use this philosophy throughout the experience:
+
+**Every Part Early Access gives churches the opportunity to begin using Every Part today while helping shape the platform for churches everywhere.**
+
+And where appropriate reinforce the broader Every Part mission:
+
+**Every person has a part to play in the Body of Christ.**
