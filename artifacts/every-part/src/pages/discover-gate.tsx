@@ -15,20 +15,38 @@ export default function DiscoverGate({
   params: { slug: string };
   Page: React.ComponentType<{ params: { slug: string }; hallwayCode?: string }>;
 }) {
-  const { isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   const [location] = useLocation();
   const [hallwayCode, setHallwayCode] = useState("");
-  const [accessGranted, setAccessGranted] = useState(false);
+  const [acceptedAccess, setAcceptedAccess] = useState<{
+    slug: string;
+    hallwayCode: string;
+  } | null>(null);
   const [error, setError] = useState("");
   const verifyAccess = useVerifyDiscoverAccess();
   const next = encodeURIComponent(location || `/profile/${params.slug}/discover`);
+  const hasAcceptedAccess =
+    acceptedAccess?.slug === params.slug;
 
-  if (isSignedIn) {
+  if (isLoaded && isSignedIn === true) {
     return <Page params={params} />;
   }
 
-  if (accessGranted) {
-    return <Page params={params} hallwayCode={hallwayCode} />;
+  if (hasAcceptedAccess) {
+    return <Page params={params} hallwayCode={acceptedAccess.hallwayCode} />;
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
+        <Card className="w-full max-w-md border-border/60 shadow-lg text-center">
+          <CardContent className="p-8 space-y-4">
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" aria-label="Checking access" />
+            <p className="text-sm text-muted-foreground">Checking access…</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const submitCode = (event: React.FormEvent<HTMLFormElement>) => {
@@ -40,7 +58,8 @@ export default function DiscoverGate({
         data: { hallwayCode },
       },
       {
-        onSuccess: () => setAccessGranted(true),
+        onSuccess: () =>
+          setAcceptedAccess({ slug: params.slug, hallwayCode }),
         onError: () => setError("That code did not work. Check it with your church and try again."),
       },
     );
