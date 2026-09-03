@@ -4,7 +4,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
-  Bot,
   Check,
   ChevronDown,
   Compass,
@@ -15,6 +14,7 @@ import {
   Menu,
   Network,
   Orbit,
+  Puzzle,
   Sparkles,
   UsersRound,
   X,
@@ -302,7 +302,7 @@ export default function LandingPage() {
                   data-testid="link-hero-partfinder"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
-                    <Bot className="h-5 w-5" />
+                    <Puzzle className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-[10px] font-bold uppercase tracking-[.16em] text-accent">Meet PartFinder</span>
@@ -529,7 +529,7 @@ export default function LandingPage() {
                  <div className="max-w-2xl">
                    <div className="flex items-center gap-3 text-secondary">
                      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
-                       <Bot className="h-5 w-5" />
+                       <Puzzle className="h-5 w-5" />
                      </span>
                      <p className="text-sm font-semibold uppercase tracking-[.14em]">AI-assisted ministry discovery</p>
                    </div>
