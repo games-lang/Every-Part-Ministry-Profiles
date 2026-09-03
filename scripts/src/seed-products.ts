@@ -1,4 +1,4 @@
-import { getUncachableStripeClient } from "./stripeClient";
+import { stripeRequest } from "./stripeClient";
 
 const plans = [
   {
@@ -22,28 +22,39 @@ const plans = [
 ] as const;
 
 async function seedProducts() {
-  const stripe = await getUncachableStripeClient();
-  const products = await stripe.products.list({ active: true, limit: 100 });
+  const productsResponse = await stripeRequest<{
+    data: Array<{
+      id: string;
+      metadata?: Record<string, string>;
+    }>;
+  }>("/v1/products?active=true&limit=100");
+  const products = productsResponse.data;
 
   for (const plan of plans) {
-    let product = products.data.find(
+    let product = products.find(
       (candidate) => candidate.metadata?.plan_key === plan.key,
     );
     if (!product) {
-      product = await stripe.products.create({
-        name: plan.name,
-        description: plan.description,
-        metadata: { plan_key: plan.key, app: "every_part" },
+      product = await stripeRequest<{ id: string }>("/v1/products", {
+        method: "POST",
+        body: new URLSearchParams({
+          name: plan.name,
+          description: plan.description,
+          "metadata[plan_key]": plan.key,
+          "metadata[app]": "every_part",
+        }).toString(),
       });
       console.log(`Created ${plan.name}: ${product.id}`);
     }
 
-    const existingPrices = await stripe.prices.list({
-      product: product.id,
-      active: true,
-      type: "recurring",
-      limit: 100,
-    });
+    const existingPrices = await stripeRequest<{
+      data: Array<{
+        id: string;
+        unit_amount: number | null;
+        metadata?: Record<string, string>;
+        recurring?: { interval: string } | null;
+      }>;
+    }>(`/v1/prices?product=${encodeURIComponent(product.id)}&active=true&type=recurring&limit=100`);
     const existing = existingPrices.data.find(
       (price) =>
         price.metadata?.plan_key === plan.key &&
@@ -55,13 +66,17 @@ async function seedProducts() {
       continue;
     }
 
-    const price = await stripe.prices.create({
-      product: product.id,
-      unit_amount: plan.amount,
-      currency: "usd",
-      recurring: { interval: "month" },
-      lookup_key: `every_part_${plan.key}_monthly`,
-      metadata: { plan_key: plan.key, app: "every_part" },
+    const price = await stripeRequest<{ id: string }>("/v1/prices", {
+      method: "POST",
+      body: new URLSearchParams({
+        product: product.id,
+        unit_amount: String(plan.amount),
+        currency: "usd",
+        "recurring[interval]": "month",
+        lookup_key: `every_part_${plan.key}_monthly`,
+        "metadata[plan_key]": plan.key,
+        "metadata[app]": "every_part",
+      }).toString(),
     });
     console.log(`${plan.key}: created ${price.id}`);
   }

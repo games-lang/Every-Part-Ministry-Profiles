@@ -386,6 +386,51 @@ export const GetEarlyAccessOverviewResponse = zod.object({
 
 
 /**
+ * @summary List the active Every Part subscription plans
+ */
+export const GetBillingPlansResponse = zod.object({
+  "plans": zod.array(zod.object({
+  "key": zod.enum(['growing', 'complete', 'network']),
+  "name": zod.string(),
+  "description": zod.string(),
+  "monthlyPrice": zod.int(),
+  "priceId": zod.string()
+}))
+})
+
+
+/**
+ * @summary Get the signed-in church billing status
+ */
+export const GetBillingSubscriptionResponse = zod.object({
+  "plan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "status": zod.string(),
+  "hasPaidAccess": zod.boolean(),
+  "currentPeriodEnd": zod.coerce.date().nullable()
+})
+
+
+/**
+ * @summary Create a Stripe Checkout session for a church plan
+ */
+export const CreateBillingCheckoutBody = zod.object({
+  "plan": zod.enum(['growing', 'complete', 'network'])
+})
+
+export const CreateBillingCheckoutResponse = zod.object({
+  "url": zod.url()
+})
+
+
+/**
+ * @summary Create a Stripe customer portal session
+ */
+export const CreateBillingPortalResponse = zod.object({
+  "url": zod.url()
+})
+
+
+/**
  * @summary Get the signed-in administrator's church
  */
 export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
@@ -494,7 +539,10 @@ export const GetMyChurchResponse = zod.object({
   "onboardingCompletedAt": zod.coerce.date().nullable(),
   "earlyAccessStatus": zod.enum(['early_access', 'standard']),
   "earlyAccessStartDate": zod.coerce.date(),
-  "foundingChurch": zod.boolean()
+  "foundingChurch": zod.boolean(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "billingStatus": zod.string(),
+  "billingCurrentPeriodEnd": zod.coerce.date().nullable()
 })
 
 
@@ -713,7 +761,10 @@ export const UpdateMyChurchResponse = zod.object({
   "onboardingCompletedAt": zod.coerce.date().nullable(),
   "earlyAccessStatus": zod.enum(['early_access', 'standard']),
   "earlyAccessStartDate": zod.coerce.date(),
-  "foundingChurch": zod.boolean()
+  "foundingChurch": zod.boolean(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "billingStatus": zod.string(),
+  "billingCurrentPeriodEnd": zod.coerce.date().nullable()
 })
 
 
@@ -1032,7 +1083,10 @@ export const GetDashboardSummaryResponse = zod.object({
   "onboardingCompletedAt": zod.coerce.date().nullable(),
   "earlyAccessStatus": zod.enum(['early_access', 'standard']),
   "earlyAccessStartDate": zod.coerce.date(),
-  "foundingChurch": zod.boolean()
+  "foundingChurch": zod.boolean(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "billingStatus": zod.string(),
+  "billingCurrentPeriodEnd": zod.coerce.date().nullable()
 }),
   "totalProfiles": zod.int(),
   "recentProfiles": zod.array(zod.object({

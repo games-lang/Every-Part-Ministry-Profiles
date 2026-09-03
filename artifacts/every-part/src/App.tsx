@@ -17,6 +17,7 @@ import { AppAdminRoute } from '@/pages/app-admin';
 import Dashboard from '@/pages/dashboard';
 import LeadershipProfilePage from '@/pages/leadership-profile';
 import ChurchSetup from '@/pages/church-setup';
+import BillingPage from '@/pages/billing';
 import ChurchOnboarding from '@/pages/church-onboarding';
 import ProfilesList from '@/pages/profiles-list';
 import ProfileDetail from '@/pages/profile-detail';
@@ -195,6 +196,14 @@ function SignInPage() {
 }
 
 function SignUpPage() {
+  const requestedPlan = new URLSearchParams(window.location.search).get("plan");
+  const fallbackRedirectUrl =
+    requestedPlan === "growing" ||
+    requestedPlan === "complete" ||
+    requestedPlan === "network"
+      ? `${basePath}/billing?plan=${requestedPlan}`
+      : `${basePath}/dashboard`;
+
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
@@ -207,7 +216,12 @@ function SignUpPage() {
             the best it can be by becoming one of our testing churches.
           </p>
         </div>
-        <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
+        <SignUp
+          routing="path"
+          path={`${basePath}/sign-up`}
+          signInUrl={`${basePath}/sign-in`}
+          fallbackRedirectUrl={fallbackRedirectUrl}
+        />
       </div>
     </div>
   );
@@ -307,6 +321,9 @@ function ClerkProviderWithRoutes() {
               </Route>
               <Route path="/church-setup">
                 <AuthenticatedRoute component={ChurchSetup} />
+              </Route>
+              <Route path="/billing">
+                <AuthenticatedRoute component={BillingPage} />
               </Route>
               <Route path="/leadership-profile">
                 <AuthenticatedRoute component={LeadershipProfilePage} />

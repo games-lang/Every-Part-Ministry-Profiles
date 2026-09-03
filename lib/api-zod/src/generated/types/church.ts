@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { AssessmentConfiguration } from './assessmentConfiguration';
+import type { ChurchBillingPlan } from './churchBillingPlan';
 import type { EarlyAccessStatus } from './earlyAccessStatus';
 import type { MinistryCustomization } from './ministryCustomization';
 import type { SpiritualGiftName } from './spiritualGiftName';
@@ -37,4 +38,8 @@ export interface Church {
   earlyAccessStatus: EarlyAccessStatus;
   earlyAccessStartDate: Date;
   foundingChurch: boolean;
+  billingPlan: ChurchBillingPlan;
+  billingStatus: string;
+  /** @nullable */
+  billingCurrentPeriodEnd: Date | null;
 }

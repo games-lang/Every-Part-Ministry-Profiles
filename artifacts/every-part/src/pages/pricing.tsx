@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { PuzzleCluster } from "@/components/puzzle-cluster";
+import { useGetBillingPlans } from "@workspace/api-client-react";
 
 const plans = [
   {
@@ -38,12 +39,12 @@ const plans = [
     eyebrow: "Start small",
     profileLimit: "More",
     limitLabel: "room for your teams",
-    price: "Preview",
+    price: "$10",
     cadence: "per month",
     description: "For a small team beginning a shared ministry conversation.",
     icon: Sparkles,
     tone: "light",
-    valueNote: "Flexible church pricing",
+    valueNote: "Secure monthly billing",
     action: "Explore Growing",
     href: "/sign-up",
   },
@@ -53,12 +54,12 @@ const plans = [
     eyebrow: "See the whole church",
     profileLimit: "Church-wide",
     limitLabel: "ministry conversations",
-    price: "Preview",
+    price: "$20",
     cadence: "per month",
     description: "For churches ready to build a fuller rhythm of discovery, connection, and development.",
     icon: Network,
     tone: "featured",
-    valueNote: "Whole-church perspective",
+    valueNote: "Secure monthly billing",
     action: "Explore Complete",
     href: "/sign-up",
   },
@@ -68,12 +69,12 @@ const plans = [
     eyebrow: "Grow across churches",
     profileLimit: "Multiple",
     limitLabel: "churches or campuses",
-    price: "Custom",
-    cadence: "conversation",
+    price: "$30",
+    cadence: "per month",
     description: "For multi-campus churches, networks, and denominations shaping ministry together.",
     icon: UsersRound,
     tone: "dark",
-    valueNote: "Built around your context",
+    valueNote: "Secure monthly billing",
     action: "Talk with us",
     href: "/sign-up",
   },
@@ -90,24 +91,24 @@ const includedBenefits = [
 
 const faqs = [
   {
-    question: "Is this live billing?",
+    question: "Is billing live?",
     answer:
-      "No. This is preview pricing while Every Part is taking shape. Plans, limits, and billing details will be confirmed with churches before billing is enabled.",
+      "Yes. Starter is free, and Growing, Complete, and Network are available as monthly subscriptions. Stripe securely handles checkout and billing management.",
   },
   {
     question: "What does Start Free include?",
     answer:
-      "The Starter plan is a low-pressure way to set up your church and begin exploring with your leaders. Exact profile capacity and plan limits will be confirmed before any billing begins.",
+      "Starter is a low-pressure way to set up your church and begin exploring with your leaders. No card is required.",
   },
   {
     question: "What does an active profile mean?",
     answer:
-      "Active profiles are the people your church is currently including in its ministry conversations. Historical or archived profiles should not be treated as a surprise charge; the final rules will be confirmed before billing begins.",
+      "Every Part keeps billing simple with a predictable monthly subscription. Historical or archived profiles are part of the same church workspace.",
   },
   {
     question: "Can we change plans later?",
     answer:
-      "That is the intention. A church should be able to move up or down as its ministry rhythm changes. We will confirm the details with you before billing is enabled.",
+      "Yes. Use Manage billing in your church workspace to change or cancel your subscription securely through Stripe.",
   },
   {
     question: "How do we think about matching?",
@@ -159,11 +160,12 @@ function Reveal({
 export default function PricingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const { data: billingPlans } = useGetBillingPlans();
 
   useEffect(() => {
-    document.title = "Preview pricing | Every Part";
+    document.title = "Pricing | Every Part";
     const description =
-      "Explore preview pricing for Every Part, a thoughtful way for churches to discover their people and connect them with meaningful ministry.";
+      "Choose a monthly Every Part plan for your church.";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -238,7 +240,7 @@ export default function PricingPage() {
             <Reveal className="pricing-hero-eyebrow">
               <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.2em] text-[hsl(var(--landing-cyan))]">
                 <span className="h-px w-8 bg-secondary" />
-                Preview pricing · a clear beginning
+                   Church plans · a clear beginning
               </div>
             </Reveal>
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-end lg:gap-24">
@@ -262,14 +264,14 @@ export default function PricingPage() {
         <section className="relative px-5 pb-24 sm:px-8 sm:pb-32">
           <div className="mx-auto max-w-7xl">
             <Reveal className="pricing-notice">
-              <aside className="relative -mt-8 rounded-[1.5rem] border border-secondary/40 bg-[hsl(var(--secondary)/.12)] p-6 shadow-[0_18px_45px_hsl(var(--foreground)/.08)] sm:-mt-10 sm:flex sm:items-start sm:gap-5 sm:p-7" aria-label="Preview pricing notice">
+             <aside className="relative -mt-8 rounded-[1.5rem] border border-secondary/40 bg-[hsl(var(--secondary)/.12)] p-6 shadow-[0_18px_45px_hsl(var(--foreground)/.08)] sm:-mt-10 sm:flex sm:items-start sm:gap-5 sm:p-7" aria-label="Pricing notice">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                   <CircleHelp className="h-5 w-5" />
                 </span>
                 <div className="mt-4 sm:mt-0">
-                  <p className="text-sm font-bold uppercase tracking-[.15em] text-accent" data-testid="text-preview-pricing-label">Preview pricing</p>
+                   <p className="text-sm font-bold uppercase tracking-[.15em] text-accent" data-testid="text-pricing-label">Simple monthly plans</p>
                   <p className="mt-2 max-w-3xl text-sm leading-7 text-foreground/80" data-testid="text-preview-pricing-notice">
-                    Plans, limits, and billing are still being shaped with churches. The prices shown here are placeholders and will be confirmed with you before billing is enabled. Nothing on this page starts a payment or checkout flow.
+                     Starter is free. Growing, Complete, and Network are monthly plans with secure Stripe checkout. Sign in to your church workspace to begin.
                   </p>
                 </div>
               </aside>
@@ -290,8 +292,15 @@ export default function PricingPage() {
             </div>
 
             <div className="mt-10 grid gap-4 lg:grid-cols-4 lg:items-start">
-              {plans.map((plan, index) => {
+               {plans.map((plan, index) => {
                 const Icon = plan.icon;
+                 const livePlan = billingPlans?.plans.find((item) => item.key === plan.id);
+                 const displayPrice =
+                   plan.id === "starter"
+                     ? "$0"
+                     : livePlan
+                       ? `$${Math.round(livePlan.monthlyPrice / 100)}`
+                       : plan.price;
                 const featured = plan.tone === "featured";
                 const dark = plan.tone === "dark";
                 return (
@@ -322,7 +331,7 @@ export default function PricingPage() {
                       </p>
                       <h3 className="mt-6 font-serif text-3xl font-semibold tracking-[-.055em]" data-testid={`text-plan-name-${plan.id}`}>{plan.name}</h3>
                       <div className="mt-6 flex items-baseline gap-2">
-                        <span className="font-serif text-5xl font-semibold tracking-[-.07em]" data-testid={`text-plan-price-${plan.id}`}>{plan.price}</span>
+                         <span className="font-serif text-5xl font-semibold tracking-[-.07em]" data-testid={`text-plan-price-${plan.id}`}>{displayPrice}</span>
                         <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>{plan.cadence}</span>
                       </div>
                       <div className={`mt-5 rounded-2xl p-4 ${featured || dark ? "bg-white/10" : "bg-muted/70"}`}>
@@ -336,7 +345,7 @@ export default function PricingPage() {
                       <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.id}`}>{plan.valueNote}</p>
                       <div className="mt-auto pt-8">
                         <Link
-                          href={plan.href}
+                           href={plan.id === "starter" ? plan.href : `/sign-up?plan=${plan.id}`}
                           className={`landing-focus inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 ${featured ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : dark ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "bg-primary text-primary-foreground hover:bg-accent"}`}
                           data-testid={`link-plan-action-${plan.id}`}
                         >
@@ -349,7 +358,7 @@ export default function PricingPage() {
               })}
             </div>
                 <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
-               Preview labels and pricing are illustrative. Final plan details will be confirmed before billing is enabled.
+                Manage upgrades, cancellations, and payment methods anytime from your church billing page.
             </p>
           </div>
         </section>

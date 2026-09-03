@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { UserButton } from "@clerk/react";
-import { BrainCircuit, LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck } from "lucide-react";
+import { BrainCircuit, CreditCard, LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck } from "lucide-react";
 import { useGetAppAdminAccess, useGetMyChurch, useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ const navItems = [
   { href: "/teams", label: "Teams", icon: UsersRound },
   { href: "/leadership-profile", label: "My Leadership", icon: BrainCircuit },
   { href: "/church-setup", label: "Church Setup", icon: Settings },
+  { href: "/billing", label: "Billing", icon: CreditCard },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {

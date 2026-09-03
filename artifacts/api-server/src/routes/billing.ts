@@ -1,20 +1,24 @@
-import { Router, type IRouter } from "express";
-import Stripe from "stripe";
+import { Router, type IRouter, type Request } from "express";
 import {
   CreateBillingCheckoutBody,
-  GetBillingPlansResponse,
-  GetBillingSubscriptionResponse,
   CreateBillingCheckoutResponse,
   CreateBillingPortalResponse,
+  GetBillingPlansResponse,
+  GetBillingSubscriptionResponse,
 } from "@workspace/api-zod";
 import { db, churchesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
-import { getUncachableStripeClient } from "../stripeClient";
+import {
+  createCheckoutSession,
+  createCustomer,
+  createPortalSession,
+  listActivePlans,
+  listCustomerSubscriptions,
+} from "../stripeClient";
 
 const router: IRouter = Router();
-
 const paidPlanKeys = ["growing", "complete", "network"] as const;
 type PaidPlanKey = (typeof paidPlanKeys)[number];
 
@@ -28,7 +32,15 @@ function isPaidPlanKey(value: string): value is PaidPlanKey {
   return paidPlanKeys.includes(value as PaidPlanKey);
 }
 
-function appOrigin(req: Parameters<Parameters<IRouter["get"]>[1]>[0]) {
+function planKeyForPrice(
+  price: Awaited<ReturnType<typeof listActivePlans>>[number],
+) {
+  const product = typeof price.product === "string" ? null : price.product;
+  const key = price.metadata?.plan_key ?? product?.metadata?.plan_key;
+  return key && isPaidPlanKey(key) ? key : null;
+}
+
+function appOrigin(req: Request) {
   const forwardedProto = req.headers["x-forwarded-proto"];
   const protocol = Array.isArray(forwardedProto)
     ? forwardedProto[0]
@@ -37,35 +49,8 @@ function appOrigin(req: Parameters<Parameters<IRouter["get"]>[1]>[0]) {
   return `${protocol}://${req.get("host")}${basePath}`;
 }
 
-async function activeRecurringPrices(stripe: Stripe) {
-  const prices = await stripe.prices.list({
-    active: true,
-    type: "recurring",
-    limit: 100,
-    expand: ["data.product"],
-  });
-
-  return prices.data.filter((price) => {
-    const product = typeof price.product === "string" ? null : price.product;
-    const planKey = price.metadata?.plan_key ?? product?.metadata?.plan_key;
-    return planKey && isPaidPlanKey(planKey);
-  });
-}
-
-async function priceForPlan(stripe: Stripe, plan: PaidPlanKey) {
-  const prices = await activeRecurringPrices(stripe);
-  return prices.find((price) => {
-    const product = typeof price.product === "string" ? null : price.product;
-    return (
-      price.metadata?.plan_key === plan ||
-      product?.metadata?.plan_key === plan
-    );
-  });
-}
-
 async function syncChurchSubscription(
   church: Awaited<ReturnType<typeof getOrCreateChurch>>,
-  stripe: Stripe,
 ) {
   if (!church.stripeCustomerId) {
     return {
@@ -76,13 +61,8 @@ async function syncChurchSubscription(
     };
   }
 
-  const subscriptions = await stripe.subscriptions.list({
-    customer: church.stripeCustomerId,
-    status: "all",
-    limit: 20,
-    expand: ["data.items.data.price.product"],
-  });
-  const subscription = subscriptions.data
+  const subscriptions = await listCustomerSubscriptions(church.stripeCustomerId);
+  const subscription = subscriptions
     .filter((candidate) => candidate.status !== "canceled")
     .sort((a, b) => b.created - a.created)[0];
 
@@ -105,14 +85,12 @@ async function syncChurchSubscription(
     };
   }
 
-  const price = subscription.items.data[0]?.price;
-  const product =
-    price && typeof price.product === "object" ? price.product : null;
-  const planKey =
-    price?.metadata?.plan_key ?? product?.metadata?.plan_key ?? "growing";
-  const plan = isPaidPlanKey(planKey) ? planKey : "growing";
-  const currentPeriodEnd = subscription.current_period_end
-    ? new Date(subscription.current_period_end * 1000)
+  const item = subscription.items.data[0];
+  const priceId = typeof item?.price === "string" ? item.price : item?.price.id;
+  const metadataPlan = subscription.metadata?.plan_key;
+  const plan = isPaidPlanKey(metadataPlan ?? "") ? metadataPlan : "growing";
+  const currentPeriodEnd = item?.current_period_end
+    ? new Date(item.current_period_end * 1000)
     : null;
 
   await db
@@ -121,7 +99,7 @@ async function syncChurchSubscription(
       billingPlan: plan,
       billingStatus: subscription.status,
       stripeSubscriptionId: subscription.id,
-      stripePriceId: price?.id ?? null,
+      stripePriceId: priceId ?? null,
       billingCurrentPeriodEnd: currentPeriodEnd,
     })
     .where(eq(churchesTable.id, church.id));
@@ -136,18 +114,10 @@ async function syncChurchSubscription(
 
 router.get("/billing/plans", async (_req, res): Promise<void> => {
   try {
-    const stripe = await getUncachableStripeClient();
-    const prices = await activeRecurringPrices(stripe);
+    const prices = await listActivePlans();
     const plans = paidPlanKeys
       .map((key) => {
-        const price = prices.find((candidate) => {
-          const product =
-            typeof candidate.product === "string" ? null : candidate.product;
-          return (
-            candidate.metadata?.plan_key === key ||
-            product?.metadata?.plan_key === key
-          );
-        });
+        const price = prices.find((candidate) => planKeyForPrice(candidate) === key);
         const product =
           price && typeof price.product === "object" ? price.product : null;
         if (!price || !product) return null;
@@ -174,8 +144,7 @@ router.get("/billing/subscription", async (req, res): Promise<void> => {
 
   try {
     const church = await getOrCreateChurch(userId);
-    const stripe = await getUncachableStripeClient();
-    const subscription = await syncChurchSubscription(church, stripe);
+    const subscription = await syncChurchSubscription(church);
     res.json(GetBillingSubscriptionResponse.parse(subscription));
   } catch (error) {
     console.error("Unable to load church billing status", error);
@@ -195,21 +164,31 @@ router.post("/billing/checkout", async (req, res): Promise<void> => {
 
   try {
     const church = await getOrCreateChurch(userId);
-    const stripe = await getUncachableStripeClient();
-    const existing = await syncChurchSubscription(church, stripe);
+    const existing = await syncChurchSubscription(church);
     if (existing.hasPaidAccess) {
       res.status(400).json({
-        error: "Your church already has an active paid plan. Use Manage billing to change it.",
+        error:
+          "Your church already has an active paid plan. Use Manage billing to change it.",
       });
+      return;
+    }
+
+    const prices = await listActivePlans();
+    const price = prices.find(
+      (candidate) => planKeyForPrice(candidate) === parsed.data.plan,
+    );
+    if (!price) {
+      res.status(503).json({ error: "That plan is not available yet." });
       return;
     }
 
     let customerId = church.stripeCustomerId;
     if (!customerId) {
-      const customer = await stripe.customers.create({
+      const customer = await createCustomer({
         name: church.name,
         email: church.adminEmail,
-        metadata: { church_id: String(church.id), clerk_user_id: userId },
+        churchId: church.id,
+        userId,
       });
       customerId = customer.id;
       await db
@@ -218,29 +197,15 @@ router.post("/billing/checkout", async (req, res): Promise<void> => {
         .where(eq(churchesTable.id, church.id));
     }
 
-    const price = await priceForPlan(stripe, parsed.data.plan);
-    if (!price) {
-      res.status(503).json({ error: "That plan is not available yet." });
-      return;
-    }
-
     const origin = appOrigin(req);
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: "subscription",
-      line_items: [{ price: price.id, quantity: 1 }],
-      allow_promotion_codes: true,
-      client_reference_id: String(church.id),
-      subscription_data: {
-        metadata: {
-          church_id: String(church.id),
-          plan_key: parsed.data.plan,
-        },
-      },
-      success_url: `${origin}/billing?checkout=success`,
-      cancel_url: `${origin}/billing?checkout=cancelled`,
+    const session = await createCheckoutSession({
+      customerId,
+      priceId: price.id,
+      churchId: church.id,
+      planKey: parsed.data.plan,
+      successUrl: `${origin}/billing?checkout=success`,
+      cancelUrl: `${origin}/billing?checkout=cancelled`,
     });
-
     if (!session.url) {
       res.status(503).json({ error: "Stripe did not return a checkout URL." });
       return;
@@ -264,11 +229,10 @@ router.post("/billing/portal", async (req, res): Promise<void> => {
       return;
     }
 
-    const stripe = await getUncachableStripeClient();
-    const session = await stripe.billingPortal.sessions.create({
-      customer: church.stripeCustomerId,
-      return_url: `${appOrigin(req)}/billing`,
-    });
+    const session = await createPortalSession(
+      church.stripeCustomerId,
+      `${appOrigin(req)}/billing`,
+    );
     res.json(CreateBillingPortalResponse.parse({ url: session.url }));
   } catch (error) {
     console.error("Unable to create Stripe billing portal session", error);

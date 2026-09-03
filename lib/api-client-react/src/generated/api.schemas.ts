@@ -418,6 +418,76 @@ export interface EarlyAccessOverview {
   churches: EarlyAccessChurchSummary[];
 }
 
+export type BillingPlanKey = typeof BillingPlanKey[keyof typeof BillingPlanKey];
+
+
+export const BillingPlanKey = {
+  growing: 'growing',
+  complete: 'complete',
+  network: 'network',
+} as const;
+
+export interface BillingPlan {
+  key: BillingPlanKey;
+  name: string;
+  description: string;
+  monthlyPrice: number;
+  priceId: string;
+}
+
+export interface BillingPlanList {
+  plans: BillingPlan[];
+}
+
+export type BillingCheckoutInputPlan = typeof BillingCheckoutInputPlan[keyof typeof BillingCheckoutInputPlan];
+
+
+export const BillingCheckoutInputPlan = {
+  growing: 'growing',
+  complete: 'complete',
+  network: 'network',
+} as const;
+
+export interface BillingCheckoutInput {
+  plan: BillingCheckoutInputPlan;
+}
+
+export interface BillingCheckoutResponse {
+  url: string;
+}
+
+export interface BillingPortalResponse {
+  url: string;
+}
+
+export type BillingSubscriptionPlan = typeof BillingSubscriptionPlan[keyof typeof BillingSubscriptionPlan];
+
+
+export const BillingSubscriptionPlan = {
+  starter: 'starter',
+  growing: 'growing',
+  complete: 'complete',
+  network: 'network',
+} as const;
+
+export interface BillingSubscription {
+  plan: BillingSubscriptionPlan;
+  status: string;
+  hasPaidAccess: boolean;
+  /** @nullable */
+  currentPeriodEnd: string | null;
+}
+
+export type ChurchBillingPlan = typeof ChurchBillingPlan[keyof typeof ChurchBillingPlan];
+
+
+export const ChurchBillingPlan = {
+  starter: 'starter',
+  growing: 'growing',
+  complete: 'complete',
+  network: 'network',
+} as const;
+
 export type SpiritualGiftName = typeof SpiritualGiftName[keyof typeof SpiritualGiftName];
 
 
@@ -613,6 +683,10 @@ export interface Church {
   earlyAccessStatus: EarlyAccessStatus;
   earlyAccessStartDate: string;
   foundingChurch: boolean;
+  billingPlan: ChurchBillingPlan;
+  billingStatus: string;
+  /** @nullable */
+  billingCurrentPeriodEnd: string | null;
 }
 
 export interface ChurchUpdate {
