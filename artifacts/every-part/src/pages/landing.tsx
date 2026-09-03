@@ -350,6 +350,25 @@ export default function LandingPage() {
           </div>
         </section>
 
+         <section className="border-y border-border bg-primary px-5 py-20 text-primary-foreground sm:px-8 lg:py-28">
+           <div className="mx-auto max-w-5xl">
+             <Reveal>
+               <div className="mx-auto max-w-4xl">
+                 <Eyebrow light>Why every part matters</Eyebrow>
+                 <blockquote className="mt-8 border-l-2 border-secondary pl-6 font-serif text-3xl leading-[1.04] tracking-[-.045em] sm:pl-8 sm:text-5xl lg:text-6xl">
+                   “Just as a body, though one, has many parts, but all its many parts form one body, so it is with Christ.”
+                 </blockquote>
+                 <p className="mt-6 text-xs font-bold uppercase tracking-[.16em] text-[hsl(var(--landing-slate))]">
+                   — 1 Corinthians 12:12 <span className="ml-2 font-medium opacity-70">NIV</span>
+                 </p>
+                 <p className="mt-8 max-w-2xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
+                   Every Part is built around this picture: a church is not a collection of disconnected roles, but one body with many meaningful parts.
+                 </p>
+               </div>
+             </Reveal>
+           </div>
+         </section>
+
         <section className="border-y border-border bg-muted/65 px-5 py-14 sm:px-8">
           <div className="mx-auto grid max-w-7xl gap-9 lg:grid-cols-[.72fr_1.28fr] lg:items-center">
             <Reveal><Eyebrow>The question behind the work</Eyebrow></Reveal>
