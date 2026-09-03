@@ -4,6 +4,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
+  Bot,
   Check,
   ChevronDown,
   Compass,
@@ -101,6 +102,31 @@ const leaderBenefits = [
   "Track profile completion",
   "Build healthier ministry teams",
   "Follow development over time",
+];
+
+const partfinderBenefits = [
+  {
+    eyebrow: "For pastors",
+    title: "Prepare for the conversations that matter.",
+    description:
+      "PartFinder helps pastors see patterns across adult Ministry Profiles, think through a ministry need, and enter a conversation with better questions.",
+    points: [
+      "Explore church-wide serving patterns",
+      "Notice people worth following up with",
+      "Prepare thoughtful leadership conversations",
+    ],
+  },
+  {
+    eyebrow: "For volunteer coordinators",
+    title: "Move from a ministry need to a thoughtful next step.",
+    description:
+      "Describe the kind of help your team needs and PartFinder surfaces relevant, verified profile signals so you know where to begin exploring.",
+    points: [
+      "Clarify the role, rhythms, and availability",
+      "Review possible connections from shared evidence",
+      "Keep willingness and relationship at the center",
+    ],
+  },
 ];
 
 function Reveal({
@@ -205,6 +231,7 @@ export default function LandingPage() {
           <nav className="hidden items-center gap-7 text-sm font-medium lg:flex" aria-label="Main navigation">
             <a href="#how-it-works" className="landing-focus landing-link rounded-md px-1 py-2">How It Works</a>
             <a href="#ministry-profile" className="landing-focus landing-link rounded-md px-1 py-2">Ministry Profile</a>
+            <a href="#partfinder" className="landing-focus landing-link rounded-md px-1 py-2">PartFinder</a>
             <a href="#for-churches" className="landing-focus landing-link rounded-md px-1 py-2">For Churches</a>
             <Link href={appPath("/pricing")} className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-home-pricing">Pricing</Link>
             <Link href={appPath("/sign-in")} className="landing-focus landing-link rounded-md px-1 py-2">Leader sign in</Link>
@@ -228,6 +255,7 @@ export default function LandingPage() {
             <div className="mx-auto flex max-w-7xl flex-col gap-1">
               <a href="#how-it-works" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">How It Works</a>
               <a href="#ministry-profile" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Ministry Profile</a>
+              <a href="#partfinder" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">PartFinder</a>
               <a href="#for-churches" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">For Churches</a>
                <Link href={appPath("/pricing")} onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-home-mobile-pricing">Pricing</Link>
                 <Link href={appPath("/sign-in")} onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Leader sign in</Link>
@@ -472,7 +500,70 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="for-churches" className="scroll-mt-24 px-5 py-24 sm:px-8 lg:py-32">
+         <section id="partfinder" className="scroll-mt-24 border-y border-border bg-[hsl(var(--primary-deep))] px-5 py-24 text-primary-foreground sm:px-8 lg:py-32">
+           <div className="mx-auto max-w-7xl">
+             <div className="grid gap-10 lg:grid-cols-[.84fr_1.16fr] lg:items-end">
+               <Reveal>
+                 <Eyebrow light>Meet PartFinder</Eyebrow>
+                 <h2 className="mt-6 max-w-2xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-6xl">
+                   A clearer starting point for the next ministry conversation.
+                 </h2>
+               </Reveal>
+               <Reveal className="[animation-delay:.1s]">
+                 <div className="max-w-2xl">
+                   <div className="flex items-center gap-3 text-secondary">
+                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
+                       <Bot className="h-5 w-5" />
+                     </span>
+                     <p className="text-sm font-semibold uppercase tracking-[.14em]">AI-assisted ministry discovery</p>
+                   </div>
+                   <p className="mt-6 text-lg leading-8 text-[hsl(var(--landing-light-text))]">
+                     PartFinder helps pastors and volunteer coordinators turn a ministry question into a thoughtful place to begin. Ask about a need, explore structured profile signals, and prepare for a real conversation with a real person.
+                   </p>
+                 </div>
+               </Reveal>
+             </div>
+
+             <div className="mt-14 grid gap-4 lg:grid-cols-2">
+               {partfinderBenefits.map((benefit, index) => (
+                 <Reveal key={benefit.eyebrow} className={index ? "[animation-delay:.1s]" : ""}>
+                   <article className="h-full rounded-[1.75rem] border border-white/15 bg-white/[.07] p-7 sm:p-9">
+                     <p className="text-[11px] font-bold uppercase tracking-[.18em] text-[hsl(var(--landing-cyan))]">{benefit.eyebrow}</p>
+                     <h3 className="mt-6 max-w-lg font-serif text-3xl leading-[1.03] tracking-[-.05em] sm:text-4xl">{benefit.title}</h3>
+                     <p className="mt-5 max-w-xl text-sm leading-7 text-[hsl(var(--landing-light-text))]">{benefit.description}</p>
+                     <ul className="mt-7 grid gap-3 text-sm text-[hsl(var(--landing-light-text))]">
+                       {benefit.points.map((point) => (
+                         <li key={point} className="flex gap-3">
+                           <Check className="mt-1 h-4 w-4 shrink-0 text-secondary" />
+                           <span>{point}</span>
+                         </li>
+                       ))}
+                     </ul>
+                   </article>
+                 </Reveal>
+               ))}
+             </div>
+
+             <Reveal className="mt-10">
+               <div className="grid gap-7 rounded-[1.75rem] border border-secondary/35 bg-secondary/10 p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center">
+                 <div>
+                   <p className="text-xs font-bold uppercase tracking-[.18em] text-secondary">People remain at the center</p>
+                   <p className="mt-3 max-w-3xl font-serif text-2xl leading-tight tracking-[-.035em] sm:text-3xl">
+                     PartFinder offers possibilities, not decisions.
+                   </p>
+                   <p className="mt-4 max-w-3xl text-sm leading-7 text-[hsl(var(--landing-light-text))]">
+                     It does not assign volunteers, decide readiness, declare a calling, or replace personal conversation, prayer, screening, or safeguarding.
+                   </p>
+                 </div>
+                 <Link href={appPath("/sign-up")} className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90">
+                   Bring PartFinder to your church <ArrowRight className="h-4 w-4" />
+                 </Link>
+               </div>
+             </Reveal>
+           </div>
+         </section>
+
+         <section id="for-churches" className="scroll-mt-24 px-5 py-24 sm:px-8 lg:py-32">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-10 lg:grid-cols-[1fr_.7fr] lg:items-end">
               <Reveal>
@@ -530,7 +621,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="text-sm leading-7 text-muted-foreground">
-                    Current matching is advisory and rule-based. It surfaces places to begin exploring from the information people share; leaders and members make the decision together. Advanced AI matching is <span className="font-semibold text-foreground">Coming Soon</span>.
+                     PartFinder can help leaders explore a ministry need using structured profile signals and verified evidence. It surfaces places to begin exploring; leaders and members make the decision together.
                   </p>
                   <p className="mt-5 flex items-center gap-2 text-sm font-medium"><Check className="h-4 w-4 text-secondary" /> People remain at the center of the process.</p>
                 </div>
@@ -600,6 +691,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
             <a href="#how-it-works" className="landing-focus landing-link rounded-md">How It Works</a>
             <a href="#ministry-profile" className="landing-focus landing-link rounded-md">Ministry Profile</a>
+            <a href="#partfinder" className="landing-focus landing-link rounded-md">PartFinder</a>
             <a href="#for-churches" className="landing-focus landing-link rounded-md">For Churches</a>
             <Link href="/pricing" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-pricing">Pricing</Link>
             <Link href="/about-early-access" className="landing-focus landing-link rounded-md">About Early Access</Link>
