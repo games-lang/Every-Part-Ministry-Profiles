@@ -199,6 +199,13 @@ function SignUpPage() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
       <div className="relative z-10 w-full max-w-md">
         <Brand className="mb-7 justify-center" />
+        <div className="mb-5 overflow-hidden rounded-2xl border border-secondary/30 bg-secondary/10">
+          <BetaNotice />
+          <p className="px-5 pb-4 text-center text-xs leading-5 text-muted-foreground">
+            We’re testing and improving Every Part over time. Help us make it
+            the best it can be by becoming one of our testing churches.
+          </p>
+        </div>
         <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
       </div>
     </div>
