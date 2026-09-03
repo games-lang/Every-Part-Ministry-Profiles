@@ -394,11 +394,11 @@ export const GetEarlyAccessOverviewResponse = zod.object({
 
 export const GetBillingPlansResponse = zod.object({
   "plans": zod.array(zod.object({
-  "key": zod.enum(['growing', 'complete', 'network']),
+  "key": zod.enum(['growing', 'complete', 'network', 'unlimited']),
   "name": zod.string(),
   "description": zod.string(),
   "monthlyPrice": zod.int(),
-  "profileLimit": zod.int().min(1),
+  "profileLimit": zod.int().min(1).nullable(),
   "aiCreditLimit": zod.int().min(1),
   "priceId": zod.string()
 }))
@@ -421,12 +421,12 @@ export const getBillingSubscriptionResponseAiCreditsRemainingMin = 0;
 
 
 export const GetBillingSubscriptionResponse = zod.object({
-  "plan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "plan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
   "status": zod.string(),
   "hasPaidAccess": zod.boolean(),
-  "profileLimit": zod.int().min(1),
+  "profileLimit": zod.int().min(1).nullable(),
   "profilesUsed": zod.int().min(getBillingSubscriptionResponseProfilesUsedMin),
-  "profilesRemaining": zod.int().min(getBillingSubscriptionResponseProfilesRemainingMin),
+  "profilesRemaining": zod.int().min(getBillingSubscriptionResponseProfilesRemainingMin).nullable(),
   "aiCreditLimit": zod.int().min(1),
   "aiCreditsUsed": zod.int().min(getBillingSubscriptionResponseAiCreditsUsedMin),
   "aiCreditsRemaining": zod.int().min(getBillingSubscriptionResponseAiCreditsRemainingMin),
@@ -439,7 +439,7 @@ export const GetBillingSubscriptionResponse = zod.object({
  * @summary Create a Stripe Checkout session for a church plan
  */
 export const CreateBillingCheckoutBody = zod.object({
-  "plan": zod.enum(['growing', 'complete', 'network'])
+  "plan": zod.enum(['growing', 'complete', 'network', 'unlimited'])
 })
 
 export const CreateBillingCheckoutResponse = zod.object({
@@ -565,7 +565,7 @@ export const GetMyChurchResponse = zod.object({
   "earlyAccessStatus": zod.enum(['early_access', 'standard']),
   "earlyAccessStartDate": zod.coerce.date(),
   "foundingChurch": zod.boolean(),
-  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
   "billingStatus": zod.string(),
   "billingCurrentPeriodEnd": zod.coerce.date().nullable()
 })
@@ -787,7 +787,7 @@ export const UpdateMyChurchResponse = zod.object({
   "earlyAccessStatus": zod.enum(['early_access', 'standard']),
   "earlyAccessStartDate": zod.coerce.date(),
   "foundingChurch": zod.boolean(),
-  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
   "billingStatus": zod.string(),
   "billingCurrentPeriodEnd": zod.coerce.date().nullable()
 })
@@ -1109,7 +1109,7 @@ export const GetDashboardSummaryResponse = zod.object({
   "earlyAccessStatus": zod.enum(['early_access', 'standard']),
   "earlyAccessStartDate": zod.coerce.date(),
   "foundingChurch": zod.boolean(),
-  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network']),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
   "billingStatus": zod.string(),
   "billingCurrentPeriodEnd": zod.coerce.date().nullable()
 }),

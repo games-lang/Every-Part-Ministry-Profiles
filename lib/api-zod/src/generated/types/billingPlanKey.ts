@@ -13,4 +13,5 @@ export const BillingPlanKey = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;

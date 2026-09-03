@@ -8,7 +8,10 @@ import {
 
 function planFromSubscription(subscription: StripeSubscription) {
   const plan = subscription.metadata?.plan_key;
-  return plan === "growing" || plan === "complete" || plan === "network"
+  return plan === "growing" ||
+    plan === "complete" ||
+    plan === "network" ||
+    plan === "unlimited"
     ? plan
     : "starter";
 }

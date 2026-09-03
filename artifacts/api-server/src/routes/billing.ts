@@ -27,13 +27,14 @@ import {
 } from "../lib/ai-credits";
 
 const router: IRouter = Router();
-const paidPlanKeys = ["growing", "complete", "network"] as const;
+const paidPlanKeys = ["growing", "complete", "network", "unlimited"] as const;
 type PaidPlanKey = (typeof paidPlanKeys)[number];
 
 const planDescriptions: Record<PaidPlanKey, string> = {
   growing: "For a small team beginning a shared ministry conversation.",
   complete: "For churches ready for a fuller rhythm of discovery and connection.",
   network: "For churches and ministry networks growing across multiple contexts.",
+  unlimited: "For churches that want room for every person, without a profile cap.",
 };
 
 function isPaidPlanKey(value: string): value is PaidPlanKey {

@@ -13,4 +13,5 @@ export const BillingCheckoutInputPlan = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;

@@ -10,6 +10,7 @@ export const AI_CREDIT_LIMITS = {
   growing: 150,
   complete: 400,
   network: 1000,
+  unlimited: 1000,
 } as const;
 
 type AiCreditPlan = keyof typeof AI_CREDIT_LIMITS;

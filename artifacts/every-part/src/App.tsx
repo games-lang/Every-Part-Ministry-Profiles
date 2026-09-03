@@ -200,7 +200,8 @@ function SignUpPage() {
   const fallbackRedirectUrl =
     requestedPlan === "growing" ||
     requestedPlan === "complete" ||
-    requestedPlan === "network"
+    requestedPlan === "network" ||
+    requestedPlan === "unlimited"
       ? `${basePath}/billing?plan=${requestedPlan}`
       : `${basePath}/dashboard`;
 

@@ -19,6 +19,12 @@ const plans = [
     description: "For churches and ministry networks growing across multiple contexts.",
     amount: 3000,
   },
+  {
+    key: "unlimited",
+    name: "Every Part Unlimited",
+    description: "For churches that want room for every person, without a profile cap.",
+    amount: 5000,
+  },
 ] as const;
 
 async function seedProducts() {

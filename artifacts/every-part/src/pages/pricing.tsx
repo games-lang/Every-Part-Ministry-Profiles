@@ -7,6 +7,7 @@ import {
   ChevronDown,
   CircleHelp,
   Cross,
+  Infinity as InfinityIcon,
   Menu,
   Network,
   Sparkles,
@@ -82,6 +83,22 @@ const plans = [
     action: "Talk with us",
     href: "/sign-up",
   },
+  {
+    id: "unlimited",
+    name: "Unlimited",
+    eyebrow: "Make room for everyone",
+    profileLimit: "Unlimited",
+    limitLabel: "Ministry Profiles",
+    aiCredits: "1,000 AI credits each month",
+    price: "$50",
+    cadence: "per month",
+    description: "For churches ready to welcome every person into the conversation.",
+    icon: InfinityIcon,
+    tone: "dark",
+    valueNote: "Secure monthly billing",
+    action: "Explore Unlimited",
+    href: "/sign-up",
+  },
 ];
 
 const includedBenefits = [
@@ -97,7 +114,7 @@ const faqs = [
   {
     question: "Is billing live?",
     answer:
-      "Yes. Starter is free, and Growing, Complete, and Network are available as monthly subscriptions. Stripe securely handles checkout and billing management.",
+      "Yes. Starter is free, and Growing, Complete, Network, and Unlimited are available as monthly subscriptions. Stripe securely handles checkout and billing management.",
   },
   {
     question: "What does Start Free include?",
@@ -107,7 +124,7 @@ const faqs = [
   {
     question: "What does an active profile mean?",
     answer:
-      "Each completed adult or youth Ministry Profile counts toward the church’s plan limit. Existing profiles remain available if a church reaches its limit or moves to a smaller plan.",
+      "Each completed adult or youth Ministry Profile counts toward the church’s plan limit. Unlimited removes that profile cap, and existing profiles remain available if a church reaches a finite limit or moves to a smaller plan.",
   },
   {
     question: "Can we change plans later?",
@@ -275,7 +292,7 @@ export default function PricingPage() {
                 <div className="mt-4 sm:mt-0">
                    <p className="text-sm font-bold uppercase tracking-[.15em] text-accent" data-testid="text-pricing-label">Simple monthly plans</p>
                   <p className="mt-2 max-w-3xl text-sm leading-7 text-foreground/80" data-testid="text-preview-pricing-notice">
-                     Starter is free. Growing, Complete, and Network are monthly plans with secure Stripe checkout. Sign in to your church workspace to begin.
+                     Starter is free. Growing, Complete, Network, and Unlimited are monthly plans with secure Stripe checkout. Sign in to your church workspace to begin.
                   </p>
                 </div>
               </aside>
@@ -295,7 +312,7 @@ export default function PricingPage() {
               </p>
             </div>
 
-            <div className="mt-10 grid gap-4 lg:grid-cols-4 lg:items-start">
+             <div className="mt-10 grid gap-4 lg:grid-cols-5 lg:items-start">
                {plans.map((plan, index) => {
                 const Icon = plan.icon;
                  const livePlan = billingPlans?.plans.find((item) => item.key === plan.id);
@@ -352,7 +369,7 @@ export default function PricingPage() {
                       <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.id}`}>{plan.valueNote}</p>
                       <div className="mt-auto pt-8">
                         <Link
-                           href={plan.id === "starter" ? plan.href : `/sign-up?plan=${plan.id}`}
+                            href={plan.id === "starter" ? plan.href : `/sign-up?plan=${plan.id}`}
                           className={`landing-focus inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 ${featured ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : dark ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "bg-primary text-primary-foreground hover:bg-accent"}`}
                           data-testid={`link-plan-action-${plan.id}`}
                         >

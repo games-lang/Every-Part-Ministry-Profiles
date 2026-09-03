@@ -425,6 +425,7 @@ export const BillingPlanKey = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;
 
 export interface BillingPlan {
@@ -432,8 +433,11 @@ export interface BillingPlan {
   name: string;
   description: string;
   monthlyPrice: number;
-  /** @minimum 1 */
-  profileLimit: number;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  profileLimit: number | null;
   /** @minimum 1 */
   aiCreditLimit: number;
   priceId: string;
@@ -450,6 +454,7 @@ export const BillingCheckoutInputPlan = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;
 
 export interface BillingCheckoutInput {
@@ -472,18 +477,25 @@ export const BillingSubscriptionPlan = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;
 
 export interface BillingSubscription {
   plan: BillingSubscriptionPlan;
   status: string;
   hasPaidAccess: boolean;
-  /** @minimum 1 */
-  profileLimit: number;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  profileLimit: number | null;
   /** @minimum 0 */
   profilesUsed: number;
-  /** @minimum 0 */
-  profilesRemaining: number;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  profilesRemaining: number | null;
   /** @minimum 1 */
   aiCreditLimit: number;
   /** @minimum 0 */
@@ -503,6 +515,7 @@ export const ChurchBillingPlan = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;
 
 export type SpiritualGiftName = typeof SpiritualGiftName[keyof typeof SpiritualGiftName];

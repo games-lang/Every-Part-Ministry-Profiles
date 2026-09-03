@@ -45,6 +45,10 @@ const planDetails = {
     name: "Network",
     description: "For churches and ministry networks growing across multiple contexts.",
   },
+  unlimited: {
+    name: "Unlimited",
+    description: "For churches that want room for every person, without a profile cap.",
+  },
 } as const;
 
 function formatPrice(amount: number) {
@@ -78,11 +82,16 @@ export default function BillingPage() {
   const currentPlan = subscription?.plan ?? "starter";
   const queryPlan = new URLSearchParams(window.location.search).get("plan");
   const highlightedPlan =
-    queryPlan === "growing" || queryPlan === "complete" || queryPlan === "network"
+    queryPlan === "growing" ||
+    queryPlan === "complete" ||
+    queryPlan === "network" ||
+    queryPlan === "unlimited"
       ? queryPlan
       : null;
 
-  const startCheckout = (plan: "growing" | "complete" | "network") => {
+  const startCheckout = (
+    plan: "growing" | "complete" | "network" | "unlimited",
+  ) => {
     checkout.mutate(
       { data: { plan } },
       {
@@ -181,10 +190,13 @@ export default function BillingPage() {
               {subscription && (
                 <div className="mt-2 space-y-1 text-sm text-muted-foreground">
                   <p>
-                    {subscription.profilesUsed} of {subscription.profileLimit} profiles used
-                    {subscription.profilesRemaining === 0
-                      ? " · limit reached"
-                      : ` · ${subscription.profilesRemaining} remaining`}
+                    {subscription.profileLimit === null
+                      ? `${subscription.profilesUsed} profiles used · unlimited`
+                      : `${subscription.profilesUsed} of ${subscription.profileLimit} profiles used${
+                          subscription.profilesRemaining === 0
+                            ? " · limit reached"
+                            : ` · ${subscription.profilesRemaining} remaining`
+                        }`}
                   </p>
                   <p>
                     {subscription.aiCreditsUsed} of {subscription.aiCreditLimit} AI credits used
@@ -210,7 +222,7 @@ export default function BillingPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-4">
+       <div className="grid gap-4 lg:grid-cols-5">
         <Card className={currentPlan === "starter" ? "border-primary shadow-sm" : ""}>
           <CardHeader>
             <CardTitle>{planDetails.starter.name}</CardTitle>
@@ -231,7 +243,7 @@ export default function BillingPage() {
           </CardContent>
         </Card>
 
-        {(["growing", "complete", "network"] as const).map((key) => {
+         {(["growing", "complete", "network", "unlimited"] as const).map((key) => {
           const plan = planMap.get(key);
           const details = planDetails[key];
           const selected = currentPlan === key || highlightedPlan === key;
@@ -266,7 +278,11 @@ export default function BillingPage() {
                   Secure recurring billing through Stripe
                 </div>
                 <p className="mt-3 text-sm font-medium">
-                  Up to {plan?.profileLimit ?? "—"} profiles
+                  {plan
+                    ? plan.profileLimit === null
+                      ? "Unlimited profiles"
+                      : `Up to ${plan.profileLimit} profiles`
+                    : "— profiles"}
                 </p>
                 <p className="mt-1 text-sm font-medium">
                   {plan?.aiCreditLimit ?? "—"} AI credits per month

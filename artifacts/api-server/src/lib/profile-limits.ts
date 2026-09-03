@@ -10,6 +10,7 @@ export const PROFILE_LIMITS = {
   growing: 50,
   complete: 100,
   network: 250,
+  unlimited: null,
 } as const;
 
 export type ProfilePlan = keyof typeof PROFILE_LIMITS;
@@ -31,7 +32,7 @@ function planName(plan: ProfilePlan) {
   return `${plan.charAt(0).toUpperCase()}${plan.slice(1)}`;
 }
 
-export function profileLimitForPlan(plan: string): number {
+export function profileLimitForPlan(plan: string): number | null {
   return plan in PROFILE_LIMITS
     ? PROFILE_LIMITS[plan as ProfilePlan]
     : PROFILE_LIMITS.starter;
@@ -60,7 +61,7 @@ export async function assertProfileCapacity(
       ? (church.billingPlan as ProfilePlan)
       : "starter";
   const limit = profileLimitForPlan(plan);
-  if ((usage?.profilesUsed ?? 0) >= limit) {
+  if (limit !== null && (usage?.profilesUsed ?? 0) >= limit) {
     throw new ProfileLimitReachedError(plan, limit);
   }
 }
@@ -75,6 +76,9 @@ export async function getProfileUsage(churchId: number, plan: string) {
   return {
     profileLimit,
     profilesUsed,
-    profilesRemaining: Math.max(profileLimit - profilesUsed, 0),
+    profilesRemaining:
+      profileLimit === null
+        ? null
+        : Math.max(profileLimit - profilesUsed, 0),
   };
 }

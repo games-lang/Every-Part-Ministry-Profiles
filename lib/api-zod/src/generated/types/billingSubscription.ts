@@ -11,12 +11,18 @@ export interface BillingSubscription {
   plan: BillingSubscriptionPlan;
   status: string;
   hasPaidAccess: boolean;
-  /** @minimum 1 */
-  profileLimit: number;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  profileLimit: number | null;
   /** @minimum 0 */
   profilesUsed: number;
-  /** @minimum 0 */
-  profilesRemaining: number;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  profilesRemaining: number | null;
   /** @minimum 1 */
   aiCreditLimit: number;
   /** @minimum 0 */

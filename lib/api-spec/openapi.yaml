@@ -1582,11 +1582,11 @@ components:
       properties:
         key:
           type: string
-          enum: [growing, complete, network]
+          enum: [growing, complete, network, unlimited]
         name: { type: string }
         description: { type: string }
         monthlyPrice: { type: integer }
-        profileLimit: { type: integer, minimum: 1 }
+        profileLimit: { type: ["integer", "null"], minimum: 1 }
         aiCreditLimit: { type: integer, minimum: 1 }
         priceId: { type: string }
     BillingPlanList:
@@ -1603,7 +1603,7 @@ components:
       properties:
         plan:
           type: string
-          enum: [growing, complete, network]
+          enum: [growing, complete, network, unlimited]
     BillingCheckoutResponse:
       type: object
       required: [url]
@@ -1620,12 +1620,12 @@ components:
       properties:
         plan:
           type: string
-          enum: [starter, growing, complete, network]
+          enum: [starter, growing, complete, network, unlimited]
         status: { type: string }
         hasPaidAccess: { type: boolean }
-        profileLimit: { type: integer, minimum: 1 }
+        profileLimit: { type: ["integer", "null"], minimum: 1 }
         profilesUsed: { type: integer, minimum: 0 }
-        profilesRemaining: { type: integer, minimum: 0 }
+        profilesRemaining: { type: ["integer", "null"], minimum: 0 }
         aiCreditLimit: { type: integer, minimum: 1 }
         aiCreditsUsed: { type: integer, minimum: 0 }
         aiCreditsRemaining: { type: integer, minimum: 0 }
@@ -1675,7 +1675,7 @@ components:
         foundingChurch: { type: boolean }
         billingPlan:
           type: string
-          enum: [starter, growing, complete, network]
+          enum: [starter, growing, complete, network, unlimited]
         billingStatus: { type: string }
         billingCurrentPeriodEnd:
           type: ["string", "null"]

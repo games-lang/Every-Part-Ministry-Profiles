@@ -14,4 +14,5 @@ export const ChurchBillingPlan = {
   growing: 'growing',
   complete: 'complete',
   network: 'network',
+  unlimited: 'unlimited',
 } as const;
