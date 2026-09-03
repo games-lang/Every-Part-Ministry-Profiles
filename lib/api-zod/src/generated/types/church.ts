@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { AssessmentConfiguration } from './assessmentConfiguration';
+import type { EarlyAccessStatus } from './earlyAccessStatus';
 import type { MinistryCustomization } from './ministryCustomization';
 import type { SpiritualGiftName } from './spiritualGiftName';
 
@@ -33,4 +34,7 @@ export interface Church {
   ministryCustomization: MinistryCustomization;
   /** @nullable */
   onboardingCompletedAt: Date | null;
+  earlyAccessStatus: EarlyAccessStatus;
+  earlyAccessStartDate: Date;
+  foundingChurch: boolean;
 }

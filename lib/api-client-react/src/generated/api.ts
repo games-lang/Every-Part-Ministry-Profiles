@@ -39,6 +39,9 @@ import type {
   DiscoverProfileInput,
   DiscoverProfileResult,
   DiscoverProfileSubmission,
+  EarlyAccessOverview,
+  EarlyAccessWelcome,
+  EarlyAccessWelcomeAcknowledgement,
   ExploreProfileInput,
   ExploreProfileResult,
   ExploreProfileSubmission,
@@ -818,6 +821,234 @@ export const useUpdateAppFeedback = <TError = ErrorType<void>,
       > => {
       return useMutation(getUpdateAppFeedbackMutationOptions(options));
     }
+
+export const getGetEarlyAccessWelcomeUrl = () => {
+
+
+
+
+  return `/api/early-access/welcome`
+}
+
+/**
+ * @summary Get the signed-in church's Early Access welcome state
+ */
+export const getEarlyAccessWelcome = async ( options?: Parameters<typeof customFetch>[1]): Promise<EarlyAccessWelcome> => {
+
+  return customFetch<EarlyAccessWelcome>(getGetEarlyAccessWelcomeUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEarlyAccessWelcomeQueryKey = () => {
+    return [
+    `/api/early-access/welcome`
+    ] as const;
+    }
+
+
+export const getGetEarlyAccessWelcomeQueryOptions = <TData = Awaited<ReturnType<typeof getEarlyAccessWelcome>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEarlyAccessWelcome>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEarlyAccessWelcomeQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEarlyAccessWelcome>>> = ({ signal }) => getEarlyAccessWelcome({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEarlyAccessWelcome>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEarlyAccessWelcomeQueryResult = NonNullable<Awaited<ReturnType<typeof getEarlyAccessWelcome>>>
+export type GetEarlyAccessWelcomeQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the signed-in church's Early Access welcome state
+ */
+
+export function useGetEarlyAccessWelcome<TData = Awaited<ReturnType<typeof getEarlyAccessWelcome>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEarlyAccessWelcome>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEarlyAccessWelcomeQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAcknowledgeEarlyAccessWelcomeUrl = () => {
+
+
+
+
+  return `/api/early-access/welcome`
+}
+
+/**
+ * @summary Acknowledge the signed-in church's Early Access welcome
+ */
+export const acknowledgeEarlyAccessWelcome = async ( options?: Parameters<typeof customFetch>[1]): Promise<EarlyAccessWelcomeAcknowledgement> => {
+
+  return customFetch<EarlyAccessWelcomeAcknowledgement>(getAcknowledgeEarlyAccessWelcomeUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getAcknowledgeEarlyAccessWelcomeMutationKey = () => ['acknowledgeEarlyAccessWelcome'] as const;
+
+export const getAcknowledgeEarlyAccessWelcomeMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof acknowledgeEarlyAccessWelcome>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof acknowledgeEarlyAccessWelcome>>, TError,void, TContext> => {
+
+const mutationKey = getAcknowledgeEarlyAccessWelcomeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof acknowledgeEarlyAccessWelcome>>, void> = () => {
+
+
+          return  acknowledgeEarlyAccessWelcome(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AcknowledgeEarlyAccessWelcomeMutationResult = NonNullable<Awaited<ReturnType<typeof acknowledgeEarlyAccessWelcome>>>
+
+    export type AcknowledgeEarlyAccessWelcomeMutationError = ErrorType<void>
+
+
+    /**
+ * @summary Acknowledge the signed-in church's Early Access welcome
+ */
+export const useAcknowledgeEarlyAccessWelcome = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof acknowledgeEarlyAccessWelcome>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof acknowledgeEarlyAccessWelcome>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getAcknowledgeEarlyAccessWelcomeMutationOptions(options));
+    }
+
+export const getGetEarlyAccessOverviewUrl = () => {
+
+
+
+
+  return `/api/admin/early-access/overview`
+}
+
+/**
+ * @summary Get aggregate Early Access usage for the platform owner
+ */
+export const getEarlyAccessOverview = async ( options?: Parameters<typeof customFetch>[1]): Promise<EarlyAccessOverview> => {
+
+  return customFetch<EarlyAccessOverview>(getGetEarlyAccessOverviewUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEarlyAccessOverviewQueryKey = () => {
+    return [
+    `/api/admin/early-access/overview`
+    ] as const;
+    }
+
+
+export const getGetEarlyAccessOverviewQueryOptions = <TData = Awaited<ReturnType<typeof getEarlyAccessOverview>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEarlyAccessOverview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEarlyAccessOverviewQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEarlyAccessOverview>>> = ({ signal }) => getEarlyAccessOverview({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEarlyAccessOverview>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEarlyAccessOverviewQueryResult = NonNullable<Awaited<ReturnType<typeof getEarlyAccessOverview>>>
+export type GetEarlyAccessOverviewQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get aggregate Early Access usage for the platform owner
+ */
+
+export function useGetEarlyAccessOverview<TData = Awaited<ReturnType<typeof getEarlyAccessOverview>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEarlyAccessOverview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEarlyAccessOverviewQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getGetMyChurchUrl = () => {
 

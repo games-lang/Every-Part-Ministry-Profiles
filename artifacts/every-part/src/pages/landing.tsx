@@ -602,6 +602,7 @@ export default function LandingPage() {
             <a href="#ministry-profile" className="landing-focus landing-link rounded-md">Ministry Profile</a>
             <a href="#for-churches" className="landing-focus landing-link rounded-md">For Churches</a>
             <Link href="/pricing" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-pricing">Pricing</Link>
+            <Link href="/about-early-access" className="landing-focus landing-link rounded-md">About Early Access</Link>
             <Link href="/sign-in" className="landing-focus landing-link rounded-md">Leader sign in</Link>
           </div>
         </div>

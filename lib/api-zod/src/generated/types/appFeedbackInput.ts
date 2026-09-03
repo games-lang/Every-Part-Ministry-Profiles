@@ -5,10 +5,12 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AppFeedbackInputCategory } from './appFeedbackInputCategory';
 import type { AppFeedbackInputType } from './appFeedbackInputType';
 
 export interface AppFeedbackInput {
   type: AppFeedbackInputType;
+  category?: AppFeedbackInputCategory;
   /**
      * @minLength 1
      * @maxLength 5000

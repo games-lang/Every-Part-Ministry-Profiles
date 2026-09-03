@@ -208,6 +208,49 @@ paths:
           description: App administrator access required
         "404":
           description: Feedback item not found
+  /early-access/welcome:
+    get:
+      operationId: getEarlyAccessWelcome
+      tags: [churches]
+      summary: Get the signed-in church's Early Access welcome state
+      responses:
+        "200":
+          description: Early Access welcome state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EarlyAccessWelcome"
+        "401":
+          description: Unauthorized
+    post:
+      operationId: acknowledgeEarlyAccessWelcome
+      tags: [churches]
+      summary: Acknowledge the signed-in church's Early Access welcome
+      responses:
+        "200":
+          description: Early Access welcome acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EarlyAccessWelcomeAcknowledgement"
+        "401":
+          description: Unauthorized
+  /admin/early-access/overview:
+    get:
+      operationId: getEarlyAccessOverview
+      tags: [app-admin]
+      summary: Get aggregate Early Access usage for the platform owner
+      responses:
+        "200":
+          description: Early Access overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EarlyAccessOverview"
+        "401":
+          description: Unauthorized
+        "403":
+          description: App administrator access required
   /church:
     get:
       operationId: getMyChurch
@@ -1334,6 +1377,9 @@ components:
         type:
           type: string
           enum: [suggestion, fix]
+        category:
+          type: string
+          enum: [bug, confusing-ux, feature-request, ministry-profile, part-finder, church-setup, member-experience, pastor-dashboard, ministry-matching, privacy-permissions, other]
         message:
           type: string
           minLength: 1
@@ -1363,6 +1409,9 @@ components:
         type:
           type: string
           enum: [suggestion, fix]
+        category:
+          type: string
+          enum: [bug, confusing-ux, feature-request, ministry-profile, part-finder, church-setup, member-experience, pastor-dashboard, ministry-matching, privacy-permissions, other]
         message: { type: string }
         contactEmail:
           type: ["string", "null"]
@@ -1371,6 +1420,9 @@ components:
         status:
           type: string
           enum: [new, reviewing, resolved, dismissed]
+        priority:
+          type: string
+          enum: [critical, high, medium, low]
         adminResponse:
           type: ["string", "null"]
         respondedAt:
@@ -1382,7 +1434,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-      required: [id, type, message, sourcePage, status, createdAt, updatedAt]
+      required: [id, type, category, priority, message, sourcePage, status, createdAt, updatedAt]
     AppFeedbackList:
       type: object
       properties:
@@ -1400,10 +1452,69 @@ components:
         adminResponse:
           type: ["string", "null"]
           maxLength: 5000
+        category:
+          type: string
+          enum: [bug, confusing-ux, feature-request, ministry-profile, part-finder, church-setup, member-experience, pastor-dashboard, ministry-matching, privacy-permissions, other]
+        priority:
+          type: string
+          enum: [critical, high, medium, low]
       required: [status]
+    EarlyAccessStatus:
+      type: string
+      enum: [early_access, standard]
+    EarlyAccessWelcome:
+      type: object
+      required: [show, churchName, earlyAccessStartDate]
+      properties:
+        show: { type: boolean }
+        churchName: { type: string }
+        earlyAccessStartDate: { type: string, format: date-time }
+    EarlyAccessWelcomeAcknowledgement:
+      type: object
+      required: [acknowledged]
+      properties:
+        acknowledged: { type: boolean }
+    EarlyAccessChurchSummary:
+      type: object
+      required: [id, name, earlyAccessStartDate, membersInvited, profilesCompleted, completionRate, partFinderConversations, opportunitiesCreated, matchesReviewed, feedbackSubmitted, lastActivityAt, health]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        earlyAccessStartDate: { type: string, format: date-time }
+        membersInvited: { type: integer }
+        profilesCompleted: { type: integer }
+        completionRate: { type: number }
+        partFinderConversations: { type: integer }
+        partFinderSearches: { type: integer }
+        opportunitiesCreated: { type: integer }
+        matchesReviewed: { type: integer }
+        feedbackSubmitted: { type: integer }
+        lastActivityAt: { type: ["string", "null"], format: date-time }
+        health:
+          type: string
+          enum: [highly-active, active, low-activity, needs-follow-up]
+    EarlyAccessOverview:
+      type: object
+      required: [totalEarlyAccessChurches, activeChurches, inactiveSevenDays, profilesStarted, profilesCompleted, averageCompletionRate, partFinderConversations, partFinderSearches, opportunitiesCreated, matchesReviewed, feedbackSubmitted, churches]
+      properties:
+        totalEarlyAccessChurches: { type: integer }
+        activeChurches: { type: integer }
+        inactiveSevenDays: { type: integer }
+        profilesStarted: { type: integer }
+        profilesCompleted: { type: integer }
+        averageCompletionRate: { type: number }
+        partFinderConversations: { type: integer }
+        partFinderSearches: { type: integer }
+        opportunitiesCreated: { type: integer }
+        matchesReviewed: { type: integer }
+        feedbackSubmitted: { type: integer }
+        churches:
+          type: array
+          items:
+            $ref: "#/components/schemas/EarlyAccessChurchSummary"
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch]
       properties:
         id: { type: integer }
         name: { type: string }
@@ -1433,6 +1544,12 @@ components:
         onboardingCompletedAt:
           type: ["string", "null"]
           format: date-time
+        earlyAccessStatus:
+          $ref: "#/components/schemas/EarlyAccessStatus"
+        earlyAccessStartDate:
+          type: string
+          format: date-time
+        foundingChurch: { type: boolean }
     ChurchUpdate:
       type: object
       properties:

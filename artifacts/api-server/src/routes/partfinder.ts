@@ -4,7 +4,11 @@ import {
   ChatWithPartFinderBody,
   ChatWithPartFinderResponse,
 } from "@workspace/api-zod";
-import { db, ministryProfilesTable } from "@workspace/db";
+import {
+  db,
+  earlyAccessUsageEventsTable,
+  ministryProfilesTable,
+} from "@workspace/db";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
@@ -215,6 +219,18 @@ router.post("/assistant/partfinder", async (req, res): Promise<void> => {
     [...parsed.data.messages].reverse().find((message) => message.role === "user")
       ?.content.trim() ?? "";
   const church = await getOrCreateChurch(userId);
+  await db.insert(earlyAccessUsageEventsTable).values({
+    churchId: church.id,
+    clerkUserId: userId,
+    eventType: "partfinder_conversation",
+  });
+  if (FIND_PEOPLE_PATTERN.test(question) || UNASSIGNED_PATTERN.test(question)) {
+    await db.insert(earlyAccessUsageEventsTable).values({
+      churchId: church.id,
+      clerkUserId: userId,
+      eventType: "partfinder_search",
+    });
+  }
   const profiles = await db
     .select()
     .from(ministryProfilesTable)

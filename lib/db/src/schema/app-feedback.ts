@@ -5,12 +5,18 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { churchesTable } from "./churches";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
 export const appFeedbackTable = pgTable("app_feedback", {
   id: serial("id").primaryKey(),
+  churchId: integer("church_id").references(() => churchesTable.id, {
+    onDelete: "set null",
+  }),
   type: text("type").notNull().default("suggestion"),
+  category: text("category").notNull().default("other"),
+  priority: text("priority").notNull().default("medium"),
   message: text("message").notNull(),
   contactEmail: text("contact_email"),
   sourcePage: text("source_page").notNull().default("sign-in"),

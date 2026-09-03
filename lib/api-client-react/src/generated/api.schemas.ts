@@ -196,8 +196,26 @@ export const AppFeedbackInputType = {
   fix: 'fix',
 } as const;
 
+export type AppFeedbackInputCategory = typeof AppFeedbackInputCategory[keyof typeof AppFeedbackInputCategory];
+
+
+export const AppFeedbackInputCategory = {
+  bug: 'bug',
+  'confusing-ux': 'confusing-ux',
+  'feature-request': 'feature-request',
+  'ministry-profile': 'ministry-profile',
+  'part-finder': 'part-finder',
+  'church-setup': 'church-setup',
+  'member-experience': 'member-experience',
+  'pastor-dashboard': 'pastor-dashboard',
+  'ministry-matching': 'ministry-matching',
+  'privacy-permissions': 'privacy-permissions',
+  other: 'other',
+} as const;
+
 export interface AppFeedbackInput {
   type: AppFeedbackInputType;
+  category?: AppFeedbackInputCategory;
   /**
      * @minLength 1
      * @maxLength 5000
@@ -233,6 +251,23 @@ export const AppFeedbackType = {
   fix: 'fix',
 } as const;
 
+export type AppFeedbackCategory = typeof AppFeedbackCategory[keyof typeof AppFeedbackCategory];
+
+
+export const AppFeedbackCategory = {
+  bug: 'bug',
+  'confusing-ux': 'confusing-ux',
+  'feature-request': 'feature-request',
+  'ministry-profile': 'ministry-profile',
+  'part-finder': 'part-finder',
+  'church-setup': 'church-setup',
+  'member-experience': 'member-experience',
+  'pastor-dashboard': 'pastor-dashboard',
+  'ministry-matching': 'ministry-matching',
+  'privacy-permissions': 'privacy-permissions',
+  other: 'other',
+} as const;
+
 export type AppFeedbackStatus = typeof AppFeedbackStatus[keyof typeof AppFeedbackStatus];
 
 
@@ -243,14 +278,26 @@ export const AppFeedbackStatus = {
   dismissed: 'dismissed',
 } as const;
 
+export type AppFeedbackPriority = typeof AppFeedbackPriority[keyof typeof AppFeedbackPriority];
+
+
+export const AppFeedbackPriority = {
+  critical: 'critical',
+  high: 'high',
+  medium: 'medium',
+  low: 'low',
+} as const;
+
 export interface AppFeedback {
   id: number;
   type: AppFeedbackType;
+  category: AppFeedbackCategory;
   message: string;
   /** @nullable */
   contactEmail?: string | null;
   sourcePage: string;
   status: AppFeedbackStatus;
+  priority: AppFeedbackPriority;
   /** @nullable */
   adminResponse?: string | null;
   /** @nullable */
@@ -273,6 +320,33 @@ export const AppFeedbackUpdateInputStatus = {
   dismissed: 'dismissed',
 } as const;
 
+export type AppFeedbackUpdateInputCategory = typeof AppFeedbackUpdateInputCategory[keyof typeof AppFeedbackUpdateInputCategory];
+
+
+export const AppFeedbackUpdateInputCategory = {
+  bug: 'bug',
+  'confusing-ux': 'confusing-ux',
+  'feature-request': 'feature-request',
+  'ministry-profile': 'ministry-profile',
+  'part-finder': 'part-finder',
+  'church-setup': 'church-setup',
+  'member-experience': 'member-experience',
+  'pastor-dashboard': 'pastor-dashboard',
+  'ministry-matching': 'ministry-matching',
+  'privacy-permissions': 'privacy-permissions',
+  other: 'other',
+} as const;
+
+export type AppFeedbackUpdateInputPriority = typeof AppFeedbackUpdateInputPriority[keyof typeof AppFeedbackUpdateInputPriority];
+
+
+export const AppFeedbackUpdateInputPriority = {
+  critical: 'critical',
+  high: 'high',
+  medium: 'medium',
+  low: 'low',
+} as const;
+
 export interface AppFeedbackUpdateInput {
   status: AppFeedbackUpdateInputStatus;
   /**
@@ -280,6 +354,68 @@ export interface AppFeedbackUpdateInput {
      * @nullable
      */
   adminResponse?: string | null;
+  category?: AppFeedbackUpdateInputCategory;
+  priority?: AppFeedbackUpdateInputPriority;
+}
+
+export type EarlyAccessStatus = typeof EarlyAccessStatus[keyof typeof EarlyAccessStatus];
+
+
+export const EarlyAccessStatus = {
+  early_access: 'early_access',
+  standard: 'standard',
+} as const;
+
+export interface EarlyAccessWelcome {
+  show: boolean;
+  churchName: string;
+  earlyAccessStartDate: string;
+}
+
+export interface EarlyAccessWelcomeAcknowledgement {
+  acknowledged: boolean;
+}
+
+export type EarlyAccessChurchSummaryHealth = typeof EarlyAccessChurchSummaryHealth[keyof typeof EarlyAccessChurchSummaryHealth];
+
+
+export const EarlyAccessChurchSummaryHealth = {
+  'highly-active': 'highly-active',
+  active: 'active',
+  'low-activity': 'low-activity',
+  'needs-follow-up': 'needs-follow-up',
+} as const;
+
+export interface EarlyAccessChurchSummary {
+  id: number;
+  name: string;
+  earlyAccessStartDate: string;
+  membersInvited: number;
+  profilesCompleted: number;
+  completionRate: number;
+  partFinderConversations: number;
+  partFinderSearches?: number;
+  opportunitiesCreated: number;
+  matchesReviewed: number;
+  feedbackSubmitted: number;
+  /** @nullable */
+  lastActivityAt: string | null;
+  health: EarlyAccessChurchSummaryHealth;
+}
+
+export interface EarlyAccessOverview {
+  totalEarlyAccessChurches: number;
+  activeChurches: number;
+  inactiveSevenDays: number;
+  profilesStarted: number;
+  profilesCompleted: number;
+  averageCompletionRate: number;
+  partFinderConversations: number;
+  partFinderSearches: number;
+  opportunitiesCreated: number;
+  matchesReviewed: number;
+  feedbackSubmitted: number;
+  churches: EarlyAccessChurchSummary[];
 }
 
 export type SpiritualGiftName = typeof SpiritualGiftName[keyof typeof SpiritualGiftName];
@@ -474,6 +610,9 @@ export interface Church {
   ministryCustomization: MinistryCustomization;
   /** @nullable */
   onboardingCompletedAt: string | null;
+  earlyAccessStatus: EarlyAccessStatus;
+  earlyAccessStartDate: string;
+  foundingChurch: boolean;
 }
 
 export interface ChurchUpdate {

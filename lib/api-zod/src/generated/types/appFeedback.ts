@@ -5,17 +5,21 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { AppFeedbackCategory } from './appFeedbackCategory';
+import type { AppFeedbackPriority } from './appFeedbackPriority';
 import type { AppFeedbackStatus } from './appFeedbackStatus';
 import type { AppFeedbackType } from './appFeedbackType';
 
 export interface AppFeedback {
   id: number;
   type: AppFeedbackType;
+  category: AppFeedbackCategory;
   message: string;
   /** @nullable */
   contactEmail?: string | null;
   sourcePage: string;
   status: AppFeedbackStatus;
+  priority: AppFeedbackPriority;
   /** @nullable */
   adminResponse?: string | null;
   /** @nullable */

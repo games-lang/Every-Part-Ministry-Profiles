@@ -24,6 +24,7 @@ import { PartFinderAssistant } from "@/components/partfinder-assistant";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EarlyAccessOverview } from "@/components/early-access-overview";
 
 const statusOptions: Array<{ value: AppFeedback["status"]; label: string }> = [
   { value: "new", label: "New" },
@@ -54,6 +55,8 @@ function FeedbackCard({
   onSaved: () => void;
 }) {
   const [status, setStatus] = useState<AppFeedback["status"]>(item.status);
+  const [category, setCategory] = useState<AppFeedback["category"]>(item.category);
+  const [priority, setPriority] = useState<AppFeedback["priority"]>(item.priority);
   const [response, setResponse] = useState(item.adminResponse ?? "");
   const updateFeedback = useUpdateAppFeedback();
   const responseText = response.trim();
@@ -79,6 +82,9 @@ function FeedbackCard({
               </CardTitle>
               <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${statusClass(item.status)}`} data-testid={`status-feedback-${item.id}`}>
                 {statusOptions.find((option) => option.value === item.status)?.label}
+              </span>
+              <span className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                {item.category.replaceAll("-", " ")}
               </span>
             </div>
             <CardDescription className="mt-1">
@@ -106,7 +112,7 @@ function FeedbackCard({
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[180px_1fr] lg:items-start">
+        <div className="grid gap-4 lg:grid-cols-[180px_220px_150px_1fr] lg:items-start">
           <div>
             <label htmlFor={`feedback-status-${item.id}`} className="text-sm font-semibold text-foreground">
               Status
@@ -120,6 +126,36 @@ function FeedbackCard({
             >
               {statusOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor={`feedback-category-${item.id}`} className="text-sm font-semibold text-foreground">
+              Category
+            </label>
+            <select
+              id={`feedback-category-${item.id}`}
+              value={category}
+              onChange={(event) => setCategory(event.target.value as AppFeedback["category"])}
+              className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm capitalize text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            >
+              {["bug", "confusing-ux", "feature-request", "ministry-profile", "part-finder", "church-setup", "member-experience", "pastor-dashboard", "ministry-matching", "privacy-permissions", "other"].map((value) => (
+                <option key={value} value={value}>{value.replaceAll("-", " ")}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor={`feedback-priority-${item.id}`} className="text-sm font-semibold text-foreground">
+              Priority
+            </label>
+            <select
+              id={`feedback-priority-${item.id}`}
+              value={priority}
+              onChange={(event) => setPriority(event.target.value as AppFeedback["priority"])}
+              className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            >
+              {["critical", "high", "medium", "low"].map((value) => (
+                <option key={value} value={value}>{value[0].toUpperCase() + value.slice(1)}</option>
               ))}
             </select>
           </div>
@@ -158,7 +194,7 @@ function FeedbackCard({
             <Button
               type="button"
               onClick={() => updateFeedback.mutate(
-                { id: item.id, data: { status, adminResponse: responseText || null } },
+                 { id: item.id, data: { status, category, priority, adminResponse: responseText || null } },
                 { onSuccess: onSaved },
               )}
               disabled={updateFeedback.isPending}
@@ -414,6 +450,8 @@ export function AppAdminRoute() {
         </div>
       </header>
       <main className="container mx-auto max-w-6xl px-4 py-8 sm:py-10">
+        <EarlyAccessOverview />
+        <div className="my-12 border-t border-border/70" />
         <AppFeedbackInbox />
       </main>
       <PartFinderAssistant />

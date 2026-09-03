@@ -1,5 +1,6 @@
 import {
   integer,
+  boolean,
   jsonb,
   pgTable,
   serial,
@@ -27,6 +28,13 @@ export const churchesTable = pgTable(
     enabledSpiritualGifts: jsonb("enabled_spiritual_gifts").$type<string[]>(),
     assessmentConfiguration: jsonb("assessment_configuration").$type<unknown>(),
     ministryCustomization: jsonb("ministry_customization").$type<unknown>(),
+    earlyAccessStatus: text("early_access_status").notNull().default("early_access"),
+    earlyAccessStartDate: timestamp("early_access_start_date", {
+      withTimezone: true,
+    })
+      .notNull()
+      .defaultNow(),
+    foundingChurch: boolean("founding_church").notNull().default(false),
     onboardingCompletedAt: timestamp("onboarding_completed_at", {
       withTimezone: true,
     }),

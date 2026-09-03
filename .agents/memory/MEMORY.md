@@ -13,3 +13,4 @@
 - [Clerk signed-in route behavior](clerk-signed-in-route-behavior.md) — never render Clerk SignIn while a session is active; show an in-app continuation instead of triggering an automatic redirect.
 - [Landing-page fixed overlays](landing-fixed-overlays.md) — fixed launchers need explicit viewport positioning outside the landing overflow container or they can disappear.
 - [PartFinder leadership personalization](partfinder-leadership-personalization.md) — pastor coaching context is per-user, visible, editable, pausable, and never learned invisibly.
+- [Early Access boundaries](early-access-boundaries.md) — acknowledgements are per church user; owner insights stay aggregate and never expose church or member records.

@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
 import { desc, eq } from "drizzle-orm";
+import { getAuth } from "@clerk/express";
 import {
   CreateAppFeedbackBody,
   CreateAppFeedbackResponse,
@@ -10,13 +11,17 @@ import {
 } from "@workspace/api-zod";
 import { appFeedbackTable, db } from "@workspace/db";
 import { isAppAdminUser, requireAppAdmin, requireUserId } from "../lib/auth";
+import { getOrCreateChurch } from "../lib/churches";
 
 const router: IRouter = Router();
 
 function feedbackResponse(feedback: typeof appFeedbackTable.$inferSelect) {
   return {
     id: feedback.id,
+    churchId: feedback.churchId,
     type: feedback.type,
+    category: feedback.category,
+    priority: feedback.priority,
     message: feedback.message,
     contactEmail: feedback.contactEmail,
     sourcePage: feedback.sourcePage,
@@ -35,10 +40,14 @@ router.post("/feedback", async (req, res): Promise<void> => {
     return;
   }
 
+  const userId = getAuth(req).userId;
+  const church = userId ? await getOrCreateChurch(userId) : null;
   const [created] = await db
     .insert(appFeedbackTable)
     .values({
+      churchId: church?.id ?? null,
       type: parsed.data.type,
+      category: parsed.data.category ?? "other",
       message: parsed.data.message.trim(),
       contactEmail: parsed.data.contactEmail?.trim().toLowerCase() || null,
       sourcePage: parsed.data.sourcePage?.trim() || "sign-in",
@@ -99,6 +108,8 @@ router.patch("/admin/feedback/:id", async (req, res): Promise<void> => {
     .update(appFeedbackTable)
     .set({
       status: parsed.data.status,
+      category: parsed.data.category ?? "other",
+      priority: parsed.data.priority ?? "medium",
       adminResponse: parsed.data.adminResponse?.trim() || null,
       respondedAt:
         parsed.data.adminResponse?.trim() ? new Date() : null,

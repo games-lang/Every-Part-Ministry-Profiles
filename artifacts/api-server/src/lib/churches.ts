@@ -57,6 +57,7 @@ export async function getOrCreateChurch(userId: string) {
         slug: slugFromUserId(userId),
         adminName: "Church Administrator",
         adminEmail: "admin@example.com",
+        foundingChurch: true,
       })
       .returning();
     if (church) {
@@ -102,5 +103,8 @@ export function churchResponse(
     assessmentConfiguration: configuration,
     ministryCustomization: customization,
     onboardingCompletedAt: church.onboardingCompletedAt,
+    earlyAccessStatus: church.earlyAccessStatus,
+    earlyAccessStartDate: church.earlyAccessStartDate,
+    foundingChurch: church.foundingChurch,
   };
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCreateAppFeedback } from "@workspace/api-client-react";
+import { useCreateAppFeedback, type AppFeedbackInput } from "@workspace/api-client-react";
 import { MessageSquarePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -10,6 +10,7 @@ type AppFeedbackFormProps = {
 
 export function AppFeedbackForm({ sourcePage, className = "" }: AppFeedbackFormProps) {
   const [feedbackType, setFeedbackType] = useState<"suggestion" | "fix">("suggestion");
+  const [category, setCategory] = useState<NonNullable<AppFeedbackInput["category"]>>("other");
   const [feedback, setFeedback] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const feedbackMutation = useCreateAppFeedback();
@@ -42,6 +43,7 @@ export function AppFeedbackForm({ sourcePage, className = "" }: AppFeedbackFormP
             {
               data: {
                 type: feedbackType,
+                category,
                 message: feedback.trim(),
                 contactEmail: contactEmail.trim() || undefined,
                 sourcePage,
@@ -69,6 +71,30 @@ export function AppFeedbackForm({ sourcePage, className = "" }: AppFeedbackFormP
           >
             <option value="suggestion">A suggestion</option>
             <option value="fix">A problem to fix</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor={`${sourcePage}-feedback-category`} className="text-sm font-medium text-foreground">
+            What is this about?
+          </label>
+          <select
+            id={`${sourcePage}-feedback-category`}
+            value={category}
+            onChange={(event) => setCategory(event.target.value as NonNullable<AppFeedbackInput["category"]>)}
+            className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            data-testid={`select-${sourcePage}-feedback-category`}
+          >
+            <option value="other">Something else</option>
+            <option value="ministry-profile">Ministry Profile</option>
+            <option value="pastor-dashboard">Pastor dashboard</option>
+            <option value="part-finder">PartFinder</option>
+            <option value="church-setup">Church setup</option>
+            <option value="member-experience">Member experience</option>
+            <option value="ministry-matching">Ministry matching</option>
+            <option value="privacy-permissions">Privacy or permissions</option>
+            <option value="confusing-ux">Something was confusing</option>
+            <option value="bug">A technical problem</option>
+            <option value="feature-request">Feature request</option>
           </select>
         </div>
         <div>

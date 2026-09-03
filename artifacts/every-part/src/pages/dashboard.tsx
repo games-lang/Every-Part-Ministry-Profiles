@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ShareProfileCard } from "@/components/share-profile-card";
 import { AppFeedbackForm } from "@/components/app-feedback-form";
 import { AppFeedbackInbox } from "@/pages/app-admin";
+import { EarlyAccessWelcome } from "@/components/early-access-welcome";
 
 function buildPublicProfileUrl(profilePath: string) {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -74,6 +75,7 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto max-w-6xl space-y-8 px-4 py-8 sm:py-10">
+      <EarlyAccessWelcome />
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="mb-2 text-xs font-bold uppercase tracking-[.18em] text-accent">A pastoral overview</p>

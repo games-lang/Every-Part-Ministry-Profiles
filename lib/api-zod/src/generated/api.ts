@@ -254,6 +254,7 @@ export const createAppFeedbackBodySourcePageMax = 120;
 
 export const CreateAppFeedbackBody = zod.object({
   "type": zod.enum(['suggestion', 'fix']),
+  "category": zod.enum(['bug', 'confusing-ux', 'feature-request', 'ministry-profile', 'part-finder', 'church-setup', 'member-experience', 'pastor-dashboard', 'ministry-matching', 'privacy-permissions', 'other']).optional(),
   "message": zod.string().min(1).max(createAppFeedbackBodyMessageMax),
   "contactEmail": zod.email().nullish(),
   "sourcePage": zod.string().max(createAppFeedbackBodySourcePageMax).optional()
@@ -282,10 +283,12 @@ export const GetAppFeedbackResponse = zod.object({
   "items": zod.array(zod.object({
   "id": zod.int(),
   "type": zod.enum(['suggestion', 'fix']),
+  "category": zod.enum(['bug', 'confusing-ux', 'feature-request', 'ministry-profile', 'part-finder', 'church-setup', 'member-experience', 'pastor-dashboard', 'ministry-matching', 'privacy-permissions', 'other']),
   "message": zod.string(),
   "contactEmail": zod.email().nullish(),
   "sourcePage": zod.string(),
   "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
+  "priority": zod.enum(['critical', 'high', 'medium', 'low']),
   "adminResponse": zod.string().nullish(),
   "respondedAt": zod.coerce.date().nullish(),
   "createdAt": zod.coerce.date(),
@@ -310,20 +313,75 @@ export const updateAppFeedbackBodyAdminResponseMax = 5000;
 
 export const UpdateAppFeedbackBody = zod.object({
   "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
-  "adminResponse": zod.string().max(updateAppFeedbackBodyAdminResponseMax).nullish()
+  "adminResponse": zod.string().max(updateAppFeedbackBodyAdminResponseMax).nullish(),
+  "category": zod.enum(['bug', 'confusing-ux', 'feature-request', 'ministry-profile', 'part-finder', 'church-setup', 'member-experience', 'pastor-dashboard', 'ministry-matching', 'privacy-permissions', 'other']).optional(),
+  "priority": zod.enum(['critical', 'high', 'medium', 'low']).optional()
 })
 
 export const UpdateAppFeedbackResponse = zod.object({
   "id": zod.int(),
   "type": zod.enum(['suggestion', 'fix']),
+  "category": zod.enum(['bug', 'confusing-ux', 'feature-request', 'ministry-profile', 'part-finder', 'church-setup', 'member-experience', 'pastor-dashboard', 'ministry-matching', 'privacy-permissions', 'other']),
   "message": zod.string(),
   "contactEmail": zod.email().nullish(),
   "sourcePage": zod.string(),
   "status": zod.enum(['new', 'reviewing', 'resolved', 'dismissed']),
+  "priority": zod.enum(['critical', 'high', 'medium', 'low']),
   "adminResponse": zod.string().nullish(),
   "respondedAt": zod.coerce.date().nullish(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get the signed-in church's Early Access welcome state
+ */
+export const GetEarlyAccessWelcomeResponse = zod.object({
+  "show": zod.boolean(),
+  "churchName": zod.string(),
+  "earlyAccessStartDate": zod.coerce.date()
+})
+
+
+/**
+ * @summary Acknowledge the signed-in church's Early Access welcome
+ */
+export const AcknowledgeEarlyAccessWelcomeResponse = zod.object({
+  "acknowledged": zod.boolean()
+})
+
+
+/**
+ * @summary Get aggregate Early Access usage for the platform owner
+ */
+export const GetEarlyAccessOverviewResponse = zod.object({
+  "totalEarlyAccessChurches": zod.int(),
+  "activeChurches": zod.int(),
+  "inactiveSevenDays": zod.int(),
+  "profilesStarted": zod.int(),
+  "profilesCompleted": zod.int(),
+  "averageCompletionRate": zod.number(),
+  "partFinderConversations": zod.int(),
+  "partFinderSearches": zod.int(),
+  "opportunitiesCreated": zod.int(),
+  "matchesReviewed": zod.int(),
+  "feedbackSubmitted": zod.int(),
+  "churches": zod.array(zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "membersInvited": zod.int(),
+  "profilesCompleted": zod.int(),
+  "completionRate": zod.number(),
+  "partFinderConversations": zod.int(),
+  "partFinderSearches": zod.int().optional(),
+  "opportunitiesCreated": zod.int(),
+  "matchesReviewed": zod.int(),
+  "feedbackSubmitted": zod.int(),
+  "lastActivityAt": zod.coerce.date().nullable(),
+  "health": zod.enum(['highly-active', 'active', 'low-activity', 'needs-follow-up'])
+}))
 })
 
 
@@ -433,7 +491,10 @@ export const GetMyChurchResponse = zod.object({
   "spiritualGiftsLabel": zod.string().min(1).max(getMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(getMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
 }),
-  "onboardingCompletedAt": zod.coerce.date().nullable()
+  "onboardingCompletedAt": zod.coerce.date().nullable(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "foundingChurch": zod.boolean()
 })
 
 
@@ -649,7 +710,10 @@ export const UpdateMyChurchResponse = zod.object({
   "spiritualGiftsLabel": zod.string().min(1).max(updateMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(updateMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax)
 }),
-  "onboardingCompletedAt": zod.coerce.date().nullable()
+  "onboardingCompletedAt": zod.coerce.date().nullable(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "foundingChurch": zod.boolean()
 })
 
 
@@ -965,7 +1029,10 @@ export const GetDashboardSummaryResponse = zod.object({
   "spiritualGiftsLabel": zod.string().min(1).max(getDashboardSummaryResponseChurchMinistryCustomizationSpiritualGiftsLabelMax),
   "ministryInterestsLabel": zod.string().min(1).max(getDashboardSummaryResponseChurchMinistryCustomizationMinistryInterestsLabelMax)
 }),
-  "onboardingCompletedAt": zod.coerce.date().nullable()
+  "onboardingCompletedAt": zod.coerce.date().nullable(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "foundingChurch": zod.boolean()
 }),
   "totalProfiles": zod.int(),
   "recentProfiles": zod.array(zod.object({

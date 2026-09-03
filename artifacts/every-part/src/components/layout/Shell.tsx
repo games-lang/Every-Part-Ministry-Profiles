@@ -2,8 +2,9 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { UserButton } from "@clerk/react";
 import { BrainCircuit, LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck } from "lucide-react";
-import { useGetAppAdminAccess, useHealthCheck } from "@workspace/api-client-react";
+import { useGetAppAdminAccess, useGetMyChurch, useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Brand } from "@/components/brand";
 import { PartFinderAssistant } from "@/components/partfinder-assistant";
 import { BetaNotice } from "@/components/beta-notice";
@@ -20,6 +21,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { data: health } = useHealthCheck();
   const { data: adminAccess } = useGetAppAdminAccess();
+  const { data: church } = useGetMyChurch();
 
   return (
     <div className="ep-shell flex min-h-[100dvh] flex-col">
@@ -31,6 +33,13 @@ export function Shell({ children }: { children: ReactNode }) {
             <Link href="/dashboard" className="group flex items-center rounded-xl focus-visible:ring-0" aria-label="Every Part overview">
               <Brand compact />
             </Link>
+            {church?.earlyAccessStatus === "early_access" && (
+              <Link href="/about-early-access" className="hidden sm:inline-flex">
+                <Badge variant="outline" className="border-secondary/60 bg-secondary/10 text-foreground">
+                  Early Access
+                </Badge>
+              </Link>
+            )}
             
             <nav className="order-3 flex w-full max-w-full items-center gap-1 overflow-x-auto md:order-none md:w-auto" aria-label="Leader navigation">
               {navItems.map((item) => {
@@ -96,9 +105,14 @@ export function Shell({ children }: { children: ReactNode }) {
       <footer className="mt-auto py-6 border-t border-border/50 text-center">
         <div className="container mx-auto flex items-center justify-between px-4 text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Every Part</p>
-          <div className="flex items-center gap-2" role="status" aria-label={`Systems ${health?.status === 'ok' ? 'operational' : 'checking'}`}>
-            <div className={`h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-accent' : 'bg-secondary'}`} aria-hidden="true" />
-            <span>Systems {health?.status === 'ok' ? 'Operational' : 'Checking...'}</span>
+          <div className="flex items-center gap-4">
+            <Link href="/about-early-access" className="hover:text-foreground hover:underline">
+              About Early Access
+            </Link>
+            <div className="flex items-center gap-2" role="status" aria-label={`Systems ${health?.status === 'ok' ? 'operational' : 'checking'}`}>
+              <div className={`h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-accent' : 'bg-secondary'}`} aria-hidden="true" />
+              <span>Systems {health?.status === 'ok' ? 'Operational' : 'Checking...'}</span>
+            </div>
           </div>
         </div>
       </footer>
