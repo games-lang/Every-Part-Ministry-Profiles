@@ -284,8 +284,8 @@ export default function PricingPage() {
 
         <section className="relative px-5 pb-24 sm:px-8 sm:pb-32">
           <div className="mx-auto max-w-7xl">
-            <Reveal className="pricing-notice">
-             <aside className="relative -mt-8 rounded-[1.5rem] border border-secondary/40 bg-[hsl(var(--secondary)/.12)] p-6 shadow-[0_18px_45px_hsl(var(--foreground)/.08)] sm:-mt-10 sm:flex sm:items-start sm:gap-5 sm:p-7" aria-label="Pricing notice">
+             <Reveal className="pricing-notice">
+              <aside className="relative mt-8 rounded-[1.5rem] border border-secondary/40 bg-[hsl(var(--secondary)/.12)] p-6 shadow-[0_18px_45px_hsl(var(--foreground)/.08)] sm:mt-10 sm:flex sm:items-start sm:gap-5 sm:p-7" aria-label="Pricing notice">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                   <CircleHelp className="h-5 w-5" />
                 </span>
