@@ -31,6 +31,7 @@ import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
 import { Shell } from '@/components/layout/Shell';
 import { Brand } from '@/components/brand';
+import { BetaNotice } from '@/components/beta-notice';
 import { AppFeedbackForm } from "@/components/app-feedback-form";
 
 const DiscoverRoute = ({ params }: { params: { slug: string } }) => (
@@ -139,6 +140,13 @@ function SignInPage() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-secondary/10 via-background to-background pointer-events-none" />
       <div className="relative z-10 w-full max-w-md">
         <Brand className="mb-7 justify-center" />
+        <div className="mb-5 overflow-hidden rounded-2xl border border-secondary/30 bg-secondary/10">
+          <BetaNotice />
+          <p className="px-5 pb-4 text-center text-xs leading-5 text-muted-foreground">
+            We’re testing and improving Every Part over time. Thanks for helping
+            us make it more useful for churches and leaders.
+          </p>
+        </div>
         <Show when="signed-out">
           <SignIn
             routing="path"
