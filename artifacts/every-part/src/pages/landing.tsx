@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
+import { BetaNotice } from "@/components/beta-notice";
 import { PuzzleCluster } from "@/components/puzzle-cluster";
 import { PublicAiAssistant } from "@/components/public-ai-assistant";
 
@@ -191,6 +192,7 @@ export default function LandingPage() {
   return (
     <>
       <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
+      <BetaNotice />
       <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link href="/" className="landing-focus rounded-xl" aria-label="Every Part home" onClick={closeMenu}>

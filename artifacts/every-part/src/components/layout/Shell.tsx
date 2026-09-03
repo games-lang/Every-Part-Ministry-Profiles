@@ -6,6 +6,7 @@ import { useGetAppAdminAccess, useHealthCheck } from "@workspace/api-client-reac
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/brand";
 import { PartFinderAssistant } from "@/components/partfinder-assistant";
+import { BetaNotice } from "@/components/beta-notice";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -86,6 +87,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
+      <BetaNotice />
       
       <main id="main-content" className="flex flex-1 flex-col" tabIndex={-1}>
         {children}
