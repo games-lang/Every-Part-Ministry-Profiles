@@ -110,6 +110,12 @@ export function Shell({ children }: { children: ReactNode }) {
             <Link href="/about-early-access" className="hover:text-foreground hover:underline">
               About Early Access
             </Link>
+             <Link href="/privacy" className="hover:text-foreground hover:underline">
+               Privacy
+             </Link>
+             <Link href="/terms" className="hover:text-foreground hover:underline">
+               Terms
+             </Link>
             <div className="flex items-center gap-2" role="status" aria-label={`Systems ${health?.status === 'ok' ? 'operational' : 'checking'}`}>
               <div className={`h-2 w-2 rounded-full ${health?.status === 'ok' ? 'bg-accent' : 'bg-secondary'}`} aria-hidden="true" />
               <span>Systems {health?.status === 'ok' ? 'Operational' : 'Checking...'}</span>

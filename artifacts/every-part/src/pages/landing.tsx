@@ -677,6 +677,10 @@ export default function LandingPage() {
                <p className="mt-6 max-w-xl border-l-2 border-secondary pl-5 text-base leading-7 text-[hsl(var(--landing-light-text))]">
                  Every Part is designed to assist ministry leaders—not replace prayer, pastoral relationships, or the work of the Holy Spirit.
                </p>
+               <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm font-semibold text-primary-foreground">
+                 <Link href="/privacy" className="landing-focus rounded-md underline decoration-secondary underline-offset-4 hover:text-secondary" data-testid="link-trust-privacy">Read our Privacy Policy</Link>
+                 <Link href="/terms" className="landing-focus rounded-md underline decoration-secondary underline-offset-4 hover:text-secondary" data-testid="link-trust-terms">Read our Terms of Service</Link>
+               </div>
             </Reveal>
             <Reveal className="[animation-delay:.12s]">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -732,6 +736,8 @@ export default function LandingPage() {
             <Link href="/pricing" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-pricing">Pricing</Link>
             <Link href="/about-early-access" className="landing-focus landing-link rounded-md">About Early Access</Link>
             <Link href="/sign-in" className="landing-focus landing-link rounded-md">Leader sign in</Link>
+             <Link href="/privacy" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-privacy">Privacy Policy</Link>
+             <Link href="/terms" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-terms">Terms of Service</Link>
           </div>
         </div>
         <div className="mx-auto mt-10 flex max-w-7xl items-center justify-between border-t border-border pt-5 text-xs text-muted-foreground">

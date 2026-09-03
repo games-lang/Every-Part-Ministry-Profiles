@@ -483,6 +483,8 @@ export default function PricingPage() {
             <Link href="/#how-it-works" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-how-it-works">How It Works</Link>
             <Link href="/sign-in" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-login">Login</Link>
             <a href="mailto:hello@everypart.org" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-contact">Contact</a>
+             <Link href="/privacy" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-privacy">Privacy Policy</Link>
+             <Link href="/terms" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-terms">Terms of Service</Link>
           </div>
           <p className="text-xs text-muted-foreground">A thoughtful beginning for meaningful ministry.</p>
         </div>

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import LandingPage from '@/pages/landing';
 import PricingPage from '@/pages/pricing';
 import AboutEarlyAccess from '@/pages/about-early-access';
+import { PrivacyPolicyPage, TermsOfServicePage } from '@/pages/policies';
 import { AppAdminRoute } from '@/pages/app-admin';
 import Dashboard from '@/pages/dashboard';
 import LeadershipProfilePage from '@/pages/leadership-profile';
@@ -306,6 +307,8 @@ function ClerkProviderWithRoutes() {
               <Route path="/" component={HomeRedirect} />
               <Route path="/pricing" component={PricingPage} />
               <Route path="/about-early-access" component={AboutEarlyAccess} />
+              <Route path="/privacy" component={PrivacyPolicyPage} />
+              <Route path="/terms" component={TermsOfServicePage} />
               <Route path="/sign-in/*?" component={SignInPage} />
               <Route path="/sign-up/*?" component={SignUpPage} />
               <Route path="/app-admin">
