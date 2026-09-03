@@ -295,6 +295,22 @@ export default function LandingPage() {
                   </a>
                 </div>
               </Reveal>
+              <Reveal className="[animation-delay:.35s]">
+                <a
+                  href="#partfinder"
+                  className="landing-focus mt-5 flex max-w-xl items-center gap-3 rounded-2xl border border-secondary/35 bg-secondary/10 p-4 transition hover:border-secondary hover:bg-secondary/15"
+                  data-testid="link-hero-partfinder"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                    <Bot className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[10px] font-bold uppercase tracking-[.16em] text-accent">Meet PartFinder</span>
+                    <span className="mt-1 block text-sm leading-6 text-muted-foreground">An AI-assisted guide for pastors and volunteer coordinators.</span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0 text-secondary" />
+                </a>
+              </Reveal>
               <Reveal className="[animation-delay:.4s]">
                 <div className="mt-10 flex items-center gap-3 text-sm text-muted-foreground">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(var(--landing-cyan))] text-primary"><Heart className="h-4 w-4" /></span>
