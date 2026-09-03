@@ -21,6 +21,10 @@ import {
   getProfileUsage,
   profileLimitForPlan,
 } from "../lib/profile-limits";
+import {
+  AI_CREDIT_LIMITS,
+  getAiCreditUsage,
+} from "../lib/ai-credits";
 
 const router: IRouter = Router();
 const paidPlanKeys = ["growing", "complete", "network"] as const;
@@ -132,6 +136,7 @@ router.get("/billing/plans", async (_req, res): Promise<void> => {
           description: planDescriptions[key],
           monthlyPrice: price.unit_amount ?? 0,
           profileLimit: profileLimitForPlan(key),
+          aiCreditLimit: AI_CREDIT_LIMITS[key],
           priceId: price.id,
         };
       })
@@ -152,7 +157,18 @@ router.get("/billing/subscription", async (req, res): Promise<void> => {
     const church = await getOrCreateChurch(userId);
     const subscription = await syncChurchSubscription(church);
     const usage = await getProfileUsage(church.id, subscription.plan);
-    res.json(GetBillingSubscriptionResponse.parse({ ...subscription, ...usage }));
+    const aiUsage = await getAiCreditUsage(
+      church.id,
+      subscription.plan,
+      subscription.currentPeriodEnd,
+    );
+    res.json(
+      GetBillingSubscriptionResponse.parse({
+        ...subscription,
+        ...usage,
+        ...aiUsage,
+      }),
+    );
   } catch (error) {
     console.error("Unable to load church billing status", error);
     res.status(503).json({ error: "Billing status is temporarily unavailable." });

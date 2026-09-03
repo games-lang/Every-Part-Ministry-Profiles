@@ -17,6 +17,13 @@ export interface BillingSubscription {
   profilesUsed: number;
   /** @minimum 0 */
   profilesRemaining: number;
+  /** @minimum 1 */
+  aiCreditLimit: number;
+  /** @minimum 0 */
+  aiCreditsUsed: number;
+  /** @minimum 0 */
+  aiCreditsRemaining: number;
+  aiCreditPeriodEnd: Date;
   /** @nullable */
   currentPeriodEnd: Date | null;
 }

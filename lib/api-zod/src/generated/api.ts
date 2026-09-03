@@ -391,6 +391,7 @@ export const GetEarlyAccessOverviewResponse = zod.object({
 
 
 
+
 export const GetBillingPlansResponse = zod.object({
   "plans": zod.array(zod.object({
   "key": zod.enum(['growing', 'complete', 'network']),
@@ -398,6 +399,7 @@ export const GetBillingPlansResponse = zod.object({
   "description": zod.string(),
   "monthlyPrice": zod.int(),
   "profileLimit": zod.int().min(1),
+  "aiCreditLimit": zod.int().min(1),
   "priceId": zod.string()
 }))
 })
@@ -412,6 +414,11 @@ export const getBillingSubscriptionResponseProfilesUsedMin = 0;
 export const getBillingSubscriptionResponseProfilesRemainingMin = 0;
 
 
+export const getBillingSubscriptionResponseAiCreditsUsedMin = 0;
+
+export const getBillingSubscriptionResponseAiCreditsRemainingMin = 0;
+
+
 
 export const GetBillingSubscriptionResponse = zod.object({
   "plan": zod.enum(['starter', 'growing', 'complete', 'network']),
@@ -420,6 +427,10 @@ export const GetBillingSubscriptionResponse = zod.object({
   "profileLimit": zod.int().min(1),
   "profilesUsed": zod.int().min(getBillingSubscriptionResponseProfilesUsedMin),
   "profilesRemaining": zod.int().min(getBillingSubscriptionResponseProfilesRemainingMin),
+  "aiCreditLimit": zod.int().min(1),
+  "aiCreditsUsed": zod.int().min(getBillingSubscriptionResponseAiCreditsUsedMin),
+  "aiCreditsRemaining": zod.int().min(getBillingSubscriptionResponseAiCreditsRemainingMin),
+  "aiCreditPeriodEnd": zod.coerce.date(),
   "currentPeriodEnd": zod.coerce.date().nullable()
 })
 

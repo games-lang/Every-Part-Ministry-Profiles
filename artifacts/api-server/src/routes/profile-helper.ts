@@ -10,6 +10,10 @@ import { openai } from "@workspace/integrations-openai-ai-server";
 import { requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { profileHelperSignals } from "../lib/profile-helper-signals";
+import {
+  AiCreditsExceededError,
+  reserveAiCredits,
+} from "../lib/ai-credits";
 
 const router: IRouter = Router();
 
@@ -63,6 +67,16 @@ router.post("/profiles/:id/helper", async (req, res): Promise<void> => {
       error: "The profile helper is only available for adult Ministry Profiles.",
     });
     return;
+  }
+
+  try {
+    await reserveAiCredits(church.id);
+  } catch (error) {
+    if (error instanceof AiCreditsExceededError) {
+      res.status(403).json({ error: error.message });
+      return;
+    }
+    throw error;
   }
 
   try {

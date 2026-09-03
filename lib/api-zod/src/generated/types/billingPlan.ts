@@ -14,5 +14,7 @@ export interface BillingPlan {
   monthlyPrice: number;
   /** @minimum 1 */
   profileLimit: number;
+  /** @minimum 1 */
+  aiCreditLimit: number;
   priceId: string;
 }

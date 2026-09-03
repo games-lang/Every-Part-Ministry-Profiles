@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 
+function getErrorMessage(error: unknown) {
+  return error instanceof Error
+    ? error.message
+    : "The profile helper is unavailable right now. Please try again.";
+}
+
 type HelperMessage = {
   role: "user" | "assistant";
   content: string;
@@ -47,8 +53,8 @@ export function ProfileHelper({
             { role: "assistant", content: answer },
           ]);
         },
-        onError: () => {
-          setError("The profile helper is unavailable right now. Please try again.");
+        onError: (caught) => {
+          setError(getErrorMessage(caught));
         },
       },
     );

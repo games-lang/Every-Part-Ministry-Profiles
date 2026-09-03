@@ -24,6 +24,7 @@ const plans = [
     eyebrow: "Begin gently",
     profileLimit: "5",
     limitLabel: "Ministry Profiles",
+    aiCredits: "20 AI credits each month",
     price: "$0",
     cadence: "per month",
     description: "A simple place to begin exploring Every Part with your church.",
@@ -39,6 +40,7 @@ const plans = [
     eyebrow: "Start small",
     profileLimit: "50",
     limitLabel: "Ministry Profiles",
+    aiCredits: "150 AI credits each month",
     price: "$10",
     cadence: "per month",
     description: "For a small team beginning a shared ministry conversation.",
@@ -54,6 +56,7 @@ const plans = [
     eyebrow: "See the whole church",
     profileLimit: "100",
     limitLabel: "Ministry Profiles",
+    aiCredits: "400 AI credits each month",
     price: "$20",
     cadence: "per month",
     description: "For churches ready to build a fuller rhythm of discovery, connection, and development.",
@@ -69,6 +72,7 @@ const plans = [
     eyebrow: "Grow across churches",
     profileLimit: "250",
     limitLabel: "Ministry Profiles",
+    aiCredits: "1,000 AI credits each month",
     price: "$30",
     cadence: "per month",
     description: "For multi-campus churches, networks, and denominations shaping ministry together.",
@@ -341,6 +345,9 @@ export default function PricingPage() {
                           <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.limitLabel}</span>
                         </div>
                       </div>
+                       <p className={`mt-3 text-sm font-semibold ${featured || dark ? "text-secondary" : "text-primary"}`}>
+                         {plan.aiCredits}
+                       </p>
                       <p className={`mt-4 min-h-[48px] text-sm leading-6 ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.description}</p>
                       <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.id}`}>{plan.valueNote}</p>
                       <div className="mt-auto pt-8">

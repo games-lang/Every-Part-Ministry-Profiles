@@ -20,6 +20,10 @@ import {
   getLeadershipProfile,
   leadershipProfileResponse,
 } from "../lib/partfinder-leadership-profile";
+import {
+  AiCreditsExceededError,
+  reserveAiCredits,
+} from "../lib/ai-credits";
 
 const router: IRouter = Router();
 
@@ -219,6 +223,15 @@ router.post("/assistant/partfinder", async (req, res): Promise<void> => {
     [...parsed.data.messages].reverse().find((message) => message.role === "user")
       ?.content.trim() ?? "";
   const church = await getOrCreateChurch(userId);
+  try {
+    await reserveAiCredits(church.id);
+  } catch (error) {
+    if (error instanceof AiCreditsExceededError) {
+      res.status(403).json({ error: error.message });
+      return;
+    }
+    throw error;
+  }
   await db.insert(earlyAccessUsageEventsTable).values({
     churchId: church.id,
     clerkUserId: userId,

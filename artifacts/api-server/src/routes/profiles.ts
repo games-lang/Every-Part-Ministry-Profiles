@@ -52,6 +52,10 @@ import {
   assertProfileCapacity,
   ProfileLimitReachedError,
 } from "../lib/profile-limits";
+import {
+  AiCreditsExceededError,
+  reserveAiCredits,
+} from "../lib/ai-credits";
 
 const router: IRouter = Router();
 
@@ -399,6 +403,15 @@ router.post("/profiles/matches", async (req, res): Promise<void> => {
   }
 
   const church = await getOrCreateChurch(userId);
+  try {
+    await reserveAiCredits(church.id);
+  } catch (error) {
+    if (error instanceof AiCreditsExceededError) {
+      res.status(403).json({ error: error.message });
+      return;
+    }
+    throw error;
+  }
   const profiles = await db
     .select()
     .from(ministryProfilesTable)

@@ -16,3 +16,4 @@
 - [Early Access boundaries](early-access-boundaries.md) — acknowledgements are per church user; owner insights stay aggregate and never expose church or member records.
 - [Stripe connector proxy](stripe-connector-proxy.md) — API-key Stripe connections may require the Replit connector proxy instead of an exposed secret key.
 - [Profile plan limits](profile-plan-limits.md) — all completed adult and youth profiles count; downgrades preserve history and block only new submissions over the cap.
+- [AI plan credits](ai-plan-credits.md) — authenticated church AI actions share monthly plan credits; public guide remains separately rate-limited.

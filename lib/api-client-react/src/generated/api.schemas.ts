@@ -434,6 +434,8 @@ export interface BillingPlan {
   monthlyPrice: number;
   /** @minimum 1 */
   profileLimit: number;
+  /** @minimum 1 */
+  aiCreditLimit: number;
   priceId: string;
 }
 
@@ -482,6 +484,13 @@ export interface BillingSubscription {
   profilesUsed: number;
   /** @minimum 0 */
   profilesRemaining: number;
+  /** @minimum 1 */
+  aiCreditLimit: number;
+  /** @minimum 0 */
+  aiCreditsUsed: number;
+  /** @minimum 0 */
+  aiCreditsRemaining: number;
+  aiCreditPeriodEnd: string;
   /** @nullable */
   currentPeriodEnd: string | null;
 }

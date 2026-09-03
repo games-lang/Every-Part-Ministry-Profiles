@@ -31,6 +31,7 @@ const planDetails = {
     description: "A low-pressure place to begin with your church.",
     price: "$0",
     profileLimit: 5,
+    aiCreditLimit: 20,
   },
   growing: {
     name: "Growing",
@@ -178,12 +179,20 @@ export default function BillingPage() {
                 </p>
               )}
               {subscription && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {subscription.profilesUsed} of {subscription.profileLimit} profiles used
-                  {subscription.profilesRemaining === 0
-                    ? " · limit reached"
-                    : ` · ${subscription.profilesRemaining} remaining`}
-                </p>
+                <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                  <p>
+                    {subscription.profilesUsed} of {subscription.profileLimit} profiles used
+                    {subscription.profilesRemaining === 0
+                      ? " · limit reached"
+                      : ` · ${subscription.profilesRemaining} remaining`}
+                  </p>
+                  <p>
+                    {subscription.aiCreditsUsed} of {subscription.aiCreditLimit} AI credits used
+                    {subscription.aiCreditsRemaining === 0
+                      ? " · limit reached"
+                      : ` · ${subscription.aiCreditsRemaining} remaining`}
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -216,7 +225,8 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Up to {planDetails.starter.profileLimit} profiles. No card required.
+              Up to {planDetails.starter.profileLimit} profiles and{" "}
+              {planDetails.starter.aiCreditLimit} AI credits per month. No card required.
             </p>
           </CardContent>
         </Card>
@@ -257,6 +267,9 @@ export default function BillingPage() {
                 </div>
                 <p className="mt-3 text-sm font-medium">
                   Up to {plan?.profileLimit ?? "—"} profiles
+                </p>
+                <p className="mt-1 text-sm font-medium">
+                  {plan?.aiCreditLimit ?? "—"} AI credits per month
                 </p>
                 <Button
                   className="mt-6 w-full"
