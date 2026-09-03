@@ -20,3 +20,9 @@ Multi-step youth forms must validate only the visible step during progression an
 **Why:** Full-form validation during early-step interactions can surface expected missing future answers as runtime failures instead of child-friendly inline guidance.
 
 **How to apply:** Use step-scoped, non-throwing checks for Continue actions, then run a complete safe parse before constructing the final strict API payload.
+
+Public youth gates must fail closed while authentication is loading. A child form may mount only after Clerk has explicitly settled as signed in or a server-verified access grant tied to the current church slug has been accepted.
+
+**Why:** Treating an unresolved auth state or stale client grant as access can briefly expose the full child form to an unsigned visitor.
+
+**How to apply:** Render a neutral loading card until Clerk is loaded, compare signed-in state explicitly, and bind any code grant to the exact church route so it cannot survive a slug change.
