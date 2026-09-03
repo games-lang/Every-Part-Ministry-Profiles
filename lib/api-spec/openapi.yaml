@@ -1578,7 +1578,7 @@ components:
             $ref: "#/components/schemas/EarlyAccessChurchSummary"
     BillingPlan:
       type: object
-      required: [key, name, description, monthlyPrice, priceId]
+      required: [key, name, description, monthlyPrice, profileLimit, priceId]
       properties:
         key:
           type: string
@@ -1586,6 +1586,7 @@ components:
         name: { type: string }
         description: { type: string }
         monthlyPrice: { type: integer }
+        profileLimit: { type: integer, minimum: 1 }
         priceId: { type: string }
     BillingPlanList:
       type: object
@@ -1614,13 +1615,16 @@ components:
         url: { type: string, format: uri }
     BillingSubscription:
       type: object
-      required: [plan, status, hasPaidAccess, currentPeriodEnd]
+      required: [plan, status, hasPaidAccess, currentPeriodEnd, profileLimit, profilesUsed, profilesRemaining]
       properties:
         plan:
           type: string
           enum: [starter, growing, complete, network]
         status: { type: string }
         hasPaidAccess: { type: boolean }
+        profileLimit: { type: integer, minimum: 1 }
+        profilesUsed: { type: integer, minimum: 0 }
+        profilesRemaining: { type: integer, minimum: 0 }
         currentPeriodEnd:
           type: ["string", "null"]
           format: date-time

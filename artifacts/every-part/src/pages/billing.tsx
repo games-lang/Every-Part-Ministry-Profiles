@@ -30,6 +30,7 @@ const planDetails = {
     name: "Starter",
     description: "A low-pressure place to begin with your church.",
     price: "$0",
+    profileLimit: 5,
   },
   growing: {
     name: "Growing",
@@ -176,6 +177,14 @@ export default function BillingPage() {
                   {new Date(subscription.currentPeriodEnd).toLocaleDateString()}
                 </p>
               )}
+              {subscription && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {subscription.profilesUsed} of {subscription.profileLimit} profiles used
+                  {subscription.profilesRemaining === 0
+                    ? " · limit reached"
+                    : ` · ${subscription.profilesRemaining} remaining`}
+                </p>
+              )}
             </div>
           </div>
           {paidAccess && (
@@ -207,7 +216,7 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Keep exploring with no card required.
+              Up to {planDetails.starter.profileLimit} profiles. No card required.
             </p>
           </CardContent>
         </Card>
@@ -246,6 +255,9 @@ export default function BillingPage() {
                   <ShieldCheck className="h-4 w-4 text-accent" />
                   Secure recurring billing through Stripe
                 </div>
+                <p className="mt-3 text-sm font-medium">
+                  Up to {plan?.profileLimit ?? "—"} profiles
+                </p>
                 <Button
                   className="mt-6 w-full"
                   variant={key === "complete" ? "default" : "outline"}

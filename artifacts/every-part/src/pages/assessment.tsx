@@ -47,6 +47,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { personalitySummarySentence } from "@/lib/personality-prose";
+import { profileSubmissionError } from "@/lib/profile-submission-error";
 import { ProfileParts } from "@/components/profile-parts";
 
 function hexToHsl(hex: string) {
@@ -2258,11 +2259,9 @@ export default function Assessment() {
           setStepIndex(stepKeys.length);
           window.scrollTo({ top: 0, behavior: "smooth" });
         },
-        onError: () => {
+        onError: (error) => {
           submissionStarted.current = false;
-          setSubmitError(
-            "We couldn’t submit your profile right now. Please check your connection and try again.",
-          );
+          setSubmitError(profileSubmissionError(error));
         },
       },
     );

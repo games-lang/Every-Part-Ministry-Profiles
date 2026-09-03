@@ -17,6 +17,10 @@ import {
   listActivePlans,
   listCustomerSubscriptions,
 } from "../stripeClient";
+import {
+  getProfileUsage,
+  profileLimitForPlan,
+} from "../lib/profile-limits";
 
 const router: IRouter = Router();
 const paidPlanKeys = ["growing", "complete", "network"] as const;
@@ -88,7 +92,8 @@ async function syncChurchSubscription(
   const item = subscription.items.data[0];
   const priceId = typeof item?.price === "string" ? item.price : item?.price.id;
   const metadataPlan = subscription.metadata?.plan_key;
-  const plan = isPaidPlanKey(metadataPlan ?? "") ? metadataPlan : "growing";
+  const plan =
+    metadataPlan && isPaidPlanKey(metadataPlan) ? metadataPlan : "growing";
   const currentPeriodEnd = item?.current_period_end
     ? new Date(item.current_period_end * 1000)
     : null;
@@ -126,6 +131,7 @@ router.get("/billing/plans", async (_req, res): Promise<void> => {
           name: product.name,
           description: planDescriptions[key],
           monthlyPrice: price.unit_amount ?? 0,
+          profileLimit: profileLimitForPlan(key),
           priceId: price.id,
         };
       })
@@ -145,7 +151,8 @@ router.get("/billing/subscription", async (req, res): Promise<void> => {
   try {
     const church = await getOrCreateChurch(userId);
     const subscription = await syncChurchSubscription(church);
-    res.json(GetBillingSubscriptionResponse.parse(subscription));
+    const usage = await getProfileUsage(church.id, subscription.plan);
+    res.json(GetBillingSubscriptionResponse.parse({ ...subscription, ...usage }));
   } catch (error) {
     console.error("Unable to load church billing status", error);
     res.status(503).json({ error: "Billing status is temporarily unavailable." });

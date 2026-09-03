@@ -29,6 +29,7 @@ import {
   Trash2,
   Compass,
 } from "lucide-react";
+import { profileSubmissionError } from "@/lib/profile-submission-error";
 
 // --- Form Schema ---
 const formSchema = z.object({
@@ -505,7 +506,8 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
         localStorage.setItem("every-part-journey-token", result.journeyToken);
         localStorage.removeItem(`every-part-explore-draft-${slug}`);
         setLocation(`/explore/result/${result.resultToken}`);
-      }
+      },
+      onError: (error) => alert(profileSubmissionError(error)),
     });
   };
 

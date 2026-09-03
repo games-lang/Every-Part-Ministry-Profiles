@@ -388,12 +388,16 @@ export const GetEarlyAccessOverviewResponse = zod.object({
 /**
  * @summary List the active Every Part subscription plans
  */
+
+
+
 export const GetBillingPlansResponse = zod.object({
   "plans": zod.array(zod.object({
   "key": zod.enum(['growing', 'complete', 'network']),
   "name": zod.string(),
   "description": zod.string(),
   "monthlyPrice": zod.int(),
+  "profileLimit": zod.int().min(1),
   "priceId": zod.string()
 }))
 })
@@ -402,10 +406,20 @@ export const GetBillingPlansResponse = zod.object({
 /**
  * @summary Get the signed-in church billing status
  */
+
+export const getBillingSubscriptionResponseProfilesUsedMin = 0;
+
+export const getBillingSubscriptionResponseProfilesRemainingMin = 0;
+
+
+
 export const GetBillingSubscriptionResponse = zod.object({
   "plan": zod.enum(['starter', 'growing', 'complete', 'network']),
   "status": zod.string(),
   "hasPaidAccess": zod.boolean(),
+  "profileLimit": zod.int().min(1),
+  "profilesUsed": zod.int().min(getBillingSubscriptionResponseProfilesUsedMin),
+  "profilesRemaining": zod.int().min(getBillingSubscriptionResponseProfilesRemainingMin),
   "currentPeriodEnd": zod.coerce.date().nullable()
 })
 

@@ -35,8 +35,36 @@ import {
   getOrCreateJourney,
   updateJourneyAfterProfile,
 } from "../lib/ministry-journeys";
+import {
+  assertProfileCapacity,
+  ProfileLimitReachedError,
+} from "../lib/profile-limits";
 
 const router: IRouter = Router();
+
+async function createYouthProfileWithinLimit(
+  churchId: number,
+  values: Omit<typeof ministryProfilesTable.$inferInsert, "churchId">,
+) {
+  return db.transaction(async (tx) => {
+    await assertProfileCapacity(tx, churchId);
+    const [created] = await tx
+      .insert(ministryProfilesTable)
+      .values({ ...values, churchId })
+      .returning();
+    if (!created) throw new Error("Unable to submit youth profile");
+    return created;
+  });
+}
+
+function respondToProfileLimit(
+  error: unknown,
+  res: Parameters<Parameters<typeof router.post>[1]>[1],
+) {
+  if (!(error instanceof ProfileLimitReachedError)) return false;
+  res.status(403).json({ error: error.message });
+  return true;
+}
 
 function optionalUserId(req: Parameters<typeof getAuth>[0]): string | null {
   const auth = getAuth(req);
@@ -100,8 +128,9 @@ if (!optionalUserId(req)) {
     res.status(400).json({ error: "The journey link is invalid or no longer available." });
     return;
   }
-  const [created] = await db.insert(ministryProfilesTable).values({
-    churchId: church.id,
+  let created;
+  try {
+    created = await createYouthProfileWithinLimit(church.id, {
     journeyId: journey.id,
     personKey: journey.accessToken,
     firstName: parsed.data.child.firstName,
@@ -123,8 +152,11 @@ if (!optionalUserId(req)) {
     guardianEmail: parsed.data.guardian.email,
     guardianConsent: true,
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  }).returning();
-  if (!created) throw new Error("Unable to submit youth profile");
+    });
+  } catch (error) {
+    if (respondToProfileLimit(error, res)) return;
+    throw error;
+  }
   await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(SubmitDiscoverProfileResponse.parse({
     resultToken: created.resultToken,
@@ -209,8 +241,9 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     res.status(400).json({ error: "The journey link is invalid or no longer available." });
     return;
   }
-  const [created] = await db.insert(ministryProfilesTable).values({
-    churchId: church.id,
+  let created;
+  try {
+    created = await createYouthProfileWithinLimit(church.id, {
     journeyId: journey.id,
     personKey: journey.accessToken,
     firstName: parsed.data.child.firstName,
@@ -230,8 +263,11 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     guardianEmail: parsed.data.guardian.email,
     guardianConsent: true,
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  }).returning();
-  if (!created) throw new Error("Unable to submit Explore profile");
+    });
+  } catch (error) {
+    if (respondToProfileLimit(error, res)) return;
+    throw error;
+  }
   await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(SubmitExploreProfileResponse.parse({
     resultToken: created.resultToken,
@@ -323,8 +359,9 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     res.status(400).json({ error: "The journey link is invalid or no longer available." });
     return;
   }
-  const [created] = await db.insert(ministryProfilesTable).values({
-    churchId: church.id,
+  let created;
+  try {
+    created = await createYouthProfileWithinLimit(church.id, {
     journeyId: journey.id,
     personKey: journey.accessToken,
     firstName: parsed.data.child.firstName,
@@ -344,8 +381,11 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     guardianEmail: parsed.data.guardian.email,
     guardianConsent: true,
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  }).returning();
-  if (!created) throw new Error("Unable to submit Develop profile");
+    });
+  } catch (error) {
+    if (respondToProfileLimit(error, res)) return;
+    throw error;
+  }
   await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
   res.status(201).json(SubmitDevelopProfileResponse.parse({
     resultToken: created.resultToken,

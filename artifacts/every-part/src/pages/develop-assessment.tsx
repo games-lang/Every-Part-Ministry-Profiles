@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { profileSubmissionError } from "@/lib/profile-submission-error";
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 const list = (max = 8, maxLength = 80) => z.array(z.string().min(1)).min(1).max(max);
@@ -306,7 +307,14 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
       },
       ...(Object.keys(observations || {}).length ? { guardianObservations: observations } : {}),
     };
-    submitProfile.mutate({ data: payload }, { onSuccess: (result) => { localStorage.setItem("every-part-journey-token", result.journeyToken); localStorage.removeItem(`every-part-develop-draft-${slug}`); setLocation(`/develop/result/${result.resultToken}`); } });
+    submitProfile.mutate({ data: payload }, {
+      onSuccess: (result) => {
+        localStorage.setItem("every-part-journey-token", result.journeyToken);
+        localStorage.removeItem(`every-part-develop-draft-${slug}`);
+        setLocation(`/develop/result/${result.resultToken}`);
+      },
+      onError: (error) => alert(profileSubmissionError(error)),
+    });
   };
 
   if (!Number.isInteger(age) || age < 13 || age > 17) return <AgeError slug={slug} />;

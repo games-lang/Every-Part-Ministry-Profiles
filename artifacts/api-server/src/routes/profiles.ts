@@ -48,6 +48,10 @@ import {
   getOrCreateJourney,
   updateJourneyAfterProfile,
 } from "../lib/ministry-journeys";
+import {
+  assertProfileCapacity,
+  ProfileLimitReachedError,
+} from "../lib/profile-limits";
 
 const router: IRouter = Router();
 
@@ -281,6 +285,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
   let created;
   try {
     created = await db.transaction(async (tx) => {
+      await assertProfileCapacity(tx, church.id);
       const [profile] = await tx
         .insert(ministryProfilesTable)
         .values({
@@ -358,6 +363,10 @@ router.post("/profiles", async (req, res): Promise<void> => {
       return profile;
     });
   } catch (error) {
+    if (error instanceof ProfileLimitReachedError) {
+      res.status(403).json({ error: error.message });
+      return;
+    }
     if (
       error instanceof Error &&
       error.message === "MINISTRY_PROFILE_INVITE_ALREADY_USED"

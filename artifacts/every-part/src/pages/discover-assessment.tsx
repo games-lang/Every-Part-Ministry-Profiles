@@ -31,6 +31,7 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
+import { profileSubmissionError } from "@/lib/profile-submission-error";
 
 // --- Form Schema ---
 const formSchema = z.object({
@@ -344,8 +345,8 @@ export default function DiscoverAssessment({ params }: { params: { slug: string 
         localStorage.removeItem(`every-part-discover-draft-${slug}`);
         setLocation(`/discover/result/${result.resultToken}`);
       },
-      onError: () => {
-        alert("There was an error saving your profile. Please try again.");
+      onError: (error) => {
+        alert(profileSubmissionError(error));
       }
     });
   };

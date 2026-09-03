@@ -432,6 +432,8 @@ export interface BillingPlan {
   name: string;
   description: string;
   monthlyPrice: number;
+  /** @minimum 1 */
+  profileLimit: number;
   priceId: string;
 }
 
@@ -474,6 +476,12 @@ export interface BillingSubscription {
   plan: BillingSubscriptionPlan;
   status: string;
   hasPaidAccess: boolean;
+  /** @minimum 1 */
+  profileLimit: number;
+  /** @minimum 0 */
+  profilesUsed: number;
+  /** @minimum 0 */
+  profilesRemaining: number;
   /** @nullable */
   currentPeriodEnd: string | null;
 }
