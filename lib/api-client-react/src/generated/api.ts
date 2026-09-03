@@ -20,6 +20,9 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminChurchDetail,
+  AdminChurchList,
+  AdminChurchUpdateInput,
   AppAdminAccess,
   AppFeedback,
   AppFeedbackInput,
@@ -50,6 +53,7 @@ import type {
   ExploreProfileInput,
   ExploreProfileResult,
   ExploreProfileSubmission,
+  GetAdminChurchesParams,
   HealthStatus,
   JourneyCompareResponse,
   JourneyEntry,
@@ -1054,6 +1058,248 @@ export function useGetEarlyAccessOverview<TData = Awaited<ReturnType<typeof getE
 
 
 
+
+export const getGetAdminChurchesUrl = (params?: GetAdminChurchesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/churches?${stringifiedParams}` : `/api/admin/churches`
+}
+
+/**
+ * @summary List churches for the platform owner
+ */
+export const getAdminChurches = async (params?: GetAdminChurchesParams, options?: Parameters<typeof customFetch>[1]): Promise<AdminChurchList> => {
+
+  return customFetch<AdminChurchList>(getGetAdminChurchesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminChurchesQueryKey = (params?: GetAdminChurchesParams,) => {
+    return [
+    `/api/admin/churches`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminChurchesQueryOptions = <TData = Awaited<ReturnType<typeof getAdminChurches>>, TError = ErrorType<void>>(params?: GetAdminChurchesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminChurches>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminChurchesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminChurches>>> = ({ signal }) => getAdminChurches(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminChurches>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminChurchesQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminChurches>>>
+export type GetAdminChurchesQueryError = ErrorType<void>
+
+
+/**
+ * @summary List churches for the platform owner
+ */
+
+export function useGetAdminChurches<TData = Awaited<ReturnType<typeof getAdminChurches>>, TError = ErrorType<void>>(
+ params?: GetAdminChurchesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminChurches>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminChurchesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetAdminChurchUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/churches/${id}`
+}
+
+/**
+ * @summary Get one church for the platform owner
+ */
+export const getAdminChurch = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<AdminChurchDetail> => {
+
+  return customFetch<AdminChurchDetail>(getGetAdminChurchUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminChurchQueryKey = (id: number,) => {
+    return [
+    `/api/admin/churches/${id}`
+    ] as const;
+    }
+
+
+export const getGetAdminChurchQueryOptions = <TData = Awaited<ReturnType<typeof getAdminChurch>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminChurch>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminChurchQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminChurch>>> = ({ signal }) => getAdminChurch(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminChurch>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminChurchQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminChurch>>>
+export type GetAdminChurchQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get one church for the platform owner
+ */
+
+export function useGetAdminChurch<TData = Awaited<ReturnType<typeof getAdminChurch>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminChurch>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminChurchQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateAdminChurchUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/churches/${id}`
+}
+
+/**
+ * @summary Update safe church management fields for the platform owner
+ */
+export const updateAdminChurch = async (id: number,
+    adminChurchUpdateInput: AdminChurchUpdateInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminChurchDetail> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<AdminChurchDetail>(getUpdateAdminChurchUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminChurchUpdateInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateAdminChurchMutationKey = () => ['updateAdminChurch'] as const;
+
+export const getUpdateAdminChurchMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminChurch>>, TError,UpdateAdminChurchMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminChurch>>, TError,UpdateAdminChurchMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAdminChurchMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminChurch>>, UpdateAdminChurchMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminChurch(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminChurchMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminChurch>>>
+    export type UpdateAdminChurchMutationBody = BodyType<AdminChurchUpdateInput>
+    export type UpdateAdminChurchMutationError = ErrorType<void>
+    export type UpdateAdminChurchMutationVariables = {id: number;data: BodyType<AdminChurchUpdateInput>}
+
+    /**
+ * @summary Update safe church management fields for the platform owner
+ */
+export const useUpdateAdminChurch = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminChurch>>, TError,UpdateAdminChurchMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminChurch>>,
+        TError,
+        UpdateAdminChurchMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAdminChurchMutationOptions(options));
+    }
 
 export const getGetBillingPlansUrl = () => {
 

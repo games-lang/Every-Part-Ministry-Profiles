@@ -418,6 +418,94 @@ export interface EarlyAccessOverview {
   churches: EarlyAccessChurchSummary[];
 }
 
+export type AdminChurchSummaryBillingPlan = typeof AdminChurchSummaryBillingPlan[keyof typeof AdminChurchSummaryBillingPlan];
+
+
+export const AdminChurchSummaryBillingPlan = {
+  starter: 'starter',
+  growing: 'growing',
+  complete: 'complete',
+  network: 'network',
+  unlimited: 'unlimited',
+} as const;
+
+export interface AdminChurchSummary {
+  id: number;
+  name: string;
+  slug: string;
+  /** @nullable */
+  address: string | null;
+  /** @nullable */
+  website: string | null;
+  adminName: string;
+  adminEmail: string;
+  earlyAccessStatus: EarlyAccessStatus;
+  earlyAccessStartDate: string;
+  foundingChurch: boolean;
+  billingPlan: AdminChurchSummaryBillingPlan;
+  billingStatus: string;
+  /** @nullable */
+  billingCurrentPeriodEnd: string | null;
+  completedProfileCount: number;
+  activePeopleCount: number;
+  adminCount: number;
+  /** @nullable */
+  lastActivityAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminChurchList {
+  items: AdminChurchSummary[];
+}
+
+export type AdminChurchAdminRole = typeof AdminChurchAdminRole[keyof typeof AdminChurchAdminRole];
+
+
+export const AdminChurchAdminRole = {
+  owner: 'owner',
+  admin: 'admin',
+} as const;
+
+export interface AdminChurchAdmin {
+  id: number;
+  name: string;
+  email: string;
+  role: AdminChurchAdminRole;
+  createdAt: string;
+}
+
+export interface AdminChurchDetail {
+  church: AdminChurchSummary;
+  admins: AdminChurchAdmin[];
+}
+
+export interface AdminChurchUpdateInput {
+  /**
+     * @minLength 1
+     * @maxLength 255
+     */
+  name?: string;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  address?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  website?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 255
+     */
+  adminName?: string;
+  adminEmail?: string;
+  earlyAccessStatus?: EarlyAccessStatus;
+  foundingChurch?: boolean;
+}
+
 export type BillingPlanKey = typeof BillingPlanKey[keyof typeof BillingPlanKey];
 
 
@@ -2621,6 +2709,26 @@ export interface DevelopProfileResult {
   summary: DevelopProfileResultSummary;
   guardian: DevelopProfileResultGuardian;
 }
+
+export type GetAdminChurchesParams = {
+/**
+ * @maxLength 120
+ */
+search?: string;
+status?: EarlyAccessStatus;
+billingPlan?: GetAdminChurchesBillingPlan;
+};
+
+export type GetAdminChurchesBillingPlan = typeof GetAdminChurchesBillingPlan[keyof typeof GetAdminChurchesBillingPlan];
+
+
+export const GetAdminChurchesBillingPlan = {
+  starter: 'starter',
+  growing: 'growing',
+  complete: 'complete',
+  network: 'network',
+  unlimited: 'unlimited',
+} as const;
 
 export type ListProfilesParams = {
 search?: string;

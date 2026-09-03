@@ -251,6 +251,97 @@ paths:
           description: Unauthorized
         "403":
           description: App administrator access required
+  /admin/churches:
+    get:
+      operationId: getAdminChurches
+      tags: [app-admin]
+      summary: List churches for the platform owner
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 120
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/EarlyAccessStatus"
+        - name: billingPlan
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [starter, growing, complete, network, unlimited]
+      responses:
+        "200":
+          description: Church management list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminChurchList"
+        "401":
+          description: Unauthorized
+        "403":
+          description: App administrator access required
+  /admin/churches/{id}:
+    get:
+      operationId: getAdminChurch
+      tags: [app-admin]
+      summary: Get one church for the platform owner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Church management detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminChurchDetail"
+        "401":
+          description: Unauthorized
+        "403":
+          description: App administrator access required
+        "404":
+          description: Church not found
+    patch:
+      operationId: updateAdminChurch
+      tags: [app-admin]
+      summary: Update safe church management fields for the platform owner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminChurchUpdateInput"
+      responses:
+        "200":
+          description: Updated church management detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminChurchDetail"
+        "400":
+          description: Invalid church update
+        "401":
+          description: Unauthorized
+        "403":
+          description: App administrator access required
+        "404":
+          description: Church not found
   /billing/plans:
     get:
       operationId: getBillingPlans
@@ -1576,6 +1667,76 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EarlyAccessChurchSummary"
+    AdminChurchSummary:
+      type: object
+      required: [id, name, slug, address, website, adminName, adminEmail, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd, completedProfileCount, activePeopleCount, adminCount, lastActivityAt, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        address: { type: ["string", "null"] }
+        website: { type: ["string", "null"] }
+        adminName: { type: string }
+        adminEmail: { type: string, format: email }
+        earlyAccessStatus:
+          $ref: "#/components/schemas/EarlyAccessStatus"
+        earlyAccessStartDate: { type: string, format: date-time }
+        foundingChurch: { type: boolean }
+        billingPlan:
+          type: string
+          enum: [starter, growing, complete, network, unlimited]
+        billingStatus: { type: string }
+        billingCurrentPeriodEnd:
+          type: ["string", "null"]
+          format: date-time
+        completedProfileCount: { type: integer }
+        activePeopleCount: { type: integer }
+        adminCount: { type: integer }
+        lastActivityAt:
+          type: ["string", "null"]
+          format: date-time
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    AdminChurchList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminChurchSummary"
+    AdminChurchAdmin:
+      type: object
+      required: [id, name, email, role, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        role:
+          type: string
+          enum: [owner, admin]
+        createdAt: { type: string, format: date-time }
+    AdminChurchDetail:
+      type: object
+      required: [church, admins]
+      properties:
+        church:
+          $ref: "#/components/schemas/AdminChurchSummary"
+        admins:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminChurchAdmin"
+    AdminChurchUpdateInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 255 }
+        address: { type: ["string", "null"], maxLength: 500 }
+        website: { type: ["string", "null"], maxLength: 500 }
+        adminName: { type: string, minLength: 1, maxLength: 255 }
+        adminEmail: { type: string, format: email }
+        earlyAccessStatus:
+          $ref: "#/components/schemas/EarlyAccessStatus"
+        foundingChurch: { type: boolean }
     BillingPlan:
       type: object
       required: [key, name, description, monthlyPrice, profileLimit, aiCreditLimit, priceId]

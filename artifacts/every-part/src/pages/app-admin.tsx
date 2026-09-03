@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EarlyAccessOverview } from "@/components/early-access-overview";
+import { ChurchManagement } from "@/components/church-management";
 
 const statusOptions: Array<{ value: AppFeedback["status"]; label: string }> = [
   { value: "new", label: "New" },
@@ -450,6 +451,8 @@ export function AppAdminRoute() {
         </div>
       </header>
       <main className="container mx-auto max-w-6xl px-4 py-8 sm:py-10">
+        <ChurchManagement />
+        <div className="my-12 border-t border-border/70" />
         <EarlyAccessOverview />
         <div className="my-12 border-t border-border/70" />
         <AppFeedbackInbox />

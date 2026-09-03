@@ -16,6 +16,7 @@ import partFinderRouter from "./partfinder";
 import partFinderLeadershipProfileRouter from "./partfinder-leadership-profile";
 import earlyAccessRouter from "./early-access";
 import billingRouter from "./billing";
+import adminChurchesRouter from "./admin-churches";
 
 const router: IRouter = Router();
 
@@ -36,5 +37,6 @@ router.use(partFinderRouter);
 router.use(partFinderLeadershipProfileRouter);
 router.use(earlyAccessRouter);
 router.use(billingRouter);
+router.use(adminChurchesRouter);
 
 export default router;

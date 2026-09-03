@@ -386,6 +386,148 @@ export const GetEarlyAccessOverviewResponse = zod.object({
 
 
 /**
+ * @summary List churches for the platform owner
+ */
+export const getAdminChurchesQuerySearchMax = 120;
+
+
+
+export const GetAdminChurchesQueryParams = zod.object({
+  "search": zod.coerce.string().max(getAdminChurchesQuerySearchMax).optional(),
+  "status": zod.enum(['early_access', 'standard']).optional(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']).optional()
+})
+
+export const GetAdminChurchesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "address": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "adminName": zod.string(),
+  "adminEmail": zod.email(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "foundingChurch": zod.boolean(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
+  "billingStatus": zod.string(),
+  "billingCurrentPeriodEnd": zod.coerce.date().nullable(),
+  "completedProfileCount": zod.int(),
+  "activePeopleCount": zod.int(),
+  "adminCount": zod.int(),
+  "lastActivityAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Get one church for the platform owner
+ */
+
+
+
+export const GetAdminChurchParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetAdminChurchResponse = zod.object({
+  "church": zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "address": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "adminName": zod.string(),
+  "adminEmail": zod.email(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "foundingChurch": zod.boolean(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
+  "billingStatus": zod.string(),
+  "billingCurrentPeriodEnd": zod.coerce.date().nullable(),
+  "completedProfileCount": zod.int(),
+  "activePeopleCount": zod.int(),
+  "adminCount": zod.int(),
+  "lastActivityAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}),
+  "admins": zod.array(zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "email": zod.email(),
+  "role": zod.enum(['owner', 'admin']),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Update safe church management fields for the platform owner
+ */
+
+
+
+export const UpdateAdminChurchParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const updateAdminChurchBodyNameMax = 255;
+
+export const updateAdminChurchBodyAddressMax = 500;
+
+export const updateAdminChurchBodyWebsiteMax = 500;
+
+export const updateAdminChurchBodyAdminNameMax = 255;
+
+
+
+export const UpdateAdminChurchBody = zod.object({
+  "name": zod.string().min(1).max(updateAdminChurchBodyNameMax).optional(),
+  "address": zod.string().max(updateAdminChurchBodyAddressMax).nullish(),
+  "website": zod.string().max(updateAdminChurchBodyWebsiteMax).nullish(),
+  "adminName": zod.string().min(1).max(updateAdminChurchBodyAdminNameMax).optional(),
+  "adminEmail": zod.email().optional(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']).optional(),
+  "foundingChurch": zod.boolean().optional()
+})
+
+export const UpdateAdminChurchResponse = zod.object({
+  "church": zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "address": zod.string().nullable(),
+  "website": zod.string().nullable(),
+  "adminName": zod.string(),
+  "adminEmail": zod.email(),
+  "earlyAccessStatus": zod.enum(['early_access', 'standard']),
+  "earlyAccessStartDate": zod.coerce.date(),
+  "foundingChurch": zod.boolean(),
+  "billingPlan": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
+  "billingStatus": zod.string(),
+  "billingCurrentPeriodEnd": zod.coerce.date().nullable(),
+  "completedProfileCount": zod.int(),
+  "activePeopleCount": zod.int(),
+  "adminCount": zod.int(),
+  "lastActivityAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}),
+  "admins": zod.array(zod.object({
+  "id": zod.int(),
+  "name": zod.string(),
+  "email": zod.email(),
+  "role": zod.enum(['owner', 'admin']),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
  * @summary List the active Every Part subscription plans
  */
 
