@@ -23,6 +23,9 @@ import { BetaNotice } from "@/components/beta-notice";
 import { PuzzleCluster } from "@/components/puzzle-cluster";
 import { PublicAiAssistant } from "@/components/public-ai-assistant";
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const appPath = (path: string) => `${basePath}${path}`;
+
 const pathway = [
   {
     number: "01",
@@ -195,7 +198,7 @@ export default function LandingPage() {
       <BetaNotice />
       <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Link href="/" className="landing-focus rounded-xl" aria-label="Every Part home" onClick={closeMenu}>
+          <Link href={appPath("/")} className="landing-focus rounded-xl" aria-label="Every Part home" onClick={closeMenu}>
             <Brand />
           </Link>
 
@@ -203,9 +206,9 @@ export default function LandingPage() {
             <a href="#how-it-works" className="landing-focus landing-link rounded-md px-1 py-2">How It Works</a>
             <a href="#ministry-profile" className="landing-focus landing-link rounded-md px-1 py-2">Ministry Profile</a>
             <a href="#for-churches" className="landing-focus landing-link rounded-md px-1 py-2">For Churches</a>
-            <Link href="/pricing" className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-home-pricing">Pricing</Link>
-            <Link href="/sign-in" className="landing-focus landing-link rounded-md px-1 py-2">Leader sign in</Link>
-            <Link href="/sign-up" className="landing-focus ml-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">
+            <Link href={appPath("/pricing")} className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-home-pricing">Pricing</Link>
+            <Link href={appPath("/sign-in")} className="landing-focus landing-link rounded-md px-1 py-2">Leader sign in</Link>
+            <Link href={appPath("/sign-up")} className="landing-focus ml-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">
               Try Every Part <ArrowUpRight className="h-4 w-4" />
             </Link>
           </nav>
@@ -226,9 +229,9 @@ export default function LandingPage() {
               <a href="#how-it-works" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">How It Works</a>
               <a href="#ministry-profile" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Ministry Profile</a>
               <a href="#for-churches" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">For Churches</a>
-              <Link href="/pricing" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-home-mobile-pricing">Pricing</Link>
-               <Link href="/sign-in" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Leader sign in</Link>
-              <Link href="/sign-up" onClick={closeMenu} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
+               <Link href={appPath("/pricing")} onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-home-mobile-pricing">Pricing</Link>
+                <Link href={appPath("/sign-in")} onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Leader sign in</Link>
+               <Link href={appPath("/sign-up")} onClick={closeMenu} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
             </div>
           </nav>
         )}
@@ -256,7 +259,7 @@ export default function LandingPage() {
               </Reveal>
               <Reveal className="[animation-delay:.3s]">
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <Link href="/sign-up" className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground shadow-[0_14px_30px_hsl(var(--foreground)/.16)] transition hover:-translate-y-0.5 hover:bg-accent">
+                   <Link href={appPath("/sign-up")} className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground shadow-[0_14px_30px_hsl(var(--foreground)/.16)] transition hover:-translate-y-0.5 hover:bg-accent">
                     Try Every Part <ArrowRight className="h-4 w-4" />
                   </Link>
                   <a href="#how-it-works" className="landing-focus inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background/60 px-7 py-4 font-semibold transition hover:border-secondary hover:text-secondary">
@@ -496,7 +499,7 @@ export default function LandingPage() {
                   <p className="mt-6 max-w-xl text-base leading-7 text-[hsl(var(--landing-light-text))]">
                     Build a shared language for serving. Notice where people are thriving. Return to the conversation when a season changes.
                   </p>
-                  <Link href="/sign-up" className="landing-focus mt-10 inline-flex items-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90">
+                  <Link href={appPath("/sign-up")} className="landing-focus mt-10 inline-flex items-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90">
                     Create a church profile <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -580,7 +583,7 @@ export default function LandingPage() {
                <p className="relative mx-auto mt-6 max-w-xl text-base leading-7 text-secondary-foreground/80 sm:text-lg">Some know exactly where they belong. Others are still trying to discover their part.</p>
                <p className="relative mx-auto mt-4 max-w-xl font-serif text-2xl leading-tight sm:text-3xl">Help every part of the Body find its place.</p>
               <div className="relative mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-                <Link href="/sign-up" className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
+                <Link href={appPath("/sign-up")} className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
                 <Link href="/profile/riverstone-community" className="landing-focus inline-flex items-center justify-center rounded-full border border-secondary-foreground/30 px-7 py-4 font-semibold transition hover:bg-secondary-foreground/10">Preview a Ministry Profile</Link>
               </div>
             </div>
@@ -591,7 +594,7 @@ export default function LandingPage() {
       <footer className="border-t border-border px-5 py-10 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Link href="/" className="landing-focus inline-flex rounded-xl" aria-label="Every Part home"><Brand compact /></Link>
+            <Link href={appPath("/")} className="landing-focus inline-flex rounded-xl" aria-label="Every Part home"><Brand compact /></Link>
             <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">Helping churches notice, name, and nurture the part every person has to play.</p>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
