@@ -437,6 +437,7 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
       primaryColor: church.primaryColor,
       accentColor: church.accentColor,
       profileUrl: `/profile/${church.slug}`,
+       discoverAccessAvailable: Boolean(church.discoverHallwayCode),
        enabledSpiritualGifts: enabledSpiritualGifts ?? activeSpiritualGifts(null)!,
        assessmentConfiguration: configuration,
         ministryCustomization: customization,

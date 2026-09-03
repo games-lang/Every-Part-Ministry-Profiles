@@ -1944,7 +1944,7 @@ components:
         authorized: { type: boolean, enum: [true] }
     PublicChurch:
       type: object
-      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization]
+      required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, discoverAccessAvailable]
       properties:
         name: { type: string }
         slug: { type: string }
@@ -1956,6 +1956,9 @@ components:
           type: string
           pattern: "^#[0-9A-Fa-f]{6}$"
         profileUrl: { type: string }
+        discoverAccessAvailable:
+          type: boolean
+          description: Whether this church has enabled code-based access to Discover. The code itself is never public.
         enabledSpiritualGifts:
           type: array
           minItems: 3

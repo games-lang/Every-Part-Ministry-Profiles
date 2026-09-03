@@ -25,4 +25,4 @@ Public youth gates must fail closed while authentication is loading. A child for
 
 **Why:** Treating an unresolved auth state or stale client grant as access can briefly expose the full child form to an unsigned visitor.
 
-**How to apply:** Render a neutral loading card until Clerk is loaded, compare signed-in state explicitly, and bind any code grant to the exact church route so it cannot survive a slug change.
+**How to apply:** Render a neutral loading card until Clerk is loaded, compare signed-in state explicitly, expose only a boolean indicating whether code access is configured, and bind any code grant to the exact church route so it cannot survive a slug change.

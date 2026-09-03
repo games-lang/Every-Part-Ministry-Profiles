@@ -1018,6 +1018,7 @@ export const GetPublicChurchResponse = zod.object({
   "primaryColor": zod.string().regex(getPublicChurchResponsePrimaryColorRegExp),
   "accentColor": zod.string().regex(getPublicChurchResponseAccentColorRegExp),
   "profileUrl": zod.string(),
+  "discoverAccessAvailable": zod.boolean().describe('Whether this church has enabled code-based access to Discover. The code itself is never public.'),
   "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).min(getPublicChurchResponseEnabledSpiritualGiftsMin),
   "assessmentConfiguration": zod.object({
   "sections": zod.object({

@@ -19,6 +19,8 @@ export interface PublicChurch {
   /** @pattern ^#[0-9A-Fa-f]{6}$ */
   accentColor: string;
   profileUrl: string;
+  /** Whether this church has enabled code-based access to Discover. The code itself is never public. */
+  discoverAccessAvailable: boolean;
   /** @minItems 3 */
   enabledSpiritualGifts: SpiritualGiftName[];
   assessmentConfiguration: AssessmentConfiguration;
