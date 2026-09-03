@@ -276,7 +276,8 @@ export default function LandingPage() {
               </Reveal>
               <Reveal className="[animation-delay:.1s]">
                 <h1 className="mt-7 max-w-3xl font-serif text-[clamp(3.2rem,7.4vw,7.1rem)] font-semibold leading-[.92] tracking-[-.08em]">
-                  Every person has a <span className="text-accent">part.</span>{" "}
+                  <span className="text-accent">Every</span> person has a{" "}
+                  <span className="text-accent">part.</span>{" "}
                   Help them discover it.
                 </h1>
               </Reveal>
