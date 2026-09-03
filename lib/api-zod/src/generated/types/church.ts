@@ -25,6 +25,11 @@ export interface Church {
   address?: string | null;
   /** @nullable */
   website?: string | null;
+  /**
+     * @nullable
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  discoverHallwayCode: string | null;
   adminName: string;
   adminEmail: string;
   profileUrl: string;

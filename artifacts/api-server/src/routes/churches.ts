@@ -9,6 +9,9 @@ import {
   GetMyChurchResponse,
   GetChurchAdminAccessParams,
   GetChurchAdminAccessResponse,
+  VerifyDiscoverAccessBody,
+  VerifyDiscoverAccessParams,
+  VerifyDiscoverAccessResponse,
   GetPublicChurchParams,
   GetPublicChurchResponse,
   RemoveChurchAdminParams,
@@ -30,6 +33,7 @@ import {
 } from "../lib/churches";
 import { assessmentConfiguration } from "../lib/assessment-configuration";
 import { ministryCustomization } from "../lib/ministry-customization";
+import { matchesDiscoverHallwayCode } from "../lib/youth-profiles";
 import {
   ObjectNotFoundError,
   ObjectStorageService,
@@ -318,6 +322,36 @@ router.get("/churches/:slug/admin-access", async (req, res): Promise<void> => {
       canOverrideYouthPathway: Boolean(membership),
     }),
   );
+});
+
+router.post("/churches/:slug/discover-access", async (req, res): Promise<void> => {
+  const params = VerifyDiscoverAccessParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(401).json({ error: "Missing or incorrect hallway code" });
+    return;
+  }
+  const parsed = VerifyDiscoverAccessBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(401).json({ error: "Missing or incorrect hallway code" });
+    return;
+  }
+  const [church] = await db
+    .select({
+      id: churchesTable.id,
+      discoverHallwayCode: churchesTable.discoverHallwayCode,
+    })
+    .from(churchesTable)
+    .where(eq(churchesTable.slug, params.data.slug))
+    .limit(1);
+  if (!church) {
+    res.status(404).json({ error: "Church not found" });
+    return;
+  }
+  if (!matchesDiscoverHallwayCode(church.discoverHallwayCode, parsed.data.hallwayCode)) {
+    res.status(401).json({ error: "Missing or incorrect hallway code" });
+    return;
+  }
+  res.json(VerifyDiscoverAccessResponse.parse({ authorized: true }));
 });
 
 router.get("/churches/:slug/logo", async (req, res): Promise<void> => {

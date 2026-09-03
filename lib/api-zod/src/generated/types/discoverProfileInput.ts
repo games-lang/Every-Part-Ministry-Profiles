@@ -26,6 +26,12 @@ export interface DiscoverProfileInput {
   profileType: DiscoverProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /**
+     * @minLength 6
+     * @maxLength 6
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  hallwayCode?: string;
   child: DiscoverProfileInputChild;
   guardian: DiscoverProfileInputGuardian;
   answers: DiscoverAnswersInput;

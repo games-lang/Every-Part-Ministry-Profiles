@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpenCheck, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
+import { BookOpenCheck, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 import {
   CHURCH_TRADITIONS,
   DEFAULT_MINISTRY_CUSTOMIZATION,
@@ -178,6 +178,8 @@ const SPIRITUAL_GIFTS = [
 const ALL_GIFT_NAMES = SPIRITUAL_GIFTS.map(([name]) => name);
 const ALLOWED_LOGO_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
+const DISCOVER_HALLWAY_CODE_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
+const DISCOVER_HALLWAY_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 const DEFAULT_SECTIONS: AssessmentConfigurationSections = {
   aboutYou: true,
@@ -376,10 +378,17 @@ function savedLogoSource(path: string | null | undefined, slug: string | undefin
     : null;
 }
 
+function generateDiscoverHallwayCode() {
+  return Array.from({ length: 6 }, () =>
+    DISCOVER_HALLWAY_CODE_ALPHABET[Math.floor(Math.random() * DISCOVER_HALLWAY_CODE_ALPHABET.length)],
+  ).join("");
+}
+
 export default function ChurchSetup() {
   const { data: church, isLoading } = useGetMyChurch();
   const { data: admins, isLoading: adminsLoading } = useListChurchAdmins();
   const updateChurch = useUpdateMyChurch();
+  const updateDiscoverCode = useUpdateMyChurch();
   const addAdmin = useAddChurchAdmin();
   const removeAdmin = useRemoveChurchAdmin();
   const queryClient = useQueryClient();
@@ -389,6 +398,7 @@ export default function ChurchSetup() {
   const [localLogoPreview, setLocalLogoPreview] = useState<string | null>(null);
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [adminEmailDraft, setAdminEmailDraft] = useState("");
+  const [discoverCodeDraft, setDiscoverCodeDraft] = useState("");
 
   const form = useForm<ChurchFormValues>({
     resolver: zodResolver(churchFormSchema),
@@ -442,6 +452,7 @@ export default function ChurchSetup() {
         },
       });
       setLogoPath(church.logoUrl || null);
+      setDiscoverCodeDraft(church.discoverHallwayCode || "");
     }
   }, [church, form]);
 
@@ -511,6 +522,31 @@ export default function ChurchSetup() {
           toast({
             title: "Could not add pastor",
             description: "Check that they already have an Every Part account, then try again.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
+  };
+
+  const saveDiscoverCode = () => {
+    const code = discoverCodeDraft.trim().toUpperCase();
+    if (!DISCOVER_HALLWAY_CODE_PATTERN.test(code)) return;
+    updateDiscoverCode.mutate(
+      { data: { discoverHallwayCode: code } },
+      {
+        onSuccess: (updatedChurch) => {
+          setDiscoverCodeDraft(updatedChurch.discoverHallwayCode || "");
+          queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+          toast({
+            title: "Discover code saved",
+            description: "Visitors can now use this code to open Discover.",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Could not save Discover code",
+            description: "Please try again.",
             variant: "destructive",
           });
         },
@@ -714,6 +750,61 @@ export default function ChurchSetup() {
               </a>
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/60 shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-serif text-xl">
+            <UsersRound className="h-5 w-5 text-primary" />
+            Discover hallway code
+          </CardTitle>
+          <CardDescription>
+            Let families open Discover for ages 6–8 without signing in. Share this short code in a church hallway or family handout.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              value={discoverCodeDraft}
+              onChange={(event) =>
+                setDiscoverCodeDraft(
+                  event.target.value.toUpperCase().replace(/[^A-HJ-NP-Z2-9]/g, "").slice(0, 6),
+                )
+              }
+              placeholder="6-character code"
+              autoComplete="off"
+              autoCapitalize="characters"
+              maxLength={6}
+              aria-label="Discover hallway code"
+              className="font-mono tracking-[0.25em]"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDiscoverCodeDraft(generateDiscoverHallwayCode())}
+              className="shrink-0"
+            >
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Generate new
+            </Button>
+            <Button
+              type="button"
+              onClick={saveDiscoverCode}
+              disabled={
+                updateDiscoverCode.isPending ||
+                !DISCOVER_HALLWAY_CODE_PATTERN.test(discoverCodeDraft)
+              }
+              className="shrink-0"
+            >
+              {updateDiscoverCode.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save code
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Current code: <span className="font-mono font-semibold tracking-[0.2em]">{church?.discoverHallwayCode || "Not set"}</span>.
+            Generating and saving a new code immediately replaces the old one.
+          </p>
         </CardContent>
       </Card>
 

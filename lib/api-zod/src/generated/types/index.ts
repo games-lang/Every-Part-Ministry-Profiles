@@ -101,6 +101,8 @@ export * from './developProfileResultSummaryMinistryInterestsItemResponse';
 export * from './developProfileSubmission';
 export * from './developProfileSubmissionProfileType';
 export * from './developProfileSubmissionRecommendedProfileType';
+export * from './discoverAccessInput';
+export * from './discoverAccessResponse';
 export * from './discoverAnswersInput';
 export * from './discoverAnswersInputAboutMe';
 export * from './discoverAnswersInputGrowingWithJesus';

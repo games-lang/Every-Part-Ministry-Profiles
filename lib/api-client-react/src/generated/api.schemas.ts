@@ -788,6 +788,11 @@ export interface Church {
   address?: string | null;
   /** @nullable */
   website?: string | null;
+  /**
+     * @nullable
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  discoverHallwayCode: string | null;
   adminName: string;
   adminEmail: string;
   profileUrl: string;
@@ -823,6 +828,12 @@ export interface ChurchUpdate {
   address?: string | null;
   /** @nullable */
   website?: string | null;
+  /**
+     * @minLength 6
+     * @maxLength 6
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  discoverHallwayCode?: string;
   adminName?: string;
   adminEmail?: string;
   /** @minItems 3 */
@@ -854,6 +865,19 @@ export interface ChurchAdminAddInput {
 
 export interface ChurchAdminAccess {
   canOverrideYouthPathway: boolean;
+}
+
+export interface DiscoverAccessInput {
+  /**
+     * @minLength 6
+     * @maxLength 6
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  hallwayCode: string;
+}
+
+export interface DiscoverAccessResponse {
+  authorized: true;
 }
 
 export interface PublicChurch {
@@ -1965,6 +1989,12 @@ export interface DiscoverProfileInput {
   profileType: DiscoverProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /**
+     * @minLength 6
+     * @maxLength 6
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  hallwayCode?: string;
   child: DiscoverProfileInputChild;
   guardian: DiscoverProfileInputGuardian;
   answers: DiscoverAnswersInput;

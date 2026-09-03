@@ -23,6 +23,7 @@ export const churchesTable = pgTable(
     accentColor: text("accent_color").notNull().default("#ED7A59"),
     address: text("address"),
     website: text("website"),
+    discoverHallwayCode: text("discover_hallway_code"),
     adminName: text("admin_name").notNull(),
     adminEmail: text("admin_email").notNull(),
     enabledSpiritualGifts: jsonb("enabled_spiritual_gifts").$type<string[]>(),

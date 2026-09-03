@@ -95,6 +95,7 @@ export function churchResponse(
     accentColor: church.accentColor,
     address: church.address,
     website: church.website,
+    discoverHallwayCode: church.discoverHallwayCode,
     adminName: church.adminName,
     adminEmail: church.adminEmail,
     profileUrl: `/profile/${church.slug}`,

@@ -63,6 +63,7 @@ export const discoverSubmissionSchema = z.object({
   age: z.number().int().min(6).max(120),
   birthdate: z.string().date().optional(),
   profileType: z.literal("discover"),
+  hallwayCode: z.string().regex(/^[A-HJ-NP-Z2-9]{6}$/).optional(),
   child: z.object({ firstName: text(80), lastName: text(80) }).strict(),
   guardian: z.object({
     name: text(120),
@@ -97,6 +98,21 @@ export const discoverSubmissionSchema = z.object({
     thriveNotes: optionalText(1000),
   }).strict().optional(),
 }).strict();
+
+export const DISCOVER_HALLWAY_CODE_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
+
+export function isDiscoverHallwayCode(value: unknown): value is string {
+  return typeof value === "string" && DISCOVER_HALLWAY_CODE_PATTERN.test(value);
+}
+
+export function matchesDiscoverHallwayCode(
+  storedCode: string | null | undefined,
+  submittedCode: unknown,
+): boolean {
+  return isDiscoverHallwayCode(storedCode) &&
+    isDiscoverHallwayCode(submittedCode) &&
+    storedCode === submittedCode;
+}
 
 export type DiscoverSubmission = z.infer<typeof discoverSubmissionSchema>;
 

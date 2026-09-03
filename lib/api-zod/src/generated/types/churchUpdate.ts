@@ -25,6 +25,12 @@ export interface ChurchUpdate {
   address?: string | null;
   /** @nullable */
   website?: string | null;
+  /**
+     * @minLength 6
+     * @maxLength 6
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  discoverHallwayCode?: string;
   adminName?: string;
   adminEmail?: string;
   /** @minItems 3 */

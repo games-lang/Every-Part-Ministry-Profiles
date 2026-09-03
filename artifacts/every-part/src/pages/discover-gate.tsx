@@ -1,31 +1,89 @@
 import { useAuth } from "@clerk/react";
 import { useLocation, Link } from "wouter";
+import { useState } from "react";
+import { useVerifyDiscoverAccess } from "@workspace/api-client-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 
 export default function DiscoverGate({
   params,
   Page,
 }: {
   params: { slug: string };
-  Page: React.ComponentType<{ params: { slug: string } }>;
+  Page: React.ComponentType<{ params: { slug: string }; hallwayCode?: string }>;
 }) {
   const { isSignedIn } = useAuth();
   const [location] = useLocation();
+  const [hallwayCode, setHallwayCode] = useState("");
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [error, setError] = useState("");
+  const verifyAccess = useVerifyDiscoverAccess();
   const next = encodeURIComponent(location || `/profile/${params.slug}/discover`);
 
   if (isSignedIn) {
     return <Page params={params} />;
   }
 
+  if (accessGranted) {
+    return <Page params={params} hallwayCode={hallwayCode} />;
+  }
+
+  const submitCode = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    verifyAccess.mutate(
+      {
+        slug: params.slug,
+        data: { hallwayCode },
+      },
+      {
+        onSuccess: () => setAccessGranted(true),
+        onError: () => setError("That code did not work. Check it with your church and try again."),
+      },
+    );
+  };
+
   return (
     <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
       <Card className="w-full max-w-md border-border/60 shadow-lg text-center">
         <CardContent className="p-8 space-y-4">
-          <h2 className="text-xl font-serif font-medium">A parent or coordinator needs to sign in</h2>
+          <h2 className="text-xl font-serif font-medium">Open Discover</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Discover (ages 68) is not open from the public link. Sign in, then continue.
+            Enter the code shared by your church, or sign in as a parent or coordinator.
           </p>
+          <form onSubmit={submitCode} className="space-y-3 text-left">
+            <div className="space-y-2">
+              <Label htmlFor="discover-hallway-code">Church hallway code</Label>
+              <Input
+                id="discover-hallway-code"
+                value={hallwayCode}
+                onChange={(event) =>
+                  setHallwayCode(event.target.value.toUpperCase().replace(/[^A-HJ-NP-Z2-9]/g, "").slice(0, 6))
+                }
+                placeholder="e.g. 7KQ4MZ"
+                autoComplete="off"
+                autoCapitalize="characters"
+                maxLength={6}
+                aria-describedby={error ? "discover-code-error" : undefined}
+              />
+            </div>
+            {error && (
+              <p id="discover-code-error" className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            )}
+            <Button type="submit" className="w-full" disabled={verifyAccess.isPending || hallwayCode.length !== 6}>
+              {verifyAccess.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Continue with code
+            </Button>
+          </form>
+          <div className="relative py-1">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <span className="relative bg-card px-3 text-xs uppercase tracking-wide text-muted-foreground">or</span>
+          </div>
           <Button asChild className="w-full">
             <Link href={`/sign-in?redirect_url=${next}`}>Sign in</Link>
           </Button>

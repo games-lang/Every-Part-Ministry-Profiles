@@ -602,6 +602,7 @@ export const CreateBillingPortalResponse = zod.object({
  */
 export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const getMyChurchResponseAssessmentConfigurationPassionsItemMax = 80;
 
 export const getMyChurchResponseAssessmentConfigurationPassionsMax = 100;
@@ -627,6 +628,7 @@ export const GetMyChurchResponse = zod.object({
   "accentColor": zod.string().regex(getMyChurchResponseAccentColorRegExp),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
+  "discoverHallwayCode": zod.string().regex(getMyChurchResponseDiscoverHallwayCodeRegExp).nullable(),
   "adminName": zod.string(),
   "adminEmail": zod.email(),
   "profileUrl": zod.string(),
@@ -720,6 +722,11 @@ export const GetMyChurchResponse = zod.object({
 export const updateMyChurchBodyLogoUrlRegExp = new RegExp('^/objects/logos/[0-9]+/[0-9a-fA-F-]+$');
 export const updateMyChurchBodyPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchBodyAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const updateMyChurchBodyDiscoverHallwayCodeMin = 6;
+export const updateMyChurchBodyDiscoverHallwayCodeMax = 6;
+
+
+export const updateMyChurchBodyDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const updateMyChurchBodyEnabledSpiritualGiftsMin = 3;
 
 export const updateMyChurchBodyAssessmentConfigurationPassionsItemMax = 80;
@@ -745,6 +752,7 @@ export const UpdateMyChurchBody = zod.object({
   "accentColor": zod.string().regex(updateMyChurchBodyAccentColorRegExp).optional(),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
+  "discoverHallwayCode": zod.string().min(updateMyChurchBodyDiscoverHallwayCodeMin).max(updateMyChurchBodyDiscoverHallwayCodeMax).regex(updateMyChurchBodyDiscoverHallwayCodeRegExp).optional(),
   "adminName": zod.string().optional(),
   "adminEmail": zod.email().optional(),
   "enabledSpiritualGifts": zod.array(zod.enum(['Administration', 'Apostleship', 'Discernment of Spirits', 'Evangelism', 'Exhortation / Encouragement', 'Faith', 'Giving', 'Healing', 'Helps / Service', 'Hospitality', 'Interpretation of Tongues', 'Knowledge', 'Leadership', 'Mercy', 'Miracles', 'Pastoring / Shepherding', 'Prophecy', 'Teaching', 'Tongues', 'Wisdom', 'Craftsmanship', 'Intercession', 'Missionary / Cross-Cultural Ministry', 'Music / Worship', 'Celibacy', 'Voluntary Poverty'])).min(updateMyChurchBodyEnabledSpiritualGiftsMin).optional(),
@@ -824,6 +832,7 @@ export const UpdateMyChurchBody = zod.object({
 
 export const updateMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const updateMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const updateMyChurchResponseAssessmentConfigurationPassionsItemMax = 80;
 
 export const updateMyChurchResponseAssessmentConfigurationPassionsMax = 100;
@@ -849,6 +858,7 @@ export const UpdateMyChurchResponse = zod.object({
   "accentColor": zod.string().regex(updateMyChurchResponseAccentColorRegExp),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
+  "discoverHallwayCode": zod.string().regex(updateMyChurchResponseDiscoverHallwayCodeRegExp).nullable(),
   "adminName": zod.string(),
   "adminEmail": zod.email(),
   "profileUrl": zod.string(),
@@ -1096,6 +1106,33 @@ export const GetChurchAdminAccessResponse = zod.object({
 
 
 /**
+ * @summary Verify a church's current Discover hallway code
+ */
+export const verifyDiscoverAccessPathSlugMax = 120;
+
+
+
+export const VerifyDiscoverAccessParams = zod.object({
+  "slug": zod.coerce.string().min(1).max(verifyDiscoverAccessPathSlugMax)
+})
+
+export const verifyDiscoverAccessBodyHallwayCodeMin = 6;
+export const verifyDiscoverAccessBodyHallwayCodeMax = 6;
+
+
+export const verifyDiscoverAccessBodyHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
+
+
+export const VerifyDiscoverAccessBody = zod.object({
+  "hallwayCode": zod.string().min(verifyDiscoverAccessBodyHallwayCodeMin).max(verifyDiscoverAccessBodyHallwayCodeMax).regex(verifyDiscoverAccessBodyHallwayCodeRegExp)
+})
+
+export const VerifyDiscoverAccessResponse = zod.object({
+  "authorized": zod.literal(true)
+})
+
+
+/**
  * @summary Get the approved public logo for a church
  */
 export const GetPublicChurchLogoParams = zod.object({
@@ -1142,6 +1179,7 @@ export const RequestUploadUrlResponse = zod.object({
  */
 export const getDashboardSummaryResponseChurchPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDashboardSummaryResponseChurchAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getDashboardSummaryResponseChurchDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax = 80;
 
 export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax = 100;
@@ -1171,6 +1209,7 @@ export const GetDashboardSummaryResponse = zod.object({
   "accentColor": zod.string().regex(getDashboardSummaryResponseChurchAccentColorRegExp),
   "address": zod.string().nullish(),
   "website": zod.string().nullish(),
+  "discoverHallwayCode": zod.string().regex(getDashboardSummaryResponseChurchDiscoverHallwayCodeRegExp).nullable(),
   "adminName": zod.string(),
   "adminEmail": zod.email(),
   "profileUrl": zod.string(),
@@ -2227,6 +2266,11 @@ export const submitDiscoverProfileBodyChurchSlugMax = 120;
 export const submitDiscoverProfileBodyAgeMin = 6;
 export const submitDiscoverProfileBodyAgeMax = 120;
 
+export const submitDiscoverProfileBodyHallwayCodeMin = 6;
+export const submitDiscoverProfileBodyHallwayCodeMax = 6;
+
+
+export const submitDiscoverProfileBodyHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const submitDiscoverProfileBodyChildFirstNameMax = 80;
 
 export const submitDiscoverProfileBodyChildLastNameMax = 80;
@@ -2279,6 +2323,7 @@ export const SubmitDiscoverProfileBody = zod.object({
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['discover']),
   "journeyToken": zod.uuid().nullish(),
+  "hallwayCode": zod.string().min(submitDiscoverProfileBodyHallwayCodeMin).max(submitDiscoverProfileBodyHallwayCodeMax).regex(submitDiscoverProfileBodyHallwayCodeRegExp).optional(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitDiscoverProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitDiscoverProfileBodyChildLastNameMax)

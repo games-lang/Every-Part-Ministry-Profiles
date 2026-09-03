@@ -30,6 +30,8 @@ import {
   pathwayForAge,
   pathwayOverrideRequired,
   youthResultSummary,
+  isDiscoverHallwayCode,
+  matchesDiscoverHallwayCode,
 } from "../lib/youth-profiles";
 import {
   getOrCreateJourney,
@@ -72,12 +74,12 @@ function optionalUserId(req: Parameters<typeof getAuth>[0]): string | null {
 }
 
 router.post("/youth-profiles", async (req, res): Promise<void> => {
-if (!optionalUserId(req)) {
+  const userId = optionalUserId(req);
+  if (!userId && !isDiscoverHallwayCode(req.body?.hallwayCode)) {
       res.status(401).json({ error: "Unauthorized" });
       return;
 }
 
-  
   // Use both generated boundary validation and the stricter server-owned
   // allowlist. The generated schema deliberately cannot express every nested
   // youth answer constraint.
@@ -97,11 +99,14 @@ if (!optionalUserId(req)) {
     res.status(404).json({ error: "Church not found" });
     return;
   }
+  if (!userId && !matchesDiscoverHallwayCode(church.discoverHallwayCode, parsed.data.hallwayCode)) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
 
   const recommended = pathwayForAge(parsed.data.age);
   let overridden = false;
   if (pathwayOverrideRequired("discover", recommended)) {
-    const userId = optionalUserId(req);
     if (!userId || recommended === "adult") {
       res.status(400).json({ error: "This age belongs on a different pathway." });
       return;

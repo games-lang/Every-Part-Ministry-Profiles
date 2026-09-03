@@ -44,6 +44,8 @@ import type {
   DevelopProfileInput,
   DevelopProfileResult,
   DevelopProfileSubmission,
+  DiscoverAccessInput,
+  DiscoverAccessResponse,
   DiscoverProfileInput,
   DiscoverProfileResult,
   DiscoverProfileSubmission,
@@ -2150,6 +2152,87 @@ export function useGetChurchAdminAccess<TData = Awaited<ReturnType<typeof getChu
 
 
 
+
+export const getVerifyDiscoverAccessUrl = (slug: string,) => {
+
+
+
+
+  return `/api/churches/${slug}/discover-access`
+}
+
+/**
+ * @summary Verify a church's current Discover hallway code
+ */
+export const verifyDiscoverAccess = async (slug: string,
+    discoverAccessInput: DiscoverAccessInput, options?: Parameters<typeof customFetch>[1]): Promise<DiscoverAccessResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<DiscoverAccessResponse>(getVerifyDiscoverAccessUrl(slug),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(discoverAccessInput)
+  }
+);}
+
+
+
+
+
+export const getVerifyDiscoverAccessMutationKey = () => ['verifyDiscoverAccess'] as const;
+
+export const getVerifyDiscoverAccessMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyDiscoverAccess>>, TError,VerifyDiscoverAccessMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyDiscoverAccess>>, TError,VerifyDiscoverAccessMutationVariables, TContext> => {
+
+const mutationKey = getVerifyDiscoverAccessMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyDiscoverAccess>>, VerifyDiscoverAccessMutationVariables> = (props) => {
+          const {slug,data} = props ?? {};
+
+          return  verifyDiscoverAccess(slug,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyDiscoverAccessMutationResult = NonNullable<Awaited<ReturnType<typeof verifyDiscoverAccess>>>
+    export type VerifyDiscoverAccessMutationBody = BodyType<DiscoverAccessInput>
+    export type VerifyDiscoverAccessMutationError = ErrorType<void>
+    export type VerifyDiscoverAccessMutationVariables = {slug: string;data: BodyType<DiscoverAccessInput>}
+
+    /**
+ * @summary Verify a church's current Discover hallway code
+ */
+export const useVerifyDiscoverAccess = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyDiscoverAccess>>, TError,VerifyDiscoverAccessMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyDiscoverAccess>>,
+        TError,
+        VerifyDiscoverAccessMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVerifyDiscoverAccessMutationOptions(options));
+    }
 
 export const getGetPublicChurchLogoUrl = (slug: string,) => {
 

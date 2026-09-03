@@ -544,6 +544,36 @@ paths:
           description: Unauthorized
         "404":
           description: Church not found
+  /churches/{slug}/discover-access:
+    post:
+      operationId: verifyDiscoverAccess
+      tags: [churches]
+      summary: Verify a church's current Discover hallway code
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 120
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiscoverAccessInput"
+      responses:
+        "200":
+          description: Discover access granted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscoverAccessResponse"
+        "401":
+          description: Missing or incorrect hallway code
+        "404":
+          description: Church not found
   /churches/{slug}/logo:
     get:
       operationId: getPublicChurchLogo
@@ -1798,7 +1828,7 @@ components:
           format: date-time
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd, discoverHallwayCode]
       properties:
         id: { type: integer }
         name: { type: string }
@@ -1812,6 +1842,7 @@ components:
           pattern: "^#[0-9A-Fa-f]{6}$"
         address: { type: ["string", "null"] }
         website: { type: ["string", "null"] }
+        discoverHallwayCode: { type: ["string", "null"], pattern: "^[A-HJ-NP-Z2-9]{6}$" }
         adminName: { type: string }
         adminEmail: { type: string, format: email }
         profileUrl: { type: string }
@@ -1856,6 +1887,7 @@ components:
           pattern: "^#[0-9A-Fa-f]{6}$"
         address: { type: ["string", "null"] }
         website: { type: ["string", "null"] }
+        discoverHallwayCode: { type: string, minLength: 6, maxLength: 6, pattern: "^[A-HJ-NP-Z2-9]{6}$" }
         adminName: { type: string }
         adminEmail: { type: string, format: email }
         enabledSpiritualGifts:
@@ -1894,6 +1926,22 @@ components:
       required: [canOverrideYouthPathway]
       properties:
         canOverrideYouthPathway: { type: boolean }
+    DiscoverAccessInput:
+      type: object
+      additionalProperties: false
+      required: [hallwayCode]
+      properties:
+        hallwayCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: "^[A-HJ-NP-Z2-9]{6}$"
+    DiscoverAccessResponse:
+      type: object
+      additionalProperties: false
+      required: [authorized]
+      properties:
+        authorized: { type: boolean, enum: [true] }
     PublicChurch:
       type: object
       required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization]
@@ -2702,6 +2750,11 @@ components:
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [discover] }
         journeyToken: { type: ["string", "null"], format: uuid }
+        hallwayCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: "^[A-HJ-NP-Z2-9]{6}$"
         child:
           type: object
           additionalProperties: false
