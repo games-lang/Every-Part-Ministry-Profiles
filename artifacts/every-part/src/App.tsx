@@ -144,7 +144,8 @@ function SignInPage() {
           <BetaNotice />
           <p className="px-5 pb-4 text-center text-xs leading-5 text-muted-foreground">
             We’re testing and improving Every Part over time. Thanks for helping
-            us make it more useful for churches and leaders.
+            us make it more useful for churches and leaders. Help us make it
+            the best it can be by becoming one of our testing churches.
           </p>
         </div>
         <Show when="signed-out">
