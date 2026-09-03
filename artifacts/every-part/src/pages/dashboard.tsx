@@ -1,4 +1,5 @@
 import {
+  getGetDashboardSummaryQueryKey,
   useGetAppAdminAccess,
   useGetDashboardSummary,
   useGetPartFinderLeadershipProfile,
@@ -21,7 +22,18 @@ function buildPublicProfileUrl(profilePath: string) {
 }
 
 export default function Dashboard() {
-  const { data: summary, isLoading, error } = useGetDashboardSummary();
+  const {
+    data: summary,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useGetDashboardSummary({
+    query: {
+      queryKey: getGetDashboardSummaryQueryKey(),
+      retry: 3,
+      retryDelay: (attempt) => Math.min(500 * 2 ** attempt, 4_000),
+    },
+  });
   const { data: appAdminAccess } = useGetAppAdminAccess();
   const { data: leadershipProfile } = useGetPartFinderLeadershipProfile();
   const unassignedProfileCount =
@@ -60,12 +72,26 @@ export default function Dashboard() {
       ].filter(Boolean).slice(0, 4)
     : [];
 
-  if (error) {
+  if (!isLoading && !summary) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-lg border border-destructive/20">
-          Failed to load dashboard data. Please try refreshing the page.
-        </div>
+      <div className="container mx-auto max-w-3xl px-4 py-12">
+        <Card className="border-destructive/30">
+          <CardHeader>
+            <CardTitle>We couldn’t load your church overview</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Your saved profiles are still safe. Please retry the request.
+            </p>
+            <Button
+              type="button"
+              onClick={() => void refetch()}
+              disabled={isFetching}
+            >
+              {isFetching ? "Retrying..." : "Retry"}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

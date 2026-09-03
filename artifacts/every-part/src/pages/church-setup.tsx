@@ -378,6 +378,15 @@ function savedLogoSource(path: string | null | undefined, slug: string | undefin
     : null;
 }
 
+function publicProfilePath(slug: string) {
+  return `/profile/${encodeURIComponent(slug)}`;
+}
+
+function publicProfileUrl(slug: string) {
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+  return `${window.location.origin}${basePath}${publicProfilePath(slug)}`;
+}
+
 function generateDiscoverHallwayCode() {
   return Array.from({ length: 6 }, () =>
     DISCOVER_HALLWAY_CODE_ALPHABET[Math.floor(Math.random() * DISCOVER_HALLWAY_CODE_ALPHABET.length)],
@@ -385,7 +394,18 @@ function generateDiscoverHallwayCode() {
 }
 
 export default function ChurchSetup() {
-  const { data: church, isLoading } = useGetMyChurch();
+  const {
+    data: church,
+    isLoading,
+    isFetching,
+    refetch: refetchChurch,
+  } = useGetMyChurch({
+    query: {
+      queryKey: getGetMyChurchQueryKey(),
+      retry: 3,
+      retryDelay: (attempt) => Math.min(500 * 2 ** attempt, 4_000),
+    },
+  });
   const { data: admins, isLoading: adminsLoading } = useListChurchAdmins();
   const updateChurch = useUpdateMyChurch();
   const updateDiscoverCode = useUpdateMyChurch();
@@ -641,8 +661,7 @@ export default function ChurchSetup() {
 
   const copyToClipboard = () => {
     if (!church?.slug) return;
-    const url = `${window.location.origin}/profile/${church.slug}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(publicProfileUrl(church.slug));
     toast({
       title: "Copied to clipboard",
       description: "Assessment link copied!",
@@ -660,7 +679,31 @@ export default function ChurchSetup() {
     "ministryCustomization.ministryInterestsLabel",
   );
 
-  if (isLoading) {
+  if (!isLoading && !church) {
+    return (
+      <div className="container mx-auto max-w-3xl px-4 py-12">
+        <Card className="border-destructive/30">
+          <CardHeader>
+            <CardTitle>We couldn’t load your church setup</CardTitle>
+            <CardDescription>
+              Retry to load your saved church details and sharing link.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              type="button"
+              onClick={() => void refetchChurch()}
+              disabled={isFetching}
+            >
+              {isFetching ? "Retrying..." : "Retry"}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isLoading || !church) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl space-y-6">
         <Skeleton className="h-10 w-48" />
@@ -670,7 +713,9 @@ export default function ChurchSetup() {
   }
 
   const logoUrl = logoPath;
-  const logoPreview = localLogoPreview || savedLogoSource(logoUrl, church?.slug);
+  const logoPreview = localLogoPreview || savedLogoSource(logoUrl, church.slug);
+  const assessmentPath = publicProfilePath(church.slug);
+  const assessmentUrl = publicProfileUrl(church.slug);
 
   const setCustomizationLabels = (
     labels: Pick<
@@ -738,14 +783,14 @@ export default function ChurchSetup() {
         <CardContent>
           <div className="flex items-center gap-2 bg-background border border-primary/20 p-2 rounded-md">
             <div className="flex-1 truncate font-mono text-sm px-2 text-muted-foreground">
-              {window.location.origin}/profile/{church?.slug}
+              {assessmentUrl}
             </div>
             <Button variant="secondary" size="sm" onClick={copyToClipboard} className="shrink-0">
               <Copy className="w-4 h-4 mr-2" />
               Copy
             </Button>
             <Button variant="outline" size="sm" asChild className="shrink-0">
-              <a href={`/profile/${church?.slug}`} target="_blank" rel="noopener noreferrer">
+              <a href={assessmentPath} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4" />
               </a>
             </Button>
@@ -1060,7 +1105,7 @@ export default function ChurchSetup() {
                   </div>
                   <Button type="button" variant="outline" size="sm" asChild>
                     <a
-                      href={`/profile/${church?.slug}`}
+                      href={assessmentPath}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

@@ -237,10 +237,12 @@ function ClerkQueryClientCacheInvalidator() {
   useEffect(() => {
     const unsubscribe = addListener(({ user }) => {
       const userId = user?.id ?? null;
-      if (
-        prevUserIdRef.current !== undefined &&
-        prevUserIdRef.current !== userId
-      ) {
+      const previousUserId = prevUserIdRef.current;
+      const isInitialAuthHydration =
+        previousUserId === undefined ||
+        (previousUserId === null && userId !== null);
+
+      if (!isInitialAuthHydration && previousUserId !== userId) {
         queryClient.clear();
       }
       prevUserIdRef.current = userId;

@@ -11,6 +11,7 @@
 - [Development database migration workflow](db-migration-workflow.md) — use tracked SQL migrations; Drizzle push can block on named-schema prompts without a TTY.
 - [Church tradition customization](church-tradition-customization.md) — tradition supplies optional wording defaults; church choices remain authoritative and are snapshotted per profile.
 - [Clerk signed-in route behavior](clerk-signed-in-route-behavior.md) — never render Clerk SignIn while a session is active; show an in-app continuation instead of triggering an automatic redirect.
+- [Clerk query cache hydration](clerk-query-cache-hydration.md) — initial signed-out-to-signed-in hydration must not clear active protected queries; clear only on sign-out or user switching.
 - [Landing-page fixed overlays](landing-fixed-overlays.md) — fixed launchers need explicit viewport positioning outside the landing overflow container or they can disappear.
 - [PartFinder leadership personalization](partfinder-leadership-personalization.md) — pastor coaching context is per-user, visible, editable, pausable, and never learned invisibly.
 - [Early Access boundaries](early-access-boundaries.md) — acknowledgements are per church user; owner insights stay aggregate and never expose church or member records.
