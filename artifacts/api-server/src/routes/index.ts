@@ -15,6 +15,7 @@ import profileHelperRouter from "./profile-helper";
 import partFinderRouter from "./partfinder";
 import partFinderLeadershipProfileRouter from "./partfinder-leadership-profile";
 import earlyAccessRouter from "./early-access";
+import billingRouter from "./billing";
 
 const router: IRouter = Router();
 
@@ -34,5 +35,6 @@ router.use(profileHelperRouter);
 router.use(partFinderRouter);
 router.use(partFinderLeadershipProfileRouter);
 router.use(earlyAccessRouter);
+router.use(billingRouter);
 
 export default router;

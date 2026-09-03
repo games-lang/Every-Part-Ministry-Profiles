@@ -251,6 +251,70 @@ paths:
           description: Unauthorized
         "403":
           description: App administrator access required
+  /billing/plans:
+    get:
+      operationId: getBillingPlans
+      tags: [billing]
+      summary: List the active Every Part subscription plans
+      responses:
+        "200":
+          description: Active subscription plans
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingPlanList"
+  /billing/subscription:
+    get:
+      operationId: getBillingSubscription
+      tags: [billing]
+      summary: Get the signed-in church billing status
+      responses:
+        "200":
+          description: Church billing status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingSubscription"
+        "401":
+          description: Unauthorized
+  /billing/checkout:
+    post:
+      operationId: createBillingCheckout
+      tags: [billing]
+      summary: Create a Stripe Checkout session for a church plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingCheckoutInput"
+      responses:
+        "200":
+          description: Stripe Checkout URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingCheckoutResponse"
+        "400":
+          description: Invalid plan or unavailable price
+        "401":
+          description: Unauthorized
+  /billing/portal:
+    post:
+      operationId: createBillingPortal
+      tags: [billing]
+      summary: Create a Stripe customer portal session
+      responses:
+        "200":
+          description: Stripe customer portal URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingPortalResponse"
+        "400":
+          description: No Stripe customer exists
+        "401":
+          description: Unauthorized
   /church:
     get:
       operationId: getMyChurch
@@ -1512,9 +1576,57 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EarlyAccessChurchSummary"
+    BillingPlan:
+      type: object
+      required: [key, name, description, monthlyPrice, priceId]
+      properties:
+        key:
+          type: string
+          enum: [growing, complete, network]
+        name: { type: string }
+        description: { type: string }
+        monthlyPrice: { type: integer }
+        priceId: { type: string }
+    BillingPlanList:
+      type: object
+      required: [plans]
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: "#/components/schemas/BillingPlan"
+    BillingCheckoutInput:
+      type: object
+      required: [plan]
+      properties:
+        plan:
+          type: string
+          enum: [growing, complete, network]
+    BillingCheckoutResponse:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string, format: uri }
+    BillingPortalResponse:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string, format: uri }
+    BillingSubscription:
+      type: object
+      required: [plan, status, hasPaidAccess, currentPeriodEnd]
+      properties:
+        plan:
+          type: string
+          enum: [starter, growing, complete, network]
+        status: { type: string }
+        hasPaidAccess: { type: boolean }
+        currentPeriodEnd:
+          type: ["string", "null"]
+          format: date-time
     Church:
       type: object
-      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch]
+      required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd]
       properties:
         id: { type: integer }
         name: { type: string }
@@ -1550,6 +1662,13 @@ components:
           type: string
           format: date-time
         foundingChurch: { type: boolean }
+        billingPlan:
+          type: string
+          enum: [starter, growing, complete, network]
+        billingStatus: { type: string }
+        billingCurrentPeriodEnd:
+          type: ["string", "null"]
+          format: date-time
     ChurchUpdate:
       type: object
       properties:

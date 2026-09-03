@@ -35,6 +35,14 @@ export const churchesTable = pgTable(
       .notNull()
       .defaultNow(),
     foundingChurch: boolean("founding_church").notNull().default(false),
+    billingPlan: text("billing_plan").notNull().default("starter"),
+    billingStatus: text("billing_status").notNull().default("inactive"),
+    stripeCustomerId: text("stripe_customer_id"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    stripePriceId: text("stripe_price_id"),
+    billingCurrentPeriodEnd: timestamp("billing_current_period_end", {
+      withTimezone: true,
+    }),
     onboardingCompletedAt: timestamp("onboarding_completed_at", {
       withTimezone: true,
     }),
