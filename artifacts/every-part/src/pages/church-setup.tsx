@@ -586,6 +586,7 @@ export default function ChurchSetup() {
   const [adminEmailDraft, setAdminEmailDraft] = useState("");
   const [discoverCodeDraft, setDiscoverCodeDraft] = useState("");
   const [spiritualGiftsExpanded, setSpiritualGiftsExpanded] = useState(false);
+  const [assessmentSectionsExpanded, setAssessmentSectionsExpanded] = useState<Record<string, boolean>>({});
   const [setupTab, setSetupTab] = useState<"church" | "assessment">("church");
 
   const form = useForm<ChurchFormValues>({
@@ -1410,16 +1411,45 @@ export default function ChurchSetup() {
               {CONFIG_SECTIONS.map(section => {
                 const isEnabled = form.watch(`assessmentConfiguration.sections.${section.key}`);
                 return (
-                  <div key={section.key} className={`rounded-lg border border-border/50 transition-colors ${isEnabled ? 'bg-card' : 'bg-muted/20 opacity-75'}`}>
+                  <Collapsible
+                    key={section.key}
+                    open={assessmentSectionsExpanded[section.key] ?? false}
+                    onOpenChange={(open) =>
+                      setAssessmentSectionsExpanded((current) => ({
+                        ...current,
+                        [section.key]: open,
+                      }))
+                    }
+                    className={`rounded-lg border border-border/50 transition-colors ${isEnabled ? 'bg-card' : 'bg-muted/20 opacity-75'}`}
+                  >
                     <div className="flex items-start sm:items-center justify-between gap-4 p-4">
-                      <div className="space-y-1">
-                        <h4 className="font-medium">{section.label}</h4>
-                        <p className="text-sm text-muted-foreground">{section.description}</p>
-                      </div>
+                      <CollapsibleTrigger asChild>
+                        <button
+                          type="button"
+                          className="group flex min-w-0 flex-1 items-start justify-between gap-3 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                          <span className="min-w-0 space-y-1">
+                            <span className="block font-medium">{section.label}</span>
+                            <span className="block text-sm text-muted-foreground">{section.description}</span>
+                          </span>
+                          <ChevronDown
+                            className={`mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
+                              assessmentSectionsExpanded[section.key] ? "rotate-180" : ""
+                            }`}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </CollapsibleTrigger>
                       <Switch
                         checked={isEnabled}
                         onCheckedChange={(val) => {
                           form.setValue(`assessmentConfiguration.sections.${section.key}`, val, { shouldDirty: true });
+                          if (val) {
+                            setAssessmentSectionsExpanded((current) => ({
+                              ...current,
+                              [section.key]: true,
+                            }));
+                          }
                           if (section.subsections) {
                             section.subsections.forEach(sub => {
                               form.setValue(`assessmentConfiguration.subsections.${sub.key}` as any, val, { shouldDirty: true });
@@ -1429,9 +1459,10 @@ export default function ChurchSetup() {
                       />
                     </div>
 
-                    {isEnabled && section.subsections && (
-                      <div className="p-4 pt-0">
-                        <div className="pt-4 border-t grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                    <CollapsibleContent className="space-y-4">
+                      {isEnabled && section.subsections && (
+                        <div className="p-4 pt-0">
+                          <div className="pt-4 border-t grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
                           {section.subsections.map(sub => {
                             return (
                               <FormField
@@ -1464,13 +1495,13 @@ export default function ChurchSetup() {
                               />
                             );
                           })}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {isEnabled && section.key === "apest" && (
-                      <div className="p-4 pt-0">
-                        <div className="border-t pt-4">
+                      {isEnabled && section.key === "apest" && (
+                        <div className="p-4 pt-0">
+                          <div className="border-t pt-4">
                           <FormField
                             control={form.control}
                             name="assessmentConfiguration.ministryQuestionCount"
@@ -1524,13 +1555,13 @@ export default function ChurchSetup() {
                               );
                             }}
                           />
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {isEnabled && section.key === "spiritualGifts" && (
-                      <div className="p-4 pt-0">
-                        <div className="pt-4 border-t space-y-4">
+                      {isEnabled && section.key === "spiritualGifts" && (
+                        <div className="p-4 pt-0">
+                          <div className="pt-4 border-t space-y-4">
                           <FormField
                             control={form.control}
                             name="assessmentConfiguration.spiritualGiftQuestionCount"
@@ -1663,10 +1694,11 @@ export default function ChurchSetup() {
                               </FormItem>
                             )}
                           />
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </CollapsibleContent>
+                  </Collapsible>
                 );
               })}
 
