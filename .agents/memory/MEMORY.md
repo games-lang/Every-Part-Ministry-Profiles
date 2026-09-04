@@ -19,3 +19,4 @@
 - [Profile plan limits](profile-plan-limits.md) — all completed adult and youth profiles count; downgrades preserve history and block only new submissions over the cap.
 - [AI plan credits](ai-plan-credits.md) — authenticated church AI actions share monthly plan credits; public guide remains separately rate-limited.
 - [CEO church console boundaries](ceo-church-console-boundaries.md) — platform-owner church management stays aggregate-only, with safe church fields editable and billing read-only.
+- [Vite Radix hot reload](vite-radix-hot-reload.md) — newly imported Radix primitives can transiently trigger invalid-hook errors during HMR; verify again after one full web workflow restart.

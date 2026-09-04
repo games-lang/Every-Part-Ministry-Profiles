@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpenCheck, ChevronDown, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 import {
   CHURCH_TRADITIONS,
@@ -586,6 +586,7 @@ export default function ChurchSetup() {
   const [adminEmailDraft, setAdminEmailDraft] = useState("");
   const [discoverCodeDraft, setDiscoverCodeDraft] = useState("");
   const [spiritualGiftsExpanded, setSpiritualGiftsExpanded] = useState(false);
+  const [setupTab, setSetupTab] = useState<"church" | "assessment">("church");
 
   const form = useForm<ChurchFormValues>({
     resolver: zodResolver(churchFormSchema),
@@ -967,9 +968,17 @@ export default function ChurchSetup() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="church-setup-form space-y-8">
-          <Tabs defaultValue="church" className="church-setup-tabs space-y-6">
-            <TabsList className="grid h-auto w-full grid-cols-2 gap-1 p-1 sm:max-w-xl">
+          <Tabs
+            value={setupTab}
+            onValueChange={(value) => setSetupTab(value as "church" | "assessment")}
+            className="church-setup-tabs space-y-6"
+          >
+            <TabsList
+              className="grid h-auto w-full grid-cols-2 gap-1 p-1 sm:max-w-xl"
+              aria-label="Setup area"
+            >
               <TabsTrigger
+                id="setup-tab-church"
                 value="church"
                 className="h-auto min-h-12 flex-col items-start gap-0.5 px-4 py-2 text-left sm:items-center sm:text-center"
               >
@@ -979,6 +988,7 @@ export default function ChurchSetup() {
                 </span>
               </TabsTrigger>
               <TabsTrigger
+                id="setup-tab-assessment"
                 value="assessment"
                 className="h-auto min-h-12 flex-col items-start gap-0.5 px-4 py-2 text-left sm:items-center sm:text-center"
               >
@@ -989,7 +999,14 @@ export default function ChurchSetup() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="church" className="space-y-8">
+            <div
+              role="tabpanel"
+              id={`setup-panel-${setupTab}`}
+              aria-labelledby={`setup-tab-${setupTab}`}
+              tabIndex={0}
+              className="space-y-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+            <div className={setupTab === "church" ? "space-y-8" : "hidden"}>
       <Card className="church-setup-link-card border-primary/20 bg-primary/5 shadow-none">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-medium text-primary">Your Assessment Link</CardTitle>
@@ -1153,9 +1170,9 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
-      </TabsContent>
+      </div>
 
-      <TabsContent value="assessment" className="space-y-8">
+      <div className={setupTab === "assessment" ? "space-y-8" : "hidden"}>
           <Card className="church-setup-section-card border-primary/20 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-serif text-xl">
@@ -1354,10 +1371,6 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
-          </Card>
-      </TabsContent>
-
-      <TabsContent value="church" className="space-y-8">
           <Card className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-serif">Assessment Content</CardTitle>
@@ -1720,6 +1733,10 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
+      </div>
+
+      <div className={setupTab === "church" ? "space-y-8" : "hidden"}>
+
           <Card className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-serif text-xl">
@@ -1955,7 +1972,8 @@ export default function ChurchSetup() {
               />
             </CardContent>
           </Card>
-      </TabsContent>
+      </div>
+            </div>
           </Tabs>
           <div className="church-setup-savebar rounded-xl border px-6 py-4">
             <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
