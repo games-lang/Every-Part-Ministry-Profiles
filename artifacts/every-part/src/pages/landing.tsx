@@ -338,16 +338,6 @@ export default function LandingPage() {
                       Where do you notice God giving you energy to help others?
                     </p>
                   </div>
-                  <div className="relative z-10 flex items-center justify-between border-t border-white/15 pt-5 text-sm text-[hsl(var(--landing-slate))]">
-                    <span>Thoughtful questions</span>
-                    <ArrowRight className="h-4 w-4 text-secondary" />
-                  </div>
-                </div>
-                <div className="absolute -bottom-8 -left-4 rounded-2xl border border-border bg-card p-4 shadow-[0_14px_35px_hsl(var(--foreground)/.12)] sm:-left-9 sm:p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[hsl(var(--landing-cyan))] font-serif font-semibold text-primary">S</span>
-                    <div><p className="text-xs uppercase tracking-[.14em] text-muted-foreground">A whole person</p><p className="mt-0.5 font-semibold">Seen before she serves</p></div>
-                  </div>
                 </div>
               </div>
             </Reveal>
