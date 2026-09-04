@@ -6,6 +6,7 @@ import {
   DEFAULT_MINISTRY_INTERESTS,
   DEFAULT_PASSIONS,
   filterAssessmentSection,
+  ministrySubmissionError,
 } from "./assessment-configuration.ts";
 
 test("crafted assessment payloads cannot retain disabled subsection content", () => {
@@ -152,4 +153,72 @@ test("spiritual gift question depth accepts one through four only", () => {
       null,
     );
   }
+});
+
+test("How You Minister question depth defaults legacy configurations to three", () => {
+  const defaults = defaultAssessmentConfiguration();
+  assert.equal(defaults.ministryQuestionCount, 3);
+
+  const { ministryQuestionCount: _omitted, ...legacy } = defaults;
+  const configuration = assessmentConfiguration(legacy);
+  assert.equal(configuration?.ministryQuestionCount, 3);
+});
+
+test("How You Minister question depth accepts one through four only", () => {
+  for (const ministryQuestionCount of [1, 2, 3, 4]) {
+    const configuration = assessmentConfiguration({
+      ...defaultAssessmentConfiguration(),
+      ministryQuestionCount,
+    });
+    assert.equal(configuration?.ministryQuestionCount, ministryQuestionCount);
+  }
+
+  for (const ministryQuestionCount of [0, 2.5, 5]) {
+    assert.equal(
+      assessmentConfiguration({
+        ...defaultAssessmentConfiguration(),
+        ministryQuestionCount,
+      }),
+      null,
+    );
+  }
+});
+
+test("How You Minister submissions require the configured count per enabled category", () => {
+  for (const ministryQuestionCount of [1, 2, 3, 4]) {
+    const configuration = {
+      ...defaultAssessmentConfiguration(),
+      ministryQuestionCount,
+    };
+    const responses = Object.fromEntries(
+      ["builder", "insight", "connector", "caregiver", "teacher"].flatMap(
+        (key) =>
+          Array.from({ length: ministryQuestionCount }, (_, index) => [
+            `${key}-${index}`,
+            4,
+          ]),
+      ),
+    );
+    assert.equal(
+      ministrySubmissionError({ responses }, configuration),
+      null,
+    );
+  }
+});
+
+test("How You Minister submissions reject missing or extra configured responses", () => {
+  const configuration = {
+    ...defaultAssessmentConfiguration(),
+    ministryQuestionCount: 4,
+  };
+  const threeResponses = Object.fromEntries(
+    ["builder", "insight", "connector", "caregiver", "teacher"].flatMap(
+      (key) =>
+        Array.from({ length: 3 }, (_, index) => [`${key}-${index}`, 4]),
+    ),
+  );
+  assert.match(
+    ministrySubmissionError({ responses: threeResponses }, configuration) ?? "",
+    /requires 4 valid responses/,
+  );
 });

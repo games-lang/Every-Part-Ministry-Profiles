@@ -10,6 +10,14 @@ export const ASSESSMENT_SECTION_KEYS = [
 ] as const;
 
 export const DEFAULT_SPIRITUAL_GIFT_QUESTION_COUNT = 3;
+export const DEFAULT_MINISTRY_QUESTION_COUNT = 3;
+const MINISTRY_APPROACH_KEYS = [
+  "builder",
+  "insight",
+  "connector",
+  "caregiver",
+  "teacher",
+] as const;
 
 export const DEFAULT_PASSIONS = [
   "Children",
@@ -154,6 +162,7 @@ export type AssessmentConfiguration = {
   sections: Record<SectionKey, boolean>;
   subsections: Record<SubsectionKey, boolean>;
   spiritualGiftQuestionCount: number;
+  ministryQuestionCount: number;
   passions: string[];
   ministryInterests: string[];
 };
@@ -167,6 +176,7 @@ export function defaultAssessmentConfiguration(): AssessmentConfiguration {
     sections: enabled(ASSESSMENT_SECTION_KEYS),
     subsections: enabled(ASSESSMENT_SUBSECTION_KEYS),
     spiritualGiftQuestionCount: DEFAULT_SPIRITUAL_GIFT_QUESTION_COUNT,
+    ministryQuestionCount: DEFAULT_MINISTRY_QUESTION_COUNT,
     passions: [...DEFAULT_PASSIONS],
     ministryInterests: [...DEFAULT_MINISTRY_INTERESTS],
   };
@@ -181,6 +191,7 @@ export function assessmentConfiguration(
     sections?: Record<string, unknown>;
     subsections?: Record<string, unknown>;
     spiritualGiftQuestionCount?: unknown;
+    ministryQuestionCount?: unknown;
     passions?: unknown;
     ministryInterests?: unknown;
   };
@@ -218,6 +229,17 @@ export function assessmentConfiguration(
     configuration.spiritualGiftQuestionCount =
       candidate.spiritualGiftQuestionCount as number;
   }
+  if (candidate.ministryQuestionCount !== undefined) {
+    if (
+      !Number.isInteger(candidate.ministryQuestionCount) ||
+      (candidate.ministryQuestionCount as number) < 1 ||
+      (candidate.ministryQuestionCount as number) > 4
+    ) {
+      return null;
+    }
+    configuration.ministryQuestionCount =
+      candidate.ministryQuestionCount as number;
+  }
   for (const [key, defaults] of [
     ["passions", DEFAULT_PASSIONS],
     ["ministryInterests", DEFAULT_MINISTRY_INTERESTS],
@@ -249,6 +271,43 @@ export function assessmentConfiguration(
     );
   }
   return configuration;
+}
+
+export function ministrySubmissionError(
+  value: unknown,
+  configuration: AssessmentConfiguration,
+): string | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return "How you minister responses are required.";
+  }
+  const source = (value as Record<string, unknown>).responses;
+  if (!source || typeof source !== "object" || Array.isArray(source)) {
+    return "How you minister responses are required.";
+  }
+  const responses = source as Record<string, unknown>;
+  const questionCount = configuration.ministryQuestionCount;
+
+  for (const key of MINISTRY_APPROACH_KEYS) {
+    if (!configuration.subsections[`apest.${key}`]) continue;
+    const categoryEntries = Object.entries(responses).filter(([responseKey]) =>
+      new RegExp(`^${key}-\\d+$`).test(responseKey),
+    );
+    const valid =
+      categoryEntries.length === questionCount &&
+      Array.from({ length: questionCount }, (_, index) =>
+        responses[`${key}-${index}`],
+      ).every(
+        (response) =>
+          typeof response === "number" &&
+          Number.isInteger(response) &&
+          response >= 1 &&
+          response <= 5,
+      );
+    if (!valid) {
+      return `Each enabled How You Minister category requires ${questionCount} valid ${questionCount === 1 ? "response" : "responses"} (${key}).`;
+    }
+  }
+  return null;
 }
 
 export function filterAssessmentSection(

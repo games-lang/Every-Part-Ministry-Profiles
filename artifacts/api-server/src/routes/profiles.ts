@@ -41,6 +41,7 @@ import {
   assessmentConfiguration,
   filterAssessmentSection,
   hasEnabledSubsections,
+  ministrySubmissionError,
 } from "../lib/assessment-configuration";
 import { ministryCustomization } from "../lib/ministry-customization";
 import {
@@ -235,6 +236,19 @@ router.post("/profiles", async (req, res): Promise<void> => {
       "Spiritual health responses",
     )
   ) return;
+  if (
+    configuration.sections.apest &&
+    hasEnabledSubsections("apest", configuration)
+  ) {
+    const ministryError = ministrySubmissionError(
+      parsed.data.assessmentSections?.apest,
+      configuration,
+    );
+    if (ministryError) {
+      res.status(400).json({ error: ministryError });
+      return;
+    }
+  }
   if (configuration.sections.spiritualGifts) {
     const activeGifts = activeSpiritualGifts(church.enabledSpiritualGifts);
     if (!activeGifts) {

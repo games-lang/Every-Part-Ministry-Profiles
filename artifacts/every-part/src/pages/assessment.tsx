@@ -477,6 +477,7 @@ const MINISTRY_APPROACHES = [
       "I enjoy imagining new possibilities and helping turn them into something others can join.",
       "I am energized by helping a new ministry take shape when no clear path exists.",
       "I am comfortable taking a first step and helping others move from an idea toward action.",
+      "I look for practical ways to help a new idea become a shared effort.",
     ],
   },
   {
@@ -487,6 +488,7 @@ const MINISTRY_APPROACHES = [
       "I notice patterns, tensions, or needs that others may be overlooking.",
       "I am willing to name difficult truths when doing so can help people or a ministry move toward health.",
       "I pay attention to whether a ministry's direction reflects its values and purpose.",
+      "I take time to consider what may need attention before a small concern becomes a larger one.",
     ],
   },
   {
@@ -497,6 +499,7 @@ const MINISTRY_APPROACHES = [
       "I naturally build relationships with people who are curious about faith or far from church.",
       "I enjoy explaining the good news in a way that connects with someone's story.",
       "I look for natural opportunities to welcome people into meaningful conversations about faith.",
+      "I make space for people to ask honest questions as they explore faith.",
     ],
   },
   {
@@ -507,6 +510,7 @@ const MINISTRY_APPROACHES = [
       "People often come to me for patient care, encouragement, and guidance over time.",
       "I feel responsible for helping people feel known, supported, and connected.",
       "I stay engaged with people through seasons of growth, difficulty, and change.",
+      "I notice when someone may need steady support and follow up with care.",
     ],
   },
   {
@@ -517,6 +521,7 @@ const MINISTRY_APPROACHES = [
       "I enjoy making complex ideas clear and helping people understand what they believe.",
       "I like studying, organizing, and communicating ideas so others can grow.",
       "I adjust the way I explain something when people need a different path to understanding.",
+      "I invite questions and use them to help people engage more deeply with an idea.",
     ],
   },
 ] as const;
@@ -1164,10 +1169,12 @@ const defaultValues: Values = {
     ),
   },
   ministryResponses: Object.fromEntries(
-    MINISTRY_QUESTIONS.map(({ key, questionIndex }) => [
-      `${key}-${questionIndex}`,
-      0,
-    ]),
+    MINISTRY_QUESTIONS.filter(({ questionIndex }) => questionIndex < 3).map(
+      ({ key, questionIndex }) => [
+        `${key}-${questionIndex}`,
+        0,
+      ],
+    ),
   ),
   strengthResponses: Object.fromEntries(
     STRENGTH_QUESTIONS.map(({ key, questionIndex }) => [
@@ -1633,12 +1640,22 @@ export default function Assessment() {
       connectionAvailability: 8,
     } as const
   )[currentStep];
-  const activeMinistryQuestions = MINISTRY_QUESTIONS.filter((question) =>
-    subsectionEnabled(
-      `apest.${question.key}` as keyof NonNullable<
-        typeof configuration
-      >["subsections"],
-    ),
+  const configuredMinistryQuestionCount = configuration?.ministryQuestionCount;
+  const ministryQuestionsPerApproach =
+    typeof configuredMinistryQuestionCount === "number" &&
+    Number.isInteger(configuredMinistryQuestionCount) &&
+    configuredMinistryQuestionCount >= 1 &&
+    configuredMinistryQuestionCount <= 4
+      ? configuredMinistryQuestionCount
+      : 3;
+  const activeMinistryQuestions = MINISTRY_QUESTIONS.filter(
+    (question) =>
+      question.questionIndex < ministryQuestionsPerApproach &&
+      subsectionEnabled(
+        `apest.${question.key}` as keyof NonNullable<
+          typeof configuration
+        >["subsections"],
+      ),
   );
   const activeStrengthQuestions = STRENGTH_QUESTIONS.filter((question) =>
     subsectionEnabled(
@@ -1708,7 +1725,7 @@ export default function Assessment() {
           prompt,
         })),
       ),
-    [configuration],
+    [configuration, ministryQuestionsPerApproach],
   );
   const answeredStrengthQuestionCount = activeStrengthQuestions.filter(
     ({ key, questionIndex }) =>
@@ -1838,6 +1855,7 @@ export default function Assessment() {
     );
     MINISTRY_QUESTIONS.filter(
       (question) =>
+        question.questionIndex >= ministryQuestionsPerApproach ||
         !enabled(
           `apest.${question.key}` as keyof typeof configuration.subsections,
         ),
@@ -1867,7 +1885,7 @@ export default function Assessment() {
       ),
     );
     form.unregister(hidden as Path<Values>[]);
-  }, [configuration, form]);
+  }, [configuration, form, ministryQuestionsPerApproach]);
   useEffect(() => {
     const subscription = form.watch((values, info) => {
       if (info.name) form.clearErrors(info.name as Path<Values>);
@@ -1880,8 +1898,9 @@ export default function Assessment() {
         setReflectionValidationError("");
       if (
         info.name?.startsWith("ministryResponses.") &&
-        Object.values(values.ministryResponses ?? {}).every(
-          (response) => (response ?? 0) > 0,
+        activeMinistryQuestions.every(
+          ({ key, questionIndex }) =>
+            (values.ministryResponses?.[`${key}-${questionIndex}`] ?? 0) > 0,
         )
       )
         setReflectionValidationError("");
@@ -1901,7 +1920,7 @@ export default function Assessment() {
         setReflectionValidationError("");
     });
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [activeMinistryQuestions, form]);
   const validateStep = () => {
     if (currentStep === "identity") {
       const identity = form.getValues("basicInformation");
@@ -2141,11 +2160,13 @@ export default function Assessment() {
     const ministryResults = enabledMinistry
       .map(({ label, key, prompts }) => ({
         label,
-        score: prompts.reduce(
-          (total, _prompt, questionIndex) =>
-            total + (ministryResponses[`${key}-${questionIndex}`] ?? 0),
-          0,
-        ),
+        score: prompts
+          .slice(0, ministryQuestionsPerApproach)
+          .reduce(
+            (total, _prompt, questionIndex) =>
+              total + (ministryResponses[`${key}-${questionIndex}`] ?? 0),
+            0,
+          ),
       }))
       .sort((a, b) => b.score - a.score);
     const enabledStrengths = STRENGTH_APPROACHES.filter(({ key }) =>
