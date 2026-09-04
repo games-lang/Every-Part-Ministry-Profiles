@@ -21,7 +21,7 @@ import {
   type MinistryCustomizationTradition,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpenCheck, ChevronDown, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 import {
   CHURCH_TRADITIONS,
@@ -964,6 +965,31 @@ export default function ChurchSetup() {
         </div>
       </div>
 
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="church-setup-form space-y-8">
+          <Tabs defaultValue="church" className="church-setup-tabs space-y-6">
+            <TabsList className="grid h-auto w-full grid-cols-2 gap-1 p-1 sm:max-w-xl">
+              <TabsTrigger
+                value="church"
+                className="h-auto min-h-12 flex-col items-start gap-0.5 px-4 py-2 text-left sm:items-center sm:text-center"
+              >
+                <span>Church Setup</span>
+                <span className="text-xs font-normal text-muted-foreground">
+                  Details, access, and sharing
+                </span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="assessment"
+                className="h-auto min-h-12 flex-col items-start gap-0.5 px-4 py-2 text-left sm:items-center sm:text-center"
+              >
+                <span>Assessment Setup</span>
+                <span className="text-xs font-normal text-muted-foreground">
+                  Questions and reflection
+                </span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="church" className="space-y-8">
       <Card className="church-setup-link-card border-primary/20 bg-primary/5 shadow-none">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-medium text-primary">Your Assessment Link</CardTitle>
@@ -1127,8 +1153,9 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="church-setup-form space-y-8">
+      </TabsContent>
+
+      <TabsContent value="assessment" className="space-y-8">
           <Card className="church-setup-section-card border-primary/20 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-serif text-xl">
@@ -1327,6 +1354,10 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
+          </Card>
+      </TabsContent>
+
+      <TabsContent value="church" className="space-y-8">
           <Card className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-serif">Assessment Content</CardTitle>
@@ -1923,19 +1954,21 @@ export default function ChurchSetup() {
                 )}
               />
             </CardContent>
-            <CardFooter className="church-setup-savebar border-t border-border/50 bg-muted/30 px-6 py-4">
-              <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
-                Changes apply to new member assessments. Completed profiles keep the settings and answers they were created with.
-              </p>
-              <Button type="submit" disabled={updateChurch.isPending || isLogoUploading} className="w-full min-w-[120px] sm:ml-auto sm:w-auto">
-                {updateChurch.isPending ? (
-                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
-                ) : (
-                  "Save Changes"
-                )}
-              </Button>
-            </CardFooter>
           </Card>
+      </TabsContent>
+          </Tabs>
+          <div className="church-setup-savebar rounded-xl border px-6 py-4">
+            <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
+              Changes apply to new member assessments. Completed profiles keep the settings and answers they were created with.
+            </p>
+            <Button type="submit" disabled={updateChurch.isPending || isLogoUploading} className="w-full min-w-[120px] sm:ml-auto sm:w-auto">
+              {updateChurch.isPending ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
