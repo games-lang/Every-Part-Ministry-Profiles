@@ -175,8 +175,7 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           {!leadershipProfile?.configured ? (
-            <div className="flex items-start gap-3 rounded-xl border border-dashed border-primary/25 bg-background/70 p-4">
-              <BrainCircuit className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+            <div className="rounded-xl border border-dashed border-primary/25 bg-background/70 p-4">
               <div>
                 <p className="font-medium">Make PartFinder more useful to you</p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
