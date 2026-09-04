@@ -431,6 +431,7 @@ const RESPONSE_OPTIONS = [
 ] as const;
 type SpiritualGiftQuestion = {
   gift: string;
+  tag?: string;
   meaning: string;
   questionIndex: number;
   prompt: string;
