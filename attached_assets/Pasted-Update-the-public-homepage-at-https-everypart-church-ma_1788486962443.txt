@@ -1,0 +1,29 @@
+Update the public homepage at https://everypart.church/ (marketing landing page only). Do not change product/app behavior, auth, Discover gates, or pricing logic.
+
+Goal: A first-time pastor/coordinator should instantly understand Every Part is a hallway conversation / ministry-discovery tool — not volunteer scheduling or church management software.
+
+Must-do changes (in order):
+
+Hero category line — Add one plain sentence near the hero (under the subhead or as a support line), something like:
+Not a volunteer schedule. A prepared conversation before you ask someone to serve.
+Do not bury this below the fold.
+
+Tighten the hero subhead — Current subhead over-promises placement (“connect them with a place to serve and grow”). Rewrite toward discovery + conversation. Keep warmth; drop the laundry list if needed. Example direction:
+Every Part helps pastors slow down and discover how God has shaped someone—so the next ask is prayerful, not a guess.
+
+Fix the floating “Ask Every Part” chip — On mobile (~390px) it overlaps “See How It Works”; on desktop it sits on the Sarah card. Make it icon-only, hide until scroll, or reposition so it never covers primary CTAs.
+
+Hero support line — Replace “A prayerful ministry mobilization platform…” with conversation language, e.g.
+A starting point for the next ministry conversation—not just a spiritual gifts test.
+
+Pricing teaser — Either add one quiet line near the final CTA (Free to start · paid plans from $10/mo) or remove Pricing from the top nav until you’re ready to feature it on-page.
+
+Mid-page length — Shorten so the best disclaimers (“possibilities, not decisions” / “does not assign volunteers”) appear earlier. Collapse the six problem cards to three, or move “Before you ask” / sample conversation prompt higher.
+
+Social proof (if available) — If an early-access church has given permission to be named, add one concrete line in Trust or near the final CTA. Do not invent customer names. Keep Sarah labeled fictional.
+
+Do not change: Privacy/Terms links, beta banner honesty, PartFinder “possibilities not decisions” guardrails, fictional labeling on Sarah’s sample.
+
+Acceptance: Desktop + ~390px mobile — no CTA overlap; hero clearly says conversation-not-scheduler; Privacy/Terms still in footer.
+
+Want me to also draft the exact final hero strings (headline + subhead + category line) as locked copy?

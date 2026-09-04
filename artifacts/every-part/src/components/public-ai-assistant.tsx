@@ -36,6 +36,7 @@ function getErrorMessage(error: unknown) {
 
 export function PublicAiAssistant() {
   const [open, setOpen] = useState(false);
+  const [showLauncher, setShowLauncher] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([welcomeMessage]);
   const [draft, setDraft] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -54,6 +55,13 @@ export function PublicAiAssistant() {
     },
     [],
   );
+
+  useEffect(() => {
+    const handleScroll = () => setShowLauncher(window.scrollY > 240);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   async function sendMessage(content: string) {
     const trimmed = content.trim();
@@ -156,15 +164,19 @@ export function PublicAiAssistant() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          className="h-13 rounded-full border border-primary-foreground/15 px-5 shadow-xl shadow-primary/20 transition hover:-translate-y-0.5"
-          style={{ position: "fixed", bottom: "1.25rem", right: "1.25rem", zIndex: 1000 }}
-          aria-label="Ask the Every Part Guide"
-          data-testid="button-open-public-assistant"
-        >
-          <MessageCircle className="mr-2 h-5 w-5" />
-          Ask Every Part
-        </Button>
+        {showLauncher ? (
+          <Button
+            className="h-13 rounded-full border border-primary-foreground/15 px-5 shadow-xl shadow-primary/20 transition hover:-translate-y-0.5"
+            style={{ position: "fixed", bottom: "1.25rem", right: "1.25rem", zIndex: 1000 }}
+            aria-label="Ask the Every Part Guide"
+            data-testid="button-open-public-assistant"
+          >
+            <MessageCircle className="mr-2 h-5 w-5" />
+            Ask Every Part
+          </Button>
+        ) : (
+          <span className="hidden" aria-hidden="true" />
+        )}
       </DialogTrigger>
       <DialogContent
         className="bottom-20 left-auto right-4 top-auto grid h-[min(680px,calc(100dvh-7rem))] w-[calc(100vw-2rem)] max-w-md translate-x-0 translate-y-0 grid-rows-[auto_1fr_auto] gap-0 overflow-hidden rounded-3xl border-border/80 bg-card p-0 shadow-2xl sm:right-6"

@@ -84,12 +84,9 @@ const dimensions = [
 ];
 
 const problemCards = [
-  ["Hidden Gifts", "People in your congregation may have gifts and abilities leaders do not yet know about."],
-  ["The Same People Serve", "A small group of faithful volunteers often carries most of the ministry load."],
-  ["People Don’t Know Where to Begin", "Many people are willing to serve but are unsure where they belong."],
-  ["Leaders Are Guessing", "Church leaders often recruit from the people they already know instead of seeing the full potential of the congregation."],
-  ["Potential Leaders Go Unnoticed", "Emerging leaders can remain unseen when there is no shared language for noticing their gifts and readiness."],
-  ["The Fit May Have Changed", "A role that once fit may not match someone’s gifts, capacity, or current season anymore."],
+  ["The Same People Keep Carrying the Load", "Faithful volunteers often carry most of the ministry load while other gifts and abilities remain unseen."],
+  ["Good Intentions Need a Starting Point", "Many people are willing to serve, but leaders and members are unsure where a healthy conversation should begin."],
+  ["People and Seasons Change", "A role that once fit may not match someone’s gifts, capacity, or current season anymore."],
 ];
 
 const leaderBenefits = [
@@ -208,7 +205,7 @@ export default function LandingPage() {
   useEffect(() => {
     document.title = "Every Part | Help people discover their part";
     const description =
-      "Every Part helps churches prayerfully discover how God has shaped their people and connect them with meaningful places to serve and grow.";
+      "Every Part helps churches prayerfully discover how God has shaped their people and prepare for meaningful ministry conversations.";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -283,8 +280,11 @@ export default function LandingPage() {
               </Reveal>
               <Reveal className="[animation-delay:.2s]">
                 <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                  Every Part helps churches prayerfully discover the gifts, passions, calling, ministry potential, and availability of their people—and connect them with a place to serve and grow.
+                   Every Part helps pastors slow down and discover how God has shaped someone—so the next ask is prayerful, not a guess.
                 </p>
+                 <p className="mt-5 max-w-xl border-l-2 border-secondary pl-4 text-base font-medium leading-7 text-foreground sm:text-lg">
+                   Not a volunteer schedule. A prepared conversation before you ask someone to serve.
+                 </p>
               </Reveal>
               <Reveal className="[animation-delay:.3s]">
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -315,7 +315,7 @@ export default function LandingPage() {
               <Reveal className="[animation-delay:.4s]">
                 <div className="mt-10 flex items-center gap-3 text-sm text-muted-foreground">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(var(--landing-cyan))] text-primary"><Heart className="h-4 w-4" /></span>
-                   <span>A prayerful ministry mobilization platform—not just a spiritual gifts test.</span>
+                    <span>A starting point for the next ministry conversation—not just a spiritual gifts test.</span>
                 </div>
               </Reveal>
             </div>
@@ -408,7 +408,17 @@ export default function LandingPage() {
                 ))}
               </div>
             </Reveal>
-            <p className="mt-10 max-w-3xl font-serif text-2xl leading-tight tracking-[-.04em] sm:text-3xl">Every Part gives your church a pathway from discovery to meaningful ministry.</p>
+             <Reveal className="mt-10 max-w-4xl">
+               <div className="rounded-[1.5rem] border border-secondary/35 bg-secondary/10 p-7 sm:p-8">
+                 <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">Built for conversation</p>
+                 <p className="mt-3 max-w-3xl font-serif text-2xl leading-tight tracking-[-.04em] sm:text-3xl">
+                   Every Part gives your church a pathway from discovery to meaningful ministry—possibilities, not decisions.
+                 </p>
+                 <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground">
+                   It does not assign volunteers. Prayer, relationship, discernment, and a real conversation still shape the next step.
+                 </p>
+               </div>
+             </Reveal>
             <Reveal className="mt-10 max-w-3xl">
               <ScriptureCallout
                 verse="God has placed the parts in the body, every one of them, just as he wanted them to be."
@@ -717,6 +727,9 @@ export default function LandingPage() {
                 <Link href={appPath("/sign-up")} className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
                 <Link href="/profile/riverstone-community" className="landing-focus inline-flex items-center justify-center rounded-full border border-secondary-foreground/30 px-7 py-4 font-semibold transition hover:bg-secondary-foreground/10">Preview a Ministry Profile</Link>
               </div>
+               <p className="relative mt-6 text-xs font-semibold uppercase tracking-[.14em] text-secondary-foreground/65">
+                 Free to start · paid plans from $10/mo
+               </p>
             </div>
           </Reveal>
         </section>
