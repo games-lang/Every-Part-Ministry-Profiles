@@ -280,8 +280,11 @@ export default function LandingPage() {
               </Reveal>
               <Reveal className="[animation-delay:.2s]">
                 <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                   Every Part helps pastors slow down and discover how God has shaped someone—so the next ask is prayerful, not a guess.
+                   Every Part helps pastors slow down and discover how God has shaped each person—so the next ask is prayerful, not a guess.
                 </p>
+                 <p className="mt-4 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
+                   Discover the gifts, passions, calling, ministry potential, and availability of your people—and help connect them with a place to serve and grow.
+                 </p>
                  <p className="mt-5 max-w-xl border-l-2 border-secondary pl-4 text-base font-medium leading-7 text-foreground sm:text-lg">
                    Not a volunteer schedule. A prepared conversation before you ask someone to serve.
                  </p>
