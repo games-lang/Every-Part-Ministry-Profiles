@@ -134,6 +134,7 @@ const churchFormSchema = z.object({
   assessmentConfiguration: z.object({
     sections: sectionSchema,
     subsections: subsectionSchema,
+    spiritualGiftQuestionCount: z.number().int().min(1).max(4),
     passions: z.array(z.string().min(1).max(80)).max(100),
     ministryInterests: z.array(z.string().min(1).max(80)).max(100),
   }),
@@ -176,6 +177,32 @@ const SPIRITUAL_GIFTS = [
   ["Administration", "organizing people, resources, and systems effectively"], ["Apostleship", "pioneering, starting, expanding, and establishing new ministries or works"], ["Discernment of Spirits", "recognizing what is from God, human influence, or spiritual deception"], ["Evangelism", "communicating the gospel and helping people respond to Jesus"], ["Exhortation / Encouragement", "strengthening, motivating, comforting, and challenging others"], ["Faith", "unusual confidence in God’s power, promises, and provision"], ["Giving", "generously and joyfully sharing resources to advance God’s work and meet needs"], ["Healing", "being used by God as an instrument of physical, emotional, or spiritual healing"], ["Helps / Service", "meeting practical needs and supporting others so ministry can happen"], ["Hospitality", "welcoming people and creating environments where others feel received and cared for"], ["Interpretation of Tongues", "interpreting a message spoken in tongues"], ["Knowledge", "understanding and communicating spiritual truth or insight"], ["Leadership", "providing direction, motivating others, and helping a group move toward God-given goals"], ["Mercy", "compassionately caring for people who are hurting, struggling, marginalized, or in need"], ["Miracles", "being used by God in extraordinary demonstrations of His power"], ["Pastoring / Shepherding", "caring for, protecting, guiding, and nurturing people spiritually"], ["Prophecy", "communicating a message believed to be prompted by God for strengthening, correction, encouragement, or direction"], ["Teaching", "explaining and applying biblical truth so others understand and grow"], ["Tongues", "speaking in a language or spiritual utterance given through the Holy Spirit"], ["Wisdom", "applying spiritual truth appropriately to real situations"], ["Craftsmanship", "using artistic or practical skill for God’s purposes"], ["Intercession", "persistent, focused prayer for others"], ["Missionary / Cross-Cultural Ministry", "effectively ministering across cultures and communities"], ["Music / Worship", "using musical ability to lead and encourage worship"], ["Celibacy", "a particular grace for remaining unmarried for undivided devotion to ministry"], ["Voluntary Poverty", "willingly living with less in order to serve God and others"],
 ] as const;
 const ALL_GIFT_NAMES = SPIRITUAL_GIFTS.map(([name]) => name);
+const SPIRITUAL_GIFT_DEPTH_OPTIONS = [
+  {
+    value: 1,
+    label: "Extra light",
+    summary: "1 question per gift",
+    description: "Fastest option, with the broadest and least precise signal.",
+  },
+  {
+    value: 2,
+    label: "Light",
+    summary: "2 questions per gift",
+    description: "A shorter reflection with a more balanced signal.",
+  },
+  {
+    value: 3,
+    label: "Heavy",
+    summary: "3 questions per gift",
+    description: "The current depth, with stronger confidence from more reflection.",
+  },
+  {
+    value: 4,
+    label: "Extra heavy",
+    summary: "4 questions per gift",
+    description: "The most thorough option and the fullest, most precise signal.",
+  },
+] as const;
 const ALLOWED_LOGO_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 const DISCOVER_HALLWAY_CODE_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
@@ -434,6 +461,7 @@ export default function ChurchSetup() {
       assessmentConfiguration: {
         sections: DEFAULT_SECTIONS,
         subsections: DEFAULT_SUBSECTIONS,
+        spiritualGiftQuestionCount: 3,
         passions: [...GENERIC_PASSIONS],
         ministryInterests: [...GENERIC_MINISTRY_INTERESTS],
       },
@@ -463,6 +491,8 @@ export default function ChurchSetup() {
         assessmentConfiguration: {
           sections: mergedSections,
           subsections: mergedSubsections,
+          spiritualGiftQuestionCount:
+            church.assessmentConfiguration?.spiritualGiftQuestionCount ?? 3,
           passions: church.assessmentConfiguration?.passions || [...GENERIC_PASSIONS],
           ministryInterests: church.assessmentConfiguration?.ministryInterests || [...GENERIC_MINISTRY_INTERESTS],
         },
@@ -1213,6 +1243,57 @@ export default function ChurchSetup() {
                         <div className="pt-4 border-t space-y-4">
                           <FormField
                             control={form.control}
+                            name="assessmentConfiguration.spiritualGiftQuestionCount"
+                            render={({ field }) => {
+                              const selectedDepth =
+                                SPIRITUAL_GIFT_DEPTH_OPTIONS.find(
+                                  (option) => option.value === field.value,
+                                ) ?? SPIRITUAL_GIFT_DEPTH_OPTIONS[2];
+                              return (
+                                <FormItem>
+                                  <FormLabel>Spiritual gifts reflection depth</FormLabel>
+                                  <FormDescription>
+                                    Choose how many questions members answer for each enabled gift.
+                                    More questions provide a fuller reflection, but the results remain
+                                    conversation starters—not diagnoses or placement decisions.
+                                  </FormDescription>
+                                  <Select
+                                    value={String(field.value)}
+                                    onValueChange={(value) =>
+                                      field.onChange(Number(value))
+                                    }
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Choose a reflection depth" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {SPIRITUAL_GIFT_DEPTH_OPTIONS.map((option) => (
+                                        <SelectItem
+                                          key={option.value}
+                                          value={String(option.value)}
+                                        >
+                                          {option.label} · {option.summary}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <div className="rounded-lg border border-primary/15 bg-primary/5 p-3 text-sm">
+                                    <p className="font-medium">
+                                      {selectedDepth.label}: {selectedDepth.summary}
+                                    </p>
+                                    <p className="mt-1 text-muted-foreground">
+                                      {selectedDepth.description}
+                                    </p>
+                                  </div>
+                                  <FormMessage />
+                                </FormItem>
+                              );
+                            }}
+                          />
+                          <FormField
+                            control={form.control}
                             name="enabledSpiritualGifts"
                             render={({ field }) => (
                               <FormItem>
@@ -1221,8 +1302,8 @@ export default function ChurchSetup() {
                                   <span className="text-sm text-muted-foreground">{field.value.length} enabled</span>
                                 </div>
                                 <FormDescription>
-                                  Select at least 3 gifts. Members will answer
-                                  all three reflections for each enabled gift.
+                                  Select at least 3 gifts. Members will answer the
+                                  reflection depth selected above for every enabled gift.
                                   Your church controls the final list.
                                 </FormDescription>
                                 {customizationMode === "tradition" &&

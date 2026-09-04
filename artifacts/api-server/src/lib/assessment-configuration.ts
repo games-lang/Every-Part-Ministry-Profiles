@@ -9,6 +9,8 @@ export const ASSESSMENT_SECTION_KEYS = [
   "connectionAvailability",
 ] as const;
 
+export const DEFAULT_SPIRITUAL_GIFT_QUESTION_COUNT = 3;
+
 export const DEFAULT_PASSIONS = [
   "Children",
   "Youth",
@@ -151,6 +153,7 @@ const RESPONSE_SUBSECTION_PREFIXES = {
 export type AssessmentConfiguration = {
   sections: Record<SectionKey, boolean>;
   subsections: Record<SubsectionKey, boolean>;
+  spiritualGiftQuestionCount: number;
   passions: string[];
   ministryInterests: string[];
 };
@@ -163,6 +166,7 @@ export function defaultAssessmentConfiguration(): AssessmentConfiguration {
   return {
     sections: enabled(ASSESSMENT_SECTION_KEYS),
     subsections: enabled(ASSESSMENT_SUBSECTION_KEYS),
+    spiritualGiftQuestionCount: DEFAULT_SPIRITUAL_GIFT_QUESTION_COUNT,
     passions: [...DEFAULT_PASSIONS],
     ministryInterests: [...DEFAULT_MINISTRY_INTERESTS],
   };
@@ -176,6 +180,7 @@ export function assessmentConfiguration(
   const candidate = value as {
     sections?: Record<string, unknown>;
     subsections?: Record<string, unknown>;
+    spiritualGiftQuestionCount?: unknown;
     passions?: unknown;
     ministryInterests?: unknown;
   };
@@ -201,6 +206,17 @@ export function assessmentConfiguration(
     const parent = key.split(".")[0] as SectionKey;
     if (candidate.subsections[key] && !configuration.sections[parent]) return null;
     configuration.subsections[key] = candidate.subsections[key];
+  }
+  if (candidate.spiritualGiftQuestionCount !== undefined) {
+    if (
+      !Number.isInteger(candidate.spiritualGiftQuestionCount) ||
+      (candidate.spiritualGiftQuestionCount as number) < 1 ||
+      (candidate.spiritualGiftQuestionCount as number) > 4
+    ) {
+      return null;
+    }
+    configuration.spiritualGiftQuestionCount =
+      candidate.spiritualGiftQuestionCount as number;
   }
   for (const [key, defaults] of [
     ["passions", DEFAULT_PASSIONS],

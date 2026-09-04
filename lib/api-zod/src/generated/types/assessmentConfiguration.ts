@@ -12,6 +12,12 @@ export interface AssessmentConfiguration {
   sections: AssessmentConfigurationSections;
   subsections: AssessmentConfigurationSubsections;
   /**
+     * Number of reflection questions asked for each enabled spiritual gift in new adult assessments.
+     * @minimum 1
+     * @maximum 4
+     */
+  spiritualGiftQuestionCount: number;
+  /**
      * @maxItems 100
      * @items.minLength 1
      * @items.maxLength 80

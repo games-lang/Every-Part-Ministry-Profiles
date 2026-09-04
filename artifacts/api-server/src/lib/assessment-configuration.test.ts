@@ -121,3 +121,35 @@ test("church-specific options extend protected generic defaults", () => {
     "Community garden team",
   ]);
 });
+
+test("spiritual gift question depth defaults legacy configurations to three", () => {
+  const defaults = defaultAssessmentConfiguration();
+  assert.equal(defaults.spiritualGiftQuestionCount, 3);
+
+  const { spiritualGiftQuestionCount: _omitted, ...legacy } = defaults;
+  const configuration = assessmentConfiguration(legacy);
+  assert.equal(configuration?.spiritualGiftQuestionCount, 3);
+});
+
+test("spiritual gift question depth accepts one through four only", () => {
+  for (const spiritualGiftQuestionCount of [1, 2, 3, 4]) {
+    const configuration = assessmentConfiguration({
+      ...defaultAssessmentConfiguration(),
+      spiritualGiftQuestionCount,
+    });
+    assert.equal(
+      configuration?.spiritualGiftQuestionCount,
+      spiritualGiftQuestionCount,
+    );
+  }
+
+  for (const spiritualGiftQuestionCount of [0, 2.5, 5]) {
+    assert.equal(
+      assessmentConfiguration({
+        ...defaultAssessmentConfiguration(),
+        spiritualGiftQuestionCount,
+      }),
+      null,
+    );
+  }
+});

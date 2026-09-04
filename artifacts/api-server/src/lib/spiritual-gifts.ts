@@ -39,6 +39,7 @@ export function spiritualGiftsSubmissionError(
     responses: Record<string, { prompt: string; response: number }[]>;
   },
   activeGifts: readonly string[],
+  questionCount: number,
 ): string | null {
   const active = new Set(activeGifts);
   const responseGifts = Object.keys(spiritualGifts.responses);
@@ -54,7 +55,7 @@ export function spiritualGiftsSubmissionError(
     const responses = spiritualGifts.responses[gift];
     if (
       !responses ||
-      responses.length !== 3 ||
+      responses.length !== questionCount ||
       responses.some(
         (entry) =>
           !entry.prompt.trim() ||
@@ -63,7 +64,7 @@ export function spiritualGiftsSubmissionError(
           entry.response > 5,
       )
     ) {
-      return `Each enabled spiritual gift requires three valid responses (${gift}).`;
+      return `Each enabled spiritual gift requires ${questionCount} valid ${questionCount === 1 ? "response" : "responses"} (${gift}).`;
     }
   }
   return null;

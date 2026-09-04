@@ -248,7 +248,11 @@ router.post("/profiles", async (req, res): Promise<void> => {
       res.status(400).json({ error: "Spiritual gifts responses are required." });
       return;
     }
-    const spiritualGiftsError = spiritualGiftsSubmissionError(spiritualGifts, activeGifts);
+    const spiritualGiftsError = spiritualGiftsSubmissionError(
+      spiritualGifts,
+      activeGifts,
+      configuration.spiritualGiftQuestionCount,
+    );
     if (spiritualGiftsError) {
       res.status(400).json({ error: spiritualGiftsError });
       return;

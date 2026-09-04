@@ -2653,8 +2653,8 @@ components:
           type: object
           additionalProperties:
             type: array
-            minItems: 3
-            maxItems: 3
+            minItems: 1
+            maxItems: 4
             items:
               type: object
               required: [prompt, response]
@@ -2663,13 +2663,19 @@ components:
                 response: { type: integer, minimum: 1, maximum: 5 }
     AssessmentConfiguration:
       type: object
-      required: [sections, subsections, passions, ministryInterests]
+      required: [sections, subsections, spiritualGiftQuestionCount, passions, ministryInterests]
       additionalProperties: false
       properties:
         sections:
           $ref: "#/components/schemas/AssessmentConfigurationSections"
         subsections:
           $ref: "#/components/schemas/AssessmentConfigurationSubsections"
+        spiritualGiftQuestionCount:
+          type: integer
+          minimum: 1
+          maximum: 4
+          default: 3
+          description: Number of reflection questions asked for each enabled spiritual gift in new adult assessments.
         passions:
           type: array
           maxItems: 100

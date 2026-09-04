@@ -168,6 +168,7 @@ const SPIRITUAL_GIFTS = [
       "I help bring order to people, resources, or systems so a shared work can move forward.",
       "People benefit from the way I organize work and create follow-through.",
       "Creating clarity and structure for a shared effort gives me energy.",
+      "I look for ways to organize ministry work so others can contribute with clarity and care.",
     ],
   ],
   [
@@ -177,6 +178,7 @@ const SPIRITUAL_GIFTS = [
       "I help begin, expand, or establish a new work when the path is not yet clear.",
       "I help new ministries or initiatives take root and grow.",
       "I feel drawn to explore faithful next steps in new places or communities.",
+      "I listen for where a new ministry effort may need patient beginnings and shared support.",
     ],
   ],
   [
@@ -186,6 +188,7 @@ const SPIRITUAL_GIFTS = [
       "I prayerfully distinguish what may be from God, human influence, or spiritual deception.",
       "My careful listening helps others consider spiritual impressions or concerns wisely.",
       "I pause, pray, and seek wise counsel before naming what I sense.",
+      "I value humility and community discernment when considering what may be influencing a ministry situation.",
     ],
   ],
   [
@@ -195,6 +198,7 @@ const SPIRITUAL_GIFTS = [
       "I communicate the gospel or accompany someone taking a step toward Jesus.",
       "People respond positively when I share my faith with care.",
       "I feel drawn to build relationships with people who are exploring Jesus.",
+      "I make space for honest questions as I share the hope I have in Jesus.",
     ],
   ],
   [
@@ -204,6 +208,7 @@ const SPIRITUAL_GIFTS = [
       "My words help people feel strengthened, comforted, motivated, or thoughtfully challenged.",
       "People tell me that my encouragement makes a positive difference.",
       "I notice opportunities to speak hope or courage into another person's situation.",
+      "I seek to offer timely encouragement that helps others take a faithful next step.",
     ],
   ],
   [
@@ -213,6 +218,7 @@ const SPIRITUAL_GIFTS = [
       "I experience confidence in God's power, promises, or provision during uncertainty.",
       "My trust in God strengthens others during difficult circumstances.",
       "I continue praying and acting faithfully when outcomes remain unclear.",
+      "I try to point a ministry team toward trust in God while remaining open about uncertainty.",
     ],
   ],
   [
@@ -222,6 +228,7 @@ const SPIRITUAL_GIFTS = [
       "I share time, money, or other resources to meet needs or support God's work.",
       "I see meaningful fruit when I give generously and thoughtfully.",
       "I feel joy and freedom when I look for ways to share resources.",
+      "I consider how my resources might quietly support people and ministry needs.",
     ],
   ],
   [
@@ -231,6 +238,7 @@ const SPIRITUAL_GIFTS = [
       "I offer care or prayer when people experience physical, emotional, or spiritual hurt.",
       "My care or prayer brings comfort or encouragement to people who are hurting.",
       "I feel drawn to be present with people seeking healing while leaving outcomes with God.",
+      "I support people seeking healing with compassion, appropriate care, and respect for their circumstances.",
     ],
   ],
   [
@@ -240,6 +248,7 @@ const SPIRITUAL_GIFTS = [
       "I notice and meet practical needs that support people or ministry.",
       "People value the practical support I offer.",
       "Behind-the-scenes tasks that help a shared work happen give me energy.",
+      "I am willing to take on practical work that allows others to serve more effectively.",
     ],
   ],
   [
@@ -249,6 +258,7 @@ const SPIRITUAL_GIFTS = [
       "I help create settings where people feel welcomed, received, and cared for.",
       "Guests and others feel included when I welcome them.",
       "I feel drawn to make room for people who may feel new, overlooked, or uncertain.",
+      "I pay attention to small ways a ministry environment can feel more welcoming and accessible.",
     ],
   ],
   [
@@ -258,6 +268,7 @@ const SPIRITUAL_GIFTS = [
       "I experience or sense a grace to interpret a message spoken in tongues.",
       "I welcome careful confirmation, accountability, and feedback when discerning this grace.",
       "I approach this practice prayerfully, humbly, and in appropriate community order.",
+      "I seek to participate in this practice in ways that honor shared discernment and the wellbeing of the community.",
     ],
   ],
   [
@@ -267,6 +278,7 @@ const SPIRITUAL_GIFTS = [
       "I understand and communicate spiritual truth or insight that helps someone.",
       "People find my spiritual insight clear and helpful.",
       "I want to keep learning and share insight with humility.",
+      "I offer what I am learning in ways that may help others reflect on faith and ministry.",
     ],
   ],
   [
@@ -276,6 +288,7 @@ const SPIRITUAL_GIFTS = [
       "I provide direction or momentum for a group working toward a shared goal.",
       "People value the way I guide, listen to, and motivate them.",
       "Taking responsibility for helping a group move forward gives me energy.",
+      "I seek input and share responsibility when helping a ministry team move toward its goals.",
     ],
   ],
   [
@@ -285,6 +298,7 @@ const SPIRITUAL_GIFTS = [
       "I stay present with people who are hurting, struggling, marginalized, or in need.",
       "People experience care and dignity through the way I treat them.",
       "I stay compassionate when another person's needs are complex or ongoing.",
+      "I look for respectful, practical ways to stand alongside people facing difficult circumstances.",
     ],
   ],
   [
@@ -294,6 +308,7 @@ const SPIRITUAL_GIFTS = [
       "I experience or sense God working in an extraordinary way through situations involving me.",
       "I seek wise confirmation and feedback about extraordinary experiences.",
       "I pray expectantly while remaining humble about outcomes.",
+      "I share experiences of God's work with humility and openness to wise discernment.",
     ],
   ],
   [
@@ -303,6 +318,7 @@ const SPIRITUAL_GIFTS = [
       "I care for, guide, protect, or nurture people in their spiritual lives.",
       "People value my ability to listen and walk patiently with them.",
       "Consistent, relational care over time gives me energy.",
+      "I make time to notice how people are doing and to offer steady, appropriate support.",
     ],
   ],
   [
@@ -312,6 +328,7 @@ const SPIRITUAL_GIFTS = [
       "I share messages I believe God has prompted for another person's strengthening, correction, encouragement, or direction.",
       "I seek discernment, confirmation, and feedback when sharing such impressions.",
       "I hold spiritual impressions humbly and submit them to wise discernment.",
+      "I consider how a spiritual impression might be shared in a way that serves others with care and accountability.",
     ],
   ],
   [
@@ -321,6 +338,7 @@ const SPIRITUAL_GIFTS = [
       "I explain or apply biblical truth in ways that help people understand or grow.",
       "People value the clarity and care of my teaching.",
       "Preparing, learning, and adapting so others can engage Scripture gives me energy.",
+      "I invite questions and adapt my approach so people can engage biblical truth together.",
     ],
   ],
   [
@@ -330,6 +348,7 @@ const SPIRITUAL_GIFTS = [
       "I experience or sense a grace for speaking in a language or spiritual utterance given through the Holy Spirit.",
       "Pastoral guidance, confirmation, or feedback helps me understand these experiences.",
       "I practice this prayerfully and with care for the gathered community.",
+      "I seek to practice this in ways that respect pastoral guidance and strengthen the gathered community.",
     ],
   ],
   [
@@ -339,6 +358,7 @@ const SPIRITUAL_GIFTS = [
       "I apply spiritual truth thoughtfully to real situations.",
       "People value the timing, care, or practicality of my counsel.",
       "I listen carefully before offering perspective in a complex situation.",
+      "I try to offer perspective that is thoughtful, practical, and attentive to the people involved.",
     ],
   ],
   [
@@ -348,6 +368,7 @@ const SPIRITUAL_GIFTS = [
       "I use artistic or practical skill in ways that serve God's purposes or people.",
       "My creative or practical work contributes meaningful value to others.",
       "I offer my craft carefully for a shared ministry need.",
+      "I collaborate with others to use creative or practical skills in service of a ministry need.",
     ],
   ],
   [
@@ -357,6 +378,7 @@ const SPIRITUAL_GIFTS = [
       "I stay in focused prayer for people, needs, or situations.",
       "I follow up with people I have prayed for and notice how God is at work.",
       "I feel drawn to carry other people's needs in persistent prayer.",
+      "I bring ministry needs to prayer with perseverance while respecting the privacy of those involved.",
     ],
   ],
   [
@@ -366,6 +388,7 @@ const SPIRITUAL_GIFTS = [
       "I serve, learn, or build relationships across cultures or communities different from my own.",
       "People experience respect, listening, and adaptability from me across cultural differences.",
       "I want to keep learning from and serving with people across cultural differences.",
+      "I seek guidance from local people and partners as I serve across cultural differences.",
     ],
   ],
   [
@@ -375,6 +398,7 @@ const SPIRITUAL_GIFTS = [
       "I use musical ability to lead or encourage worship.",
       "My musical contribution helps the worshiping community participate.",
       "Preparing and collaborating so music serves worship gives me energy.",
+      "I listen and collaborate so musical contributions support the worshiping community rather than draw attention to me.",
     ],
   ],
   [
@@ -384,6 +408,7 @@ const SPIRITUAL_GIFTS = [
       "My singleness connects meaningfully with my devotion, relationships, and service.",
       "I seek wise feedback and support as I discern this part of my life.",
       "I presently experience peace or freedom in remaining unmarried for undivided devotion to ministry.",
+      "I consider how my present season of life can be lived with healthy relationships and faithful service.",
     ],
   ],
   [
@@ -393,6 +418,7 @@ const SPIRITUAL_GIFTS = [
       "I willingly choose to live with less in order to serve God or others.",
       "I notice meaningful fruit or challenges when I simplify or share.",
       "I feel drawn to consider a simpler way of life for service and generosity.",
+      "I reflect on how simpler choices might create room to serve others with generosity and wisdom.",
     ],
   ],
 ] as const;
@@ -960,7 +986,8 @@ const assessmentSchema = z.object({
             response: z.number().int().min(1).max(5),
           }),
         )
-        .length(3),
+        .min(1)
+        .max(4),
     ),
   }),
   ministryResponses: z.record(z.string(), z.number()),
@@ -1121,7 +1148,7 @@ const defaultValues: Values = {
     responses: Object.fromEntries(
       SPIRITUAL_GIFTS.map(([gift, , prompts]) => [
         gift,
-        prompts.map((prompt) => ({ prompt, response: 0 })),
+        prompts.slice(0, 3).map((prompt) => ({ prompt, response: 0 })),
       ]),
     ),
   },
@@ -1623,12 +1650,21 @@ export default function Assessment() {
         (dimension) => dimension.key === question.key,
       ),
   );
-  const activeGiftConfigKey = church?.enabledSpiritualGifts?.join("|") ?? "all";
+  const configuredSpiritualGiftQuestionCount =
+    configuration?.spiritualGiftQuestionCount;
+  const spiritualGiftQuestionsPerGift =
+    typeof configuredSpiritualGiftQuestionCount === "number" &&
+    Number.isInteger(configuredSpiritualGiftQuestionCount) &&
+    configuredSpiritualGiftQuestionCount >= 1 &&
+    configuredSpiritualGiftQuestionCount <= 4
+      ? configuredSpiritualGiftQuestionCount
+      : 3;
+  const activeGiftConfigKey = `${church?.enabledSpiritualGifts?.join("|") ?? "all"}:${spiritualGiftQuestionsPerGift}`;
   const randomizedGiftQuestions = useMemo(
     () =>
       shuffleQuestions(
         activeSpiritualGifts.flatMap(([gift, meaning, prompts]) =>
-          prompts.map((prompt, questionIndex) => ({
+          prompts.slice(0, spiritualGiftQuestionsPerGift).map((prompt, questionIndex) => ({
             gift,
             meaning,
             questionIndex,
@@ -1638,16 +1674,14 @@ export default function Assessment() {
       ),
     [activeGiftConfigKey],
   );
-  const spiritualGiftQuestionCount = activeSpiritualGifts.length * 3;
-  const answeredGiftQuestionCount = activeSpiritualGifts.reduce(
-    (count, [gift]) =>
-      count +
-      ((
-        form.watch(`spiritualGifts.responses.${gift}` as Path<Values>) as
-          { response: number }[] | undefined
-      )?.filter((item) => item.response > 0).length ?? 0),
-    0,
-  );
+  const spiritualGiftQuestionCount =
+    activeSpiritualGifts.length * spiritualGiftQuestionsPerGift;
+  const answeredGiftQuestionCount = randomizedGiftQuestions.filter(
+    ({ gift, questionIndex }) =>
+      (form.watch(
+        `spiritualGifts.responses.${gift}.${questionIndex}.response` as Path<Values>,
+      ) as number) > 0,
+  ).length;
   const answeredMinistryQuestionCount = activeMinistryQuestions.filter(
     ({ key, questionIndex }) =>
       (form.watch("ministryResponses")[`${key}-${questionIndex}`] ?? 0) > 0,
@@ -1694,19 +1728,26 @@ export default function Assessment() {
     activePersonalityDimensions,
   );
   useEffect(() => {
-    const configKey = activeSpiritualGifts.map(([gift]) => gift).join("|");
-    if (church && initializedGiftConfig.current !== configKey) {
-      initializedGiftConfig.current = configKey;
+    if (church && initializedGiftConfig.current !== activeGiftConfigKey) {
+      initializedGiftConfig.current = activeGiftConfigKey;
       form.setValue("spiritualGifts", {
         responses: Object.fromEntries(
           activeSpiritualGifts.map(([gift, , prompts]) => [
             gift,
-            prompts.map((prompt) => ({ prompt, response: 0 })),
+            prompts
+              .slice(0, spiritualGiftQuestionsPerGift)
+              .map((prompt) => ({ prompt, response: 0 })),
           ]),
         ),
       });
     }
-  }, [church, form, activeSpiritualGifts]);
+  }, [
+    activeGiftConfigKey,
+    activeSpiritualGifts,
+    church,
+    form,
+    spiritualGiftQuestionsPerGift,
+  ]);
   useEffect(() => {
     if (!configuration) return;
     const hidden: string[] = [];
@@ -2197,7 +2238,10 @@ export default function Assessment() {
                 responses: Object.fromEntries(
                   activeSpiritualGifts.map(([gift]) => [
                     gift,
-                    data.spiritualGifts.responses[gift],
+                    data.spiritualGifts.responses[gift].slice(
+                      0,
+                      spiritualGiftQuestionsPerGift,
+                    ),
                   ]),
                 ),
               },
