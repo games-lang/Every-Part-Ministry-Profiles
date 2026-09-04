@@ -230,7 +230,7 @@ const MINISTRY_DEPTH_OPTIONS = [
     description: "The most thorough option and the fullest, most precise signal.",
   },
 ] as const;
-const ESTIMATE_SECONDS_PER_REFLECTION = 12;
+const ESTIMATE_SECONDS_PER_REFLECTION = 10;
 
 function estimateAssessmentTime(
   values: Pick<ChurchFormValues, "enabledSpiritualGifts" | "assessmentConfiguration">,
