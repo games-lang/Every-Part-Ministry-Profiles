@@ -107,5 +107,8 @@ export function churchResponse(
     earlyAccessStatus: church.earlyAccessStatus,
     earlyAccessStartDate: church.earlyAccessStartDate,
     foundingChurch: church.foundingChurch,
+    billingPlan: church.billingPlan,
+    billingStatus: church.billingStatus,
+    billingCurrentPeriodEnd: church.billingCurrentPeriodEnd,
   };
 }
