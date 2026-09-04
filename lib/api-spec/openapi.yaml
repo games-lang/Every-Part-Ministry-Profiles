@@ -2663,7 +2663,7 @@ components:
                 response: { type: integer, minimum: 1, maximum: 5 }
     AssessmentConfiguration:
       type: object
-      required: [sections, subsections, spiritualGiftQuestionCount, passions, ministryInterests]
+      required: [sections, subsections, spiritualGiftQuestionCount, ministryQuestionCount, passions, ministryInterests]
       additionalProperties: false
       properties:
         sections:
@@ -2676,6 +2676,12 @@ components:
           maximum: 4
           default: 3
           description: Number of reflection questions asked for each enabled spiritual gift in new adult assessments.
+        ministryQuestionCount:
+          type: integer
+          minimum: 1
+          maximum: 4
+          default: 3
+          description: Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.
         passions:
           type: array
           maxItems: 100

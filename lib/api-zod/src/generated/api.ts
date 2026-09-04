@@ -606,6 +606,9 @@ export const getMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-N
 export const getMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const getMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
 
+export const getMyChurchResponseAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const getMyChurchResponseAssessmentConfigurationMinistryQuestionCountMax = 4;
+
 export const getMyChurchResponseAssessmentConfigurationPassionsItemMax = 80;
 
 export const getMyChurchResponseAssessmentConfigurationPassionsMax = 100;
@@ -698,6 +701,7 @@ export const GetMyChurchResponse = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(getMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryQuestionCountMax).default(getMyChurchResponseAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(getMyChurchResponseAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
 }),
@@ -735,6 +739,9 @@ export const updateMyChurchBodyEnabledSpiritualGiftsMin = 3;
 
 export const updateMyChurchBodyAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const updateMyChurchBodyAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
+
+export const updateMyChurchBodyAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const updateMyChurchBodyAssessmentConfigurationMinistryQuestionCountMax = 4;
 
 export const updateMyChurchBodyAssessmentConfigurationPassionsItemMax = 80;
 
@@ -824,6 +831,7 @@ export const UpdateMyChurchBody = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(updateMyChurchBodyAssessmentConfigurationSpiritualGiftQuestionCountMax).default(updateMyChurchBodyAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryQuestionCountMax).default(updateMyChurchBodyAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationPassionsItemMax)).max(updateMyChurchBodyAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax)
 }).optional(),
@@ -843,6 +851,9 @@ export const updateMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]
 export const updateMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const updateMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const updateMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
+
+export const updateMyChurchResponseAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const updateMyChurchResponseAssessmentConfigurationMinistryQuestionCountMax = 4;
 
 export const updateMyChurchResponseAssessmentConfigurationPassionsItemMax = 80;
 
@@ -936,6 +947,7 @@ export const UpdateMyChurchResponse = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(updateMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax).default(updateMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryQuestionCountMax).default(updateMyChurchResponseAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(updateMyChurchResponseAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
 }),
@@ -1009,6 +1021,9 @@ export const getPublicChurchResponseEnabledSpiritualGiftsMin = 3;
 
 export const getPublicChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const getPublicChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
+
+export const getPublicChurchResponseAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const getPublicChurchResponseAssessmentConfigurationMinistryQuestionCountMax = 4;
 
 export const getPublicChurchResponseAssessmentConfigurationPassionsItemMax = 80;
 
@@ -1096,6 +1111,7 @@ export const GetPublicChurchResponse = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(getPublicChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getPublicChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryQuestionCountMax).default(getPublicChurchResponseAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationPassionsItemMax)).max(getPublicChurchResponseAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax)
 }),
@@ -1200,6 +1216,9 @@ export const getDashboardSummaryResponseChurchDiscoverHallwayCodeRegExp = new Re
 export const getDashboardSummaryResponseChurchAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const getDashboardSummaryResponseChurchAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
 
+export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryQuestionCountMax = 4;
+
 export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax = 80;
 
 export const getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax = 100;
@@ -1296,6 +1315,7 @@ export const GetDashboardSummaryResponse = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getDashboardSummaryResponseChurchAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryQuestionCountMax).default(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax)
 }),
@@ -1711,6 +1731,9 @@ export const createProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
 export const createProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const createProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
 
+export const createProfileResponseTwoAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const createProfileResponseTwoAssessmentConfigurationMinistryQuestionCountMax = 4;
+
 export const createProfileResponseTwoAssessmentConfigurationPassionsItemMax = 80;
 
 export const createProfileResponseTwoAssessmentConfigurationPassionsMax = 100;
@@ -1841,6 +1864,7 @@ export const CreateProfileResponse = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(createProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountMax).default(createProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryQuestionCountMax).default(createProfileResponseTwoAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationPassionsItemMax)).max(createProfileResponseTwoAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
 }),
@@ -2814,6 +2838,9 @@ export const getProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
 export const getProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
 export const getProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
 
+export const getProfileResponseTwoAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const getProfileResponseTwoAssessmentConfigurationMinistryQuestionCountMax = 4;
+
 export const getProfileResponseTwoAssessmentConfigurationPassionsItemMax = 80;
 
 export const getProfileResponseTwoAssessmentConfigurationPassionsMax = 100;
@@ -2944,6 +2971,7 @@ export const GetProfileResponse = zod.object({
   "connectionAvailability.availability": zod.boolean()
 }),
   "spiritualGiftQuestionCount": zod.int().min(1).max(getProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryQuestionCountMax).default(getProfileResponseTwoAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationPassionsItemMax)).max(getProfileResponseTwoAssessmentConfigurationPassionsMax),
   "ministryInterests": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
 }),

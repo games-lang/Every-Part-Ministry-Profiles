@@ -18,6 +18,12 @@ export interface AssessmentConfiguration {
      */
   spiritualGiftQuestionCount: number;
   /**
+     * Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.
+     * @minimum 1
+     * @maximum 4
+     */
+  ministryQuestionCount: number;
+  /**
      * @maxItems 100
      * @items.minLength 1
      * @items.maxLength 80
