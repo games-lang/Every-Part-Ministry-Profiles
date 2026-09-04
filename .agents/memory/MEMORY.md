@@ -22,3 +22,4 @@
 - [Vite Radix hot reload](vite-radix-hot-reload.md) — newly imported Radix primitives can transiently trigger invalid-hook errors during HMR; verify again after one full web workflow restart.
 - [Youth profile configuration](youth-profile-configuration.md) — churches may relabel canonical youth choices; only guardian observations are safely optional until result contracts support omission.
 - [OpenAPI generated-name collisions](openapi-generated-name-collisions.md) — avoid reusing operation body/response names for component schemas when generating API Zod exports.
+- [Logo color authority](logo-color-authority.md) — preserve the original Every Part logo unchanged; adapt shared website colors to the logo’s palette.
