@@ -8,8 +8,8 @@ import {
   type PartFinderLeadershipProfileInput,
 } from "@workspace/api-client-react";
 import {
-  BrainCircuit,
   Check,
+  Compass,
   Eye,
   PauseCircle,
   Save,
@@ -164,7 +164,7 @@ export default function LeadershipProfilePage() {
           <div className="flex items-start gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               {form.personalizationEnabled ? (
-                <BrainCircuit className="h-5 w-5" />
+                <Compass className="h-5 w-5" />
               ) : (
                 <PauseCircle className="h-5 w-5" />
               )}
