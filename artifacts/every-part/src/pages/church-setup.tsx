@@ -855,6 +855,8 @@ export default function ChurchSetup() {
     enabledSpiritualGifts: form.watch("enabledSpiritualGifts"),
     assessmentConfiguration,
   });
+  const enabledSectionCount = Object.values(assessmentConfiguration.sections).filter(Boolean).length;
+  const enabledGiftCount = form.watch("enabledSpiritualGifts").length;
 
   if (!isLoading && !church) {
     return (
@@ -944,13 +946,25 @@ export default function ChurchSetup() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-medium tracking-tight">Church Setup</h1>
-        <p className="text-muted-foreground mt-1">Manage your church details and profile link.</p>
+    <div className="church-setup-page container mx-auto max-w-5xl space-y-6 px-4 py-8 sm:space-y-8 sm:py-10">
+      <div className="church-setup-header">
+        <p className="church-setup-eyebrow">Every Part / Church profile</p>
+        <h1 className="font-serif text-3xl font-medium tracking-tight sm:text-4xl">Church Setup</h1>
+        <p className="mt-2 max-w-2xl text-muted-foreground">
+          Manage what your congregation sees, then share the profile link when you&apos;re ready.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2 text-sm text-muted-foreground" aria-label="Assessment summary">
+          <span className="church-setup-summary-pill">
+            {enabledSectionCount} {enabledSectionCount === 1 ? "section" : "sections"} enabled
+          </span>
+          <span className="church-setup-summary-pill">{enabledGiftCount} spiritual gifts included</span>
+          <span className="church-setup-summary-pill">
+            {assessmentEstimate.minimum}–{assessmentEstimate.maximum} min estimated
+          </span>
+        </div>
       </div>
 
-      <Card className="border-primary/20 bg-primary/5 shadow-none">
+      <Card className="church-setup-link-card border-primary/20 bg-primary/5 shadow-none">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-medium text-primary">Your Assessment Link</CardTitle>
           <CardDescription className="text-primary/70">
@@ -975,7 +989,7 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="church-setup-section-card border-border/60 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-serif text-xl">
             <UsersRound className="h-5 w-5 text-primary" />
@@ -1030,7 +1044,7 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="church-setup-section-card border-border/60 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-serif text-xl">
             <UsersRound className="h-5 w-5 text-primary" />
@@ -1114,8 +1128,8 @@ export default function ChurchSetup() {
       </Card>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="border-primary/20 shadow-sm">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="church-setup-form space-y-8">
+          <Card className="church-setup-section-card border-primary/20 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-serif text-xl">
                 <BookOpenCheck className="h-5 w-5 text-primary" />
@@ -1313,7 +1327,7 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 shadow-sm">
+          <Card className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-serif">Assessment Content</CardTitle>
               <CardDescription>
@@ -1675,7 +1689,7 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 shadow-sm">
+          <Card className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-serif text-xl">
                 <Palette className="h-5 w-5 text-primary" />
@@ -1909,8 +1923,11 @@ export default function ChurchSetup() {
                 )}
               />
             </CardContent>
-            <CardFooter className="bg-muted/30 border-t border-border/50 px-6 py-4">
-              <Button type="submit" disabled={updateChurch.isPending || isLogoUploading} className="ml-auto min-w-[120px]">
+            <CardFooter className="church-setup-savebar border-t border-border/50 bg-muted/30 px-6 py-4">
+              <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
+                Changes apply to new member assessments. Completed profiles keep the settings and answers they were created with.
+              </p>
+              <Button type="submit" disabled={updateChurch.isPending || isLogoUploading} className="w-full min-w-[120px] sm:ml-auto sm:w-auto">
                 {updateChurch.isPending ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</>
                 ) : (

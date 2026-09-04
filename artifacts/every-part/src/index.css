@@ -231,6 +231,98 @@
   background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)));
 }
 
+.church-setup-page {
+  position: relative;
+}
+
+.church-setup-header {
+  border-bottom: 1px solid hsl(var(--border) / .72);
+  padding-bottom: 1.35rem;
+}
+
+.church-setup-eyebrow {
+  margin-bottom: .7rem;
+  color: hsl(var(--accent));
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.church-setup-summary-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.8rem;
+  border: 1px solid hsl(var(--border) / .8);
+  border-radius: 999px;
+  background: hsl(var(--card) / .72);
+  padding: .3rem .65rem;
+  font-size: .76rem;
+}
+
+.church-setup-link-card {
+  background:
+    linear-gradient(112deg, hsl(var(--accent) / .09), hsl(var(--secondary) / .1)),
+    hsl(var(--card) / .8);
+  box-shadow: 0 10px 30px hsl(var(--foreground) / .055);
+}
+
+.church-setup-section-card {
+  overflow: clip;
+  border-color: hsl(var(--border) / .72);
+  background: hsl(var(--card) / .9);
+  box-shadow: 0 5px 18px hsl(var(--foreground) / .035);
+}
+
+.church-setup-section-card > [data-slot="card-header"] {
+  padding-bottom: 1rem;
+}
+
+.church-setup-section-card > [data-slot="card-content"] {
+  padding-top: 0;
+}
+
+.church-setup-form {
+  scroll-margin-top: 1rem;
+}
+
+.church-setup-savebar {
+  position: sticky;
+  bottom: .75rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-color: hsl(var(--accent) / .18);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: hsl(var(--card) / .94);
+  box-shadow: 0 12px 26px hsl(var(--foreground) / .12);
+  backdrop-filter: blur(12px);
+}
+
+@media (max-width: 640px) {
+  .church-setup-page {
+    padding-bottom: 5.5rem;
+  }
+
+  .church-setup-header {
+    padding-bottom: 1rem;
+  }
+
+  .church-setup-summary-pill {
+    font-size: .7rem;
+  }
+
+  .church-setup-savebar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: .7rem;
+    bottom: .45rem;
+    margin-inline: -.15rem;
+  }
+}
+
 .ep-landing {
   --landing-cyan: 178 45% 89%;
   --landing-slate: 208 23% 70%;
