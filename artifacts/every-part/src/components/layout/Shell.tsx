@@ -90,7 +90,19 @@ export function Shell({ children }: { children: ReactNode }) {
             <UserButton 
               appearance={{
                 elements: {
-                  avatarBox: "w-9 h-9 border border-border/50"
+                  avatarBox: "w-9 h-9 border border-border/50",
+                  userButtonPopoverCard:
+                    "bg-background border border-border shadow-xl text-foreground",
+                  userButtonPopoverMain: "bg-background",
+                  userButtonPopoverActionButton:
+                    "text-foreground hover:bg-muted hover:text-foreground",
+                  userButtonPopoverActionButtonText: "text-foreground",
+                  userButtonPopoverActionButtonIcon: "text-muted-foreground",
+                  userButtonPopoverActionButton__manageAccount:
+                    "text-foreground hover:bg-muted hover:text-foreground",
+                  userButtonPopoverActionButton__signOut:
+                    "text-destructive hover:bg-destructive/10 hover:text-destructive",
+                  userButtonPopoverFooter: "border-t border-border",
                 }
               }}
             />
