@@ -4,6 +4,8 @@ import { and, asc, eq, gt } from "drizzle-orm";
 import {
   CreatePersonBody,
   CreatePersonResponse,
+  ImportPeopleBody,
+  ImportPeopleResponse,
   CreatePersonInviteParams,
   CreatePersonInviteResponse,
   GetPublicPersonInviteParams,
@@ -113,6 +115,108 @@ router.post("/people", async (req, res): Promise<void> => {
 
   if (!person) throw new Error("Unable to add person");
   res.status(201).json(CreatePersonResponse.parse(personResponse(person)));
+});
+
+router.post("/people/import", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+
+  const parsed = ImportPeopleBody.safeParse(req.body);
+  if (!parsed.success) {
+    req.log.warn({ errors: parsed.error.message }, "Invalid people import");
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const church = await getOrCreateChurch(userId);
+  const existing = await db
+    .select({
+      email: ministryPeopleTable.email,
+      firstName: ministryPeopleTable.firstName,
+      lastName: ministryPeopleTable.lastName,
+    })
+    .from(ministryPeopleTable)
+    .where(
+      and(
+        eq(ministryPeopleTable.churchId, church.id),
+        eq(ministryPeopleTable.isArchived, false),
+      ),
+    );
+  const existingEmails = new Set(
+    existing
+      .map((person) => person.email?.trim().toLocaleLowerCase())
+      .filter((email): email is string => Boolean(email)),
+  );
+  const seenEmails = new Set<string>();
+  const skipped: Array<{ row: number; reason: string }> = [];
+  const rowsToCreate: Array<{
+    row: number;
+    firstName: string;
+    lastName: string;
+    email: string | null;
+    phone: string | null;
+    addressLine1: string | null;
+    addressLine2: string | null;
+    city: string | null;
+    state: string | null;
+    postalCode: string | null;
+    country: string | null;
+  }> = [];
+
+  parsed.data.people.forEach((person, index) => {
+    const row = index + 2;
+    const email = normalizeOptional(person.email);
+    const emailKey = email?.toLocaleLowerCase();
+    if (emailKey && (existingEmails.has(emailKey) || seenEmails.has(emailKey))) {
+      skipped.push({ row, reason: "A person with this email is already in the church list." });
+      return;
+    }
+    if (emailKey) seenEmails.add(emailKey);
+    rowsToCreate.push({
+      row,
+      firstName: person.firstName.trim(),
+      lastName: person.lastName.trim(),
+      email,
+      phone: normalizeOptional(person.phone),
+      addressLine1: normalizeOptional(person.addressLine1),
+      addressLine2: normalizeOptional(person.addressLine2),
+      city: normalizeOptional(person.city),
+      state: normalizeOptional(person.state),
+      postalCode: normalizeOptional(person.postalCode),
+      country: normalizeOptional(person.country),
+    });
+  });
+
+  const created = rowsToCreate.length
+    ? await db
+        .insert(ministryPeopleTable)
+        .values(
+          rowsToCreate.map((person) => ({
+            churchId: church.id,
+            firstName: person.firstName,
+            lastName: person.lastName,
+            email: person.email,
+            phone: person.phone,
+            addressLine1: person.addressLine1,
+            addressLine2: person.addressLine2,
+            city: person.city,
+            state: person.state,
+            postalCode: person.postalCode,
+            country: person.country,
+            inviteExpiresAt: inviteExpiration(),
+            inviteSentAt: new Date(),
+            source: "csv",
+          })),
+        )
+        .returning()
+    : [];
+
+  res.status(201).json(
+    ImportPeopleResponse.parse({
+      created: created.map(personResponse),
+      skipped,
+    }),
+  );
 });
 
 router.post("/people/:id/invite", async (req, res): Promise<void> => {

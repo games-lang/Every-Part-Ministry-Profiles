@@ -894,6 +894,28 @@ paths:
                   $ref: "#/components/schemas/MinistryPerson"
         "401":
           description: Unauthorized
+  /people/import:
+    post:
+      operationId: importPeople
+      tags: [people]
+      summary: Import people and create private Ministry Profile invitations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportPeopleBody"
+      responses:
+        "201":
+          description: Import results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportPeopleResponse"
+        "400":
+          description: Invalid import
+        "401":
+          description: Unauthorized
     post:
       operationId: createPerson
       tags: [people]
@@ -2555,6 +2577,34 @@ components:
         state: { type: ["string", "null"], maxLength: 120 }
         postalCode: { type: ["string", "null"], maxLength: 30 }
         country: { type: ["string", "null"], maxLength: 120 }
+    ImportPeopleBody:
+      type: object
+      required: [people]
+      additionalProperties: false
+      properties:
+        people:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            $ref: "#/components/schemas/MinistryPersonInput"
+    ImportPeopleResponse:
+      type: object
+      required: [created, skipped]
+      properties:
+        created:
+          type: array
+          items:
+            $ref: "#/components/schemas/MinistryPerson"
+        skipped:
+          type: array
+          items:
+            type: object
+            required: [row, reason]
+            additionalProperties: false
+            properties:
+              row: { type: integer, minimum: 2 }
+              reason: { type: string }
     MinistryPerson:
       type: object
       required: [id, firstName, lastName, email, phone, addressLine1, addressLine2, city, state, postalCode, country, inviteToken, inviteStatus, inviteExpiresAt, inviteSentAt, source, profileId, isArchived, createdAt]
