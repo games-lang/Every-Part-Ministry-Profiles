@@ -28,6 +28,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -36,7 +41,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpenCheck, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
+import { BookOpenCheck, ChevronDown, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 import {
   CHURCH_TRADITIONS,
   DEFAULT_MINISTRY_CUSTOMIZATION,
@@ -579,6 +584,7 @@ export default function ChurchSetup() {
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [adminEmailDraft, setAdminEmailDraft] = useState("");
   const [discoverCodeDraft, setDiscoverCodeDraft] = useState("");
+  const [spiritualGiftsExpanded, setSpiritualGiftsExpanded] = useState(false);
 
   const form = useForm<ChurchFormValues>({
     resolver: zodResolver(churchFormSchema),
@@ -1556,20 +1562,45 @@ export default function ChurchSetup() {
                                       </p>
                                     </div>
                                   )}
-                                <div className="grid gap-2 sm:grid-cols-2">
-                                  {SPIRITUAL_GIFTS.map(([name, meaning]) => {
-                                    const checked = field.value.includes(name);
-                                    return (
-                                      <label key={name} className="flex cursor-pointer gap-3 rounded-lg border p-3 text-sm hover:bg-muted/40">
-                                        <Checkbox
-                                          checked={checked}
-                                          onCheckedChange={(next) => field.onChange(next ? [...field.value, name] : field.value.filter((gift) => gift !== name))}
-                                        />
-                                        <span><span className="block font-medium">{name}</span><span className="text-muted-foreground">{meaning}</span></span>
-                                      </label>
-                                    );
-                                  })}
-                                </div>
+                                 <Collapsible
+                                   open={spiritualGiftsExpanded}
+                                   onOpenChange={setSpiritualGiftsExpanded}
+                                   className="space-y-3"
+                                 >
+                                   <CollapsibleTrigger asChild>
+                                     <Button
+                                       type="button"
+                                       variant="outline"
+                                       className="w-full justify-between"
+                                     >
+                                       {spiritualGiftsExpanded
+                                         ? "Hide gift choices"
+                                         : "Edit included gifts"}
+                                       <ChevronDown
+                                         className={`h-4 w-4 transition-transform ${
+                                           spiritualGiftsExpanded ? "rotate-180" : ""
+                                         }`}
+                                         aria-hidden="true"
+                                       />
+                                     </Button>
+                                   </CollapsibleTrigger>
+                                   <CollapsibleContent className="space-y-3">
+                                     <div className="grid gap-2 sm:grid-cols-2">
+                                       {SPIRITUAL_GIFTS.map(([name, meaning]) => {
+                                         const checked = field.value.includes(name);
+                                         return (
+                                           <label key={name} className="flex cursor-pointer gap-3 rounded-lg border p-3 text-sm hover:bg-muted/40">
+                                             <Checkbox
+                                               checked={checked}
+                                               onCheckedChange={(next) => field.onChange(next ? [...field.value, name] : field.value.filter((gift) => gift !== name))}
+                                             />
+                                             <span><span className="block font-medium">{name}</span><span className="text-muted-foreground">{meaning}</span></span>
+                                           </label>
+                                         );
+                                       })}
+                                     </div>
+                                   </CollapsibleContent>
+                                 </Collapsible>
                                 <FormMessage />
                               </FormItem>
                             )}
