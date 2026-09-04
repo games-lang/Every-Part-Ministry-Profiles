@@ -6,6 +6,7 @@ import {
   useCreatePerson,
   useCreatePersonInvite,
   useGetMyChurch,
+  useImportPeople,
   useListPeople,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,8 @@ import {
   Check,
   CheckCircle2,
   Clipboard,
+  Download,
+  FileSpreadsheet,
   Link2,
   Loader2,
   Mail,
@@ -75,6 +78,140 @@ function fieldValue(value: string) {
   return value.trim() || null;
 }
 
+type ImportPreviewRow = {
+  row: number;
+  person: MinistryPersonInput;
+  error?: string;
+};
+
+type ImportSummary = {
+  created: MinistryPerson[];
+  skipped: Array<{ row: number; reason: string }>;
+};
+
+const csvHeaderAliases: Record<string, keyof PersonForm> = {
+  firstname: "firstName",
+  givenname: "firstName",
+  first: "firstName",
+  lastname: "lastName",
+  surname: "lastName",
+  familyname: "lastName",
+  last: "lastName",
+  email: "email",
+  phonenumber: "phone",
+  phone: "phone",
+  mobile: "phone",
+  address: "addressLine1",
+  address1: "addressLine1",
+  street: "addressLine1",
+  addressline1: "addressLine1",
+  address2: "addressLine2",
+  addressline2: "addressLine2",
+  city: "city",
+  state: "state",
+  province: "state",
+  postalcode: "postalCode",
+  zipcode: "postalCode",
+  zip: "postalCode",
+  country: "country",
+};
+
+function normalizeCsvHeader(header: string) {
+  return header.trim().toLocaleLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function parseCsvRecords(csv: string) {
+  const records: string[][] = [];
+  let record: string[] = [];
+  let cell = "";
+  let quoted = false;
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const character = csv[index];
+    const next = csv[index + 1];
+    if (character === '"') {
+      if (quoted && next === '"') {
+        cell += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === "," && !quoted) {
+      record.push(cell);
+      cell = "";
+    } else if ((character === "\n" || character === "\r") && !quoted) {
+      if (character === "\r" && next === "\n") index += 1;
+      record.push(cell);
+      if (record.some((value) => value.trim())) records.push(record);
+      record = [];
+      cell = "";
+    } else {
+      cell += character;
+    }
+  }
+
+  if (cell || record.length) {
+    record.push(cell);
+    if (record.some((value) => value.trim())) records.push(record);
+  }
+  return records;
+}
+
+function parsePeopleCsv(csv: string) {
+  const records = parseCsvRecords(csv);
+  if (records.length < 2) {
+    return { rows: [], errors: ["Add a header row and at least one person."] };
+  }
+
+  const headerIndexes = new Map<keyof PersonForm, number>();
+  records[0].forEach((header, index) => {
+    const field = csvHeaderAliases[normalizeCsvHeader(header)];
+    if (field && !headerIndexes.has(field)) headerIndexes.set(field, index);
+  });
+  const errors: string[] = [];
+  if (!headerIndexes.has("firstName") || !headerIndexes.has("lastName")) {
+    errors.push("Your CSV must include first name and last name columns.");
+  }
+  if (records.length - 1 > 500) {
+    errors.push("Choose a CSV with 500 or fewer people.");
+  }
+
+  const rows: ImportPreviewRow[] = records.slice(1, 501).map((values, index) => {
+    const value = (field: keyof PersonForm) =>
+      headerIndexes.has(field) ? values[headerIndexes.get(field)!]?.trim() ?? "" : "";
+    const email = value("email");
+    const person: MinistryPersonInput = {
+      firstName: value("firstName"),
+      lastName: value("lastName"),
+      email: fieldValue(email),
+      phone: fieldValue(value("phone")),
+      addressLine1: fieldValue(value("addressLine1")),
+      addressLine2: fieldValue(value("addressLine2")),
+      city: fieldValue(value("city")),
+      state: fieldValue(value("state")),
+      postalCode: fieldValue(value("postalCode")),
+      country: fieldValue(value("country")),
+    };
+    let error: string | undefined;
+    if (!person.firstName || !person.lastName) {
+      error = "First name and last name are required.";
+    } else if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      error = "Enter a valid email address or leave it blank.";
+    }
+    return { row: index + 2, person, error };
+  });
+
+  return { rows, errors };
+}
+
+function csvTemplateUrl() {
+  const csv = [
+    "first name,last name,email,phone,address line 1,address line 2,city,state,postal code,country",
+    "Jordan,Lee,jordan@example.com,555-0100,123 Main Street,,Springfield,IL,62701,United States",
+  ].join("\n");
+  return `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
+}
+
 function personAddress(person: MinistryPerson) {
   return [
     person.addressLine1,
@@ -84,6 +221,124 @@ function personAddress(person: MinistryPerson) {
   ]
     .filter(Boolean)
     .join(" · ");
+}
+
+function CsvImportDialog({
+  open,
+  onOpenChange,
+  onImport,
+  isPending,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onImport: (people: MinistryPersonInput[]) => void;
+  isPending: boolean;
+}) {
+  const [fileName, setFileName] = useState("");
+  const [rows, setRows] = useState<ImportPreviewRow[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const chooseFile = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      const parsed = parsePeopleCsv(await file.text());
+      setFileName(file.name);
+      setRows(parsed.rows);
+      setErrors(parsed.errors);
+    } catch {
+      setFileName(file.name);
+      setRows([]);
+      setErrors(["This file could not be read as CSV."]);
+    }
+  };
+  const validRows = rows.filter((row) => !row.error).map((row) => row.person);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Import people from CSV</DialogTitle>
+          <DialogDescription>
+            Upload a spreadsheet with first name and last name columns. Each
+            created person receives a private Ministry Profile invitation.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-5">
+          <div className="rounded-lg border border-dashed border-border bg-muted/20 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <Label htmlFor="people-csv">CSV file</Label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Supports quoted commas and line breaks, plus common header names.
+                </p>
+              </div>
+              <a
+                href={csvTemplateUrl()}
+                download="every-part-people-template.csv"
+                className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+              >
+                <Download className="mr-1.5 h-4 w-4" />
+                Download template
+              </a>
+            </div>
+            <Input
+              id="people-csv"
+              className="mt-3"
+              type="file"
+              accept=".csv,text/csv"
+              onChange={(event) => void chooseFile(event.target.files?.[0])}
+            />
+            {fileName && (
+              <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+                {fileName}
+              </p>
+            )}
+          </div>
+
+          {errors.length > 0 && (
+            <div className="space-y-1 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+              {errors.map((error) => <p key={error}>{error}</p>)}
+            </div>
+          )}
+
+          {rows.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-3 text-sm">
+                <Badge variant="outline">{validRows.length} ready to import</Badge>
+                <Badge variant="outline">{rows.length - validRows.length} rows need attention</Badge>
+              </div>
+              <div className="max-h-64 overflow-y-auto rounded-lg border">
+                {rows.map((row) => (
+                  <div key={row.row} className="flex gap-3 border-b px-3 py-2 text-sm last:border-b-0">
+                    <span className="w-10 shrink-0 text-muted-foreground">Row {row.row}</span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {row.person.firstName || "—"} {row.person.lastName}
+                      {row.person.email ? ` · ${row.person.email}` : ""}
+                    </span>
+                    {row.error && <span className="text-destructive">{row.error}</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            onClick={() => onImport(validRows)}
+            disabled={isPending || validRows.length === 0 || errors.length > 0}
+          >
+            {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileSpreadsheet className="mr-2 h-4 w-4" />}
+            Import {validRows.length || ""} people
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 function inviteStatus(person: MinistryPerson) {
@@ -305,9 +560,12 @@ export function PeoplePanel() {
   const { data: people, isLoading, isError } = useListPeople();
   const createPerson = useCreatePerson();
   const createInvite = useCreatePersonInvite();
+  const importPeople = useImportPeople();
   const [open, setOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [form, setForm] = useState<PersonForm>(emptyForm);
   const [latestInvite, setLatestInvite] = useState<MinistryPerson | null>(null);
+  const [importSummary, setImportSummary] = useState<ImportSummary | null>(null);
 
   const refresh = async () => {
     await queryClient.invalidateQueries({ queryKey: getListPeopleQueryKey() });
@@ -383,6 +641,33 @@ export function PeoplePanel() {
         onSubmit={submit}
         isPending={createPerson.isPending}
       />
+      <CsvImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        isPending={importPeople.isPending}
+        onImport={(importedPeople) => {
+          importPeople.mutate(
+            { data: { people: importedPeople } },
+            {
+              onSuccess: async (result) => {
+                await refresh();
+                setImportSummary(result);
+                setImportOpen(false);
+                toast({
+                  title: "People imported",
+                  description: `${result.created.length} created, ${result.skipped.length} skipped.`,
+                });
+              },
+              onError: () =>
+                toast({
+                  title: "Could not import this CSV",
+                  description: "Check the file format and try again.",
+                  variant: "destructive",
+                }),
+            },
+          );
+        }}
+      />
       <Card className="border-primary/15 bg-primary/[0.03] shadow-sm">
         <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="flex gap-4">
@@ -396,12 +681,41 @@ export function PeoplePanel() {
               </p>
             </div>
           </div>
-          <Button onClick={() => setOpen(true)} className="shrink-0">
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add person
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => setImportOpen(true)} variant="outline" className="shrink-0">
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Import CSV
+            </Button>
+            <Button onClick={() => setOpen(true)} className="shrink-0">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add person
+            </Button>
+          </div>
         </CardContent>
       </Card>
+
+      {importSummary && (
+        <Card className="border-border/70 bg-muted/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Latest import</CardTitle>
+            <CardDescription>
+              {importSummary.created.length} people created and {importSummary.skipped.length} skipped.
+            </CardDescription>
+          </CardHeader>
+          {importSummary.skipped.length > 0 && (
+            <CardContent className="pt-0">
+              <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border bg-background p-3 text-sm">
+                {importSummary.skipped.map((item) => (
+                  <p key={`${item.row}-${item.reason}`}>
+                    <span className="font-medium">Row {item.row}:</span>{" "}
+                    <span className="text-muted-foreground">{item.reason}</span>
+                  </p>
+                ))}
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      )}
 
       {latestInvite && church?.slug && (
         <Card className="border-secondary/30 bg-secondary/10">

@@ -57,6 +57,8 @@ import type {
   ExploreProfileSubmission,
   GetAdminChurchesParams,
   HealthStatus,
+  ImportPeopleInput,
+  ImportPeopleResult,
   JourneyCompareResponse,
   JourneyEntry,
   JourneyEntryInput,
@@ -3418,6 +3420,86 @@ export const useCreatePerson = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getCreatePersonMutationOptions(options));
+    }
+
+export const getImportPeopleUrl = () => {
+
+
+
+
+  return `/api/people/import`
+}
+
+/**
+ * @summary Import people and create private Ministry Profile invitations
+ */
+export const importPeople = async (importPeopleInput: ImportPeopleInput, options?: Parameters<typeof customFetch>[1]): Promise<ImportPeopleResult> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<ImportPeopleResult>(getImportPeopleUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(importPeopleInput)
+  }
+);}
+
+
+
+
+
+export const getImportPeopleMutationKey = () => ['importPeople'] as const;
+
+export const getImportPeopleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof importPeople>>, TError,ImportPeopleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof importPeople>>, TError,ImportPeopleMutationVariables, TContext> => {
+
+const mutationKey = getImportPeopleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof importPeople>>, ImportPeopleMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  importPeople(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ImportPeopleMutationResult = NonNullable<Awaited<ReturnType<typeof importPeople>>>
+    export type ImportPeopleMutationBody = BodyType<ImportPeopleInput>
+    export type ImportPeopleMutationError = ErrorType<void>
+    export type ImportPeopleMutationVariables = {data: BodyType<ImportPeopleInput>}
+
+    /**
+ * @summary Import people and create private Ministry Profile invitations
+ */
+export const useImportPeople = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof importPeople>>, TError,ImportPeopleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof importPeople>>,
+        TError,
+        ImportPeopleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getImportPeopleMutationOptions(options));
     }
 
 export const getCreatePersonInviteUrl = (id: number,) => {

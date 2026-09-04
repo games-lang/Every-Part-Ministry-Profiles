@@ -894,28 +894,6 @@ paths:
                   $ref: "#/components/schemas/MinistryPerson"
         "401":
           description: Unauthorized
-  /people/import:
-    post:
-      operationId: importPeople
-      tags: [people]
-      summary: Import people and create private Ministry Profile invitations
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ImportPeopleBody"
-      responses:
-        "201":
-          description: Import results
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ImportPeopleResponse"
-        "400":
-          description: Invalid import
-        "401":
-          description: Unauthorized
     post:
       operationId: createPerson
       tags: [people]
@@ -935,6 +913,28 @@ paths:
                 $ref: "#/components/schemas/MinistryPerson"
         "400":
           description: Invalid person
+        "401":
+          description: Unauthorized
+  /people/import:
+    post:
+      operationId: importPeople
+      tags: [people]
+      summary: Import people and create private Ministry Profile invitations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportPeopleInput"
+      responses:
+        "201":
+          description: Import results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportPeopleResult"
+        "400":
+          description: Invalid import
         "401":
           description: Unauthorized
   /people/{id}/invite:
@@ -2577,7 +2577,7 @@ components:
         state: { type: ["string", "null"], maxLength: 120 }
         postalCode: { type: ["string", "null"], maxLength: 30 }
         country: { type: ["string", "null"], maxLength: 120 }
-    ImportPeopleBody:
+    ImportPeopleInput:
       type: object
       required: [people]
       additionalProperties: false
@@ -2588,7 +2588,7 @@ components:
           maxItems: 500
           items:
             $ref: "#/components/schemas/MinistryPersonInput"
-    ImportPeopleResponse:
+    ImportPeopleResult:
       type: object
       required: [created, skipped]
       properties:

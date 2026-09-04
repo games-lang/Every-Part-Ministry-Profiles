@@ -2353,6 +2353,81 @@ export const CreatePersonResponse = zod.object({
 
 
 /**
+ * @summary Import people and create private Ministry Profile invitations
+ */
+export const importPeopleBodyPeopleItemFirstNameMax = 120;
+
+export const importPeopleBodyPeopleItemLastNameMax = 120;
+
+export const importPeopleBodyPeopleItemEmailMax = 320;
+
+export const importPeopleBodyPeopleItemPhoneMax = 60;
+
+export const importPeopleBodyPeopleItemAddressLine1Max = 200;
+
+export const importPeopleBodyPeopleItemAddressLine2Max = 200;
+
+export const importPeopleBodyPeopleItemCityMax = 120;
+
+export const importPeopleBodyPeopleItemStateMax = 120;
+
+export const importPeopleBodyPeopleItemPostalCodeMax = 30;
+
+export const importPeopleBodyPeopleItemCountryMax = 120;
+
+export const importPeopleBodyPeopleMax = 500;
+
+
+
+export const ImportPeopleBody = zod.object({
+  "people": zod.array(zod.object({
+  "firstName": zod.string().min(1).max(importPeopleBodyPeopleItemFirstNameMax),
+  "lastName": zod.string().min(1).max(importPeopleBodyPeopleItemLastNameMax),
+  "email": zod.email().max(importPeopleBodyPeopleItemEmailMax).nullish(),
+  "phone": zod.string().max(importPeopleBodyPeopleItemPhoneMax).nullish(),
+  "addressLine1": zod.string().max(importPeopleBodyPeopleItemAddressLine1Max).nullish(),
+  "addressLine2": zod.string().max(importPeopleBodyPeopleItemAddressLine2Max).nullish(),
+  "city": zod.string().max(importPeopleBodyPeopleItemCityMax).nullish(),
+  "state": zod.string().max(importPeopleBodyPeopleItemStateMax).nullish(),
+  "postalCode": zod.string().max(importPeopleBodyPeopleItemPostalCodeMax).nullish(),
+  "country": zod.string().max(importPeopleBodyPeopleItemCountryMax).nullish()
+})).min(1).max(importPeopleBodyPeopleMax)
+})
+
+export const importPeopleResponseSkippedItemRowMin = 2;
+
+
+
+export const ImportPeopleResponse = zod.object({
+  "created": zod.array(zod.object({
+  "id": zod.int(),
+  "firstName": zod.string(),
+  "lastName": zod.string(),
+  "email": zod.email().nullable(),
+  "phone": zod.string().nullable(),
+  "addressLine1": zod.string().nullable(),
+  "addressLine2": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "postalCode": zod.string().nullable(),
+  "country": zod.string().nullable(),
+  "inviteToken": zod.uuid(),
+  "inviteStatus": zod.enum(['pending', 'completed', 'expired', 'revoked']),
+  "inviteExpiresAt": zod.coerce.date(),
+  "inviteSentAt": zod.coerce.date().nullable(),
+  "source": zod.string(),
+  "profileId": zod.int().nullable(),
+  "isArchived": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})),
+  "skipped": zod.array(zod.object({
+  "row": zod.int().min(importPeopleResponseSkippedItemRowMin),
+  "reason": zod.string()
+}))
+})
+
+
+/**
  * @summary Renew a person's private Ministry Profile invitation
  */
 export const CreatePersonInviteParams = zod.object({

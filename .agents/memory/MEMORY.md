@@ -21,3 +21,4 @@
 - [CEO church console boundaries](ceo-church-console-boundaries.md) — platform-owner church management stays aggregate-only, with safe church fields editable and billing read-only.
 - [Vite Radix hot reload](vite-radix-hot-reload.md) — newly imported Radix primitives can transiently trigger invalid-hook errors during HMR; verify again after one full web workflow restart.
 - [Youth profile configuration](youth-profile-configuration.md) — churches may relabel canonical youth choices; only guardian observations are safely optional until result contracts support omission.
+- [OpenAPI generated-name collisions](openapi-generated-name-collisions.md) — avoid reusing operation body/response names for component schemas when generating API Zod exports.

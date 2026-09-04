@@ -1838,6 +1838,20 @@ export interface MinistryPersonInput {
   country?: string | null;
 }
 
+export interface ImportPeopleInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  people: MinistryPersonInput[];
+}
+
+export type ImportPeopleResultSkippedItem = {
+  /** @minimum 2 */
+  row: number;
+  reason: string;
+};
+
 export type MinistryPersonInviteStatus = typeof MinistryPersonInviteStatus[keyof typeof MinistryPersonInviteStatus];
 
 
@@ -1878,6 +1892,11 @@ export interface MinistryPerson {
   profileId: number | null;
   isArchived: boolean;
   createdAt: string;
+}
+
+export interface ImportPeopleResult {
+  created: MinistryPerson[];
+  skipped: ImportPeopleResultSkippedItem[];
 }
 
 export interface PublicPersonInvite {
