@@ -261,6 +261,42 @@
   font-size: .76rem;
 }
 
+.church-setup-tabs-list {
+  align-items: stretch;
+  background: transparent;
+}
+
+.church-setup-tab-trigger {
+  border: 1px solid hsl(var(--border) / .9);
+  background: hsl(var(--card) / .82);
+  color: hsl(var(--foreground));
+  box-shadow: 0 3px 10px hsl(var(--foreground) / .045);
+  transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.church-setup-tab-trigger:hover {
+  border-color: hsl(var(--accent) / .58);
+  background: hsl(var(--accent) / .08);
+  box-shadow: 0 6px 16px hsl(var(--foreground) / .08);
+  transform: translateY(-1px);
+}
+
+.church-setup-tab-trigger[data-state="active"] {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: 0 8px 18px hsl(var(--primary) / .2);
+}
+
+.church-setup-tab-trigger[data-state="active"] .church-setup-tab-subtitle {
+  color: hsl(var(--primary-foreground) / .78);
+}
+
+.church-setup-tab-trigger:focus-visible {
+  border-color: hsl(var(--accent));
+  box-shadow: 0 0 0 3px hsl(var(--accent) / .24), 0 6px 16px hsl(var(--foreground) / .08);
+}
+
 .church-setup-link-card {
   background:
     linear-gradient(112deg, hsl(var(--accent) / .09), hsl(var(--secondary) / .1)),
@@ -312,6 +348,11 @@
 
   .church-setup-summary-pill {
     font-size: .7rem;
+  }
+
+  .church-setup-tab-trigger {
+    min-height: 4.25rem;
+    padding-inline: .8rem;
   }
 
   .church-setup-savebar {

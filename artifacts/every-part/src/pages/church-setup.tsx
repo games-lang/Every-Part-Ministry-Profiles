@@ -974,26 +974,26 @@ export default function ChurchSetup() {
             className="church-setup-tabs space-y-6"
           >
             <TabsList
-              className="grid h-auto w-full grid-cols-2 gap-1 p-1 sm:max-w-xl"
+              className="church-setup-tabs-list grid h-auto w-full grid-cols-2 gap-2 p-0 sm:max-w-2xl"
               aria-label="Setup area"
             >
               <TabsTrigger
                 id="setup-tab-church"
                 value="church"
-                className="h-auto min-h-12 flex-col items-start gap-0.5 px-4 py-2 text-left sm:items-center sm:text-center"
+                className="church-setup-tab-trigger h-auto min-h-16 flex-col items-start gap-1 px-4 py-3 text-left sm:items-center sm:text-center"
               >
                 <span>Church Setup</span>
-                <span className="text-xs font-normal text-muted-foreground">
+                <span className="church-setup-tab-subtitle text-xs font-normal text-muted-foreground">
                   Details, access, and sharing
                 </span>
               </TabsTrigger>
               <TabsTrigger
                 id="setup-tab-assessment"
                 value="assessment"
-                className="h-auto min-h-12 flex-col items-start gap-0.5 px-4 py-2 text-left sm:items-center sm:text-center"
+                className="church-setup-tab-trigger h-auto min-h-16 flex-col items-start gap-1 px-4 py-3 text-left sm:items-center sm:text-center"
               >
                 <span>Assessment Setup</span>
-                <span className="text-xs font-normal text-muted-foreground">
+                <span className="church-setup-tab-subtitle text-xs font-normal text-muted-foreground">
                   Questions and reflection
                 </span>
               </TabsTrigger>
