@@ -279,6 +279,7 @@ interface ConfigDef {
   subsections?: Array<{
     key: SubsectionKey;
     label: string;
+    tag?: string;
     description?: string;
   }>;
 }
@@ -313,11 +314,11 @@ const CONFIG_SECTIONS: ConfigDef[] = [
     label: "How You Minister",
     description: "Reflect on the ways people tend to contribute, connect, care, and help others grow.",
     subsections: [
-      { key: "apest.builder", label: "Starting and building new ministry" },
-      { key: "apest.insight", label: "Noticing what needs attention" },
-      { key: "apest.connector", label: "Connecting people with faith" },
-      { key: "apest.caregiver", label: "Caring for people over time" },
-      { key: "apest.teacher", label: "Making ideas clear" }
+      { key: "apest.builder", tag: "Apostle", label: "Starting and building new ministry" },
+      { key: "apest.insight", tag: "Prophet", label: "Noticing what needs attention" },
+      { key: "apest.connector", tag: "Evangelist", label: "Connecting people with faith" },
+      { key: "apest.caregiver", tag: "Shepherd", label: "Caring for people over time" },
+      { key: "apest.teacher", tag: "Teacher", label: "Making ideas clear" }
     ]
   },
   {
@@ -1222,8 +1223,13 @@ export default function ChurchSetup() {
                                       />
                                     </FormControl>
                                     <div className="space-y-1 leading-none">
-                                      <FormLabel className="font-normal leading-tight">
-                                        {sub.label}
+                                      <FormLabel className="flex flex-wrap items-center gap-2 font-normal leading-tight">
+                                        {sub.tag && (
+                                          <span className="rounded-full border border-secondary/30 bg-secondary/10 px-2 py-0.5 text-[11px] font-semibold text-secondary">
+                                            {sub.tag}
+                                          </span>
+                                        )}
+                                        <span>{sub.label}</span>
                                       </FormLabel>
                                       {sub.description && (
                                         <FormDescription className="text-xs">{sub.description}</FormDescription>
