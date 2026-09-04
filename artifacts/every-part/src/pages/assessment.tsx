@@ -470,6 +470,7 @@ function shuffleQuestions(questions: SpiritualGiftQuestion[]) {
 const MINISTRY_APPROACHES = [
   {
     label: "Starting and building new ministry",
+    tag: "Apostle",
     key: "builder",
     prompts: [
       "I enjoy imagining new possibilities and helping turn them into something others can join.",
@@ -479,6 +480,7 @@ const MINISTRY_APPROACHES = [
   },
   {
     label: "Noticing what needs attention",
+    tag: "Prophet",
     key: "insight",
     prompts: [
       "I notice patterns, tensions, or needs that others may be overlooking.",
@@ -488,6 +490,7 @@ const MINISTRY_APPROACHES = [
   },
   {
     label: "Connecting people with faith",
+    tag: "Evangelist",
     key: "connector",
     prompts: [
       "I naturally build relationships with people who are curious about faith or far from church.",
@@ -497,6 +500,7 @@ const MINISTRY_APPROACHES = [
   },
   {
     label: "Caring for people over time",
+    tag: "Shepherd",
     key: "caregiver",
     prompts: [
       "People often come to me for patient care, encouragement, and guidance over time.",
@@ -506,6 +510,7 @@ const MINISTRY_APPROACHES = [
   },
   {
     label: "Making ideas clear",
+    tag: "Teacher",
     key: "teacher",
     prompts: [
       "I enjoy making complex ideas clear and helping people understand what they believe.",
@@ -514,8 +519,13 @@ const MINISTRY_APPROACHES = [
     ],
   },
 ] as const;
-const MINISTRY_QUESTIONS = MINISTRY_APPROACHES.flatMap(({ key, prompts }) =>
-  prompts.map((prompt, questionIndex) => ({ key, questionIndex, prompt })),
+const MINISTRY_QUESTIONS = MINISTRY_APPROACHES.flatMap(({ key, tag, prompts }) =>
+  prompts.map((prompt, questionIndex) => ({
+    key,
+    tag,
+    questionIndex,
+    prompt,
+  })),
 );
 const STRENGTH_APPROACHES = [
   {
@@ -1689,8 +1699,9 @@ export default function Assessment() {
   const randomizedMinistryQuestions = useMemo(
     () =>
       shuffleQuestions(
-        activeMinistryQuestions.map(({ key, questionIndex, prompt }) => ({
+        activeMinistryQuestions.map(({ key, tag, questionIndex, prompt }) => ({
           gift: key,
+          tag,
           meaning: "",
           questionIndex,
           prompt,
@@ -2585,8 +2596,13 @@ export default function Assessment() {
                   {step === 2 && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">
-                        How You Minister
+                          How You Minister
                       </Heading>
+                      <p className="text-sm text-muted-foreground">
+                        Traditional tags are included as shorthand for each
+                        reflection category; they are not fixed labels or
+                        placement decisions.
+                      </p>
                       <p
                         className="text-sm text-muted-foreground"
                         aria-live="polite"
@@ -2604,7 +2620,7 @@ export default function Assessment() {
                       )}
                       <div className="space-y-4">
                         {randomizedMinistryQuestions.map(
-                          ({ gift, questionIndex, prompt }, displayIndex) => {
+                          ({ gift, tag, questionIndex, prompt }, displayIndex) => {
                             const responseKey = `${gift}-${questionIndex}`;
                             const questionId = `ministry-reflection-${displayIndex}`;
                             return (
@@ -2624,6 +2640,14 @@ export default function Assessment() {
                                     const errorId = `ministry-reflection-error-${displayIndex}`;
                                     return (
                                       <FormItem>
+                                        <div className="mb-2 flex items-center gap-2">
+                                          <span className="rounded-full border border-secondary/30 bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">
+                                            {tag}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground">
+                                            reflection category
+                                          </span>
+                                        </div>
                                         <p
                                           id={questionId}
                                           className="text-sm leading-6"

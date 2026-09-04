@@ -28,6 +28,13 @@ const responseLabels = ["", "Not at all", "A little", "Sometimes", "Often", "Ver
 const MINISTRY_APPROACHES = [
   ["builder", "Starting and building new ministry"], ["insight", "Noticing what needs attention"], ["connector", "Connecting people with faith"], ["caregiver", "Caring for people over time"], ["teacher", "Making ideas clear"],
 ] as const;
+const MINISTRY_TAGS: Record<string, string> = {
+  "Starting and building new ministry": "Apostle",
+  "Noticing what needs attention": "Prophet",
+  "Connecting people with faith": "Evangelist",
+  "Caring for people over time": "Shepherd",
+  "Making ideas clear": "Teacher",
+};
 const STRENGTH_APPROACHES = [
   ["relationalConnection", "Relational connection"], ["encouragement", "Encouragement"], ["teachingExplaining", "Teaching and explaining"], ["listening", "Listening"], ["leadershipInitiative", "Leadership and initiative"], ["organizing", "Organizing"], ["creativeExpression", "Creative expression"], ["problemSolving", "Problem-solving"], ["practicalHandsOn", "Practical hands-on work"], ["hospitality", "Hospitality"], ["compassionCare", "Compassion and care"], ["communicationStorytelling", "Communication and storytelling"], ["discernment", "Discernment"], ["followThrough", "Follow-through"], ["adaptability", "Adaptability"], ["mentoringDevelopment", "Mentoring and development"], ["strategicThinking", "Strategic thinking"], ["advocacyJustice", "Advocacy and justice"],
 ] as const;
@@ -106,7 +113,20 @@ function MinistryAssessment({ value, isEnabled }: { value: unknown; isEnabled: (
   const primary = storedPrimary && storedSecondary ? storedPrimary : rankings[0]?.label || storedPrimary;
   const secondary = storedPrimary && storedSecondary ? storedSecondary : rankings[1]?.label || storedSecondary;
   if (!primary && !secondary) return <p className="text-muted-foreground italic">No ministry approach reflection shared.</p>;
-  return <div className="grid sm:grid-cols-2 gap-3"><Value label="Strongest ministry tendency" value={primary}/><Value label="Second ministry tendency" value={secondary}/></div>;
+  const tendencyValue = (label: string, value: string) => (
+    <div className="rounded-xl border border-border/60 bg-background/60 p-3.5 break-words">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-[.08em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        {MINISTRY_TAGS[value] && (
+          <Badge variant="secondary">{MINISTRY_TAGS[value]}</Badge>
+        )}
+        <span>{value || empty}</span>
+      </div>
+    </div>
+  );
+  return <div className="grid sm:grid-cols-2 gap-3"><div>{tendencyValue("Strongest ministry tendency", primary)}</div><div>{tendencyValue("Second ministry tendency", secondary)}</div></div>;
 }
 function StrengthsAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
