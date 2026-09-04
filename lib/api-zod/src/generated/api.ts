@@ -617,6 +617,36 @@ export const getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax 
 
 export const getMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
 
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 export const getMyChurchResponseMinistryCustomizationCustomTraditionMax = 120;
 
 export const getMyChurchResponseMinistryCustomizationSpiritualGiftsLabelMax = 80;
@@ -703,7 +733,40 @@ export const GetMyChurchResponse = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(getMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryQuestionCountMax).default(getMyChurchResponseAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(getMyChurchResponseAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getMyChurchResponseAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getMyChurchResponseAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }),
   "ministryCustomization": zod.object({
   "version": zod.literal(1),
@@ -750,6 +813,36 @@ export const updateMyChurchBodyAssessmentConfigurationPassionsMax = 100;
 export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
 
 export const updateMyChurchBodyMinistryCustomizationCustomTraditionMax = 120;
 
@@ -833,7 +926,40 @@ export const UpdateMyChurchBody = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(updateMyChurchBodyAssessmentConfigurationSpiritualGiftQuestionCountMax).default(updateMyChurchBodyAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryQuestionCountMax).default(updateMyChurchBodyAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationPassionsItemMax)).max(updateMyChurchBodyAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchBodyAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(updateMyChurchBodyAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }).optional(),
   "ministryCustomization": zod.object({
   "version": zod.literal(1),
@@ -862,6 +988,36 @@ export const updateMyChurchResponseAssessmentConfigurationPassionsMax = 100;
 export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax = 80;
 
 export const updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
 
 export const updateMyChurchResponseMinistryCustomizationCustomTraditionMax = 120;
 
@@ -949,7 +1105,40 @@ export const UpdateMyChurchResponse = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(updateMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax).default(updateMyChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryQuestionCountMax).default(updateMyChurchResponseAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationPassionsItemMax)).max(updateMyChurchResponseAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(updateMyChurchResponseAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(updateMyChurchResponseAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }),
   "ministryCustomization": zod.object({
   "version": zod.literal(1),
@@ -1033,6 +1222,36 @@ export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsItem
 
 export const getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax = 100;
 
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 export const getPublicChurchResponseMinistryCustomizationCustomTraditionMax = 120;
 
 export const getPublicChurchResponseMinistryCustomizationSpiritualGiftsLabelMax = 80;
@@ -1113,7 +1332,40 @@ export const GetPublicChurchResponse = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(getPublicChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getPublicChurchResponseAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryQuestionCountMax).default(getPublicChurchResponseAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationPassionsItemMax)).max(getPublicChurchResponseAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsItemMax)).max(getPublicChurchResponseAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getPublicChurchResponseAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }),
   "ministryCustomization": zod.object({
   "version": zod.literal(1),
@@ -1227,6 +1479,36 @@ export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInt
 
 export const getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax = 100;
 
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 export const getDashboardSummaryResponseChurchMinistryCustomizationCustomTraditionMax = 120;
 
 export const getDashboardSummaryResponseChurchMinistryCustomizationSpiritualGiftsLabelMax = 80;
@@ -1317,7 +1599,40 @@ export const GetDashboardSummaryResponse = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getDashboardSummaryResponseChurchAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryQuestionCountMax).default(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsItemMax)).max(getDashboardSummaryResponseChurchAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getDashboardSummaryResponseChurchAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }),
   "ministryCustomization": zod.object({
   "version": zod.literal(1),
@@ -1742,6 +2057,36 @@ export const createProfileResponseTwoAssessmentConfigurationMinistryInterestsIte
 
 export const createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax = 100;
 
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 
 
 export const CreateProfileResponse = zod.object({
@@ -1866,7 +2211,40 @@ export const CreateProfileResponse = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(createProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountMax).default(createProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryQuestionCountMax).default(createProfileResponseTwoAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationPassionsItemMax)).max(createProfileResponseTwoAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(createProfileResponseTwoAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(createProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }),
   "conversations": zod.array(zod.string()),
   "journeyToken": zod.uuid(),
@@ -2849,6 +3227,36 @@ export const getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMa
 
 export const getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax = 100;
 
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 
 
 export const GetProfileResponse = zod.object({
@@ -2973,7 +3381,40 @@ export const GetProfileResponse = zod.object({
   "spiritualGiftQuestionCount": zod.int().min(1).max(getProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getProfileResponseTwoAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
   "ministryQuestionCount": zod.int().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryQuestionCountMax).default(getProfileResponseTwoAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
   "passions": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationPassionsItemMax)).max(getProfileResponseTwoAssessmentConfigurationPassionsMax),
-  "ministryInterests": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax)
+  "ministryInterests": zod.array(zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsItemMax)).max(getProfileResponseTwoAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getProfileResponseTwoAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
 }),
   "conversations": zod.array(zod.string()),
   "journeyToken": zod.uuid(),

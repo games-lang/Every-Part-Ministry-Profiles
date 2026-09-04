@@ -699,6 +699,53 @@ export interface AssessmentConfigurationSubsections {
   'connectionAvailability.availability': boolean;
 }
 
+export type YouthProfilesConfigurationVersion = typeof YouthProfilesConfigurationVersion[keyof typeof YouthProfilesConfigurationVersion];
+
+
+export const YouthProfilesConfigurationVersion = {
+  NUMBER_1: 1,
+} as const;
+
+export interface YouthProfileSection {
+  enabled: boolean;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  description: string;
+}
+
+export type YouthProfileConfigurationSections = {[key: string]: YouthProfileSection};
+
+export type YouthProfileConfigurationChoiceLabels = {[key: string]: string};
+
+export interface YouthProfileConfiguration {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  profileTitle: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  profileDescription: string;
+  sections: YouthProfileConfigurationSections;
+  choiceLabels: YouthProfileConfigurationChoiceLabels;
+}
+
+export interface YouthProfilesConfiguration {
+  version: YouthProfilesConfigurationVersion;
+  discover: YouthProfileConfiguration;
+  explore: YouthProfileConfiguration;
+  develop: YouthProfileConfiguration;
+}
+
 export interface AssessmentConfiguration {
   sections: AssessmentConfigurationSections;
   subsections: AssessmentConfigurationSubsections;
@@ -726,6 +773,7 @@ export interface AssessmentConfiguration {
      * @items.maxLength 80
      */
   ministryInterests: string[];
+  youthProfiles?: YouthProfilesConfiguration;
 }
 
 export type MinistryCustomizationVersion = typeof MinistryCustomizationVersion[keyof typeof MinistryCustomizationVersion];

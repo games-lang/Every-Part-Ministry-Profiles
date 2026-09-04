@@ -518,6 +518,10 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
       </div>
     );
   }
+  const youthProfile = church?.assessmentConfiguration.youthProfiles?.explore;
+  const titleFor = (key: string, fallback: string) => youthProfile?.sections?.[key]?.title || fallback;
+  const optionsFor = (key: string, options: { id: string; label: string }[]) =>
+    options.map((option) => ({ ...option, label: youthProfile?.choiceLabels?.[`${key}.${option.id}`] || option.label }));
 
   const SingleSelectCard = ({ value, onChange, options }: { 
     value?: string, 
@@ -629,7 +633,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <User className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">About Me</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{youthProfile?.profileTitle || titleFor("aboutMe", "About Me")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   Let's start with some basic information about you.
                 </p>
@@ -672,7 +676,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                         <MultiSelectPills 
                           value={field.value} 
                           onChange={field.onChange} 
-                          options={LIKES_OPTIONS} 
+                          options={optionsFor("aboutMe", LIKES_OPTIONS)}
                         />
                       )}
                     />
@@ -711,7 +715,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
                   <Compass className="w-8 h-8 text-secondary" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">How I Tend to Operate</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{titleFor("howITendToOperate", "How I Tend to Operate")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   There are no right or wrong answers. Just pick the one that sounds most like you.
                 </p>
@@ -832,7 +836,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-chart-2/10 flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-chart-2" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">People and Needs I Care About</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{titleFor("peopleAndNeeds", "People and Needs I Care About")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   What kinds of people or causes pull at your heart? 
                 </p>
@@ -849,7 +853,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                         <MultiSelectPills 
                           value={field.value} 
                           onChange={field.onChange} 
-                          options={PEOPLE_NEEDS_OPTIONS} 
+                          options={optionsFor("peopleAndNeeds", PEOPLE_NEEDS_OPTIONS)}
                         />
                       )}
                     />
@@ -866,7 +870,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-chart-1/10 flex items-center justify-center mx-auto mb-4">
                   <HandHeart className="w-8 h-8 text-chart-1" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">Ways I Enjoy Helping</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{titleFor("waysIEnjoyHelping", "Ways I Enjoy Helping")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   How do you like to help others?
                 </p>
@@ -883,7 +887,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                         <MultiSelectPills 
                           value={field.value} 
                           onChange={field.onChange} 
-                          options={WAYS_TO_HELP_OPTIONS} 
+                          options={optionsFor("waysIEnjoyHelping", WAYS_TO_HELP_OPTIONS)}
                         />
                       )}
                     />
@@ -900,7 +904,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-chart-3/10 flex items-center justify-center mx-auto mb-4">
                   <Sprout className="w-8 h-8 text-chart-3" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">Growing With Jesus</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{titleFor("growingWithJesus", "Growing With Jesus")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   Every part of the church is growing together.
                 </p>
@@ -917,7 +921,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                         <MultiSelectPills 
                           value={field.value} 
                           onChange={field.onChange} 
-                          options={INTERESTS_OPTIONS} 
+                          options={optionsFor("growingWithJesus", INTERESTS_OPTIONS)}
                         />
                       )}
                     />
@@ -953,7 +957,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-chart-4/10 flex items-center justify-center mx-auto mb-4">
                   <Lightbulb className="w-8 h-8 text-chart-4" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">Ministry Opportunities</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{titleFor("opportunities", "Ministry Opportunities")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   Here are some ways to help around our church. How do you feel about trying these?
                 </p>
@@ -1033,13 +1037,13 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <ShieldCheck className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-3xl font-serif font-medium mb-3">Guardian Observations</h1>
+                <h1 className="text-3xl font-serif font-medium mb-3">{youthProfile?.sections?.guardianObservations?.enabled === false ? "Guardian Approval" : titleFor("guardianObservations", "Guardian Observations")}</h1>
                 <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                   Parents/guardians, please help us wrap up this profile.
                 </p>
               </div>
 
-              <Card className="border-border/60 shadow-sm">
+              {youthProfile?.sections?.guardianObservations?.enabled !== false && <Card className="border-border/60 shadow-sm">
                 <CardContent className="p-6 sm:p-8 space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="strengths" className="text-lg">What are some natural strengths you see? (Optional)</Label>
@@ -1074,7 +1078,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                     />
                   </div>
                 </CardContent>
-              </Card>
+              </Card>}
 
               <Card className="border-primary/20 shadow-sm overflow-hidden border-2">
                 <CardContent className="p-6 sm:p-8 space-y-6">

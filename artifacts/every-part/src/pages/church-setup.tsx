@@ -24,6 +24,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -144,6 +145,9 @@ const churchFormSchema = z.object({
     ministryQuestionCount: z.number().int().min(1).max(4),
     passions: z.array(z.string().min(1).max(80)).max(100),
     ministryInterests: z.array(z.string().min(1).max(80)).max(100),
+    // The API normalizes this versioned object for older churches. Keep it in
+    // the same shared form so changing editors never loses unsaved work.
+    youthProfiles: z.any().optional(),
   }),
   ministryCustomization: z.object({
     version: z.literal(1),
@@ -588,6 +592,7 @@ export default function ChurchSetup() {
   const [spiritualGiftsExpanded, setSpiritualGiftsExpanded] = useState(false);
   const [assessmentSectionsExpanded, setAssessmentSectionsExpanded] = useState<Record<string, boolean>>({});
   const [setupTab, setSetupTab] = useState<"church" | "assessment">("church");
+  const [editingYouthProfile, setEditingYouthProfile] = useState<"discover" | "explore" | "develop" | null>(null);
 
   const form = useForm<ChurchFormValues>({
     resolver: zodResolver(churchFormSchema),
@@ -640,6 +645,7 @@ export default function ChurchSetup() {
             church.assessmentConfiguration?.ministryQuestionCount ?? 3,
           passions: church.assessmentConfiguration?.passions || [...GENERIC_PASSIONS],
           ministryInterests: church.assessmentConfiguration?.ministryInterests || [...GENERIC_MINISTRY_INTERESTS],
+          youthProfiles: church.assessmentConfiguration?.youthProfiles,
         },
         ministryCustomization: {
           ...church.ministryCustomization,
@@ -854,6 +860,21 @@ export default function ChurchSetup() {
     "ministryCustomization.ministryInterestsLabel",
   );
   const assessmentConfiguration = form.watch("assessmentConfiguration");
+  const youthProfiles = assessmentConfiguration.youthProfiles as Record<string, any> | undefined;
+  const liveYouthSectionKeys = editingYouthProfile === "develop"
+    ? []
+    : Object.keys(youthProfiles?.[editingYouthProfile || "discover"]?.sections || {});
+  const liveYouthChoicePrefixes = editingYouthProfile === "discover"
+    ? ["caringAndHelping.", "growingWithJesus.", "opportunities."]
+    : editingYouthProfile === "explore"
+      ? ["aboutMe.", "peopleAndNeeds.", "waysIEnjoyHelping.", "growingWithJesus."]
+      : ["ministryInterests."];
+  const formatYouthKey = (key: string) =>
+    key
+      .replace(/^.*\./, "")
+      .replace(/([A-Z])/g, " $1")
+      .replace(/[-_]/g, " ")
+      .replace(/^./, (letter) => letter.toUpperCase());
   const assessmentEstimate = estimateAssessmentTime({
     enabledSpiritualGifts: form.watch("enabledSpiritualGifts"),
     assessmentConfiguration,
@@ -1373,6 +1394,76 @@ export default function ChurchSetup() {
           </Card>
 
           <Card className="church-setup-section-card border-border/60 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-xl font-serif">Profile experiences</CardTitle>
+              <CardDescription>Choose an experience to edit. Identity, age routing, guardian approval, and answer IDs are protected.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
+              {([
+                ["adult", "Adult", "Ages 18+", "Your existing Ministry Profile questions"],
+                ["discover", "Discover", "Ages 6–8", "Child-friendly discovery with guardian approval"],
+                ["explore", "Explore", "Ages 9–12", "Guided exploration with guardian approval"],
+                ["develop", "Develop", "Ages 13–17", "Teen reflection with guardian approval"],
+              ] as const).map(([key, name, ages, description]) => (
+                <div key={key} className="rounded-xl border border-border/60 p-4">
+                  <p className="font-medium">{name}</p>
+                  <p className="text-xs text-muted-foreground">{ages}</p>
+                  <p className="mt-2 min-h-10 text-sm text-muted-foreground">{description}</p>
+                  <Button type="button" variant="outline" size="sm" className="mt-3" onClick={() => {
+                    if (key === "adult") {
+                      setEditingYouthProfile(null);
+                      document.getElementById("adult-assessment-editor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    } else {
+                      setEditingYouthProfile(key);
+                      window.setTimeout(() => document.getElementById("youth-profile-editor")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+                    }
+                  }}>Edit</Button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {editingYouthProfile && youthProfiles?.[editingYouthProfile] && (
+            <Card id="youth-profile-editor" className="church-setup-section-card border-primary/30 shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-xl font-serif">{editingYouthProfile[0].toUpperCase() + editingYouthProfile.slice(1)} profile editor</CardTitle>
+                <CardDescription>These edits apply to future submissions only. Answer keys and guardian consent remain unchanged.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {(["profileTitle", "profileDescription"] as const).map((field) => (
+                    <div key={field} className="space-y-2">
+                      <Label htmlFor={`youth-${field}`}>{field === "profileTitle" ? "Profile title" : "Profile description"}</Label>
+                      <Input id={`youth-${field}`} value={youthProfiles[editingYouthProfile][field]} onChange={(event) => form.setValue(`assessmentConfiguration.youthProfiles.${editingYouthProfile}.${field}` as any, event.target.value, { shouldDirty: true })} />
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {Object.entries(youthProfiles[editingYouthProfile].sections)
+                    .filter(([sectionKey]) => liveYouthSectionKeys.includes(sectionKey))
+                    .map(([sectionKey, section]: [string, any]) => {
+                    const optional = sectionKey === "guardianObservations";
+                    return <div key={sectionKey} className="rounded-lg border border-border/60 p-4 space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div><p className="font-medium">{section.title}</p><p className="text-xs text-muted-foreground">{optional ? "Optional guardian notes" : "Required for safe submissions and results"}</p></div>
+                        <div className="flex items-center gap-2"><span className="text-xs text-muted-foreground">{optional ? "Optional" : "Locked"}</span><Switch checked={section.enabled} disabled={!optional} onCheckedChange={(checked) => form.setValue(`assessmentConfiguration.youthProfiles.${editingYouthProfile}.sections.${sectionKey}.enabled` as any, checked, { shouldDirty: true })} /></div>
+                      </div>
+                      <div className="grid gap-3">
+                        <Input aria-label={`${sectionKey} title`} value={section.title} onChange={(event) => form.setValue(`assessmentConfiguration.youthProfiles.${editingYouthProfile}.sections.${sectionKey}.title` as any, event.target.value, { shouldDirty: true })} />
+                      </div>
+                    </div>;
+                  })}
+                </div>
+                <div className="space-y-3"><Label>Answer choice wording</Label><p className="text-xs text-muted-foreground">Canonical choices cannot be added, removed, or re-keyed.</p>
+                  {Object.entries(youthProfiles[editingYouthProfile].choiceLabels)
+                    .filter(([choiceKey]) => liveYouthChoicePrefixes.some((prefix) => choiceKey.startsWith(prefix)))
+                    .map(([choiceKey, choiceLabel]: [string, any]) => <div key={choiceKey} className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"><Label className="self-center text-xs">{formatYouthKey(choiceKey)}</Label><Input value={choiceLabel} onChange={(event) => form.setValue(`assessmentConfiguration.youthProfiles.${editingYouthProfile}.choiceLabels.${choiceKey}` as any, event.target.value, { shouldDirty: true })} /></div>)}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card id="adult-assessment-editor" className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-serif">Assessment Content</CardTitle>
               <CardDescription>

@@ -7,6 +7,7 @@ import {
   DEFAULT_PASSIONS,
   filterAssessmentSection,
   ministrySubmissionError,
+  youthProfilesConfiguration,
 } from "./assessment-configuration.ts";
 
 test("crafted assessment payloads cannot retain disabled subsection content", () => {
@@ -220,5 +221,46 @@ test("How You Minister submissions reject missing or extra configured responses"
   assert.match(
     ministrySubmissionError({ responses: threeResponses }, configuration) ?? "",
     /requires 4 valid responses/,
+  );
+});
+
+test("youth profiles normalize legacy churches and only permit canonical wording overrides", () => {
+  const defaults = defaultAssessmentConfiguration();
+  assert.equal(defaults.youthProfiles.version, 1);
+  assert.equal(defaults.youthProfiles.explore.sections.guardianObservations.enabled, true);
+  assert.equal(defaults.youthProfiles.explore.sections.aboutMe.enabled, true);
+
+  const configured = youthProfilesConfiguration({
+    ...defaults.youthProfiles,
+    explore: {
+      ...defaults.youthProfiles.explore,
+      profileTitle: "My Explore Profile",
+      choiceLabels: { "aboutMe.building": "Making projects" },
+    },
+  });
+  assert.equal(configured?.explore.profileTitle, "My Explore Profile");
+  assert.equal(configured?.explore.choiceLabels["aboutMe.building"], "Making projects");
+  assert.equal(
+    youthProfilesConfiguration({
+      ...defaults.youthProfiles,
+      explore: {
+        ...defaults.youthProfiles.explore,
+        choiceLabels: { "aboutMe.invented": "Not allowed" },
+      },
+    }),
+    null,
+  );
+  assert.equal(
+    youthProfilesConfiguration({
+      ...defaults.youthProfiles,
+      discover: {
+        ...defaults.youthProfiles.discover,
+        sections: {
+          ...defaults.youthProfiles.discover.sections,
+          aboutMe: { ...defaults.youthProfiles.discover.sections.aboutMe, enabled: false },
+        },
+      },
+    }),
+    null,
   );
 });

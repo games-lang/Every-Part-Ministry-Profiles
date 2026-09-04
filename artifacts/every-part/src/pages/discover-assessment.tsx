@@ -373,6 +373,13 @@ export default function DiscoverAssessment({
       </div>
     );
   }
+  const youthProfile = church.assessmentConfiguration.youthProfiles?.discover;
+  const sectionCopy = (key: string, fallback: string, description = "") => ({
+    title: youthProfile?.sections?.[key]?.title || fallback,
+    description: youthProfile?.sections?.[key]?.description || description,
+  });
+  const optionsFor = (section: string, options: { id: string; label: string }[]) =>
+    options.map((option) => ({ ...option, label: youthProfile?.choiceLabels?.[`${section}.${option.id}`] || option.label }));
 
   // --- Reusable UI components ---
   const SingleSelectCard = ({ value, onChange, options }: { 
@@ -488,10 +495,10 @@ export default function DiscoverAssessment({
             <Sparkles className="w-8 h-8" />
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-medium tracking-tight">
-            Discover Profile
+            {youthProfile?.profileTitle || "Discover Profile"}
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            For ages 6-8. This is a fun way to explore how God made you! 
+            {youthProfile?.profileDescription || "For ages 6-8. This is a fun way to explore how God made you!"}
             Grown-ups, help your child answer these questions. There are no wrong answers.
           </p>
           <div className="bg-primary/5 rounded-2xl p-6 text-left border border-primary/10 max-w-xl mx-auto mt-6">
@@ -513,7 +520,7 @@ export default function DiscoverAssessment({
             <CardHeader className="bg-card pb-4 border-b border-border/40">
               <CardTitle className="font-serif text-2xl flex items-center gap-2">
                 <User className="w-5 h-5 text-primary" />
-                About Me
+                {sectionCopy("aboutMe", "About Me").title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 space-y-6">
@@ -583,7 +590,7 @@ export default function DiscoverAssessment({
             <CardHeader className="bg-card pb-4 border-b border-border/40">
               <CardTitle className="font-serif text-2xl flex items-center gap-2">
                 <Star className="w-5 h-5 text-secondary" />
-                What Sounds Like Me
+                {sectionCopy("tendencies", "What Sounds Like Me").title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 space-y-10">
@@ -597,7 +604,7 @@ export default function DiscoverAssessment({
                       value={field.value}
                       onChange={field.onChange}
                       options={[
-                        { id: "love", label: "With a lot of people around" },
+                        { id: "love", label: youthProfile?.choiceLabels?.["tendencies.love"] || "With a lot of people around" },
                         { id: "sometimes", label: "With just one or two good friends" },
                         { id: "quiet", label: "Playing quietly by myself" },
                       ]}
@@ -663,7 +670,7 @@ export default function DiscoverAssessment({
             <CardHeader className="bg-card pb-4 border-b border-border/40">
               <CardTitle className="font-serif text-2xl flex items-center gap-2">
                 <Users className="w-5 h-5 text-accent" />
-                Caring & Helping
+                {sectionCopy("caringAndHelping", "Caring & Helping").title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 space-y-10">
@@ -673,7 +680,7 @@ export default function DiscoverAssessment({
                   name="answers.caresAbout"
                   control={control}
                   render={({ field }) => (
-                    <MultiSelectPills value={field.value} onChange={field.onChange} options={CARES_ABOUT_OPTIONS} />
+                    <MultiSelectPills value={field.value} onChange={field.onChange} options={optionsFor("caringAndHelping", CARES_ABOUT_OPTIONS)} />
                   )}
                 />
               </div>
@@ -684,7 +691,7 @@ export default function DiscoverAssessment({
                   name="answers.waysToHelp"
                   control={control}
                   render={({ field }) => (
-                    <MultiSelectPills value={field.value} onChange={field.onChange} options={LIKES_TO_HELP_OPTIONS} />
+                    <MultiSelectPills value={field.value} onChange={field.onChange} options={optionsFor("caringAndHelping", LIKES_TO_HELP_OPTIONS)} />
                   )}
                 />
               </div>
@@ -697,7 +704,7 @@ export default function DiscoverAssessment({
             <CardHeader className="bg-card pb-4 border-b border-border/40">
               <CardTitle className="font-serif text-2xl flex items-center gap-2">
                 <Sprout className="w-5 h-5 text-primary" />
-                Growing With Jesus
+                {sectionCopy("growingWithJesus", "Growing With Jesus").title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 space-y-8">
@@ -707,7 +714,7 @@ export default function DiscoverAssessment({
                   name="answers.growingWithJesus.interests"
                   control={control}
                   render={({ field }) => (
-                    <MultiSelectPills value={field.value} onChange={field.onChange} options={INTERESTS_OPTIONS} />
+                    <MultiSelectPills value={field.value} onChange={field.onChange} options={optionsFor("growingWithJesus", INTERESTS_OPTIONS)} />
                   )}
                 />
               </div>
@@ -741,7 +748,7 @@ export default function DiscoverAssessment({
             <CardHeader className="bg-card pb-4 border-b border-border/40">
               <CardTitle className="font-serif text-2xl flex items-center gap-2">
                 <HandHeart className="w-5 h-5 text-secondary" />
-                Things I Would Like To Try
+                {sectionCopy("opportunities", "Things I Would Like To Try").title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 space-y-6">
@@ -750,7 +757,7 @@ export default function DiscoverAssessment({
               </p>
               
               <div className="space-y-4">
-                {OPPORTUNITIES.map(opt => (
+                {optionsFor("opportunities", OPPORTUNITIES).map(opt => (
                   <div key={opt.id} className="p-4 rounded-xl border border-border/60 bg-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <span className="font-medium text-base">{opt.label}</span>
                     <Controller
@@ -786,12 +793,12 @@ export default function DiscoverAssessment({
           </Card>
 
           {/* Section 6: Guardian Observations */}
-          <Card className="border-border/60 shadow-sm overflow-hidden bg-muted/10">
+          {youthProfile?.sections?.guardianObservations?.enabled !== false && <Card className="border-border/60 shadow-sm overflow-hidden bg-muted/10">
             <div className="h-2 bg-muted-foreground/30" />
             <CardHeader className="bg-transparent pb-4 border-b border-border/40">
               <CardTitle className="font-serif text-2xl flex items-center gap-2">
                 <Lightbulb className="w-5 h-5 text-muted-foreground" />
-                Grown-Up Observations
+                {sectionCopy("guardianObservations", "Grown-Up Observations").title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 space-y-6">
@@ -839,7 +846,7 @@ export default function DiscoverAssessment({
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card>}
 
           {/* Section 7: Guardian Consent */}
           <Card className="border-primary/20 shadow-sm overflow-hidden border-2">

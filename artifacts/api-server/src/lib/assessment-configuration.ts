@@ -11,6 +11,151 @@ export const ASSESSMENT_SECTION_KEYS = [
 
 export const DEFAULT_SPIRITUAL_GIFT_QUESTION_COUNT = 3;
 export const DEFAULT_MINISTRY_QUESTION_COUNT = 3;
+export const YOUTH_PROFILE_KEYS = ["discover", "explore", "develop"] as const;
+export type YouthProfileKey = (typeof YOUTH_PROFILE_KEYS)[number];
+
+/**
+ * Youth answer identifiers are deliberately server-owned.  Churches may change
+ * the language a child sees, but never the identifiers used in submissions and
+ * result calculations.
+ *
+ * Only guardian observations are optional today.  The remaining sections feed
+ * the existing strict submission/result schemas, so allowing them to disappear
+ * would either require invented answers or make old results unreadable.
+ */
+const YOUTH_PROFILE_DEFINITIONS = {
+  discover: {
+    title: "Discover Profile",
+    description: "For ages 6-8. This is a fun way to explore how God made you!",
+    sections: {
+      aboutMe: ["building", "creating", "moving", "talking", "listening", "organizing", "learning", "caring"],
+      tendencies: ["love", "sometimes", "quiet", "not-yet", "jump-in", "ask-first", "prefer-support"],
+      caringAndHelping: ["family", "friends", "youngerKids", "olderPeople", "lonelyPeople", "animals", "nature", "church", "neighborhood", "welcoming", "encouraging", "making", "praying", "sharing", "cleaning", "teaching", "performing"],
+      growingWithJesus: ["bibleStories", "prayer", "worship", "helpingOthers", "questionsAboutGod", "quietTime"],
+      opportunities: ["welcome", "kids", "students", "worship", "production", "prayer", "hospitality", "communityCare", "outreach", "creative", "behindTheScenes"],
+      guardianObservations: [],
+    },
+  },
+  explore: {
+    title: "Explore Profile",
+    description: "For ages 9-12. Explore how you enjoy helping and growing.",
+    sections: {
+      aboutMe: ["building", "creating", "moving", "talking", "listening", "organizing", "learning", "caring", "games", "outdoors"],
+      howITendToOperate: ["being-with-people", "mix-of-both", "quiet-time", "talk-it-out", "think-it-through", "try-and-see", "plan-ahead", "little-plan", "go-with-the-flow", "one-thing", "switch-it-up", "notice-details", "jump-in", "help-behind-scenes", "ask-first"],
+      peopleAndNeeds: ["children", "friends", "lonely", "dont-know-jesus", "newcomers", "disabilities", "older-adults", "poverty", "immigrants", "cultures", "animals", "neighborhood", "justice"],
+      waysIEnjoyHelping: ["encouraging", "leading", "organizing", "teaching", "serving", "welcoming", "creating", "giving", "praying", "listening", "solving", "making", "music", "technology", "helping-younger", "inviting", "behind-scenes"],
+      growingWithJesus: ["prayer", "bible", "worship", "asking-questions", "serving", "talking-about-jesus", "christian-adults"],
+      opportunities: ["welcome", "prayer", "kids", "worship", "scriptureReading", "production", "communityCare", "missions", "encouragementCards", "hospitality", "setup", "creative", "events"],
+      guardianObservations: [],
+    },
+  },
+  develop: {
+    title: "Develop Profile",
+    description: "For ages 13-17. Notice how you may be growing, serving, and finding your purpose.",
+    sections: {
+      prayerAndCalling: [],
+      aboutMe: ["people", "creating", "building", "learning", "organizing", "moving", "writing", "helping", "technology", "quiet"],
+      howITendToOperate: ["energized-with-people", "mix-of-both", "recharge-alone", "talk-it-out", "think-it-through", "learn-by-doing", "plan-ahead", "adapt-as-you-go", "last-minute-energy", "people-first", "balance-both", "details-and-ideas", "act-then-reflect", "reflect-then-act", "move-between-both", "take-the-lead", "support-the-lead", "share-leadership", "address-it-directly", "listen-and-find-common-ground", "pause-and-seek-guidance", "close-team", "variety-of-people", "independent-with-check-ins"],
+      giftsToExplore: ["encouragement", "teaching", "mercy", "leadership", "hospitality", "service", "faith", "wisdom", "creativity", "prayer", "discernment", "evangelism"],
+      passions: ["friends", "newcomers", "children", "older-adults", "hurting", "community", "justice", "missions", "creation", "practical-needs"],
+      growingWithJesus: ["prayer", "bible", "worship", "questions", "serving", "sharing", "mentoring", "community"],
+      callingAndPurpose: [],
+      ministryInterests: ["welcome", "prayer", "kids", "students", "worship", "production", "scriptureReading", "communityCare", "missions", "creative", "events", "behindTheScenes"],
+      availabilityAndResponsibility: ["weekly", "monthly", "seasonal", "not-sure-yet", "ready-for-responsibility", "growing-into-it", "start-small"],
+      developmentPlan: [],
+      guardianObservations: [],
+    },
+  },
+} as const;
+
+export type YouthProfileConfiguration = {
+  profileTitle: string;
+  profileDescription: string;
+  sections: Record<string, { enabled: boolean; title: string; description: string }>;
+  choiceLabels: Record<string, string>;
+};
+export type YouthProfilesConfiguration = {
+  version: 1;
+  discover: YouthProfileConfiguration;
+  explore: YouthProfileConfiguration;
+  develop: YouthProfileConfiguration;
+};
+
+const label = (value: string) => value.replace(/([A-Z])/g, " $1").replace(/[-_]/g, " ").replace(/^./, (letter) => letter.toUpperCase());
+export function defaultYouthProfilesConfiguration(): YouthProfilesConfiguration {
+  const profiles = Object.fromEntries(YOUTH_PROFILE_KEYS.map((profile) => {
+    const definition = YOUTH_PROFILE_DEFINITIONS[profile];
+    return [profile, {
+      profileTitle: definition.title,
+      profileDescription: definition.description,
+      sections: Object.fromEntries(Object.entries(definition.sections).map(([key]) => [key, {
+        enabled: true,
+        title: label(key),
+        description: key === "guardianObservations"
+          ? "Optional notes from a guardian."
+          : `Reflection questions about ${label(key).toLocaleLowerCase()}.`,
+      }])),
+      choiceLabels: Object.fromEntries(
+        Object.entries(definition.sections).flatMap(([section, choices]) =>
+          Array.from(choices as readonly string[]).map((choice) => [
+            `${section}.${choice}`,
+            label(choice),
+          ]),
+        ),
+      ),
+    }];
+  })) as Record<YouthProfileKey, YouthProfileConfiguration>;
+  return {
+    version: 1,
+    ...profiles,
+  };
+}
+
+function validYouthLabel(value: unknown, max: number) {
+  return typeof value === "string" && value.trim().length > 0 && value.trim().length <= max && !/[\u0000-\u001f\u007f]/.test(value);
+}
+
+export function youthProfilesConfiguration(value: unknown): YouthProfilesConfiguration | null {
+  if (value === undefined) return defaultYouthProfilesConfiguration();
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const source = value as Record<string, unknown>;
+  if (Object.keys(source).some((key) => key !== "version" && !YOUTH_PROFILE_KEYS.includes(key as YouthProfileKey)) || source.version !== 1) return null;
+  const defaults = defaultYouthProfilesConfiguration();
+  for (const profile of YOUTH_PROFILE_KEYS) {
+    const candidate = source[profile];
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return null;
+    const config = candidate as Record<string, unknown>;
+    if (Object.keys(config).some((key) => !["profileTitle", "profileDescription", "sections", "choiceLabels"].includes(key))) return null;
+    if (!validYouthLabel(config.profileTitle, 80) || !validYouthLabel(config.profileDescription, 300) || !config.sections || typeof config.sections !== "object" || Array.isArray(config.sections) || !config.choiceLabels || typeof config.choiceLabels !== "object" || Array.isArray(config.choiceLabels)) return null;
+    const definitions = YOUTH_PROFILE_DEFINITIONS[profile].sections;
+    const sections = config.sections as Record<string, unknown>;
+    if (Object.keys(sections).length !== Object.keys(definitions).length || Object.keys(sections).some((key) => !(key in definitions))) return null;
+    let substantiveEnabled = false;
+    for (const key of Object.keys(definitions)) {
+      const section = sections[key];
+      if (!section || typeof section !== "object" || Array.isArray(section)) return null;
+      const entry = section as Record<string, unknown>;
+      if (Object.keys(entry).some((entryKey) => !["enabled", "title", "description"].includes(entryKey)) || typeof entry.enabled !== "boolean" || !validYouthLabel(entry.title, 80) || !validYouthLabel(entry.description, 300)) return null;
+      // This is the sole safely optional section until answer and result
+      // contracts support omission. Mandatory data collection stays locked.
+      if (key !== "guardianObservations" && entry.enabled !== true) return null;
+      if (key !== "guardianObservations") substantiveEnabled = true;
+      defaults[profile].sections[key] = { enabled: entry.enabled, title: (entry.title as string).trim(), description: (entry.description as string).trim() };
+    }
+    if (!substantiveEnabled) return null;
+    const choiceLabels = config.choiceLabels as Record<string, unknown>;
+    const allowedChoices = new Set(
+      Object.entries(definitions).flatMap(([section, choices]) =>
+        Array.from(choices as readonly string[]).map((choice) => `${section}.${choice}`),
+      ),
+    );
+    if (Object.keys(choiceLabels).some((key) => !allowedChoices.has(key) || !validYouthLabel(choiceLabels[key], 120))) return null;
+    defaults[profile].profileTitle = (config.profileTitle as string).trim();
+    defaults[profile].profileDescription = (config.profileDescription as string).trim();
+    defaults[profile].choiceLabels = Object.fromEntries(Object.entries(choiceLabels).map(([key, value]) => [key, (value as string).trim()]));
+  }
+  return defaults;
+}
 const MINISTRY_APPROACH_KEYS = [
   "builder",
   "insight",
@@ -165,6 +310,7 @@ export type AssessmentConfiguration = {
   ministryQuestionCount: number;
   passions: string[];
   ministryInterests: string[];
+  youthProfiles: YouthProfilesConfiguration;
 };
 
 function enabled<T extends readonly string[]>(keys: T): Record<T[number], boolean> {
@@ -179,6 +325,7 @@ export function defaultAssessmentConfiguration(): AssessmentConfiguration {
     ministryQuestionCount: DEFAULT_MINISTRY_QUESTION_COUNT,
     passions: [...DEFAULT_PASSIONS],
     ministryInterests: [...DEFAULT_MINISTRY_INTERESTS],
+    youthProfiles: defaultYouthProfilesConfiguration(),
   };
 }
 
@@ -194,7 +341,22 @@ export function assessmentConfiguration(
     ministryQuestionCount?: unknown;
     passions?: unknown;
     ministryInterests?: unknown;
+    youthProfiles?: unknown;
   };
+  if (
+    Object.keys(candidate).some(
+      (key) =>
+        ![
+          "sections",
+          "subsections",
+          "spiritualGiftQuestionCount",
+          "ministryQuestionCount",
+          "passions",
+          "ministryInterests",
+          "youthProfiles",
+        ].includes(key),
+    )
+  ) return null;
   if (!candidate.sections || !candidate.subsections) return null;
   if (
     Object.keys(candidate.sections).some(
@@ -270,6 +432,9 @@ export function assessmentConfiguration(
       ).values(),
     );
   }
+  const youthProfiles = youthProfilesConfiguration(candidate.youthProfiles);
+  if (!youthProfiles) return null;
+  configuration.youthProfiles = youthProfiles;
   return configuration;
 }
 

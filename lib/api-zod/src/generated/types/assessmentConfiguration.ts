@@ -7,6 +7,7 @@
  */
 import type { AssessmentConfigurationSections } from './assessmentConfigurationSections';
 import type { AssessmentConfigurationSubsections } from './assessmentConfigurationSubsections';
+import type { YouthProfilesConfiguration } from './youthProfilesConfiguration';
 
 export interface AssessmentConfiguration {
   sections: AssessmentConfigurationSections;
@@ -35,4 +36,5 @@ export interface AssessmentConfiguration {
      * @items.maxLength 80
      */
   ministryInterests: string[];
+  youthProfiles?: YouthProfilesConfiguration;
 }

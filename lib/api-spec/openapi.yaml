@@ -2690,6 +2690,42 @@ components:
           type: array
           maxItems: 100
           items: { type: string, minLength: 1, maxLength: 80 }
+        youthProfiles:
+          $ref: "#/components/schemas/YouthProfilesConfiguration"
+    YouthProfilesConfiguration:
+      type: object
+      additionalProperties: false
+      required: [version, discover, explore, develop]
+      properties:
+        version: { type: integer, enum: [1] }
+        discover: { $ref: "#/components/schemas/YouthProfileConfiguration" }
+        explore: { $ref: "#/components/schemas/YouthProfileConfiguration" }
+        develop: { $ref: "#/components/schemas/YouthProfileConfiguration" }
+    YouthProfileConfiguration:
+      type: object
+      additionalProperties: false
+      required: [profileTitle, profileDescription, sections, choiceLabels]
+      properties:
+        profileTitle: { type: string, minLength: 1, maxLength: 80 }
+        profileDescription: { type: string, minLength: 1, maxLength: 300 }
+        sections:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/YouthProfileSection"
+        choiceLabels:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 1
+            maxLength: 120
+    YouthProfileSection:
+      type: object
+      additionalProperties: false
+      required: [enabled, title, description]
+      properties:
+        enabled: { type: boolean }
+        title: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, minLength: 1, maxLength: 300 }
     AssessmentConfigurationSections:
       type: object
       additionalProperties: false
