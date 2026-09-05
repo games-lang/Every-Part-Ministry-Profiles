@@ -166,7 +166,7 @@ export default function DiscoverAssessment({
   
   if (!initialAge || isNaN(initialAge)) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
+      <div className="pathway-theme pathway-theme-discover min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
         <Card className="w-full max-w-md border-border/60 shadow-lg text-center landing-reveal">
           <CardContent className="p-8">
             <h2 className="text-xl font-serif font-medium mb-3">Age Required</h2>
@@ -365,7 +365,7 @@ export default function DiscoverAssessment({
 
   if (churchLoading) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background">
+      <div className="pathway-theme pathway-theme-discover min-h-[100dvh] flex items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
       </div>
     );
@@ -373,7 +373,7 @@ export default function DiscoverAssessment({
 
   if (!church) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
+      <div className="pathway-theme pathway-theme-discover min-h-[100dvh] flex items-center justify-center bg-background p-4">
         <p className="text-muted-foreground">Church not found.</p>
       </div>
     );
@@ -455,7 +455,7 @@ export default function DiscoverAssessment({
   );
 
   return (
-    <div className="min-h-[100dvh] bg-muted/20 pb-20">
+    <div className="pathway-theme pathway-theme-discover min-h-[100dvh] bg-muted/20 pb-20">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">

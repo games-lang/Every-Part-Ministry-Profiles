@@ -178,7 +178,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
   
   if (!initialAge || isNaN(initialAge) || initialAge < 9 || initialAge > 12) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
+      <div className="pathway-theme pathway-theme-explore min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
         <Card className="w-full max-w-md border-border/60 shadow-lg text-center landing-reveal is-visible">
           <CardContent className="p-8">
             <h2 className="text-xl font-serif font-medium mb-3">Age Required</h2>
@@ -518,7 +518,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
 
   if (churchLoading) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background">
+      <div className="pathway-theme pathway-theme-explore min-h-[100dvh] flex items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
       </div>
     );
@@ -603,7 +603,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
   );
 
   return (
-    <div className="min-h-[100dvh] bg-background ep-landing pb-24">
+    <div className="pathway-theme pathway-theme-explore min-h-[100dvh] bg-background ep-landing pb-24">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/60">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">

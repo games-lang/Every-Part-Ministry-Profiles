@@ -9,12 +9,12 @@ export default function DevelopResult({ params }: { params: { token: string } })
   const { data: result, isLoading, error } = useGetDevelopResult(token, {
     query: { enabled: !!token, queryKey: getGetDevelopResultQueryKey(token) },
   });
-  if (isLoading) return <div className="flex min-h-[100dvh] items-center justify-center bg-background"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  if (error || !result) return <div className="flex min-h-[100dvh] items-center justify-center bg-background p-4"><Card className="w-full max-w-md text-center"><CardContent className="space-y-3 p-7"><h1 className="font-serif text-2xl font-medium text-destructive">Result not found</h1><p className="text-muted-foreground">This result link may have expired or is invalid.</p></CardContent></Card></div>;
+  if (isLoading) return <div className="pathway-theme pathway-theme-develop flex min-h-[100dvh] items-center justify-center bg-background"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+  if (error || !result) return <div className="pathway-theme pathway-theme-develop flex min-h-[100dvh] items-center justify-center bg-background p-4"><Card className="w-full max-w-md text-center"><CardContent className="space-y-3 p-7"><h1 className="font-serif text-2xl font-medium text-destructive">Result not found</h1><p className="text-muted-foreground">This result link may have expired or is invalid.</p></CardContent></Card></div>;
   const { summary } = result;
   const journeyToken = (result as typeof result & { journeyToken?: string }).journeyToken;
   return (
-    <div className="min-h-[100dvh] bg-background px-4 py-12">
+    <div className="pathway-theme pathway-theme-develop min-h-[100dvh] bg-background px-4 py-12">
       <div className="mx-auto w-full max-w-3xl space-y-8">
         <div className="text-center">
           <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-secondary/10 text-secondary"><Sparkles className="h-10 w-10" /></div>

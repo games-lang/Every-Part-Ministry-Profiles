@@ -24,3 +24,4 @@
 - [OpenAPI generated-name collisions](openapi-generated-name-collisions.md) — avoid reusing operation body/response names for component schemas when generating API Zod exports.
 - [Logo color authority](logo-color-authority.md) — preserve the original Every Part logo unchanged; adapt shared website colors to the logo’s palette.
 - [Profile photo privacy](profile-photo-privacy.md) — store private object paths; only same-church leaders may load photos, and public youth results never include them.
+- [Profile pathway themes](profile-pathway-themes.md) — adult, Discover, Explore, and Develop use distinct scoped accents across assessments, results, and journeys.

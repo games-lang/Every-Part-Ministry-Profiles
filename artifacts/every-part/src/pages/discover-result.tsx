@@ -16,7 +16,7 @@ export default function DiscoverResult({ params }: { params: { token: string } }
 
   if (isLoading) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background">
+      <div className="pathway-theme pathway-theme-discover min-h-[100dvh] flex items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
       </div>
     );
@@ -24,7 +24,7 @@ export default function DiscoverResult({ params }: { params: { token: string } }
 
   if (error || !result) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
+      <div className="pathway-theme pathway-theme-discover min-h-[100dvh] flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md border-destructive/20 shadow-sm">
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-serif font-medium mb-2 text-destructive">Result Not Found</h2>
@@ -36,7 +36,7 @@ export default function DiscoverResult({ params }: { params: { token: string } }
   }
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center py-12 px-4 bg-background ep-landing">
+    <div className="pathway-theme pathway-theme-discover min-h-[100dvh] flex items-center justify-center py-12 px-4 bg-background ep-landing">
       <div className="w-full max-w-2xl space-y-8 landing-reveal">
         
         <div className="text-center space-y-4">

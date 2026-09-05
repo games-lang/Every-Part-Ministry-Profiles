@@ -2377,7 +2377,7 @@ export default function Assessment() {
     return (
       <div
         style={brandStyle}
-        className="min-h-screen grid place-items-center bg-muted/20 p-4"
+        className="pathway-theme pathway-theme-adult min-h-screen grid place-items-center bg-muted/20 p-4"
       >
         <Card className="max-w-xl text-center">
           <CardContent className="p-10 space-y-6">
@@ -2416,7 +2416,7 @@ export default function Assessment() {
     return (
       <div
         style={brandStyle}
-        className="min-h-screen grid place-items-center p-4"
+        className="pathway-theme pathway-theme-adult min-h-screen grid place-items-center p-4"
       >
         <Card className="max-w-md text-center">
           <CardContent className="p-10 space-y-5">
@@ -2448,7 +2448,7 @@ export default function Assessment() {
       </div>
     );
   return (
-    <div style={brandStyle} className="min-h-[100dvh] bg-muted/20">
+    <div style={brandStyle} className="pathway-theme pathway-theme-adult min-h-[100dvh] bg-muted/20">
       <header className="sticky top-0 z-10 border-b border-border/80 bg-background/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4">
           <div className="flex min-w-0 items-center gap-3">

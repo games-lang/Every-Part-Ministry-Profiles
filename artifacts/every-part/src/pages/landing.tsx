@@ -126,6 +126,42 @@ const partfinderBenefits = [
   },
 ];
 
+const sampleProfiles = [
+  {
+    name: "Sarah",
+    pathway: "Adult Ministry Profile",
+    age: "In conversation",
+    initials: "S",
+    description: "Encouragement, care, and a thoughtful next step.",
+    theme: "adult",
+    image: "/sample-profile-sarah-community.jpg",
+  },
+  {
+    name: "Leah",
+    pathway: "Discover Profile",
+    age: "Ages 6–8",
+    initials: "L",
+    description: "Noticing joy, kindness, and the ways she helps.",
+    theme: "discover",
+  },
+  {
+    name: "Marcus",
+    pathway: "Explore Profile",
+    age: "Ages 9–12",
+    initials: "M",
+    description: "Exploring curiosity, courage, and what matters to him.",
+    theme: "explore",
+  },
+  {
+    name: "Jordan",
+    pathway: "Develop Profile",
+    age: "Ages 13–17",
+    initials: "J",
+    description: "Growing gifts, meaningful interests, and a next step.",
+    theme: "develop",
+  },
+];
+
 function Reveal({
   children,
   className = "",
@@ -354,6 +390,56 @@ export default function LandingPage() {
                 </div>
               </div>
             </Reveal>
+          </div>
+        </section>
+
+        <section className="border-y border-border bg-card/60 py-10 sm:py-12" aria-labelledby="sample-profiles-heading">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <Reveal>
+              <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <Eyebrow>One church. Many stories.</Eyebrow>
+                  <h2 id="sample-profiles-heading" className="mt-3 font-serif text-3xl font-medium tracking-[-.045em] sm:text-4xl">
+                    A fuller picture of every part.
+                  </h2>
+                </div>
+                <p className="max-w-md text-sm leading-6 text-muted-foreground">
+                  Adult, Discover, Explore, and Develop give each person a fitting place to reflect and grow.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+          <div className="profile-banner" aria-label="Sample Ministry Profiles">
+            <div className="profile-banner__viewport">
+              <div className="profile-banner__track">
+                {[...sampleProfiles, ...sampleProfiles].map((profile, index) => (
+                  <div
+                    key={`${profile.name}-${index}`}
+                    className={`profile-banner__card profile-banner__card--${profile.theme}`}
+                    aria-hidden={index >= sampleProfiles.length}
+                  >
+                    {profile.image ? (
+                      <img
+                        src={appPath(profile.image)}
+                        alt=""
+                        className="profile-banner__avatar profile-banner__avatar--photo"
+                      />
+                    ) : (
+                      <span className="profile-banner__avatar" aria-hidden="true">{profile.initials}</span>
+                    )}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="truncate text-sm font-semibold">{profile.name}</p>
+                        <span className="profile-banner__dot" aria-hidden="true" />
+                        <p className="truncate text-xs font-medium text-muted-foreground">{profile.age}</p>
+                      </div>
+                      <p className="mt-1 text-xs font-bold uppercase tracking-[.12em] text-[hsl(var(--banner-accent))]">{profile.pathway}</p>
+                      <p className="mt-2 max-w-[19rem] text-sm leading-5 text-muted-foreground">{profile.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 

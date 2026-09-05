@@ -25,10 +25,13 @@ import ProfileDetail from '@/pages/profile-detail';
 import Teams from '@/pages/teams';
 import Assessment from '@/pages/assessment';
 import AgeGateway from '@/pages/age-gateway';
-import YouthPathwayStub from '@/pages/youth-pathway-stub';
 import DiscoverGate from '@/pages/discover-gate';
 import DiscoverAssessment from '@/pages/discover-assessment';
 import ExploreAssessment from '@/pages/explore-assessment';
+import DevelopAssessment from '@/pages/develop-assessment';
+import DiscoverResult from '@/pages/discover-result';
+import ExploreResult from '@/pages/explore-result';
+import DevelopResult from '@/pages/develop-result';
 
 import { LeaderJourneyPage, PublicJourneyPage } from '@/pages/journey';
 import NotFound from '@/pages/not-found';
@@ -354,10 +357,10 @@ function ClerkProviderWithRoutes() {
               <Route path="/profile/:slug/adult" component={Assessment} />
               <Route path="/profile/:slug/discover" component={DiscoverRoute} />
               <Route path="/profile/:slug/explore" component={ExploreAssessment} />
-              <Route path="/profile/:slug/develop" component={YouthPathwayStub} />
-              <Route path="/discover/result/:token" component={YouthPathwayStub} />
-              <Route path="/explore/result/:token" component={YouthPathwayStub} />
-              <Route path="/develop/result/:token" component={YouthPathwayStub} />
+              <Route path="/profile/:slug/develop" component={DevelopAssessment} />
+              <Route path="/discover/result/:token" component={DiscoverResult} />
+              <Route path="/explore/result/:token" component={ExploreResult} />
+              <Route path="/develop/result/:token" component={DevelopResult} />
               <Route path="/journey/:token" component={PublicJourneyPage} />
               
               <Route component={NotFound} />

@@ -203,9 +203,18 @@ function ComparePanel({ journey }: { journey: JourneyResponse }) {
 function JourneyContent({ journey, publicView, leader }: { journey: JourneyResponse; publicView: boolean; leader: boolean }) {
   const queryClient = useQueryClient();
   const [entries, setEntries] = useState(journey.entries);
+  const profileType = journey.currentProfile?.profileType || "adult";
+  const pathwayTheme =
+    profileType === "discover"
+      ? "pathway-theme-discover"
+      : profileType === "explore"
+        ? "pathway-theme-explore"
+        : profileType === "develop"
+          ? "pathway-theme-develop"
+          : "pathway-theme-adult";
   const addEntry = (entry: JourneyEntry) => { setEntries((current) => [entry, ...current]); void queryClient.invalidateQueries({ predicate: (query) => String(query.queryKey[0]).includes("/journey") }); };
   const updateEntry = (entry: JourneyEntry) => setEntries((current) => current.map((item) => item.id === entry.id ? entry : item));
-  return <div className="journey-page min-h-[100dvh]"><main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-7 sm:px-6 sm:py-10"><div className="flex items-center justify-between"><Link href={publicView ? "/" : "/profiles"} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"><ArrowLeft className="h-4 w-4" />{publicView ? "Every Part" : "Profiles"}</Link>{publicView && <span className="text-xs text-muted-foreground">Private link</span>}</div><Intro journey={{ ...journey, entries }} publicView={publicView} /><SnapshotSummary journey={journey} /><div className="grid gap-6 lg:grid-cols-[1.16fr_.84fr]"><div className="space-y-6"><PatternPanel journey={journey} /><Timeline entries={entries} leader={leader} onReflectionSaved={updateEntry} /></div><div className="space-y-6"><ProfilePath journey={journey} leader={leader} />{leader && <AddEntry token={journey.journeyToken} onCreated={addEntry} />}{leader && <ComparePanel journey={journey} />}</div></div><footer className="border-t border-border/60 pt-5 text-center text-xs leading-5 text-muted-foreground">A trusted companion for ministry conversations. Notice patterns gently; leave room for growth, context, and grace.</footer></main></div>;
+  return <div className={`pathway-theme ${pathwayTheme} journey-page min-h-[100dvh]`}><main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-7 sm:px-6 sm:py-10"><div className="flex items-center justify-between"><Link href={publicView ? "/" : "/profiles"} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"><ArrowLeft className="h-4 w-4" />{publicView ? "Every Part" : "Profiles"}</Link>{publicView && <span className="text-xs text-muted-foreground">Private link</span>}</div><Intro journey={{ ...journey, entries }} publicView={publicView} /><SnapshotSummary journey={journey} /><div className="grid gap-6 lg:grid-cols-[1.16fr_.84fr]"><div className="space-y-6"><PatternPanel journey={journey} /><Timeline entries={entries} leader={leader} onReflectionSaved={updateEntry} /></div><div className="space-y-6"><ProfilePath journey={journey} leader={leader} />{leader && <AddEntry token={journey.journeyToken} onCreated={addEntry} />}{leader && <ComparePanel journey={journey} />}</div></div><footer className="border-t border-border/60 pt-5 text-center text-xs leading-5 text-muted-foreground">A trusted companion for ministry conversations. Notice patterns gently; leave room for growth, context, and grace.</footer></main></div>;
 }
 
 export function PublicJourneyPage({ params }: { params: { token?: string } }) {

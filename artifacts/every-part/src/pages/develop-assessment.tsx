@@ -322,7 +322,7 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
   };
 
   if (!Number.isInteger(age) || age < 13 || age > 17) return <AgeError slug={slug} />;
-  if (isLoading) return <div className="flex min-h-[100dvh] items-center justify-center bg-background"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+  if (isLoading) return <div className="pathway-theme pathway-theme-develop flex min-h-[100dvh] items-center justify-center bg-background"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   if (!church) return <AgeError slug={slug} message="We couldn't find this church. Please check your link and try again." />;
 
   const youthProfile = church.assessmentConfiguration.youthProfiles?.develop;
@@ -347,7 +347,7 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
   );
 
   return (
-    <div className="min-h-[100dvh] bg-background pb-24">
+    <div className="pathway-theme pathway-theme-develop min-h-[100dvh] bg-background pb-24">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
           <div className="flex items-center gap-3">{church.logoUrl ? <img src={church.logoUrl} alt={church.name} className="h-8 object-contain" /> : <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Compass className="h-4 w-4 text-primary" /></div>}<span className="hidden font-serif font-medium sm:inline">Develop Profile</span></div>
@@ -375,5 +375,5 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
 }
 
 function AgeError({ slug, message = "This assessment is designed for ages 13–17. Please return to the age check." }: { slug: string; message?: string }) {
-  return <div className="flex min-h-[100dvh] items-center justify-center bg-background p-4"><Card className="w-full max-w-md text-center"><CardContent className="space-y-5 p-8"><Compass className="mx-auto h-12 w-12 text-primary" /><h1 className="font-serif text-2xl font-medium">Age check needed</h1><p className="leading-relaxed text-muted-foreground">{message}</p><Button asChild className="w-full"><Link href={`/profile/${slug}`}>Return to start</Link></Button></CardContent></Card></div>;
+  return <div className="pathway-theme pathway-theme-develop flex min-h-[100dvh] items-center justify-center bg-background p-4"><Card className="w-full max-w-md text-center"><CardContent className="space-y-5 p-8"><Compass className="mx-auto h-12 w-12 text-primary" /><h1 className="font-serif text-2xl font-medium">Age check needed</h1><p className="leading-relaxed text-muted-foreground">{message}</p><Button asChild className="w-full"><Link href={`/profile/${slug}`}>Return to start</Link></Button></CardContent></Card></div>;
 }
