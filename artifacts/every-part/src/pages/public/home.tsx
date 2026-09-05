@@ -30,14 +30,14 @@ export default function Home() {
             </Reveal>
             <Reveal className="[animation-delay:.2s]">
               <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                 Every Part helps pastors slow down and discover how God has shaped each person—so the next ask is prayerful, not a guess.
+                Every Part helps pastors and church leaders understand how God has shaped each person—so they can help people discover their gifts, passions, and calling, and live their part in the body of Christ.
               </p>
-               <p className="mt-4 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                 Discover the gifts, passions, calling, ministry potential, and availability of your people—and help connect them with a place to serve and grow.
-               </p>
-               <p className="mt-5 max-w-xl border-l-2 border-secondary pl-4 text-base font-medium leading-7 text-foreground sm:text-lg">
-                 Not a volunteer schedule. A prepared conversation before you ask someone to serve.
-               </p>
+              <p className="mt-4 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
+                Discover the gifts, passions, ministry potential, and availability of your people—and help connect them to meaningful places to serve, grow, and build up the church.
+              </p>
+              <p className="mt-5 max-w-xl border-l-2 border-secondary pl-4 text-base font-medium leading-7 text-foreground sm:text-lg">
+                Not about filling spots. About helping every person find and live their part in the body of Christ.
+              </p>
             </Reveal>
             <Reveal className="[animation-delay:.3s]">
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
