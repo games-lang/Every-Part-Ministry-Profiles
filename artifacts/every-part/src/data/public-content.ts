@@ -112,7 +112,7 @@ export const sampleProfiles = [
     pathway: "Adult Ministry Profile",
     age: "In conversation",
     initials: "S",
-    description: "Encouragement, care, and a thoughtful next step.",
+    description: "Encouragement, care, and a steady presence that helps people feel welcomed and connected.",
     theme: "adult",
     image: "/sample-profile-sarah-community.jpg",
   },
@@ -121,7 +121,7 @@ export const sampleProfiles = [
     pathway: "Discover Profile",
     age: "Ages 6–8",
     initials: "L",
-    description: "Noticing joy, kindness, and the ways she helps.",
+    description: "Discovering joy, kindness, and the ways she can help her church family.",
     theme: "discover",
   },
   {
@@ -129,7 +129,7 @@ export const sampleProfiles = [
     pathway: "Explore Profile",
     age: "Ages 9–12",
     initials: "M",
-    description: "Exploring curiosity, courage, and what matters to him.",
+    description: "Exploring curiosity, courage, and how his questions can help his church family grow.",
     theme: "explore",
   },
   {
@@ -137,7 +137,7 @@ export const sampleProfiles = [
     pathway: "Develop Profile",
     age: "Ages 13–17",
     initials: "J",
-    description: "Growing gifts, meaningful interests, and a next step.",
+    description: "Growing gifts, meaningful interests, and a next step toward serving the Body of Christ.",
     theme: "develop",
   },
 ];
