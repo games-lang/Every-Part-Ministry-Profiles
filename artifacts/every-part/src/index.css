@@ -448,9 +448,9 @@
   box-shadow: 0 8px 24px hsl(var(--foreground) / .045);
 }
 .profile-banner__card--adult { --banner-accent: 179 54% 43%; }
-.profile-banner__card--discover { --banner-accent: 145 42% 32%; }
-.profile-banner__card--explore { --banner-accent: 31 82% 40%; }
-.profile-banner__card--develop { --banner-accent: 231 52% 36%; }
+.profile-banner__card--discover { --banner-accent: 95 37% 37%; }
+.profile-banner__card--explore { --banner-accent: 40 87% 59%; }
+.profile-banner__card--develop { --banner-accent: 212 55% 38%; }
 .profile-banner__avatar {
   display: grid;
   height: 3.25rem;
@@ -492,9 +492,9 @@
   box-shadow: 0 18px 38px hsl(var(--foreground) / .065);
 }
 .sample-profile-card--adult { --sample-accent: 179 54% 43%; }
-.sample-profile-card--discover { --sample-accent: 145 42% 32%; }
-.sample-profile-card--explore { --sample-accent: 31 82% 40%; }
-.sample-profile-card--develop { --sample-accent: 231 52% 42%; }
+.sample-profile-card--discover { --sample-accent: 95 37% 37%; }
+.sample-profile-card--explore { --sample-accent: 40 87% 59%; }
+.sample-profile-card--develop { --sample-accent: 212 55% 38%; }
 .sample-profile-card__header {
   position: relative;
   overflow: hidden;
