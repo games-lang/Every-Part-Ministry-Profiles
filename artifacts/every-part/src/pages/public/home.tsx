@@ -111,6 +111,12 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.92fr_1.08fr] lg:items-start lg:gap-24">
           <Reveal>
             <Eyebrow light>One body. Many meaningful parts.</Eyebrow>
+            <blockquote className="mt-8 border-l-2 border-secondary pl-5 font-serif text-2xl leading-[1.08] tracking-[-.035em] text-white sm:text-3xl">
+              “Just as a body, though one, has many parts, but all its many parts form one body, so it is with Christ.”
+            </blockquote>
+            <p className="mt-4 text-xs font-bold uppercase tracking-[.16em] text-[hsl(var(--landing-slate))]">
+              — 1 Corinthians 12:12 <span className="ml-2 font-medium opacity-70">NIV</span>
+            </p>
             <h2 className="mt-6 max-w-2xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.06em] sm:text-5xl lg:text-6xl">
               The Body Is Strongest When Every Part Is Engaged
             </h2>
@@ -118,24 +124,15 @@ export default function Home() {
               Scripture describes the Church as one body made up of many parts. Each part matters, and each person has something meaningful to contribute.
             </p>
             <p className="mt-5 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
-              But for pastors and ministry leaders, it can be difficult to know how God has shaped every person in the congregation.
+              Every Part is built around that picture: the church is not simply a collection of roles to fill, but one body made up of people God has uniquely shaped.
             </p>
-            <blockquote className="mt-8 border-l-2 border-secondary pl-5 font-serif text-2xl leading-[1.08] tracking-[-.035em] text-white sm:text-3xl">
-              “Just as a body, though one, has many parts, but all its many parts form one body, so it is with Christ.”
-            </blockquote>
-            <p className="mt-4 text-xs font-bold uppercase tracking-[.16em] text-[hsl(var(--landing-slate))]">
-              — 1 Corinthians 12:12 <span className="ml-2 font-medium opacity-70">NIV</span>
-            </p>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
-              Every Part is built around this picture: a church is not a collection of disconnected roles, but one body with many meaningful parts.
-            </p>
-            <Link href="/why-every-part" className="landing-focus mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10">
-              Read more about our philosophy <ArrowRight className="h-4 w-4" />
-            </Link>
           </Reveal>
 
           <Reveal className="[animation-delay:.1s]">
             <div className="rounded-[2rem] border border-white/15 bg-white/[.06] p-6 shadow-[0_24px_60px_hsl(var(--foreground)/.14)] sm:p-8">
+              <p className="text-lg leading-8 text-[hsl(var(--landing-light-text))]">
+                For pastors and ministry leaders, though, it can be difficult to know every part well.
+              </p>
               <div className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
                 {[
                   "What are their gifts?",
@@ -157,6 +154,9 @@ export default function Home() {
               <p className="mt-6 border-l-2 border-secondary pl-5 text-base font-semibold leading-7 text-white">
                 Because when every part is known, equipped, and engaged, the whole Body is strengthened.
               </p>
+              <Link href="/why-every-part" className="landing-focus mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10">
+                Read more about our philosophy <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </Reveal>
         </div>
