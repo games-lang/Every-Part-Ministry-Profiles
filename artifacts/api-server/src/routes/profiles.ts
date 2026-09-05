@@ -210,8 +210,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
   if (
     !requireGroup(
       personalInformationEnabled,
-      basicInformation.ageRange != null &&
-        basicInformation.preferredContact != null &&
+      basicInformation.preferredContact != null &&
         basicInformation.familySituation != null &&
         basicInformation.transportation != null,
       "Personal information",
@@ -341,7 +340,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
           lastName: basicInformation.lastName,
           email: basicInformation.email,
           phone: basicInformation.phone ?? null,
-          ageRange: personalInformationEnabled ? basicInformation.ageRange ?? null : null,
+          ageRange: null,
           preferredContact: personalInformationEnabled ? basicInformation.preferredContact ?? null : null,
           familySituation: personalInformationEnabled ? basicInformation.familySituation ?? null : null,
           transportation: personalInformationEnabled ? basicInformation.transportation ?? null : null,

@@ -970,7 +970,6 @@ const assessmentSchema = z.object({
     lastName: z.string(),
     email: z.string(),
     phone: z.string(),
-    ageRange: choice,
     preferredContact: choice,
     familySituation: choice,
     transportation: choice,
@@ -1083,7 +1082,6 @@ function fieldIsEnabled(
     configuration?.subsections[key] ?? true;
   if (
     [
-      "basicInformation.ageRange",
       "basicInformation.preferredContact",
       "basicInformation.familySituation",
       "basicInformation.transportation",
@@ -1142,7 +1140,6 @@ const defaultValues: Values = {
     lastName: "",
     email: "",
     phone: "",
-    ageRange: "",
     preferredContact: "email",
     familySituation: "",
     transportation: "",
@@ -1790,7 +1787,6 @@ export default function Assessment() {
       configuration.subsections[key];
     add(
       enabled("aboutYou.personalInformation"),
-      "basicInformation.ageRange",
       "basicInformation.preferredContact",
       "basicInformation.familySituation",
       "basicInformation.transportation",
@@ -1986,7 +1982,6 @@ export default function Assessment() {
       subsectionEnabled("aboutYou.personalInformation")
     ) {
       [
-        "basicInformation.ageRange",
         "basicInformation.preferredContact",
         "basicInformation.familySituation",
         "basicInformation.transportation",
@@ -2205,7 +2200,6 @@ export default function Assessment() {
         phone: data.basicInformation.phone || null,
         ...(subsectionEnabled("aboutYou.personalInformation")
           ? {
-              ageRange: data.basicInformation.ageRange || null,
               preferredContact: data.basicInformation.preferredContact || null,
               familySituation: data.basicInformation.familySituation || null,
               transportation: data.basicInformation.transportation || null,
@@ -2506,19 +2500,6 @@ export default function Assessment() {
                           form={form}
                           name="basicInformation.phone"
                           label="Phone (optional)"
-                        />
-                        <SelectField
-                          form={form}
-                          name="basicInformation.ageRange"
-                          label="Age range"
-                          options={[
-                            "18–25",
-                            "26–35",
-                            "36–45",
-                            "46–55",
-                            "56–65",
-                            "66+",
-                          ]}
                         />
                         <SelectField
                           form={form}
