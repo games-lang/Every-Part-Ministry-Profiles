@@ -120,6 +120,18 @@ export default function Home() {
             <p className="mt-5 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
               But for pastors and ministry leaders, it can be difficult to know how God has shaped every person in the congregation.
             </p>
+            <blockquote className="mt-8 border-l-2 border-secondary pl-5 font-serif text-2xl leading-[1.08] tracking-[-.035em] text-white sm:text-3xl">
+              “Just as a body, though one, has many parts, but all its many parts form one body, so it is with Christ.”
+            </blockquote>
+            <p className="mt-4 text-xs font-bold uppercase tracking-[.16em] text-[hsl(var(--landing-slate))]">
+              — 1 Corinthians 12:12 <span className="ml-2 font-medium opacity-70">NIV</span>
+            </p>
+            <p className="mt-7 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
+              Every Part is built around this picture: a church is not a collection of disconnected roles, but one body with many meaningful parts.
+            </p>
+            <Link href="/why-every-part" className="landing-focus mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10">
+              Read more about our philosophy <ArrowRight className="h-4 w-4" />
+            </Link>
           </Reveal>
 
           <Reveal className="[animation-delay:.1s]">
@@ -200,30 +212,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="border-y border-border bg-primary px-5 py-20 text-primary-foreground sm:px-8 lg:py-28">
-        <div className="mx-auto max-w-5xl">
-          <Reveal>
-            <div className="mx-auto max-w-4xl">
-              <Eyebrow light>Why every part matters</Eyebrow>
-              <blockquote className="mt-8 border-l-2 border-secondary pl-6 font-serif text-3xl leading-[1.04] tracking-[-.045em] sm:pl-8 sm:text-5xl lg:text-6xl">
-                “Just as a body, though one, has many parts, but all its many parts form one body, so it is with Christ.”
-              </blockquote>
-              <p className="mt-6 text-xs font-bold uppercase tracking-[.16em] text-[hsl(var(--landing-slate))]">
-                — 1 Corinthians 12:12 <span className="ml-2 font-medium opacity-70">NIV</span>
-              </p>
-              <p className="mt-8 max-w-2xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
-                Every Part is built around this picture: a church is not a collection of disconnected roles, but one body with many meaningful parts.
-              </p>
-              <div className="mt-10">
-                <Link href="/why-every-part" className="landing-focus inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10">
-                  Read more about our philosophy <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </section>
 
