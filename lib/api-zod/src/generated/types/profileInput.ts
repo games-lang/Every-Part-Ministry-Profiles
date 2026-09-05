@@ -31,6 +31,11 @@ export interface ProfileInput {
   journeyToken?: string | null;
   /** @nullable */
   inviteToken?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];

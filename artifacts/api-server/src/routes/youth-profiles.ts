@@ -41,8 +41,10 @@ import {
   assertProfileCapacity,
   ProfileLimitReachedError,
 } from "../lib/profile-limits";
+import { ObjectStorageService } from "../lib/objectStorage";
 
 const router: IRouter = Router();
+const storage = new ObjectStorageService();
 
 async function createYouthProfileWithinLimit(
   churchId: number,
@@ -98,6 +100,14 @@ router.post("/youth-profiles", async (req, res): Promise<void> => {
   if (!church) {
     res.status(404).json({ error: "Church not found" });
     return;
+  }
+  if (generated.data.profilePhotoPath) {
+    try {
+      await storage.validateProfilePhoto(generated.data.profilePhotoPath, church.id);
+    } catch (error) {
+      res.status(400).json({ error: `Profile photo is invalid: ${error instanceof Error ? error.message : "unknown error"}` });
+      return;
+    }
   }
   if (!userId && !matchesDiscoverHallwayCode(church.discoverHallwayCode, parsed.data.hallwayCode)) {
     res.status(401).json({ error: "Unauthorized" });
@@ -157,6 +167,7 @@ router.post("/youth-profiles", async (req, res): Promise<void> => {
     guardianEmail: parsed.data.guardian.email,
     guardianConsent: true,
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    profilePhotoPath: generated.data.profilePhotoPath ?? null,
     });
   } catch (error) {
     if (respondToProfileLimit(error, res)) return;
@@ -215,6 +226,14 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Church not found" });
     return;
   }
+  if (generated.data.profilePhotoPath) {
+    try {
+      await storage.validateProfilePhoto(generated.data.profilePhotoPath, church.id);
+    } catch (error) {
+      res.status(400).json({ error: `Profile photo is invalid: ${error instanceof Error ? error.message : "unknown error"}` });
+      return;
+    }
+  }
 
   const recommended = pathwayForAge(parsed.data.age);
   let overridden = false;
@@ -268,6 +287,7 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     guardianEmail: parsed.data.guardian.email,
     guardianConsent: true,
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    profilePhotoPath: generated.data.profilePhotoPath ?? null,
     });
   } catch (error) {
     if (respondToProfileLimit(error, res)) return;
@@ -333,6 +353,14 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Church not found" });
     return;
   }
+  if (generated.data.profilePhotoPath) {
+    try {
+      await storage.validateProfilePhoto(generated.data.profilePhotoPath, church.id);
+    } catch (error) {
+      res.status(400).json({ error: `Profile photo is invalid: ${error instanceof Error ? error.message : "unknown error"}` });
+      return;
+    }
+  }
 
   const recommended = pathwayForAge(parsed.data.age);
   let overridden = false;
@@ -386,6 +414,7 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     guardianEmail: parsed.data.guardian.email,
     guardianConsent: true,
     resultExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    profilePhotoPath: generated.data.profilePhotoPath ?? null,
     });
   } catch (error) {
     if (respondToProfileLimit(error, res)) return;

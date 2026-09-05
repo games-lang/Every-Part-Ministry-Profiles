@@ -32,6 +32,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
+import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
 
 // --- Form Schema ---
 const formSchema = z.object({
@@ -188,6 +189,8 @@ export default function DiscoverAssessment({
 
   const [savedFeedback, setSavedFeedback] = useState("");
   const [saveDraftOptIn, setSaveDraftOptIn] = useState(false);
+  const [profilePhotoPath, setProfilePhotoPath] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -293,6 +296,7 @@ export default function DiscoverAssessment({
   };
 
   const onSubmit = (data: FormValues) => {
+    if (photoUploading) return;
     if (!initialAge || isNaN(initialAge)) {
       alert("Missing age. Please go back and enter an age.");
       return;
@@ -333,6 +337,7 @@ export default function DiscoverAssessment({
       age: initialAge,
       birthdate: initialBirthdate,
       profileType: "discover",
+      ...(profilePhotoPath ? { profilePhotoPath } : {}),
       child: data.child,
       answers: {
         ...data.answers,
@@ -544,6 +549,7 @@ export default function DiscoverAssessment({
                   {errors.child?.lastName && <p className="text-sm text-destructive">{errors.child.lastName.message}</p>}
                 </div>
               </div>
+              <ProfilePhotoUploader churchSlug={slug} name={`${watchedValues.child.firstName} ${watchedValues.child.lastName}`} value={profilePhotoPath} onChange={setProfilePhotoPath} onUploadingChange={setPhotoUploading} />
 
               <div className="space-y-2">
                 <Label htmlFor="likes" className="text-base font-normal">What are some things you really like to do for fun?</Label>
@@ -949,7 +955,7 @@ export default function DiscoverAssessment({
                 type="submit" 
                 size="lg" 
                 className="w-full text-base font-medium py-6"
-                disabled={submitProfile.isPending}
+                disabled={submitProfile.isPending || photoUploading}
               >
                 {submitProfile.isPending ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />

@@ -80,6 +80,11 @@ export class ObjectStorageService {
     return signObjectURL(parseObjectPath(fullPath));
   }
 
+  async getProfilePhotoUploadURL(churchId: number) {
+    const fullPath = `${this.getPrivateObjectDir()}/profile-photos/${churchId}/${randomUUID()}`;
+    return signObjectURL(parseObjectPath(fullPath));
+  }
+
   normalizeObjectEntityPath(rawPath: string) {
     if (!rawPath.startsWith("https://storage.googleapis.com/")) return rawPath;
     const rawObjectPath = new URL(rawPath).pathname;
@@ -143,6 +148,43 @@ export class ObjectStorageService {
     if (!signatureMatches) {
       await file.delete({ ignoreNotFound: true });
       throw new Error("Logo contents do not match the image type");
+    }
+    return { file, contentType };
+  }
+
+  async validateProfilePhoto(
+    objectPath: string,
+    churchId: number,
+  ): Promise<{ file: File; contentType: string }> {
+    const expectedPrefix = `/objects/profile-photos/${churchId}/`;
+    if (!objectPath.startsWith(expectedPrefix)) {
+      throw new Error("Profile photo does not belong to this church");
+    }
+    const file = await this.getObjectEntityFile(objectPath);
+    const [metadata] = await file.getMetadata();
+    const size = Number(metadata.size || 0);
+    const contentType = String(metadata.contentType || "");
+    if (
+      size < 1 ||
+      size > 5 * 1024 * 1024 ||
+      !["image/png", "image/jpeg", "image/webp"].includes(contentType)
+    ) {
+      await file.delete({ ignoreNotFound: true });
+      throw new Error("Profile photo metadata is invalid");
+    }
+    const [header] = await file.download({ start: 0, end: 15 });
+    const isPng = header.length >= 8 && header.subarray(0, 8).equals(
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    );
+    const isJpeg = header.length >= 3 && header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff;
+    const isWebp = header.length >= 12 && header.subarray(0, 4).toString("ascii") === "RIFF" && header.subarray(8, 12).toString("ascii") === "WEBP";
+    if (
+      !((contentType === "image/png" && isPng) ||
+        (contentType === "image/jpeg" && isJpeg) ||
+        (contentType === "image/webp" && isWebp))
+    ) {
+      await file.delete({ ignoreNotFound: true });
+      throw new Error("Profile photo contents do not match the image type");
     }
     return { file, contentType };
   }

@@ -617,6 +617,28 @@ paths:
           description: Invalid image metadata
         "401":
           description: Unauthorized
+  /storage/profile-photos/request-url:
+    post:
+      operationId: requestProfilePhotoUploadUrl
+      tags: [profiles]
+      summary: Request a church-scoped profile photo upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfilePhotoUploadUrlRequest"
+      responses:
+        "200":
+          description: Presigned profile photo upload URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfilePhotoUploadUrlResponse"
+        "400":
+          description: Invalid image metadata
+        "404":
+          description: Church not found
   /dashboard/summary:
     get:
       operationId: getDashboardSummary
@@ -1359,6 +1381,30 @@ paths:
           description: Profile not found
         "502":
           description: AI service unavailable
+  /profiles/{id}/photo:
+    get:
+      operationId: getProfilePhoto
+      tags: [profiles]
+      summary: Get a profile photo for an administrator in the same church
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Profile photo image
+          content:
+            image/png:
+              schema: { type: string, format: binary }
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/webp:
+              schema: { type: string, format: binary }
+        "401":
+          description: Unauthorized
+        "404":
+          description: Profile photo not found
 components:
   schemas:
     AssistantChatMessage:
@@ -2060,6 +2106,21 @@ components:
         objectPath: { type: string }
         metadata:
           $ref: "#/components/schemas/UploadUrlRequest"
+    ProfilePhotoUploadUrlRequest:
+      allOf:
+        - $ref: "#/components/schemas/UploadUrlRequest"
+        - type: object
+          required: [churchSlug]
+          properties:
+            churchSlug: { type: string, minLength: 1, maxLength: 120 }
+    ProfilePhotoUploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath, metadata]
+      properties:
+        uploadURL: { type: string }
+        objectPath: { type: string }
+        metadata:
+          $ref: "#/components/schemas/UploadUrlRequest"
     SpiritualGiftName:
       type: string
       enum:
@@ -2138,6 +2199,7 @@ components:
         teamId: { type: ["integer", "null"] }
         profileType: { type: string, enum: [adult, discover, explore, develop] }
         age: { type: ["integer", "null"], minimum: 6, maximum: 120 }
+        profilePhotoUrl: { type: ["string", "null"] }
     MinistryTeam:
       type: object
       required: [id, name, description, isArchived, memberCount, members]
@@ -2513,6 +2575,7 @@ components:
         profileType: { type: string, enum: [adult] }
         journeyToken: { type: ["string", "null"], format: uuid }
         inviteToken: { type: ["string", "null"], format: uuid }
+        profilePhotoPath: { type: ["string", "null"], maxLength: 500 }
         basicInformation:
           $ref: "#/components/schemas/BasicInformationInput"
         churchConnection:
@@ -2851,6 +2914,7 @@ components:
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [discover] }
         journeyToken: { type: ["string", "null"], format: uuid }
+        profilePhotoPath: { type: ["string", "null"], maxLength: 500 }
         hallwayCode:
           type: string
           minLength: 6
@@ -2978,6 +3042,7 @@ components:
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [explore] }
         journeyToken: { type: ["string", "null"], format: uuid }
+        profilePhotoPath: { type: ["string", "null"], maxLength: 500 }
         child:
           type: object
           additionalProperties: false
@@ -3121,6 +3186,7 @@ components:
         birthdate: { type: string, format: date }
         profileType: { type: string, enum: [develop] }
         journeyToken: { type: ["string", "null"], format: uuid }
+        profilePhotoPath: { type: ["string", "null"], maxLength: 500 }
         child:
           type: object
           additionalProperties: false

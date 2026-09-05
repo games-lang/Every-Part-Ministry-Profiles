@@ -22,6 +22,7 @@ function profile(overrides: Partial<MinistryProfile> = {}): MinistryProfile {
     guardianName: null,
     guardianEmail: null,
     guardianConsent: null,
+    profilePhotoPath: null,
     firstName: "Taylor",
     lastName: "Member",
     email: "private@example.com",

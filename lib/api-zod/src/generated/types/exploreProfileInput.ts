@@ -26,6 +26,11 @@ export interface ExploreProfileInput {
   profileType: ExploreProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
   child: ExploreProfileInputChild;
   guardian: ExploreProfileInputGuardian;
   answers: ExploreAnswersInput;

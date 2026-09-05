@@ -19,6 +19,7 @@ import { CoordinatorAsk, hasValues } from "@/components/coordinator-ask";
 import { toast } from "@/hooks/use-toast";
 import { ProfileSchedule } from "@/components/profile-schedule";
 import { ProfileHelper } from "@/components/profile-helper";
+import { ProfileAvatar } from "@/components/profile-photo-uploader";
 
 const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
@@ -414,7 +415,7 @@ export default function ProfileDetail() {
        </Badge>
      )}
      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div><p className="mb-2 text-xs font-bold uppercase tracking-[.16em] text-accent">Ministry profile</p><h1 className="font-serif text-4xl tracking-[-.04em]">{profile.memberName}</h1><p className="mt-1 text-muted-foreground">Completed {new Date(profile.completedAt).toLocaleDateString()}</p></div>
+        <div className="flex items-center gap-4"><ProfileAvatar name={profile.memberName} photoUrl={profile.profilePhotoUrl} className="h-16 w-16 text-xl" /><div><p className="mb-2 text-xs font-bold uppercase tracking-[.16em] text-accent">Ministry profile</p><h1 className="font-serif text-4xl tracking-[-.04em]">{profile.memberName}</h1><p className="mt-1 text-muted-foreground">Completed {new Date(profile.completedAt).toLocaleDateString()}</p></div></div>
        <div className="flex flex-wrap gap-2 no-print">
          <Button variant="outline" asChild><Link href={`/profiles/${profile.id}/journey`}><Compass className="h-4 w-4" />View journey</Link></Button>
          {profile.journeyToken && <Button variant="ghost" onClick={() => { const url = `${window.location.origin}${import.meta.env.BASE_URL}journey/${profile.journeyToken}`; void navigator.clipboard?.writeText(url); setJourneyCopied(true); window.setTimeout(() => setJourneyCopied(false), 1800); }}>{journeyCopied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}{journeyCopied ? "Copied" : "Copy private link"}</Button>}

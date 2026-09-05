@@ -57,8 +57,10 @@ import {
   AiCreditsExceededError,
   reserveAiCredits,
 } from "../lib/ai-credits";
+import { ObjectNotFoundError, ObjectStorageService } from "../lib/objectStorage";
 
 const router: IRouter = Router();
+const storage = new ObjectStorageService();
 
 router.get("/profiles", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
@@ -164,6 +166,18 @@ router.post("/profiles", async (req, res): Promise<void> => {
   if (!basicInformation) {
     res.status(400).json({ error: "First name, last name, and email are required." });
     return;
+  }
+  if (parsed.data.profilePhotoPath) {
+    try {
+      await storage.validateProfilePhoto(parsed.data.profilePhotoPath, church.id);
+    } catch (error) {
+      res.status(400).json({
+        error: error instanceof Error
+          ? `Profile photo is invalid: ${error.message}`
+          : "Profile photo is invalid.",
+      });
+      return;
+    }
   }
   const requireGroup = (condition: boolean, value: unknown, label: string) => {
     if (condition && value == null) {
@@ -359,6 +373,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
           spiritualHealth: filterAssessmentSection("spiritualHealth", parsed.data.assessmentSections?.spiritualHealth, configuration),
           assessmentConfigurationSnapshot: configuration,
           ministryCustomizationSnapshot: customization,
+          profilePhotoPath: parsed.data.profilePhotoPath ?? null,
         })
         .returning();
 
@@ -569,6 +584,66 @@ router.get("/profiles/:id", async (req, res): Promise<void> => {
     profile.personKey = journey.accessToken;
   }
   res.json(GetProfileResponse.parse(profileResponse(profile)));
+});
+
+router.get("/profiles/:id/photo", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+  const params = GetProfileParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ error: "Profile photo not found" });
+    return;
+  }
+  const church = await getOrCreateChurch(userId);
+  const [profile] = await db
+    .select({
+      profilePhotoPath: ministryProfilesTable.profilePhotoPath,
+      churchId: ministryProfilesTable.churchId,
+    })
+    .from(ministryProfilesTable)
+    .where(and(
+      eq(ministryProfilesTable.id, params.data.id),
+      eq(ministryProfilesTable.churchId, church.id),
+    ))
+    .limit(1);
+  if (!profile?.profilePhotoPath) {
+    res.status(404).json({ error: "Profile photo not found" });
+    return;
+  }
+  try {
+    const { file, contentType } = await storage.validateProfilePhoto(
+      profile.profilePhotoPath,
+      church.id,
+    );
+    const response = await storage.downloadObject(file, contentType);
+    res.status(response.status);
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    res.setHeader("Cache-Control", "private, max-age=300");
+    if (!response.body) {
+      res.end();
+      return;
+    }
+    const reader = response.body.getReader();
+    const write = async (): Promise<void> => {
+      const { done, value } = await reader.read();
+      if (done) {
+        res.end();
+        return;
+      }
+      if (!res.write(Buffer.from(value))) {
+        await new Promise<void>((resolve) => res.once("drain", resolve));
+      }
+      await write();
+    };
+    await write();
+  } catch (error) {
+    if (error instanceof ObjectNotFoundError) {
+      res.status(404).json({ error: "Profile photo not found" });
+      return;
+    }
+    req.log.error({ err: error, profileId: params.data.id }, "Unable to serve profile photo");
+    res.status(404).json({ error: "Profile photo not found" });
+  }
 });
 
 export default router;

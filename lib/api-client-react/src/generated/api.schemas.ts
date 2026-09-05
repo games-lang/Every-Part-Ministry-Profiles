@@ -987,6 +987,20 @@ export interface UploadUrlResponse {
   metadata: UploadUrlRequest;
 }
 
+export type ProfilePhotoUploadUrlRequest = UploadUrlRequest & {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  churchSlug: string;
+};
+
+export interface ProfilePhotoUploadUrlResponse {
+  uploadURL: string;
+  objectPath: string;
+  metadata: UploadUrlRequest;
+}
+
 export type ProfileListItemProfileType = typeof ProfileListItemProfileType[keyof typeof ProfileListItemProfileType];
 
 
@@ -1016,6 +1030,8 @@ export interface ProfileListItem {
      * @nullable
      */
   age: number | null;
+  /** @nullable */
+  profilePhotoUrl?: string | null;
 }
 
 export interface CountItem {
@@ -1763,6 +1779,11 @@ export interface ProfileInput {
   journeyToken?: string | null;
   /** @nullable */
   inviteToken?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
   basicInformation: BasicInformationInput;
   churchConnection?: ChurchConnectionInput;
   passions?: string[];
@@ -2071,6 +2092,11 @@ export interface DiscoverProfileInput {
   /** @nullable */
   journeyToken?: string | null;
   /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
+  /**
      * @minLength 6
      * @maxLength 6
      * @pattern ^[A-HJ-NP-Z2-9]{6}$
@@ -2321,6 +2347,11 @@ export interface ExploreProfileInput {
   profileType: ExploreProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
   child: ExploreProfileInputChild;
   guardian: ExploreProfileInputGuardian;
   answers: ExploreAnswersInput;
@@ -2710,6 +2741,11 @@ export interface DevelopProfileInput {
   profileType: DevelopProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
   child: DevelopProfileInputChild;
   guardian: DevelopProfileInputGuardian;
   answers: DevelopAnswersInput;

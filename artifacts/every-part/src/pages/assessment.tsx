@@ -49,6 +49,7 @@ import {
 import { personalitySummarySentence } from "@/lib/personality-prose";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
 import { ProfileParts } from "@/components/profile-parts";
+import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
 
 function hexToHsl(hex: string) {
   const value = hex.replace("#", "");
@@ -1526,6 +1527,8 @@ export default function Assessment() {
   const [submitError, setSubmitError] = useState("");
   const [reflectionValidationError, setReflectionValidationError] =
     useState("");
+  const [profilePhotoPath, setProfilePhotoPath] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
 
   if (!age || isNaN(age)) {
     return (
@@ -2117,7 +2120,7 @@ export default function Assessment() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const submit = (data: Values) => {
-    if (submissionStarted.current) return;
+    if (submissionStarted.current || photoUploading) return;
     submissionStarted.current = true;
     setSubmitError("");
     const activeMinistryKeys = new Set(
@@ -2191,6 +2194,7 @@ export default function Assessment() {
       activePersonalityDimensions,
     );
     const payload: ProfileInput = {
+      ...(profilePhotoPath ? { profilePhotoPath } : {}),
       churchSlug: slug,
       journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       inviteToken: inviteToken || undefined,
@@ -2561,6 +2565,13 @@ export default function Assessment() {
                           ]}
                         />
                       </div>
+                      <ProfilePhotoUploader
+                        churchSlug={slug}
+                        name={`${form.watch("basicInformation.firstName")} ${form.watch("basicInformation.lastName")}`}
+                        value={profilePhotoPath}
+                        onChange={setProfilePhotoPath}
+                        onUploadingChange={setPhotoUploading}
+                      />
                       <Heading description="Optional details about your work, education, and experience.">
                         Skills & Experience
                       </Heading>
@@ -3525,7 +3536,7 @@ export default function Assessment() {
                 {stepIndex === stepKeys.length - 1 ? (
                   <Button
                     type="button"
-                    disabled={createProfile.isPending}
+                    disabled={createProfile.isPending || photoUploading}
                     onClick={() => void form.handleSubmit(submit)()}
                   >
                     {createProfile.isPending && (

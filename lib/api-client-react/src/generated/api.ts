@@ -77,6 +77,8 @@ import type {
   ProfileHelperResponse,
   ProfileInput,
   ProfileListItem,
+  ProfilePhotoUploadUrlRequest,
+  ProfilePhotoUploadUrlResponse,
   ProfileTeamAssignment,
   ProfileTeamUpdateInput,
   PublicChurch,
@@ -2391,6 +2393,86 @@ export const useRequestUploadUrl = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getRequestUploadUrlMutationOptions(options));
+    }
+
+export const getRequestProfilePhotoUploadUrlUrl = () => {
+
+
+
+
+  return `/api/storage/profile-photos/request-url`
+}
+
+/**
+ * @summary Request a church-scoped profile photo upload URL
+ */
+export const requestProfilePhotoUploadUrl = async (profilePhotoUploadUrlRequest: ProfilePhotoUploadUrlRequest, options?: Parameters<typeof customFetch>[1]): Promise<ProfilePhotoUploadUrlResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<ProfilePhotoUploadUrlResponse>(getRequestProfilePhotoUploadUrlUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(profilePhotoUploadUrlRequest)
+  }
+);}
+
+
+
+
+
+export const getRequestProfilePhotoUploadUrlMutationKey = () => ['requestProfilePhotoUploadUrl'] as const;
+
+export const getRequestProfilePhotoUploadUrlMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestProfilePhotoUploadUrl>>, TError,RequestProfilePhotoUploadUrlMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestProfilePhotoUploadUrl>>, TError,RequestProfilePhotoUploadUrlMutationVariables, TContext> => {
+
+const mutationKey = getRequestProfilePhotoUploadUrlMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestProfilePhotoUploadUrl>>, RequestProfilePhotoUploadUrlMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  requestProfilePhotoUploadUrl(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestProfilePhotoUploadUrlMutationResult = NonNullable<Awaited<ReturnType<typeof requestProfilePhotoUploadUrl>>>
+    export type RequestProfilePhotoUploadUrlMutationBody = BodyType<ProfilePhotoUploadUrlRequest>
+    export type RequestProfilePhotoUploadUrlMutationError = ErrorType<void>
+    export type RequestProfilePhotoUploadUrlMutationVariables = {data: BodyType<ProfilePhotoUploadUrlRequest>}
+
+    /**
+ * @summary Request a church-scoped profile photo upload URL
+ */
+export const useRequestProfilePhotoUploadUrl = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestProfilePhotoUploadUrl>>, TError,RequestProfilePhotoUploadUrlMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestProfilePhotoUploadUrl>>,
+        TError,
+        RequestProfilePhotoUploadUrlMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRequestProfilePhotoUploadUrlMutationOptions(options));
     }
 
 export const getGetDashboardSummaryUrl = () => {
@@ -4923,4 +5005,81 @@ export const useChatWithProfileHelper = <TError = ErrorType<void>,
       > => {
       return useMutation(getChatWithProfileHelperMutationOptions(options));
     }
+
+export const getGetProfilePhotoUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}/photo`
+}
+
+/**
+ * @summary Get a profile photo for an administrator in the same church
+ */
+export const getProfilePhoto = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetProfilePhotoUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfilePhotoQueryKey = (id: number,) => {
+    return [
+    `/api/profiles/${id}/photo`
+    ] as const;
+    }
+
+
+export const getGetProfilePhotoQueryOptions = <TData = Awaited<ReturnType<typeof getProfilePhoto>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfilePhoto>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfilePhotoQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfilePhoto>>> = ({ signal }) => getProfilePhoto(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfilePhoto>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfilePhotoQueryResult = NonNullable<Awaited<ReturnType<typeof getProfilePhoto>>>
+export type GetProfilePhotoQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get a profile photo for an administrator in the same church
+ */
+
+export function useGetProfilePhoto<TData = Awaited<ReturnType<typeof getProfilePhoto>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfilePhoto>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfilePhotoQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 

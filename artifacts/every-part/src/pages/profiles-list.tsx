@@ -12,6 +12,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useForm } from "react-hook-form";
 import { EmptyState } from "@/components/empty-state";
 import { PeoplePanel } from "@/components/people-panel";
+import { ProfileAvatar } from "@/components/profile-photo-uploader";
 
 const AVAILABILITY_OPTIONS = [
   "Sunday mornings",
@@ -363,9 +364,7 @@ export default function ProfilesList() {
                    <div className="flex flex-col gap-5 p-6 md:flex-row md:items-center md:gap-6">
                      <Link href={`/profiles/${profile.id}`} className="min-w-0 flex-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                        <div className="flex items-start gap-4 md:items-center">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <User className="w-6 h-6" />
-                      </div>
+                       <ProfileAvatar name={profile.memberName} photoUrl={profile.profilePhotoUrl} />
 
                        <div className="min-w-0 flex-1 space-y-1.5">
                         <div className="flex items-center justify-between">

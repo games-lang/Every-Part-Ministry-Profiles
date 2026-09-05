@@ -1460,6 +1460,42 @@ export const RequestUploadUrlResponse = zod.object({
 
 
 /**
+ * @summary Request a church-scoped profile photo upload URL
+ */
+export const requestProfilePhotoUploadUrlBodyOneNameMax = 255;
+
+export const requestProfilePhotoUploadUrlBodyOneSizeMax = 5242880;
+
+export const requestProfilePhotoUploadUrlBodyTwoChurchSlugMax = 120;
+
+
+
+export const RequestProfilePhotoUploadUrlBody = zod.object({
+  "name": zod.string().min(1).max(requestProfilePhotoUploadUrlBodyOneNameMax),
+  "size": zod.int().min(1).max(requestProfilePhotoUploadUrlBodyOneSizeMax),
+  "contentType": zod.enum(['image/png', 'image/jpeg', 'image/webp'])
+}).and(zod.object({
+  "churchSlug": zod.string().min(1).max(requestProfilePhotoUploadUrlBodyTwoChurchSlugMax)
+}))
+
+export const requestProfilePhotoUploadUrlResponseMetadataNameMax = 255;
+
+export const requestProfilePhotoUploadUrlResponseMetadataSizeMax = 5242880;
+
+
+
+export const RequestProfilePhotoUploadUrlResponse = zod.object({
+  "uploadURL": zod.string(),
+  "objectPath": zod.string(),
+  "metadata": zod.object({
+  "name": zod.string().min(1).max(requestProfilePhotoUploadUrlResponseMetadataNameMax),
+  "size": zod.int().min(1).max(requestProfilePhotoUploadUrlResponseMetadataSizeMax),
+  "contentType": zod.enum(['image/png', 'image/jpeg', 'image/webp'])
+})
+})
+
+
+/**
  * @summary Get dashboard totals and recent profile activity
  */
 export const getDashboardSummaryResponseChurchPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
@@ -1662,7 +1698,8 @@ export const GetDashboardSummaryResponse = zod.object({
   "servingFrequency": zod.string().nullish(),
   "teamId": zod.int().nullable(),
   "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
-  "age": zod.int().min(getDashboardSummaryResponseRecentProfilesItemAgeMin).max(getDashboardSummaryResponseRecentProfilesItemAgeMax).nullable()
+  "age": zod.int().min(getDashboardSummaryResponseRecentProfilesItemAgeMin).max(getDashboardSummaryResponseRecentProfilesItemAgeMax).nullable(),
+  "profilePhotoUrl": zod.string().nullish()
 })),
   "topInterests": zod.array(zod.object({
   "label": zod.string(),
@@ -1957,7 +1994,8 @@ export const ListProfilesResponseItem = zod.object({
   "servingFrequency": zod.string().nullish(),
   "teamId": zod.int().nullable(),
   "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
-  "age": zod.int().min(listProfilesResponseAgeMin).max(listProfilesResponseAgeMax).nullable()
+  "age": zod.int().min(listProfilesResponseAgeMin).max(listProfilesResponseAgeMax).nullable(),
+  "profilePhotoUrl": zod.string().nullish()
 })
 export const ListProfilesResponse = zod.array(ListProfilesResponseItem)
 
@@ -1968,6 +2006,8 @@ export const ListProfilesResponse = zod.array(ListProfilesResponseItem)
 
 export const createProfileBodyAgeMin = 18;
 export const createProfileBodyAgeMax = 120;
+
+export const createProfileBodyProfilePhotoPathMax = 500;
 
 
 
@@ -1987,6 +2027,7 @@ export const CreateProfileBody = zod.object({
   "profileType": zod.enum(['adult']),
   "journeyToken": zod.uuid().nullish(),
   "inviteToken": zod.uuid().nullish(),
+  "profilePhotoPath": zod.string().max(createProfileBodyProfilePhotoPathMax).nullish(),
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
   "lastName": zod.string().min(1),
@@ -2100,7 +2141,8 @@ export const CreateProfileResponse = zod.object({
   "servingFrequency": zod.string().nullish(),
   "teamId": zod.int().nullable(),
   "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
-  "age": zod.int().min(createProfileResponseOneAgeMin).max(createProfileResponseOneAgeMax).nullable()
+  "age": zod.int().min(createProfileResponseOneAgeMin).max(createProfileResponseOneAgeMax).nullable(),
+  "profilePhotoUrl": zod.string().nullish()
 }).and(zod.object({
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
@@ -2767,6 +2809,8 @@ export const submitDiscoverProfileBodyChurchSlugMax = 120;
 export const submitDiscoverProfileBodyAgeMin = 6;
 export const submitDiscoverProfileBodyAgeMax = 120;
 
+export const submitDiscoverProfileBodyProfilePhotoPathMax = 500;
+
 export const submitDiscoverProfileBodyHallwayCodeMin = 6;
 export const submitDiscoverProfileBodyHallwayCodeMax = 6;
 
@@ -2824,6 +2868,7 @@ export const SubmitDiscoverProfileBody = zod.object({
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['discover']),
   "journeyToken": zod.uuid().nullish(),
+  "profilePhotoPath": zod.string().max(submitDiscoverProfileBodyProfilePhotoPathMax).nullish(),
   "hallwayCode": zod.string().min(submitDiscoverProfileBodyHallwayCodeMin).max(submitDiscoverProfileBodyHallwayCodeMax).regex(submitDiscoverProfileBodyHallwayCodeRegExp).optional(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitDiscoverProfileBodyChildFirstNameMax),
@@ -2915,6 +2960,8 @@ export const submitExploreProfileBodyChurchSlugMax = 120;
 export const submitExploreProfileBodyAgeMin = 9;
 export const submitExploreProfileBodyAgeMax = 12;
 
+export const submitExploreProfileBodyProfilePhotoPathMax = 500;
+
 export const submitExploreProfileBodyChildFirstNameMax = 80;
 
 export const submitExploreProfileBodyChildLastNameMax = 80;
@@ -2965,6 +3012,7 @@ export const SubmitExploreProfileBody = zod.object({
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['explore']),
   "journeyToken": zod.uuid().nullish(),
+  "profilePhotoPath": zod.string().max(submitExploreProfileBodyProfilePhotoPathMax).nullish(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitExploreProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitExploreProfileBodyChildLastNameMax)
@@ -3071,6 +3119,8 @@ export const submitDevelopProfileBodyChurchSlugMax = 120;
 export const submitDevelopProfileBodyAgeMin = 13;
 export const submitDevelopProfileBodyAgeMax = 17;
 
+export const submitDevelopProfileBodyProfilePhotoPathMax = 500;
+
 export const submitDevelopProfileBodyChildFirstNameMax = 80;
 
 export const submitDevelopProfileBodyChildLastNameMax = 80;
@@ -3141,6 +3191,7 @@ export const SubmitDevelopProfileBody = zod.object({
   "birthdate": zod.coerce.date().optional(),
   "profileType": zod.enum(['develop']),
   "journeyToken": zod.uuid().nullish(),
+  "profilePhotoPath": zod.string().max(submitDevelopProfileBodyProfilePhotoPathMax).nullish(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitDevelopProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitDevelopProfileBodyChildLastNameMax)
@@ -3345,7 +3396,8 @@ export const GetProfileResponse = zod.object({
   "servingFrequency": zod.string().nullish(),
   "teamId": zod.int().nullable(),
   "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
-  "age": zod.int().min(getProfileResponseOneAgeMin).max(getProfileResponseOneAgeMax).nullable()
+  "age": zod.int().min(getProfileResponseOneAgeMin).max(getProfileResponseOneAgeMax).nullable(),
+  "profilePhotoUrl": zod.string().nullish()
 }).and(zod.object({
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
@@ -3555,5 +3607,18 @@ export const chatWithProfileHelperResponseAnswerMax = 5000;
 export const ChatWithProfileHelperResponse = zod.object({
   "answer": zod.string().min(1).max(chatWithProfileHelperResponseAnswerMax)
 })
+
+
+/**
+ * @summary Get a profile photo for an administrator in the same church
+ */
+
+
+
+export const GetProfilePhotoParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetProfilePhotoResponse = zod.unknown()
 
 

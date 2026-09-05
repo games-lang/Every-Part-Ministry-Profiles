@@ -26,6 +26,11 @@ export interface DevelopProfileInput {
   profileType: DevelopProfileInputProfileType;
   /** @nullable */
   journeyToken?: string | null;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  profilePhotoPath?: string | null;
   child: DevelopProfileInputChild;
   guardian: DevelopProfileInputGuardian;
   answers: DevelopAnswersInput;

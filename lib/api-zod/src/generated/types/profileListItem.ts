@@ -26,4 +26,6 @@ export interface ProfileListItem {
      * @nullable
      */
   age: number | null;
+  /** @nullable */
+  profilePhotoUrl?: string | null;
 }

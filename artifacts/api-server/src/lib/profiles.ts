@@ -19,6 +19,9 @@ export function profileListItem(profile: MinistryProfile) {
     profileType: profile.profileType,
     age: profile.age,
     journeyToken: profile.personKey,
+    profilePhotoUrl: profile.profilePhotoPath
+      ? `/api/profiles/${profile.id}/photo`
+      : null,
   };
 }
 

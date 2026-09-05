@@ -30,6 +30,7 @@ import {
   Compass,
 } from "lucide-react";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
+import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
 
 // --- Form Schema ---
 const formSchema = z.object({
@@ -203,6 +204,8 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
   
   const [saveDraftOptIn, setSaveDraftOptIn] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState("");
+  const [profilePhotoPath, setProfilePhotoPath] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
   const autoSaveTimerRef = useRef<NodeJS.Timeout>(null);
 
   const form = useForm<FormValues>({
@@ -393,6 +396,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
   };
 
   const onSubmit = (values: FormValues) => {
+    if (photoUploading) return;
     let isS7Valid = true;
     if (!values.guardian.name?.trim()) {
       form.setError("guardian.name", { type: "manual", message: "Guardian name is required" });
@@ -466,6 +470,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
       journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       ...(initialBirthdate ? { birthdate: initialBirthdate } : {}),
       profileType: "explore",
+      ...(profilePhotoPath ? { profilePhotoPath } : {}),
       child: {
         firstName: values.child.firstName.trim(),
         lastName: values.child.lastName.trim(),
@@ -661,6 +666,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                       {errors.child?.lastName && <p className="text-xs text-destructive">{errors.child.lastName.message}</p>}
                     </div>
                   </div>
+                  <ProfilePhotoUploader churchSlug={slug} name={`${formValues.child.firstName} ${formValues.child.lastName}`} value={profilePhotoPath} onChange={setProfilePhotoPath} onUploadingChange={setPhotoUploading} />
                 </CardContent>
               </Card>
 
@@ -1190,7 +1196,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
                     type="submit" 
                     size="lg" 
                     className="w-full text-base font-medium py-6"
-                    disabled={submitProfile.isPending}
+                    disabled={submitProfile.isPending || photoUploading}
                   >
                     {submitProfile.isPending ? (
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />

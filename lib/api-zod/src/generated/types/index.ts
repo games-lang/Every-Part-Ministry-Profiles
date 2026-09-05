@@ -221,6 +221,8 @@ export * from './profileInputProfileType';
 export * from './profileInputSkillsDetails';
 export * from './profileListItem';
 export * from './profileListItemProfileType';
+export * from './profilePhotoUploadUrlRequest';
+export * from './profilePhotoUploadUrlResponse';
 export * from './profileTeamAssignment';
 export * from './profileTeamUpdateInput';
 export * from './publicChurch';

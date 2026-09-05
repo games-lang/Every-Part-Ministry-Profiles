@@ -33,6 +33,7 @@ function profile(
     guardianName: null,
     guardianEmail: null,
     guardianConsent: null,
+    profilePhotoPath: null,
     preferredContact: "Email",
     familySituation: "Private",
     transportation: "Available",

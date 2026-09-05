@@ -41,6 +41,7 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
   guardianName: text("guardian_name"),
   guardianEmail: text("guardian_email"),
   guardianConsent: boolean("guardian_consent"),
+  profilePhotoPath: text("profile_photo_path"),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),

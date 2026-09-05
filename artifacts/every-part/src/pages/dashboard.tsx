@@ -14,6 +14,7 @@ import { ShareProfileCard } from "@/components/share-profile-card";
 import { AppFeedbackForm } from "@/components/app-feedback-form";
 import { AppFeedbackInbox } from "@/pages/app-admin";
 import { EarlyAccessWelcome } from "@/components/early-access-welcome";
+import { ProfileAvatar } from "@/components/profile-photo-uploader";
 
 function buildPublicProfileUrl(profilePath: string) {
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -261,6 +262,8 @@ export default function Dashboard() {
               <div className="divide-y divide-border/60">
                 {summary.recentProfiles.map(profile => (
                   <div key={profile.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-muted/30 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <ProfileAvatar name={profile.memberName} photoUrl={profile.profilePhotoUrl} className="h-10 w-10" />
                     <div>
                       <h3 className="font-medium text-foreground">{profile.memberName}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
@@ -278,7 +281,7 @@ export default function Dashboard() {
                           )}
                         </div>
                       )}
-                    </div>
+                    </div></div>
                     <Button variant="secondary" size="sm" asChild className="w-full sm:w-auto">
                       <Link href={`/profiles/${profile.id}`}>View Profile</Link>
                     </Button>
