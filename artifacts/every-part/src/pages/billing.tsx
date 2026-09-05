@@ -50,6 +50,7 @@ const planDetails = {
     description: "For churches that want room for every person, without a profile cap.",
   },
 } as const;
+const billingSalesEnabled = false;
 
 function formatPrice(amount: number) {
   return new Intl.NumberFormat("en-US", {
@@ -135,16 +136,21 @@ export default function BillingPage() {
             Church billing
           </p>
           <h1 className="font-serif text-4xl font-semibold tracking-[-.04em]">
-            Choose the right rhythm for your church.
+            Church plans, coming soon.
           </h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Start with a plan that fits this season. Stripe securely handles
-            payment details, receipts, renewals, and plan changes.
+            Pricing is shown for planning. Every Part is not currently for sale,
+            and paid checkout is not open yet.
           </p>
         </div>
         <Button variant="outline" asChild>
           <Link href="/dashboard">Back to dashboard</Link>
         </Button>
+      </div>
+
+      <div className="rounded-2xl border border-secondary/40 bg-secondary/10 p-4 text-sm text-foreground">
+        Every Part is coming soon. You can review the planned plans below, but
+        new paid subscriptions are not currently available.
       </div>
 
       {new URLSearchParams(window.location.search).get("checkout") === "success" && (
@@ -275,7 +281,7 @@ export default function BillingPage() {
               <CardContent className="flex h-full flex-col">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ShieldCheck className="h-4 w-4 text-accent" />
-                  Secure recurring billing through Stripe
+                    Planned recurring billing through Stripe
                 </div>
                 <p className="mt-3 text-sm font-medium">
                   {plan
@@ -291,6 +297,7 @@ export default function BillingPage() {
                   className="mt-6 w-full"
                   variant={key === "complete" ? "default" : "outline"}
                   disabled={
+                    !billingSalesEnabled ||
                     !plan ||
                     checkout.isPending ||
                     (paidAccess && currentPlan !== key) ||
@@ -299,7 +306,9 @@ export default function BillingPage() {
                   onClick={() => startCheckout(key)}
                 >
                   {checkout.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {currentPlan === key
+                    {!billingSalesEnabled
+                      ? "Coming soon"
+                      : currentPlan === key
                     ? "Current plan"
                     : paidAccess
                       ? "Manage in Stripe"

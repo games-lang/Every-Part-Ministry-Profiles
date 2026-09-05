@@ -29,6 +29,7 @@ import {
 const router: IRouter = Router();
 const paidPlanKeys = ["growing", "complete", "network", "unlimited"] as const;
 type PaidPlanKey = (typeof paidPlanKeys)[number];
+const billingSalesEnabled = process.env.EVERY_PART_BILLING_ENABLED === "true";
 
 const planDescriptions: Record<PaidPlanKey, string> = {
   growing: "For a small team beginning a shared ministry conversation.",
@@ -179,6 +180,14 @@ router.get("/billing/subscription", async (req, res): Promise<void> => {
 router.post("/billing/checkout", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);
   if (!userId) return;
+
+  if (!billingSalesEnabled) {
+    res.status(503).json({
+      error:
+        "Every Part is coming soon and paid plans are not currently for sale.",
+    });
+    return;
+  }
 
   const parsed = CreateBillingCheckoutBody.safeParse(req.body);
   if (!parsed.success || !isPaidPlanKey(parsed.data.plan)) {
