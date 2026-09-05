@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Sparkles, Star, Loader2, ArrowRight, Lightbulb, Compass } from "lucide-react";
+import { ChurchProfileBranding } from "@/components/church-profile-branding";
 
 export default function ExploreResult({ params }: { params: { token: string } }) {
   const { token } = params;
@@ -38,7 +39,8 @@ export default function ExploreResult({ params }: { params: { token: string } })
   return (
     <div className="pathway-theme pathway-theme-explore min-h-[100dvh] flex flex-col items-center justify-center py-12 px-4 bg-background ep-landing">
       <div className="w-full max-w-2xl space-y-8 landing-reveal">
-        
+        <ChurchProfileBranding branding={result.branding} />
+
         <div className="text-center space-y-4">
           <div className="w-20 h-20 rounded-full bg-secondary/10 flex items-center justify-center mx-auto text-secondary mb-4">
             <Sparkles className="w-10 h-10" />

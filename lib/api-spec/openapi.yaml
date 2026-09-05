@@ -1940,6 +1940,19 @@ components:
         billingCurrentPeriodEnd:
           type: ["string", "null"]
           format: date-time
+    ChurchBranding:
+      type: object
+      additionalProperties: false
+      required: [name, logoUrl, primaryColor, accentColor]
+      properties:
+        name: { type: string }
+        logoUrl: { type: ["string", "null"] }
+        primaryColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        accentColor:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
     ChurchUpdate:
       type: object
       properties:
@@ -2530,8 +2543,10 @@ components:
       allOf:
         - $ref: "#/components/schemas/ProfileListItem"
         - type: object
-          required: [basicInformation, churchConnection, skills, experience, assessmentSections, assessmentConfiguration, conversations, recommendedProfileType, profileTypeOverridden, youthResponses, guardianObservations, guardian, youth, journeyToken]
+          required: [branding, basicInformation, churchConnection, skills, experience, assessmentSections, assessmentConfiguration, conversations, recommendedProfileType, profileTypeOverridden, youthResponses, guardianObservations, guardian, youth, journeyToken]
           properties:
+            branding:
+              $ref: "#/components/schemas/ChurchBranding"
             basicInformation:
               $ref: "#/components/schemas/BasicInformation"
             churchConnection:
@@ -3011,8 +3026,10 @@ components:
       enum: [love, maybe, not-now]
     DiscoverProfileResult:
       type: object
-      required: [profileType, childName, summary, guardian, journeyToken]
+      required: [branding, profileType, childName, summary, guardian, journeyToken]
       properties:
+        branding:
+          $ref: "#/components/schemas/ChurchBranding"
         profileType: { type: string, enum: [discover] }
         journeyToken: { type: string, format: uuid }
         childName: { type: string }
@@ -3139,8 +3156,10 @@ components:
     ExploreProfileResult:
       type: object
       additionalProperties: false
-      required: [profileType, childName, summary, suggestions, guardian, journeyToken]
+      required: [branding, profileType, childName, summary, suggestions, guardian, journeyToken]
       properties:
+        branding:
+          $ref: "#/components/schemas/ChurchBranding"
         profileType: { type: string, enum: [explore] }
         journeyToken: { type: string, format: uuid }
         childName: { type: string }
@@ -3328,8 +3347,10 @@ components:
     DevelopProfileResult:
       type: object
       additionalProperties: false
-      required: [profileType, childName, summary, guardian]
+      required: [branding, profileType, childName, summary, guardian]
       properties:
+        branding:
+          $ref: "#/components/schemas/ChurchBranding"
         profileType: { type: string, enum: [develop] }
         childName: { type: string }
         summary:

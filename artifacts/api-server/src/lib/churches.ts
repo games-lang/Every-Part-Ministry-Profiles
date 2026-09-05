@@ -76,6 +76,19 @@ export async function getOrCreateChurch(userId: string) {
   return created;
 }
 
+export function churchBranding(church: typeof churchesTable.$inferSelect) {
+  return {
+    name: church.name,
+    logoUrl: church.logoUrl
+      ? `/api/churches/${encodeURIComponent(church.slug)}/logo?v=${encodeURIComponent(
+          church.logoUrl.split("/").at(-1) || "",
+        )}`
+      : null,
+    primaryColor: church.primaryColor,
+    accentColor: church.accentColor,
+  };
+}
+
 export function churchResponse(
   church: Awaited<ReturnType<typeof getOrCreateChurch>>,
   completedProfileCount = 0,

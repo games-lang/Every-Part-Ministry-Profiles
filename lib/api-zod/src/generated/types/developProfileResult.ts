@@ -5,11 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ChurchBranding } from './churchBranding';
 import type { DevelopProfileResultGuardian } from './developProfileResultGuardian';
 import type { DevelopProfileResultProfileType } from './developProfileResultProfileType';
 import type { DevelopProfileResultSummary } from './developProfileResultSummary';
 
 export interface DevelopProfileResult {
+  branding: ChurchBranding;
   profileType: DevelopProfileResultProfileType;
   childName: string;
   summary: DevelopProfileResultSummary;

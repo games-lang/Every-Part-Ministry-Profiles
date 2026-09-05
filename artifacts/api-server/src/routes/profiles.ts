@@ -22,7 +22,7 @@ import {
   ministryTeamsTable,
 } from "@workspace/db";
 import { requireUserId } from "../lib/auth";
-import { getOrCreateChurch } from "../lib/churches";
+import { churchBranding, getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
 import {
   findVolunteerMatches,
@@ -414,7 +414,9 @@ router.post("/profiles", async (req, res): Promise<void> => {
     throw error;
   }
   await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
-  res.status(201).json(CreateProfileResponse.parse(profileResponse(created)));
+  res
+    .status(201)
+    .json(CreateProfileResponse.parse(profileResponse(created, churchBranding(church))));
 });
 
 router.post("/profiles/matches", async (req, res): Promise<void> => {
@@ -583,7 +585,9 @@ router.get("/profiles/:id", async (req, res): Promise<void> => {
     profile.journeyId = journey.id;
     profile.personKey = journey.accessToken;
   }
-  res.json(GetProfileResponse.parse(profileResponse(profile)));
+  res.json(
+    GetProfileResponse.parse(profileResponse(profile, churchBranding(church))),
+  );
 });
 
 router.get("/profiles/:id/photo", async (req, res): Promise<void> => {

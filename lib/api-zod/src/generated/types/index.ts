@@ -58,6 +58,7 @@ export * from './churchAdminAccess';
 export * from './churchAdminAddInput';
 export * from './churchAdminRole';
 export * from './churchBillingPlan';
+export * from './churchBranding';
 export * from './churchConnection';
 export * from './churchConnectionDetails';
 export * from './churchConnectionInput';

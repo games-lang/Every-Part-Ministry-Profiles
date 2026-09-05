@@ -42,9 +42,19 @@ import {
   ProfileLimitReachedError,
 } from "../lib/profile-limits";
 import { ObjectStorageService } from "../lib/objectStorage";
+import { churchBranding } from "../lib/churches";
 
 const router: IRouter = Router();
 const storage = new ObjectStorageService();
+
+async function brandingForChurch(churchId: number) {
+  const [church] = await db
+    .select()
+    .from(churchesTable)
+    .where(eq(churchesTable.id, churchId))
+    .limit(1);
+  return church ? churchBranding(church) : null;
+}
 
 async function createYouthProfileWithinLimit(
   churchId: number,
@@ -200,7 +210,13 @@ router.get("/youth-profiles/:id/result", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Result not found" });
     return;
   }
+  const branding = await brandingForChurch(profile.churchId);
+  if (!branding) {
+    res.status(404).json({ error: "Result not found" });
+    return;
+  }
   res.json(GetDiscoverResultResponse.parse({
+    branding,
     profileType: "discover",
     journeyToken: profile.personKey,
     childName: profile.firstName,
@@ -320,8 +336,14 @@ router.get("/explore-profiles/:id/result", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Result not found" });
     return;
   }
+  const branding = await brandingForChurch(profile.churchId);
+  if (!branding) {
+    res.status(404).json({ error: "Result not found" });
+    return;
+  }
   const result = exploreResultSummary(parsedAnswers.data);
   res.json(GetExploreResultResponse.parse({
+    branding,
     profileType: "explore",
     journeyToken: profile.personKey,
     childName: profile.firstName,
@@ -447,8 +469,14 @@ router.get("/develop-profiles/:id/result", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Result not found" });
     return;
   }
+  const branding = await brandingForChurch(profile.churchId);
+  if (!branding) {
+    res.status(404).json({ error: "Result not found" });
+    return;
+  }
   const result = developResultSummary(parsedAnswers.data);
   res.json(GetDevelopResultResponse.parse({
+    branding,
     profileType: "develop",
     journeyToken: profile.personKey,
     childName: profile.firstName,

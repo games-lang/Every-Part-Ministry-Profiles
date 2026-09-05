@@ -3,6 +3,7 @@ import { ArrowRight, Compass, Heart, Lightbulb, Loader2, ShieldCheck, Sparkles, 
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ChurchProfileBranding } from "@/components/church-profile-branding";
 
 export default function DevelopResult({ params }: { params: { token: string } }) {
   const { token } = params;
@@ -16,6 +17,7 @@ export default function DevelopResult({ params }: { params: { token: string } })
   return (
     <div className="pathway-theme pathway-theme-develop min-h-[100dvh] bg-background px-4 py-12">
       <div className="mx-auto w-full max-w-3xl space-y-8">
+        <ChurchProfileBranding branding={result.branding} />
         <div className="text-center">
           <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-secondary/10 text-secondary"><Sparkles className="h-10 w-10" /></div>
           <p className="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">Develop Profile</p>

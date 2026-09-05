@@ -34,12 +34,21 @@ export function possibleConversations(profile: MinistryProfile): string[] {
   );
 }
 
-export function profileResponse(profile: MinistryProfile) {
+export function profileResponse(
+  profile: MinistryProfile,
+  branding: {
+    name: string;
+    logoUrl: string | null;
+    primaryColor: string;
+    accentColor: string;
+  },
+) {
   const configuration =
     assessmentConfiguration(profile.assessmentConfigurationSnapshot) ??
     defaultAssessmentConfiguration();
   return {
     ...profileListItem(profile),
+    branding,
     recommendedProfileType: profile.recommendedProfileType,
     profileTypeOverridden: profile.profileTypeOverridden,
     youthResponses: profile.youthResponses,

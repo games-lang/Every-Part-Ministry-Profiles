@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
   getGetMyChurchQueryKey,
+  getGetPublicChurchQueryKey,
   getListChurchAdminsQueryKey,
   requestUploadUrl,
   useAddChurchAdmin,
@@ -866,6 +867,9 @@ export default function ChurchSetup() {
       {
         onSuccess: (updatedChurch) => {
           queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+          void queryClient.invalidateQueries({
+            queryKey: getGetPublicChurchQueryKey(updatedChurch.slug),
+          });
           setLogoPath(updatedChurch.logoUrl || null);
           if (localLogoPreview) {
             URL.revokeObjectURL(localLogoPreview);

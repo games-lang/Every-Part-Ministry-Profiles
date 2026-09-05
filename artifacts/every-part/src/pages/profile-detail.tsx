@@ -20,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 import { ProfileSchedule } from "@/components/profile-schedule";
 import { ProfileHelper } from "@/components/profile-helper";
 import { ProfileAvatar } from "@/components/profile-photo-uploader";
+import { ChurchProfileBranding } from "@/components/church-profile-branding";
 
 const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
@@ -409,6 +410,7 @@ export default function ProfileDetail() {
    <div className="no-print flex justify-between"><Button variant="ghost" asChild><Link href="/profiles"><ArrowLeft className="mr-2 h-4 w-4"/>Back</Link></Button><Button variant="outline" onClick={()=>window.print()}><Printer className="mr-2 h-4 w-4"/>Print profile</Button></div>
     <header className="overflow-hidden rounded-[1.5rem] border border-primary/15 bg-card p-7 shadow-sm md:p-10">
       <div className="brand-rule -mx-7 -mt-7 mb-7 h-1 md:-mx-10 md:-mt-10" aria-hidden="true" />
+       <ChurchProfileBranding branding={profile.branding} className="mb-7" />
      {profile.profileType !== 'adult' && (
         <Badge className="mb-4 bg-secondary/25 text-foreground hover:bg-secondary/30 capitalize">
          {profile.profileType} Pathway (Age {profile.age})

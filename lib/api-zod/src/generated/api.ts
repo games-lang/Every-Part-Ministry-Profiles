@@ -2080,6 +2080,8 @@ export const CreateProfileBody = zod.object({
 export const createProfileResponseOneAgeMin = 6;
 export const createProfileResponseOneAgeMax = 120;
 
+export const createProfileResponseTwoBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const createProfileResponseTwoBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 
 
 export const createProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
@@ -2144,6 +2146,12 @@ export const CreateProfileResponse = zod.object({
   "age": zod.int().min(createProfileResponseOneAgeMin).max(createProfileResponseOneAgeMax).nullable(),
   "profilePhotoUrl": zod.string().nullish()
 }).and(zod.object({
+  "branding": zod.object({
+  "name": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "primaryColor": zod.string().regex(createProfileResponseTwoBrandingPrimaryColorRegExp),
+  "accentColor": zod.string().regex(createProfileResponseTwoBrandingAccentColorRegExp)
+}),
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
   "lastName": zod.string().min(1),
@@ -2935,7 +2943,17 @@ export const GetDiscoverResultParams = zod.object({
   "id": zod.uuid()
 })
 
+export const getDiscoverResultResponseBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getDiscoverResultResponseBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+
+
 export const GetDiscoverResultResponse = zod.object({
+  "branding": zod.object({
+  "name": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "primaryColor": zod.string().regex(getDiscoverResultResponseBrandingPrimaryColorRegExp),
+  "accentColor": zod.string().regex(getDiscoverResultResponseBrandingAccentColorRegExp)
+}),
   "profileType": zod.enum(['discover']),
   "journeyToken": zod.uuid(),
   "childName": zod.string(),
@@ -3082,6 +3100,8 @@ export const GetExploreResultParams = zod.object({
   "id": zod.uuid()
 })
 
+export const getExploreResultResponseBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getExploreResultResponseBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getExploreResultResponseSummaryStrengthsMax = 3;
 
 export const getExploreResultResponseSuggestionsMin = 2;
@@ -3090,6 +3110,12 @@ export const getExploreResultResponseSuggestionsMax = 4;
 
 
 export const GetExploreResultResponse = zod.object({
+  "branding": zod.object({
+  "name": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "primaryColor": zod.string().regex(getExploreResultResponseBrandingPrimaryColorRegExp),
+  "accentColor": zod.string().regex(getExploreResultResponseBrandingAccentColorRegExp)
+}),
   "profileType": zod.enum(['explore']),
   "journeyToken": zod.uuid(),
   "childName": zod.string(),
@@ -3286,6 +3312,8 @@ export const GetDevelopResultParams = zod.object({
   "id": zod.uuid()
 })
 
+export const getDevelopResultResponseBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getDevelopResultResponseBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDevelopResultResponseSummaryStrengthsMax = 3;
 
 export const getDevelopResultResponseSummaryGiftsToExploreMax = 5;
@@ -3298,6 +3326,12 @@ export const getDevelopResultResponseSummaryDevelopmentPlanNextStepsMax = 5;
 
 
 export const GetDevelopResultResponse = zod.object({
+  "branding": zod.object({
+  "name": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "primaryColor": zod.string().regex(getDevelopResultResponseBrandingPrimaryColorRegExp),
+  "accentColor": zod.string().regex(getDevelopResultResponseBrandingAccentColorRegExp)
+}),
   "profileType": zod.enum(['develop']),
   "childName": zod.string(),
   "summary": zod.object({
@@ -3335,6 +3369,8 @@ export const GetProfileParams = zod.object({
 export const getProfileResponseOneAgeMin = 6;
 export const getProfileResponseOneAgeMax = 120;
 
+export const getProfileResponseTwoBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getProfileResponseTwoBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 
 
 export const getProfileResponseTwoChurchConnectionConnectionLevelMax = 5;
@@ -3399,6 +3435,12 @@ export const GetProfileResponse = zod.object({
   "age": zod.int().min(getProfileResponseOneAgeMin).max(getProfileResponseOneAgeMax).nullable(),
   "profilePhotoUrl": zod.string().nullish()
 }).and(zod.object({
+  "branding": zod.object({
+  "name": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "primaryColor": zod.string().regex(getProfileResponseTwoBrandingPrimaryColorRegExp),
+  "accentColor": zod.string().regex(getProfileResponseTwoBrandingAccentColorRegExp)
+}),
   "basicInformation": zod.object({
   "firstName": zod.string().min(1),
   "lastName": zod.string().min(1),

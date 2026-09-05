@@ -872,6 +872,16 @@ export interface Church {
   billingCurrentPeriodEnd: string | null;
 }
 
+export interface ChurchBranding {
+  name: string;
+  /** @nullable */
+  logoUrl: string | null;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  primaryColor: string;
+  /** @pattern ^#[0-9A-Fa-f]{6}$ */
+  accentColor: string;
+}
+
 export interface ChurchUpdate {
   /** @minLength 1 */
   name?: string;
@@ -1604,6 +1614,7 @@ export interface FutureAssessmentSections {
 }
 
 export type MinistryProfile = ProfileListItem & {
+  branding: ChurchBranding;
   basicInformation: BasicInformation;
   churchConnection: ChurchConnection;
   skills: SkillsAndExperience;
@@ -2152,6 +2163,7 @@ export type DiscoverProfileResultGuardian = {
 };
 
 export interface DiscoverProfileResult {
+  branding: ChurchBranding;
   profileType: DiscoverProfileResultProfileType;
   journeyToken: string;
   childName: string;
@@ -2428,6 +2440,7 @@ export type ExploreProfileResultGuardian = {
 };
 
 export interface ExploreProfileResult {
+  branding: ChurchBranding;
   profileType: ExploreProfileResultProfileType;
   journeyToken: string;
   childName: string;
@@ -2851,6 +2864,7 @@ export type DevelopProfileResultGuardian = {
 };
 
 export interface DevelopProfileResult {
+  branding: ChurchBranding;
   profileType: DevelopProfileResultProfileType;
   childName: string;
   summary: DevelopProfileResultSummary;

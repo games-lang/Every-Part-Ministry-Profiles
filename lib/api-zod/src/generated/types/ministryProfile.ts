@@ -7,6 +7,7 @@
  */
 import type { AssessmentConfiguration } from './assessmentConfiguration';
 import type { BasicInformation } from './basicInformation';
+import type { ChurchBranding } from './churchBranding';
 import type { ChurchConnection } from './churchConnection';
 import type { FutureAssessmentSections } from './futureAssessmentSections';
 import type { MinistryProfileAvailabilityDetails } from './ministryProfileAvailabilityDetails';
@@ -21,6 +22,7 @@ import type { ProfileListItem } from './profileListItem';
 import type { SkillsAndExperience } from './skillsAndExperience';
 
 export type MinistryProfile = ProfileListItem & {
+  branding: ChurchBranding;
   basicInformation: BasicInformation;
   churchConnection: ChurchConnection;
   skills: SkillsAndExperience;

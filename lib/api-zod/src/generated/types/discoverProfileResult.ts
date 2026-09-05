@@ -5,11 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ChurchBranding } from './churchBranding';
 import type { DiscoverProfileResultGuardian } from './discoverProfileResultGuardian';
 import type { DiscoverProfileResultProfileType } from './discoverProfileResultProfileType';
 import type { DiscoverProfileResultSummary } from './discoverProfileResultSummary';
 
 export interface DiscoverProfileResult {
+  branding: ChurchBranding;
   profileType: DiscoverProfileResultProfileType;
   journeyToken: string;
   childName: string;
