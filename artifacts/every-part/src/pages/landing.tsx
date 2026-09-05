@@ -334,7 +334,7 @@ export default function LandingPage() {
                   </div>
                   <div className="relative z-10 flex items-center gap-4 py-6">
                     <img
-                      src={appPath("/sample-profile-sarah.jpg")}
+                      src={appPath("/sample-profile-sarah-community.jpg")}
                       alt="Sarah, a fictional example profile participant"
                       className="h-16 w-16 shrink-0 rounded-full border-2 border-secondary/70 object-cover shadow-lg"
                     />
@@ -514,7 +514,7 @@ export default function LandingPage() {
                   <p className="relative text-xs font-bold uppercase tracking-[.18em] text-[hsl(var(--landing-cyan))]">Fictional sample profile</p>
                   <div className="relative mt-20 flex items-center gap-4">
                     <img
-                      src={appPath("/sample-profile-sarah.jpg")}
+                      src={appPath("/sample-profile-sarah-community.jpg")}
                       alt="Sarah, a fictional example profile participant"
                       className="h-20 w-20 shrink-0 rounded-full border-2 border-secondary/80 object-cover shadow-lg"
                     />
