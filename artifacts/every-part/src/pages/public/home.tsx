@@ -124,7 +124,7 @@ export default function Home() {
 
           <Reveal className="[animation-delay:.1s]">
             <div className="rounded-[2rem] border border-white/15 bg-white/[.06] p-6 shadow-[0_24px_60px_hsl(var(--foreground)/.14)] sm:p-8">
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-x-8 sm:grid-cols-2">
                 {[
                   "What are their gifts?",
                   "What are they passionate about?",
@@ -133,9 +133,9 @@ export default function Home() {
                   "Where could they grow?",
                   "How can a leader help them take the next step?",
                 ].map((question, index) => (
-                  <div key={question} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[.05] p-4">
-                    <span className="mt-0.5 text-xs font-bold text-secondary">{String(index + 1).padStart(2, "0")}</span>
-                    <p className="text-sm font-medium leading-6 text-white">{question}</p>
+                  <div key={question} className="flex gap-3 border-b border-white/15 py-4">
+                    <span className="mt-1 text-xs font-bold text-secondary">{String(index + 1).padStart(2, "0")}</span>
+                    <p className="text-base font-medium leading-6 text-white">{question}</p>
                   </div>
                 ))}
               </div>
