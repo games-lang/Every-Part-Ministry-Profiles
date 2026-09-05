@@ -10,7 +10,12 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Button } from "@/components/ui/button";
 
 // Pages
-import LandingPage from '@/pages/landing';
+import Home from '@/pages/public/home';
+import HowItWorks from '@/pages/public/how-it-works';
+import MinistryProfiles from '@/pages/public/ministry-profiles';
+import Partfinder from '@/pages/public/partfinder';
+import ForChurches from '@/pages/public/for-churches';
+import WhyEveryPart from '@/pages/public/why-every-part';
 import PricingPage from '@/pages/pricing';
 import AboutEarlyAccess from '@/pages/about-early-access';
 import { PrivacyPolicyPage, TermsOfServicePage } from '@/pages/policies';
@@ -265,7 +270,7 @@ function HomeRedirect() {
         <Redirect to={pendingAdminReturn ? "/app-admin" : "/dashboard"} />
       </Show>
       <Show when="signed-out">
-        <LandingPage />
+        <Home />
       </Show>
     </>
   );
@@ -310,6 +315,11 @@ function ClerkProviderWithRoutes() {
           <RoutedErrorBoundary>
             <Switch>
               <Route path="/" component={HomeRedirect} />
+              <Route path="/how-it-works" component={HowItWorks} />
+              <Route path="/ministry-profiles" component={MinistryProfiles} />
+              <Route path="/partfinder" component={Partfinder} />
+              <Route path="/for-churches" component={ForChurches} />
+              <Route path="/why-every-part" component={WhyEveryPart} />
               <Route path="/pricing" component={PricingPage} />
               <Route path="/about-early-access" component={AboutEarlyAccess} />
               <Route path="/privacy" component={PrivacyPolicyPage} />
