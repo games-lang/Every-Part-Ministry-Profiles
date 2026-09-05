@@ -964,6 +964,16 @@ function personalityMinistryConnection(
     : "In ministry, your balanced tendencies may help you adapt across different people, teams, rhythms, and responsibilities.";
 }
 const choice = z.string();
+function parseLanguages(value: string) {
+  return Array.from(
+    new Set(
+      value
+        .split(/[,\n]/)
+        .map((language) => language.trim())
+        .filter(Boolean),
+    ),
+  );
+}
 const assessmentSchema = z.object({
   basicInformation: z.object({
     firstName: z.string(),
@@ -2188,6 +2198,7 @@ export default function Assessment() {
       personalityResponses,
       activePersonalityDimensions,
     );
+    const spokenLanguages = parseLanguages(data.languageText);
     const payload: ProfileInput = {
       ...(profilePhotoPath ? { profilePhotoPath } : {}),
       churchSlug: slug,
@@ -2240,10 +2251,10 @@ export default function Assessment() {
             skillsDetails: data.skills,
           }
         : {}),
-      ...(subsectionEnabled("aboutYou.personalInformation") && data.languageText
+      ...(subsectionEnabled("aboutYou.personalInformation") && spokenLanguages.length
         ? {
             languages: {
-              spoken: data.languageText,
+              spoken: spokenLanguages,
               proficiency: data.languageProficiency || null,
             },
           }
@@ -2533,6 +2544,8 @@ export default function Assessment() {
                           form={form}
                           name="languageText"
                           label="Languages spoken (optional)"
+                          description="Add multiple languages separated by commas or put one language on each line."
+                          multiline
                         />
                         <SelectField
                           form={form}
