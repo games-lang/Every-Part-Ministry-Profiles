@@ -107,6 +107,53 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="border-t border-border bg-primary px-5 py-20 text-primary-foreground sm:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.92fr_1.08fr] lg:items-start lg:gap-24">
+          <Reveal>
+            <Eyebrow light>One body. Many meaningful parts.</Eyebrow>
+            <h2 className="mt-6 max-w-2xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.06em] sm:text-5xl lg:text-6xl">
+              The Body Is Strongest When Every Part Is Engaged
+            </h2>
+            <p className="mt-7 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
+              Scripture describes the Church as one body made up of many parts. Each part matters, and each person has something meaningful to contribute.
+            </p>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
+              But for pastors and ministry leaders, it can be difficult to know how God has shaped every person in the congregation.
+            </p>
+          </Reveal>
+
+          <Reveal className="[animation-delay:.1s]">
+            <div className="rounded-[2rem] border border-white/15 bg-white/[.06] p-6 shadow-[0_24px_60px_hsl(var(--foreground)/.14)] sm:p-8">
+              <p className="text-xs font-bold uppercase tracking-[.18em] text-secondary">Questions worth asking</p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {[
+                  "What are their gifts?",
+                  "What are they passionate about?",
+                  "What experiences have shaped them?",
+                  "What kind of ministry fits their current season?",
+                  "Where could they grow?",
+                  "How can a leader help them take the next step?",
+                ].map((question, index) => (
+                  <div key={question} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[.05] p-4">
+                    <span className="mt-0.5 text-xs font-bold text-secondary">{String(index + 1).padStart(2, "0")}</span>
+                    <p className="text-sm font-medium leading-6 text-white">{question}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-7 font-serif text-2xl leading-tight tracking-[-.03em] text-white sm:text-3xl">
+                Every Part helps churches answer those questions.
+              </p>
+              <p className="mt-5 text-base leading-7 text-[hsl(var(--landing-light-text))]">
+                By helping leaders better understand their people, Every Part creates a prayerful pathway to discover, discern, connect, and develop people for meaningful ministry.
+              </p>
+              <p className="mt-6 border-l-2 border-secondary pl-5 text-base font-semibold leading-7 text-white">
+                Because when every part is known, equipped, and engaged, the whole Body is strengthened.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       <section className="border-y border-border bg-card/60 py-10 sm:py-12" aria-labelledby="sample-profiles-heading">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <Reveal>
