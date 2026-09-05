@@ -155,7 +155,7 @@ export default function Home() {
                 Because when every part is known, equipped, and engaged, the whole Body is strengthened.
               </p>
               <Link href="/why-every-part" className="landing-focus mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold transition hover:bg-white/10">
-                Read more about our philosophy <ArrowRight className="h-4 w-4" />
+                Read the story behind Every Part <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </Reveal>
