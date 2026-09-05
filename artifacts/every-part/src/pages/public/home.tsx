@@ -124,8 +124,7 @@ export default function Home() {
 
           <Reveal className="[animation-delay:.1s]">
             <div className="rounded-[2rem] border border-white/15 bg-white/[.06] p-6 shadow-[0_24px_60px_hsl(var(--foreground)/.14)] sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[.18em] text-secondary">Questions worth asking</p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2">
                 {[
                   "What are their gifts?",
                   "What are they passionate about?",
