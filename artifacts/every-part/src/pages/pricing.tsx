@@ -31,9 +31,8 @@ const plans = [
     description: "A simple place to begin exploring Every Part with your church.",
     icon: Cross,
     tone: "light",
-    valueNote: "No card required",
-    action: "Start here",
-    href: "/sign-up",
+    valueNote: "Coming soon · not currently for sale",
+    action: "Coming soon",
   },
   {
     id: "growing",
@@ -47,9 +46,8 @@ const plans = [
     description: "For a small team beginning a shared ministry conversation.",
     icon: Sparkles,
     tone: "light",
-    valueNote: "Secure monthly billing",
-    action: "Explore Growing",
-    href: "/sign-up",
+    valueNote: "Coming soon · not currently for sale",
+    action: "Coming soon",
   },
   {
     id: "complete",
@@ -63,9 +61,8 @@ const plans = [
     description: "For churches ready to build a fuller rhythm of discovery, connection, and development.",
     icon: Network,
     tone: "featured",
-    valueNote: "Secure monthly billing",
-    action: "Explore Complete",
-    href: "/sign-up",
+    valueNote: "Coming soon · not currently for sale",
+    action: "Coming soon",
   },
   {
     id: "network",
@@ -79,9 +76,8 @@ const plans = [
     description: "For multi-campus churches, networks, and denominations shaping ministry together.",
     icon: UsersRound,
     tone: "dark",
-    valueNote: "Secure monthly billing",
-    action: "Talk with us",
-    href: "/sign-up",
+    valueNote: "Coming soon · not currently for sale",
+    action: "Coming soon",
   },
   {
     id: "unlimited",
@@ -95,9 +91,8 @@ const plans = [
     description: "For churches ready to welcome every person into the conversation.",
     icon: InfinityIcon,
     tone: "dark",
-    valueNote: "Secure monthly billing",
-    action: "Explore Unlimited",
-    href: "/sign-up",
+    valueNote: "Coming soon · not currently for sale",
+    action: "Coming soon",
   },
 ];
 
@@ -114,12 +109,12 @@ const faqs = [
   {
     question: "Is billing live?",
     answer:
-      "Yes. Starter is free, and Growing, Complete, Network, and Unlimited are available as monthly subscriptions. Stripe securely handles checkout and billing management.",
+      "Not yet. Every Part is coming soon and is not currently for sale. These prices are shared so churches can see the planned options before launch.",
   },
   {
     question: "What does Start Free include?",
     answer:
-      "Starter includes up to 5 Ministry Profiles and does not require a card.",
+      "Starter is the planned free option, with up to 5 Ministry Profiles and no card requirement. Every Part is not currently for sale.",
   },
   {
     question: "What does an active profile mean?",
@@ -129,7 +124,7 @@ const faqs = [
   {
     question: "Can we change plans later?",
     answer:
-      "Yes. Use Manage billing in your church workspace to change or cancel your subscription securely through Stripe.",
+      "Billing management will be available through Stripe after Every Part opens for sale.",
   },
   {
     question: "How do we think about matching?",
@@ -226,7 +221,7 @@ export default function PricingPage() {
               className="landing-focus ml-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent"
               data-testid="link-pricing-header-start"
             >
-              Begin with Every Part <ArrowUpRight className="h-4 w-4" />
+              Learn about Every Part <ArrowUpRight className="h-4 w-4" />
             </Link>
           </nav>
           <button
@@ -247,7 +242,7 @@ export default function PricingPage() {
               <Link href="/#ministry-profile" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-ministry-profile">Ministry Profile</Link>
               <Link href="/#for-churches" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-for-churches">For Churches</Link>
               <Link href="/sign-in" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-login">Login</Link>
-              <Link href="/sign-up" onClick={() => setMenuOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground" data-testid="link-pricing-mobile-start">Begin with Every Part <ArrowRight className="h-4 w-4" /></Link>
+              <Link href="/#for-churches" onClick={() => setMenuOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground" data-testid="link-pricing-mobile-start">Learn about Every Part <ArrowRight className="h-4 w-4" /></Link>
             </div>
           </nav>
         )}
@@ -261,7 +256,7 @@ export default function PricingPage() {
             <Reveal className="pricing-hero-eyebrow">
               <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.2em] text-[hsl(var(--landing-cyan))]">
                 <span className="h-px w-8 bg-secondary" />
-                   Church plans · a clear beginning
+                   Planned church pricing · coming soon
               </div>
             </Reveal>
             <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-end lg:gap-24">
@@ -275,7 +270,7 @@ export default function PricingPage() {
                   Every Part helps pastors and church leaders prayerfully discover how God has shaped their people—and connect them with meaningful places to serve and grow.
                 </p>
                 <p className="mt-6 border-l-2 border-secondary pl-5 text-sm leading-6 text-[hsl(var(--landing-slate))]">
-                  Begin with the plan that fits your season. There is no pressure to decide everything today.
+                   We are sharing the planned pricing early. Every Part is not currently for sale, and paid checkout is not open yet.
                 </p>
               </Reveal>
             </div>
@@ -290,9 +285,9 @@ export default function PricingPage() {
                   <CircleHelp className="h-5 w-5" />
                 </span>
                 <div className="mt-4 sm:mt-0">
-                   <p className="text-sm font-bold uppercase tracking-[.15em] text-accent" data-testid="text-pricing-label">Simple monthly plans</p>
+                    <p className="text-sm font-bold uppercase tracking-[.15em] text-accent" data-testid="text-pricing-label">Coming soon · not currently for sale</p>
                   <p className="mt-2 max-w-3xl text-sm leading-7 text-foreground/80" data-testid="text-preview-pricing-notice">
-                     Starter is free. Growing, Complete, Network, and Unlimited are monthly plans with secure Stripe checkout. Sign in to your church workspace to begin.
+                     These prices are for planning and conversation only. Every Part is coming soon, and churches cannot purchase a plan yet.
                   </p>
                 </div>
               </aside>
@@ -368,13 +363,13 @@ export default function PricingPage() {
                       <p className={`mt-4 min-h-[48px] text-sm leading-6 ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.description}</p>
                       <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.id}`}>{plan.valueNote}</p>
                       <div className="mt-auto pt-8">
-                        <Link
-                            href={plan.id === "starter" ? plan.href : `/sign-up?plan=${plan.id}`}
-                          className={`landing-focus inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-semibold transition hover:-translate-y-0.5 ${featured ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : dark ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "bg-primary text-primary-foreground hover:bg-accent"}`}
-                          data-testid={`link-plan-action-${plan.id}`}
-                        >
+                         <span
+                           className={`inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-semibold opacity-75 ${featured ? "bg-secondary text-secondary-foreground" : dark ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground"}`}
+                           aria-disabled="true"
+                           data-testid={`link-plan-action-${plan.id}`}
+                         >
                           {plan.action} <ArrowRight className="h-4 w-4" />
-                        </Link>
+                         </span>
                       </div>
                     </article>
                   </Reveal>
@@ -382,7 +377,7 @@ export default function PricingPage() {
               })}
             </div>
                 <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
-                Manage upgrades, cancellations, and payment methods anytime from your church billing page.
+                 Planned pricing only. Checkout and paid subscriptions will open when Every Part launches.
             </p>
           </div>
         </section>
@@ -466,9 +461,9 @@ export default function PricingPage() {
             </Reveal>
             <Reveal className="pricing-cta-copy">
               <div>
-                <p className="text-lg leading-8 text-[hsl(var(--landing-light-text))]">Create a church profile and take a first look. You can come back to the plan conversation when the time is right.</p>
-                <Link href="/sign-up" className="landing-focus mt-8 inline-flex items-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90" data-testid="link-pricing-final-start">
-                  Begin with Every Part <ArrowRight className="h-4 w-4" />
+                 <p className="text-lg leading-8 text-[hsl(var(--landing-light-text))]">Every Part is coming soon. We are sharing the plan conversation now so churches can see what is ahead.</p>
+                 <Link href="/#for-churches" className="landing-focus mt-8 inline-flex items-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90" data-testid="link-pricing-final-start">
+                   Learn more <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </Reveal>
