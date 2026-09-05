@@ -123,6 +123,7 @@ export const sampleProfiles = [
     initials: "L",
     description: "Discovering joy, kindness, and the ways she can help her church family.",
     theme: "discover",
+    image: "/sample-profile-leah.jpg",
   },
   {
     name: "Marcus",
@@ -131,6 +132,7 @@ export const sampleProfiles = [
     initials: "M",
     description: "Exploring curiosity, courage, and how his questions can help his church family grow.",
     theme: "explore",
+    image: "/sample-profile-marcus.jpg",
   },
   {
     name: "Jordan",
@@ -139,6 +141,7 @@ export const sampleProfiles = [
     initials: "J",
     description: "Growing gifts, meaningful interests, and a next step toward serving the Body of Christ.",
     theme: "develop",
+    image: "/sample-profile-jordan.jpg",
   },
 ];
 
@@ -172,6 +175,7 @@ export const sampleProfileDetails = [
     age: "Ages 6–8",
     initials: "L",
     theme: "discover",
+    image: "/sample-profile-leah.jpg",
     intro: "A gentle way to notice how a child is growing and helping.",
     lead: "Notice what brings her joy.",
     fields: [
@@ -194,6 +198,7 @@ export const sampleProfileDetails = [
     age: "Ages 9–12",
     initials: "M",
     theme: "explore",
+    image: "/sample-profile-marcus.jpg",
     intro: "A snapshot of the questions, strengths, and interests he is exploring.",
     lead: "Follow the curiosity.",
     fields: [
@@ -216,6 +221,7 @@ export const sampleProfileDetails = [
     age: "Ages 13–17",
     initials: "J",
     theme: "develop",
+    image: "/sample-profile-jordan.jpg",
     intro: "A reflection on growing gifts, meaningful interests, and a next step.",
     lead: "Make room for the next step.",
     fields: [
