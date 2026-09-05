@@ -332,7 +332,20 @@ export default function LandingPage() {
                     <span>Ministry Profile / Sarah</span>
                     <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-secondary" /> In conversation</span>
                   </div>
-                  <div className="relative z-10 py-8 sm:py-12">
+                  <div className="relative z-10 flex items-center gap-4 py-6">
+                    <img
+                      src={appPath("/sample-profile-sarah.jpg")}
+                      alt="Sarah, a fictional example profile participant"
+                      className="h-16 w-16 shrink-0 rounded-full border-2 border-secondary/70 object-cover shadow-lg"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-white">Sarah’s story</p>
+                      <p className="mt-1 text-xs leading-5 text-[hsl(var(--landing-slate))]">
+                        A fuller picture before the next conversation.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="relative z-10 pb-8 sm:pb-12">
                     <p className="text-sm text-[hsl(var(--landing-slate))]">A question worth asking</p>
                     <p className="mt-4 max-w-sm font-serif text-3xl leading-[1.05] tracking-[-.055em] sm:text-4xl">
                       Where do you notice God giving you energy to help others?
