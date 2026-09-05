@@ -26,3 +26,4 @@
 - [Profile photo privacy](profile-photo-privacy.md) — store private object paths; only same-church leaders may load photos, and public youth results never include them.
 - [Profile pathway themes](profile-pathway-themes.md) — adult, Discover, Explore, and Develop use distinct scoped accents across assessments, results, and journeys.
 - [Every Part origin story](every-part-origin-story.md) — public copy starts with seeing overlooked gifts in a multicultural church, not filling volunteer slots.
+- [Church branding persistence](church-branding-persistence.md) — logo and color saves must remain independent from validation in the larger church setup form.

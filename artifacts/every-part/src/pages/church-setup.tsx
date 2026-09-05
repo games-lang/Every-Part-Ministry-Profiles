@@ -578,6 +578,7 @@ export default function ChurchSetup() {
   });
   const { data: admins, isLoading: adminsLoading } = useListChurchAdmins();
   const updateChurch = useUpdateMyChurch();
+  const updateBranding = useUpdateMyChurch();
   const updateDiscoverCode = useUpdateMyChurch();
   const addAdmin = useAddChurchAdmin();
   const removeAdmin = useRemoveChurchAdmin();
@@ -838,6 +839,52 @@ export default function ChurchSetup() {
       setIsLogoUploading(false);
       if (logoInputRef.current) logoInputRef.current.value = "";
     }
+  };
+
+  const saveBranding = () => {
+    const primaryColor = form.getValues("primaryColor");
+    const accentColor = form.getValues("accentColor");
+    const colorPattern = /^#[0-9A-Fa-f]{6}$/;
+
+    if (!colorPattern.test(primaryColor) || !colorPattern.test(accentColor)) {
+      toast({
+        title: "Check your colors",
+        description: "Use a 6-digit hex color such as #122344.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateBranding.mutate(
+      {
+        data: {
+          logoUrl: logoPath,
+          primaryColor,
+          accentColor,
+        },
+      },
+      {
+        onSuccess: (updatedChurch) => {
+          queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+          setLogoPath(updatedChurch.logoUrl || null);
+          if (localLogoPreview) {
+            URL.revokeObjectURL(localLogoPreview);
+            setLocalLogoPreview(null);
+          }
+          toast({
+            title: "Branding saved",
+            description: "Your church logo and colors are now saved.",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Branding not saved",
+            description: "We could not save your logo and colors. Please try again.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
   };
 
   const copyToClipboard = () => {
@@ -2009,6 +2056,23 @@ export default function ChurchSetup() {
                     This preview shows how your logo and colors will work together.
                   </p>
                 </div>
+              </div>
+
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  onClick={saveBranding}
+                  disabled={updateBranding.isPending || isLogoUploading}
+                >
+                  {updateBranding.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving branding...
+                    </>
+                  ) : (
+                    "Save Logo & Colors"
+                  )}
+                </Button>
               </div>
             </CardContent>
           </Card>
