@@ -695,10 +695,15 @@ export default function LandingPage() {
                   </p>
                 </div>
               </Reveal>
-              <div className="grid gap-6 lg:grid-cols-2">
-                {sampleProfileDetails.map((profile, index) => (
-                  <Reveal key={profile.name} className={index % 2 ? "[animation-delay:.08s]" : ""}>
-                    <article className={`sample-profile-card sample-profile-card--${profile.theme}`}>
+              <div className="sample-profile-carousel" aria-label="Detailed sample Ministry Profiles">
+                <div className="sample-profile-carousel__viewport">
+                  <div className="sample-profile-carousel__track">
+                    {[...sampleProfileDetails, ...sampleProfileDetails].map((profile, index) => (
+                      <article
+                        key={`${profile.name}-${index}`}
+                        aria-hidden={index >= sampleProfileDetails.length}
+                        className={`sample-profile-card sample-profile-card--${profile.theme}`}
+                      >
                       <div className="sample-profile-card__header">
                         <div className="relative z-10 flex items-center gap-4">
                           {profile.image ? (
@@ -755,9 +760,10 @@ export default function LandingPage() {
                         </div>
                         <p className="mt-auto border-t border-border pt-6 text-sm leading-6 text-muted-foreground">{profile.closing}</p>
                       </div>
-                    </article>
-                  </Reveal>
-                ))}
+                      </article>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

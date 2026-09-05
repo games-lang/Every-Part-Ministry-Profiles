@@ -552,6 +552,35 @@
   font-size: .72rem;
   font-weight: 650;
 }
+.sample-profile-carousel {
+  overflow: hidden;
+}
+.sample-profile-carousel__viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
+}
+.sample-profile-carousel__track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  padding: .5rem 1rem 1.5rem;
+  animation: sample-profile-carousel-scroll 72s linear infinite;
+}
+.sample-profile-carousel:hover .sample-profile-carousel__track,
+.sample-profile-carousel:focus-within .sample-profile-carousel__track {
+  animation-play-state: paused;
+}
+.sample-profile-carousel .sample-profile-card {
+  width: min(42rem, calc(100vw - 3rem));
+  flex: 0 0 auto;
+}
+@keyframes sample-profile-carousel-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - .75rem)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sample-profile-carousel__track { animation: none; }
+}
 
 .ep-landing {
   --landing-cyan: 178 45% 89%;
