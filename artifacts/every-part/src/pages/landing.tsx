@@ -513,7 +513,11 @@ export default function LandingPage() {
                   <div className="absolute -bottom-28 -right-24 h-72 w-72 rounded-full border-[36px] border-[hsl(var(--accent)/.8)]" aria-hidden="true" />
                   <p className="relative text-xs font-bold uppercase tracking-[.18em] text-[hsl(var(--landing-cyan))]">Fictional sample profile</p>
                   <div className="relative mt-20 flex items-center gap-4">
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary font-serif text-2xl font-semibold text-secondary-foreground">S</span>
+                    <img
+                      src={appPath("/sample-profile-sarah.jpg")}
+                      alt="Sarah, a fictional example profile participant"
+                      className="h-20 w-20 shrink-0 rounded-full border-2 border-secondary/80 object-cover shadow-lg"
+                    />
                     <div><h3 className="font-serif text-3xl tracking-[-.05em]">Sarah’s Ministry Profile</h3><p className="mt-1 text-sm text-[hsl(var(--landing-slate))]">Fictional example</p></div>
                   </div>
                   <p className="relative mt-10 max-w-sm text-base leading-7 text-[hsl(var(--landing-light-text))]">
