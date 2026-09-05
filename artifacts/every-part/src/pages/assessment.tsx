@@ -2514,7 +2514,7 @@ export default function Assessment() {
                           options={[
                             "Single",
                             "Married",
-                            "Parent/caregiver",
+                            "Married with kids at home",
                             "Empty nester",
                             "Other",
                           ]}
