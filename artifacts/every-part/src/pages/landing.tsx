@@ -685,52 +685,81 @@ export default function LandingPage() {
               </Reveal>
             </div>
 
-            <Reveal className="mt-16">
-              <div id="sample-profile" className="grid scroll-mt-24 overflow-hidden rounded-[2rem] border border-border bg-card lg:grid-cols-[.76fr_1.24fr]">
-                <div className="relative overflow-hidden bg-[hsl(var(--primary-deep))] p-8 text-primary-foreground sm:p-12">
-                  <div className="absolute -bottom-28 -right-24 h-72 w-72 rounded-full border-[36px] border-[hsl(var(--accent)/.8)]" aria-hidden="true" />
-                  <p className="relative text-xs font-bold uppercase tracking-[.18em] text-[hsl(var(--landing-cyan))]">Fictional sample profile</p>
-                  <div className="relative mt-20 flex items-center gap-4">
-                    <img
-                      src={appPath("/sample-profile-sarah-community.jpg")}
-                      alt="Sarah, a fictional example profile participant"
-                      className="h-20 w-20 shrink-0 rounded-full border-2 border-secondary/80 object-cover shadow-lg"
-                    />
-                    <div><h3 className="font-serif text-3xl tracking-[-.05em]">Sarah’s Ministry Profile</h3><p className="mt-1 text-sm text-[hsl(var(--landing-slate))]">Fictional example</p></div>
-                  </div>
-                  <p className="relative mt-10 max-w-sm text-base leading-7 text-[hsl(var(--landing-light-text))]">
-                    Sarah’s Ministry Profile is a fictional example of how a fuller conversation can begin.
+            <div id="sample-profile" className="scroll-mt-24">
+              <Reveal className="mt-16">
+                <div className="mb-8 max-w-3xl">
+                  <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">Four fictional sample profiles</p>
+                  <h3 className="mt-3 font-serif text-3xl tracking-[-.045em] sm:text-4xl">See how each pathway starts a different conversation.</h3>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                    These examples show the kind of reflection each profile can surface. They offer possibilities and questions—not labels, conclusions, or automatic placements.
                   </p>
                 </div>
-                <div className="p-8 sm:p-12">
-                  <div className="flex items-center justify-between gap-4">
-                    <div><p className="text-xs font-bold uppercase tracking-[.18em] text-accent">What a leader might notice</p><h3 className="mt-3 font-serif text-3xl tracking-[-.045em]">Start with a question.</h3></div>
-                    <HeartHandshake className="hidden h-8 w-8 shrink-0 text-secondary sm:block" />
-                  </div>
-                  <div className="mt-8 grid gap-5 sm:grid-cols-2">
-                    <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Top spiritual gifts</p><div className="mt-3 flex flex-wrap gap-2">{["Encouragement", "Mercy", "Helps"].map((item) => <span key={item} className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold">{item}</span>)}</div></div>
-                    <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">How she tends to minister</p><p className="mt-3 font-semibold">Caring for people over time</p></div>
-                    <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">How she tends to operate</p><div className="mt-3 flex flex-wrap gap-2">{["Relational", "Reflective", "Organized", "People-centered"].map((item) => <span key={item} className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold">{item}</span>)}</div></div>
-                    <div><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Passions</p><div className="mt-3 flex flex-wrap gap-2">{["Young Adults", "People in Crisis", "New Believers"].map((item) => <span key={item} className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold">{item}</span>)}</div></div>
-                  </div>
-                  <div className="mt-9 space-y-4">
-                    {[
-                      "Sarah may bring a gift for encouragement and organization.",
-                      "Her current availability makes a weekly mentoring role worth exploring.",
-                      "A leader can ask what support would help her take a healthy next step.",
-                    ].map((item) => (
-                      <div key={item} className="flex gap-3 text-sm leading-6">
-                        <Check className="mt-1 h-4 w-4 shrink-0 text-secondary" /><span>{item}</span>
+              </Reveal>
+              <div className="grid gap-6 lg:grid-cols-2">
+                {sampleProfileDetails.map((profile, index) => (
+                  <Reveal key={profile.name} className={index % 2 ? "[animation-delay:.08s]" : ""}>
+                    <article className={`sample-profile-card sample-profile-card--${profile.theme}`}>
+                      <div className="sample-profile-card__header">
+                        <div className="relative z-10 flex items-center gap-4">
+                          {profile.image ? (
+                            <img
+                              src={appPath(profile.image)}
+                              alt={`${profile.name}, a fictional example profile participant`}
+                              className="h-16 w-16 shrink-0 rounded-full border-2 border-white/60 object-cover shadow-lg"
+                            />
+                          ) : (
+                            <span className="sample-profile-card__avatar" aria-hidden="true">{profile.initials}</span>
+                          )}
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/70">{profile.pathway} · {profile.age}</p>
+                            <h4 className="mt-1 font-serif text-2xl tracking-[-.04em] text-white">{profile.name}’s profile</h4>
+                          </div>
+                        </div>
+                        <p className="relative z-10 mt-6 max-w-md text-sm leading-6 text-white/78">{profile.intro}</p>
                       </div>
-                    ))}
-                  </div>
-                  <div className="mt-8 border-t border-border pt-6"><p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Possible ministry environments</p><div className="mt-3 flex flex-wrap gap-2">{["Care Ministry", "Discipleship", "Small Groups", "Hospitality"].map((item) => <span key={item} className="rounded-full border border-secondary/30 px-3 py-1.5 text-xs font-semibold text-secondary">{item}</span>)}</div></div>
-                  <div className="mt-9 border-t border-border pt-6 text-sm leading-6 text-muted-foreground">
-                    Sarah’s profile does not decide for her. It helps a pastor enter the conversation prepared to listen.
-                  </div>
-                </div>
+                      <div className="flex h-full flex-col p-6 sm:p-8">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <p className="sample-profile-card__eyebrow">What a leader might notice</p>
+                            <h4 className="mt-2 font-serif text-2xl tracking-[-.035em]">{profile.lead}</h4>
+                          </div>
+                          <HeartHandshake className="h-6 w-6 shrink-0 text-[hsl(var(--sample-accent))]" />
+                        </div>
+                        <div className="mt-7 grid gap-5 sm:grid-cols-2">
+                          {profile.fields.map((field) => (
+                            <div key={field.label}>
+                              <p className="text-[10px] font-bold uppercase tracking-[.13em] text-muted-foreground">{field.label}</p>
+                              {"values" in field ? (
+                                <div className="mt-2 flex flex-wrap gap-1.5">
+                                  {field.values?.map((item) => <span key={item} className="sample-profile-card__tag">{item}</span>)}
+                                </div>
+                              ) : (
+                                <p className="mt-2 text-sm font-semibold leading-5">{field.text}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-7 space-y-3 border-t border-border pt-6">
+                          {profile.notes.map((item) => (
+                            <div key={item} className="flex gap-3 text-sm leading-6">
+                              <Check className="mt-1 h-4 w-4 shrink-0 text-[hsl(var(--sample-accent))]" />
+                              <span>{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-7 border-t border-border pt-6">
+                          <p className="text-[10px] font-bold uppercase tracking-[.13em] text-muted-foreground">Possible ministry environments</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {profile.environments.map((item) => <span key={item} className="sample-profile-card__environment">{item}</span>)}
+                          </div>
+                        </div>
+                        <p className="mt-auto border-t border-border pt-6 text-sm leading-6 text-muted-foreground">{profile.closing}</p>
+                      </div>
+                    </article>
+                  </Reveal>
+                ))}
               </div>
-            </Reveal>
+            </div>
           </div>
         </section>
 
