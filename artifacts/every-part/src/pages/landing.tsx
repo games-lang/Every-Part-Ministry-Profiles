@@ -6,6 +6,8 @@ import {
   BookOpen,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Compass,
   Cross,
   Heart,
@@ -327,8 +329,38 @@ function ScriptureCallout({
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sampleCarouselPaused, setSampleCarouselPaused] = useState(false);
+  const sampleCarouselRef = useRef<HTMLDivElement>(null);
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    const viewport = sampleCarouselRef.current;
+    if (!viewport) return;
+    let frame = 0;
+    let lastTime = 0;
+    const tick = (time: number) => {
+      if (!sampleCarouselPaused && time - lastTime > 16) {
+        const loopPoint = viewport.scrollWidth / 2;
+        if (loopPoint > 0) {
+          if (viewport.scrollLeft >= loopPoint) viewport.scrollLeft -= loopPoint;
+          else viewport.scrollLeft += 0.45;
+        }
+        lastTime = time;
+      }
+      frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [sampleCarouselPaused]);
+
+  const scrollSampleProfiles = (direction: number) => {
+    sampleCarouselRef.current?.scrollBy({
+      left: direction * Math.min(sampleCarouselRef.current.clientWidth * 0.84, 720),
+      behavior: "smooth",
+    });
+    setSampleCarouselPaused(true);
+  };
 
   useEffect(() => {
     document.title = "Every Part | Help people discover their part";
@@ -695,8 +727,40 @@ export default function LandingPage() {
                   </p>
                 </div>
               </Reveal>
-              <div className="sample-profile-carousel" aria-label="Detailed sample Ministry Profiles">
-                <div className="sample-profile-carousel__viewport">
+              <div
+                className="sample-profile-carousel"
+                aria-label="Detailed sample Ministry Profiles"
+                onMouseEnter={() => setSampleCarouselPaused(true)}
+                onMouseLeave={() => setSampleCarouselPaused(false)}
+                onFocus={() => setSampleCarouselPaused(true)}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setSampleCarouselPaused(false);
+                  }
+                }}
+              >
+                <div className="sample-profile-carousel__controls">
+                  <p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Scroll through the profiles</p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="landing-focus sample-profile-carousel__arrow"
+                      aria-label="Show previous sample profile"
+                      onClick={() => scrollSampleProfiles(-1)}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      className="landing-focus sample-profile-carousel__arrow"
+                      aria-label="Show next sample profile"
+                      onClick={() => scrollSampleProfiles(1)}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                <div ref={sampleCarouselRef} className="sample-profile-carousel__viewport">
                   <div className="sample-profile-carousel__track">
                     {[...sampleProfileDetails, ...sampleProfileDetails].map((profile, index) => (
                       <article
