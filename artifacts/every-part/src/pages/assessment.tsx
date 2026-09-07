@@ -2402,10 +2402,14 @@ export default function Assessment() {
               <h1 className="font-serif text-4xl">Your Ministry Profile</h1>
             </div>
             <p className="text-muted-foreground">
-              Take a prayerful pause to discover your part and reflect on how
-              you may serve well. Your responses are a starting point for
-              conversation—not a verdict or a placement decision. Share only
-              what feels comfortable.
+              We all have a part in the Body of Christ—and every part matters.
+              God has uniquely shaped you with gifts, experiences, interests,
+              and a story that can be used to bless others and build up His
+              church. This assessment is simply a tool to help you and your
+              church discover more about your part and where you may serve with
+              joy and purpose. There are no perfect answers here—just an
+              opportunity to pray, reflect, and learn a little more about how
+              God may be inviting you to serve.
             </p>
             <Button
               onClick={() => {
