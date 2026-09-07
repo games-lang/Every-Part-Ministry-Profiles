@@ -97,6 +97,54 @@ function ObjectValues({ value, labels }: {value: unknown; labels?: Record<string
   if (!entries.length) return null;
   return <div className="grid sm:grid-cols-2 gap-3">{entries.map(([key,val]) => <Value key={key} label={labels?.[key] ?? key.replace(/([A-Z])/g, " $1").replace(/^./,x=>x.toUpperCase())} value={Array.isArray(val) ? val.join(", ") : typeof val === "object" ? JSON.stringify(val) : val}/>)}</div>;
 }
+function Languages({ value }: { value: unknown }) {
+  if (!value || typeof value !== "object") return null;
+  const record = value as Record<string, unknown>;
+  const storedEntries = Array.isArray(record.entries) ? record.entries : [];
+  const entries = storedEntries.flatMap((entry) => {
+    if (!entry || typeof entry !== "object") return [];
+    const language = (entry as Record<string, unknown>).language;
+    const proficiency = (entry as Record<string, unknown>).proficiency;
+    return typeof language === "string" && language.trim()
+      ? [{
+          language: language.trim(),
+          proficiency: typeof proficiency === "string" ? proficiency : "",
+        }]
+      : [];
+  });
+  if (entries.length) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {entries.map((entry, index) => (
+          <Value
+            key={`${entry.language}-${index}`}
+            label={entry.language}
+            value={entry.proficiency}
+          />
+        ))}
+      </div>
+    );
+  }
+  const spoken = Array.isArray(record.spoken)
+    ? record.spoken.filter((language): language is string => typeof language === "string")
+    : [];
+  const legacyProficiency =
+    typeof record.proficiency === "string" ? record.proficiency : "";
+  if (spoken.length) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {spoken.map((language, index) => (
+          <Value
+            key={`${language}-${index}`}
+            label={language}
+            value={legacyProficiency}
+          />
+        ))}
+      </div>
+    );
+  }
+  return <ObjectValues value={value} />;
+}
 function MinistryAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
   const legacyLabels: Record<string, string> = {
@@ -445,7 +493,7 @@ export default function ProfileDetail() {
           <ProfileSchedule profileId={profile.id} />
         )}
        <div className="space-y-8">
-          {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age" value={profile.age}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><ObjectValues value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div></div>}{subsectionEnabled("aboutYou","lifeExperiences")&&hasValues(profile.lifeExperiences)&&<div className="no-print"><h3 className="font-medium mb-2">Pastoral notes (not for print)</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
+          {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age" value={profile.age}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><Languages value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">Skills & experience</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div></div>}{subsectionEnabled("aboutYou","lifeExperiences")&&hasValues(profile.lifeExperiences)&&<div className="no-print"><h3 className="font-medium mb-2">Pastoral notes (not for print)</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
           {sectionEnabled("apest")&&<Section title="How You Minister"><p className="mb-3 text-sm text-muted-foreground">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest} isEnabled={subsection=>subsectionEnabled("apest",subsection)}/></Section>}
          {sectionEnabled("spiritualGifts")&&<details className="no-print rounded-2xl border bg-card p-4"><summary className="cursor-pointer font-serif text-2xl font-medium">Full gifts reflections</summary><p className="text-sm text-muted-foreground mt-3 mb-3">Member self-reflection, not a diagnosis or placement recommendation.</p><SpiritualGifts value={profile.assessmentSections.spiritualGifts}/></details>}
          {sectionEnabled("passionsInterests")&&<Section title="Who and where you are drawn toward (Passions)"><div className="space-y-5">{subsectionEnabled("passionsInterests","passions")&&<div><h3 className="font-medium mb-2">Passions</h3><div className="flex flex-wrap gap-2">{profile.passions.length ? profile.passions.map(x=><Badge key={x}>{x}</Badge>) : <span className="italic text-muted-foreground">No passions shared.</span>}</div></div>}{subsectionEnabled("passionsInterests","ministryInterests")&&<div><h3 className="font-medium mb-2">Ministry interests</h3><div className="flex flex-wrap gap-2">{profile.interests.length ? profile.interests.map(x=><Badge key={x} variant="outline">{x}</Badge>) : <span className="italic text-muted-foreground">No interests shared.</span>}</div></div>}</div></Section>}

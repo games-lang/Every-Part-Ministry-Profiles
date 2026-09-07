@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { useRoute, Link } from "wouter";
-import { useForm, type Path } from "react-hook-form";
+import { useFieldArray, useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -45,6 +45,8 @@ import {
   CheckCircle2,
   HeartHandshake,
   Loader2,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { personalitySummarySentence } from "@/lib/personality-prose";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
@@ -964,16 +966,6 @@ function personalityMinistryConnection(
     : "In ministry, your balanced tendencies may help you adapt across different people, teams, rhythms, and responsibilities.";
 }
 const choice = z.string();
-function parseLanguages(value: string) {
-  return Array.from(
-    new Set(
-      value
-        .split(/[,\n]/)
-        .map((language) => language.trim())
-        .filter(Boolean),
-    ),
-  );
-}
 const assessmentSchema = z.object({
   basicInformation: z.object({
     firstName: z.string(),
@@ -995,8 +987,12 @@ const assessmentSchema = z.object({
   interests: z.array(z.string()),
   servingFrequency: choice,
   availability: z.array(z.string()),
-  languageText: z.string(),
-  languageProficiency: z.string(),
+  languageEntries: z.array(
+    z.object({
+      language: z.string(),
+      proficiency: z.string(),
+    }),
+  ),
   churchDetails: z.object({
     membership: z.string(),
     service: z.string(),
@@ -1095,8 +1091,7 @@ function fieldIsEnabled(
       "basicInformation.preferredContact",
       "basicInformation.familySituation",
       "basicInformation.transportation",
-      "languageText",
-      "languageProficiency",
+      "languageEntries",
     ].includes(name)
   )
     return (
@@ -1165,8 +1160,7 @@ const defaultValues: Values = {
   interests: [],
   servingFrequency: "",
   availability: [],
-  languageText: "",
-  languageProficiency: "",
+  languageEntries: [{ language: "", proficiency: "" }],
   churchDetails: { membership: "", service: "", previousInvolvement: "" },
   spiritualGifts: {
     responses: Object.fromEntries(
@@ -1570,6 +1564,14 @@ export default function Assessment() {
   const submissionStarted = useRef(false);
   const initializedGiftConfig = useRef<string | null>(null);
   const form = useForm<Values>({ defaultValues });
+  const {
+    fields: languageFields,
+    append: appendLanguage,
+    remove: removeLanguage,
+  } = useFieldArray({
+    control: form.control,
+    name: "languageEntries",
+  });
   const invitationApplied = useRef(false);
   useEffect(() => {
     if (!invitedPerson || invitationApplied.current) return;
@@ -1800,8 +1802,7 @@ export default function Assessment() {
       "basicInformation.preferredContact",
       "basicInformation.familySituation",
       "basicInformation.transportation",
-      "languageText",
-      "languageProficiency",
+      "languageEntries",
     );
     add(
       enabled("aboutYou.skillsExperience"),
@@ -2198,7 +2199,12 @@ export default function Assessment() {
       personalityResponses,
       activePersonalityDimensions,
     );
-    const spokenLanguages = parseLanguages(data.languageText);
+    const languageEntries = data.languageEntries
+      .map((entry) => ({
+        language: entry.language.trim(),
+        proficiency: entry.proficiency || null,
+      }))
+      .filter((entry) => entry.language);
     const payload: ProfileInput = {
       ...(profilePhotoPath ? { profilePhotoPath } : {}),
       churchSlug: slug,
@@ -2251,11 +2257,11 @@ export default function Assessment() {
             skillsDetails: data.skills,
           }
         : {}),
-      ...(subsectionEnabled("aboutYou.personalInformation") && spokenLanguages.length
+      ...(subsectionEnabled("aboutYou.personalInformation") && languageEntries.length
         ? {
             languages: {
-              spoken: spokenLanguages,
-              proficiency: data.languageProficiency || null,
+              entries: languageEntries,
+              spoken: languageEntries.map((entry) => entry.language),
             },
           }
         : {}),
@@ -2546,24 +2552,100 @@ export default function Assessment() {
                             "Would like to discuss",
                           ]}
                         />
-                        <TextField
-                          form={form}
-                          name="languageText"
-                          label="Languages spoken (optional)"
-                          description="Add multiple languages separated by commas or put one language on each line."
-                          multiline
-                        />
-                        <SelectField
-                          form={form}
-                          name="languageProficiency"
-                          label="Language proficiency (optional)"
-                          options={[
-                            "Basic conversation",
-                            "Conversational",
-                            "Fluent",
-                            "Native/bilingual",
-                          ]}
-                        />
+                        <div className="space-y-3 md:col-span-2">
+                          <div>
+                            <p className="text-sm font-medium">
+                              Languages spoken (optional)
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Add each language and choose your proficiency for
+                              that language.
+                            </p>
+                          </div>
+                          {languageFields.map((languageField, index) => (
+                            <div
+                              key={languageField.id}
+                              className="grid gap-3 rounded-xl border border-border/60 bg-muted/10 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end"
+                            >
+                              <FormField
+                                control={form.control}
+                                name={`languageEntries.${index}.language`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Language</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="e.g. Spanish"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`languageEntries.${index}.proficiency`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Proficiency</FormLabel>
+                                    <Select
+                                      value={field.value}
+                                      onValueChange={field.onChange}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Select proficiency" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {[
+                                          "Basic conversation",
+                                          "Conversational",
+                                          "Fluent",
+                                          "Native/bilingual",
+                                        ].map((option) => (
+                                          <SelectItem
+                                            key={option}
+                                            value={option}
+                                          >
+                                            {option}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              {languageFields.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  aria-label={`Remove language ${index + 1}`}
+                                  onClick={() => removeLanguage(index)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              appendLanguage({
+                                language: "",
+                                proficiency: "",
+                              })
+                            }
+                          >
+                            <Plus className="mr-1.5 h-4 w-4" />
+                            Add another language
+                          </Button>
+                        </div>
                       </div>
                       <ProfilePhotoUploader
                         churchSlug={slug}
