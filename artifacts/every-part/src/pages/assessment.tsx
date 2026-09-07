@@ -1075,6 +1075,7 @@ function fieldIsEnabled(
   context: AssessmentRenderContext | undefined,
 ) {
   const configuration = context?.configuration;
+  const aboutYouEnabled = configuration?.sections.aboutYou ?? true;
   if (
     [
       "basicInformation.firstName",
@@ -1095,7 +1096,9 @@ function fieldIsEnabled(
     ].includes(name)
   )
     return (
-      context?.step === "aboutYou" && enabled("aboutYou.personalInformation")
+      context?.step === "aboutYou" &&
+      aboutYouEnabled &&
+      enabled("aboutYou.personalInformation")
     );
   if (name === "occupation" || name.startsWith("skills."))
     return (
@@ -1638,8 +1641,8 @@ export default function Assessment() {
   ];
   const currentStep = stepKeys[stepIndex] ?? "aboutYou";
   const progressLabels: Record<string, string> = {
-    identity: "Start",
     aboutYou: "About you",
+    skillsExperience: "Skills & experience",
     apest: "How you minister",
     spiritualGifts: "Gifts",
     passionsInterests: "Passions",
@@ -1946,7 +1949,6 @@ export default function Assessment() {
         );
         return false;
       }
-      return true;
     }
     const unanswered =
       currentStep === "apest"
@@ -1984,16 +1986,6 @@ export default function Assessment() {
       );
     }
     const required: Path<Values>[] = [];
-    if (currentStep === "aboutYou" && subsectionEnabled("aboutYou.personalInformation")) {
-      [
-        "basicInformation.preferredContact",
-        "basicInformation.familySituation",
-        "basicInformation.transportation",
-      ].forEach((name) => {
-        if (!form.getValues(name as Path<Values>))
-          required.push(name as Path<Values>);
-      });
-    }
     if (currentStep === "passionsInterests") {
       if (
         subsectionEnabled("passionsInterests.passions") &&
@@ -2493,7 +2485,7 @@ export default function Assessment() {
                 <CardContent className="p-6 md:p-10 space-y-8">
                   {currentStep === "aboutYou" && (
                     <>
-                      <Heading description="Share the parts of your story that help your church know you.">
+                      <Heading description="Start with how your church can reach you. Everything else on this page is optional.">
                         About You
                       </Heading>
                       <div className="grid md:grid-cols-2 gap-5">
@@ -2523,169 +2515,190 @@ export default function Assessment() {
                           label="Preferred contact method"
                           options={["Email", "Phone", "Text"]}
                         />
-                        <SelectField
-                          form={form}
-                          name="basicInformation.familySituation"
-                          label="Family situation"
-                          options={[
-                            "Single",
-                            "Married",
-                            "Married with kids at home",
-                            "Empty nester",
-                            "Other",
-                          ]}
-                        />
-                        <SelectField
-                          form={form}
-                          name="basicInformation.transportation"
-                          label="Transportation"
-                          options={[
-                            "Reliable transportation",
-                            "Sometimes need transportation",
-                            "Would like to discuss",
-                          ]}
-                        />
-                        <div className="space-y-3 md:col-span-2">
-                          <div>
-                            <p className="text-sm font-medium">
-                              Languages spoken (optional)
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              Add each language and choose your proficiency for
-                              that language.
-                            </p>
-                          </div>
-                          {languageFields.map((languageField, index) => (
-                            <div
-                              key={languageField.id}
-                              className="grid gap-3 rounded-xl border border-border/60 bg-muted/10 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end"
-                            >
-                              <FormField
-                                control={form.control}
-                                name={`languageEntries.${index}.language`}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Language</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="e.g. Spanish"
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name={`languageEntries.${index}.proficiency`}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Proficiency</FormLabel>
-                                    <Select
-                                      value={field.value}
-                                      onValueChange={field.onChange}
-                                    >
-                                      <FormControl>
-                                        <SelectTrigger>
-                                          <SelectValue placeholder="Select proficiency" />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        {[
-                                          "Basic conversation",
-                                          "Conversational",
-                                          "Fluent",
-                                          "Native/bilingual",
-                                        ].map((option) => (
-                                          <SelectItem
-                                            key={option}
-                                            value={option}
-                                          >
-                                            {option}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              {languageFields.length > 1 && (
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  aria-label={`Remove language ${index + 1}`}
-                                  onClick={() => removeLanguage(index)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              appendLanguage({
-                                language: "",
-                                proficiency: "",
-                              })
-                            }
-                          >
-                            <Plus className="mr-1.5 h-4 w-4" />
-                            Add another language
-                          </Button>
-                        </div>
                       </div>
-                      <ProfilePhotoUploader
-                        churchSlug={slug}
-                        name={`${form.watch("basicInformation.firstName")} ${form.watch("basicInformation.lastName")}`}
-                        value={profilePhotoPath}
-                        onChange={setProfilePhotoPath}
-                        onUploadingChange={setPhotoUploading}
-                      />
-                      <Heading description="Optional details about your work, education, and experience.">
+                      <details className="rounded-xl border border-border/70 bg-muted/10 p-4">
+                        <summary className="cursor-pointer text-sm font-medium">
+                          Add family, transportation, languages, or a photo
+                        </summary>
+                        <div className="mt-5 space-y-6">
+                          <div className="grid gap-5 md:grid-cols-2">
+                            <SelectField
+                              form={form}
+                              name="basicInformation.familySituation"
+                              label="Family situation"
+                              options={[
+                                "Single",
+                                "Married",
+                                "Married with kids at home",
+                                "Empty nester",
+                                "Other",
+                              ]}
+                            />
+                            <SelectField
+                              form={form}
+                              name="basicInformation.transportation"
+                              label="Transportation"
+                              options={[
+                                "Reliable transportation",
+                                "Sometimes need transportation",
+                                "Would like to discuss",
+                              ]}
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <div>
+                              <p className="text-sm font-medium">
+                                Languages spoken
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Add each language and its proficiency.
+                              </p>
+                            </div>
+                            {languageFields.map((languageField, index) => (
+                              <div
+                                key={languageField.id}
+                                className="grid gap-3 rounded-xl border border-border/60 bg-background p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end"
+                              >
+                                <FormField
+                                  control={form.control}
+                                  name={`languageEntries.${index}.language`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Language</FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="e.g. Spanish"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name={`languageEntries.${index}.proficiency`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Proficiency</FormLabel>
+                                      <Select
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select proficiency" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {[
+                                            "Basic conversation",
+                                            "Conversational",
+                                            "Fluent",
+                                            "Native/bilingual",
+                                          ].map((option) => (
+                                            <SelectItem
+                                              key={option}
+                                              value={option}
+                                            >
+                                              {option}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                {languageFields.length > 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    aria-label={`Remove language ${index + 1}`}
+                                    onClick={() => removeLanguage(index)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                appendLanguage({
+                                  language: "",
+                                  proficiency: "",
+                                })
+                              }
+                            >
+                              <Plus className="mr-1.5 h-4 w-4" />
+                              Add another language
+                            </Button>
+                          </div>
+                          <ProfilePhotoUploader
+                            churchSlug={slug}
+                            name={`${form.watch("basicInformation.firstName")} ${form.watch("basicInformation.lastName")}`}
+                            value={profilePhotoPath}
+                            onChange={setProfilePhotoPath}
+                            onUploadingChange={setPhotoUploading}
+                          />
+                        </div>
+                      </details>
+                    </>
+                  )}
+                  {currentStep === "skillsExperience" && (
+                    <>
+                      <Heading description="Share only what feels useful. Short answers are enough, and every field is optional.">
                         Skills & Experience
                       </Heading>
                       <div className="space-y-5">
                         <TextField
                           form={form}
                           name="occupation"
-                          label="Profession or field of study"
-                        />
-                        <TextField
-                          form={form}
-                          name="skills.education"
-                          label="Education"
-                        />
-                        <TextField
-                          form={form}
-                          name="skills.certifications"
-                          label="Certifications"
+                          label="Work, study, or main area of experience"
                         />
                         <TextField
                           form={form}
                           name="skills.skills"
-                          label="Technical, creative, language, music, teaching, leadership, financial, trades, healthcare, counseling, technology, cooking, driving, or organization skills"
+                          label="Skills and strengths"
+                          description="For example: teaching, organizing, music, technology, caregiving, trades, hospitality, or leadership."
                           multiline
                         />
                         <TextField
                           form={form}
                           name="skills.experience"
-                          label="Relevant experience"
+                          label="Experience that may be helpful to your church"
+                          description="This can come from work, volunteering, family life, ministry, or your community."
                           multiline
                         />
-                        <TextField
-                          form={form}
-                          name="skills.uniqueSkills"
-                          label="What are you good at that the church may not know about?"
-                          multiline
-                        />
+                        <details className="rounded-xl border border-border/70 bg-muted/10 p-4">
+                          <summary className="cursor-pointer text-sm font-medium">
+                            Add education, training, or something else you do well
+                          </summary>
+                          <div className="mt-5 space-y-5">
+                            <TextField
+                              form={form}
+                              name="skills.education"
+                              label="Education or training"
+                            />
+                            <TextField
+                              form={form}
+                              name="skills.certifications"
+                              label="Certifications"
+                            />
+                            <TextField
+                              form={form}
+                              name="skills.uniqueSkills"
+                              label="Anything else you do well"
+                              multiline
+                            />
+                          </div>
+                        </details>
                       </div>
-                      <Heading description="Optional. Please do not share anything you do not want church leaders to know.">
+                      <Heading description="Optional. Share only experiences you are comfortable having church leaders know.">
                         Life Experiences
                       </Heading>
                       <MultiSelect
@@ -2696,12 +2709,12 @@ export default function Assessment() {
                       <TextField
                         form={form}
                         name="lifeNotes"
-                        label="Optional notes"
+                        label="Anything you would like to add (optional)"
                         multiline
                       />
                     </>
                   )}
-                  {currentStep === "skillsExperience" && (
+                  {currentStep === "apest" && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">
                           How You Minister
