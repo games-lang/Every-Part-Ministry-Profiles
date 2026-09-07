@@ -2402,8 +2402,10 @@ export default function Assessment() {
               <h1 className="font-serif text-4xl">Your Ministry Profile</h1>
             </div>
             <p className="text-muted-foreground">
-              This is a conversation starter, not a test, diagnosis, or
-              automatic placement tool. Share only what feels comfortable.
+              Take a prayerful pause to discover your part and reflect on how
+              you may serve well. Your responses are a starting point for
+              conversation—not a verdict or a placement decision. Share only
+              what feels comfortable.
             </p>
             <Button
               onClick={() => {
