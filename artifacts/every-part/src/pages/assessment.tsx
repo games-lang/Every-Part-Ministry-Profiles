@@ -1083,7 +1083,7 @@ function fieldIsEnabled(
       "basicInformation.phone",
     ].includes(name)
   )
-    return context?.step === "identity";
+    return context?.step === "aboutYou";
   const enabled = (key: keyof PublicAssessmentConfiguration["subsections"]) =>
     configuration?.subsections[key] ?? true;
   if (
@@ -1098,9 +1098,15 @@ function fieldIsEnabled(
       context?.step === "aboutYou" && enabled("aboutYou.personalInformation")
     );
   if (name === "occupation" || name.startsWith("skills."))
-    return context?.step === "aboutYou" && enabled("aboutYou.skillsExperience");
+    return (
+      context?.step === "skillsExperience" &&
+      enabled("aboutYou.skillsExperience")
+    );
   if (name === "lifeSelected" || name === "lifeNotes")
-    return context?.step === "aboutYou" && enabled("aboutYou.lifeExperiences");
+    return (
+      context?.step === "skillsExperience" &&
+      enabled("aboutYou.lifeExperiences")
+    );
   if (name === "passions")
     return (
       context?.step === "passionsInterests" &&
@@ -1392,13 +1398,13 @@ function Heading({
   const visible = configKey
     ? (context?.configuration.subsections[configKey] ?? true)
     : title === "About You"
-      ? context?.step === "identity" || context?.step === "aboutYou"
+      ? context?.step === "aboutYou"
       : title === "Skills & Experience"
-        ? context?.step === "aboutYou" &&
+        ? context?.step === "skillsExperience" &&
           (context.configuration.subsections["aboutYou.skillsExperience"] ??
             true)
         : title === "Life Experiences"
-          ? context?.step === "aboutYou" &&
+          ? context?.step === "skillsExperience" &&
             (context.configuration.subsections["aboutYou.lifeExperiences"] ??
               true)
           : title === "Who and where you are drawn toward (Passions)"
@@ -1606,10 +1612,14 @@ export default function Assessment() {
     ([gift]) => church?.enabledSpiritualGifts?.includes(gift) ?? true,
   );
   const stepKeys = [
-    "identity",
+    "aboutYou",
+    ...(sectionEnabled("aboutYou") &&
+    (subsectionEnabled("aboutYou.skillsExperience") ||
+      subsectionEnabled("aboutYou.lifeExperiences"))
+      ? ["skillsExperience"]
+      : []),
     ...(
       [
-        "aboutYou",
         "apest",
         "spiritualGifts",
         "passionsInterests",
@@ -1626,7 +1636,7 @@ export default function Assessment() {
           : hasEnabledSubsections(section)),
     ),
   ];
-  const currentStep = stepKeys[stepIndex] ?? "identity";
+  const currentStep = stepKeys[stepIndex] ?? "aboutYou";
   const progressLabels: Record<string, string> = {
     identity: "Start",
     aboutYou: "About you",
@@ -1638,20 +1648,6 @@ export default function Assessment() {
     spiritualHealth: "Spiritual health",
     connectionAvailability: "Connection",
   };
-  // Kept solely while rendering the existing assessment copy below; navigation is keyed by currentStep.
-  const step = (
-    {
-      identity: 1,
-      aboutYou: 1,
-      apest: 2,
-      spiritualGifts: 3,
-      passionsInterests: 4,
-      naturalStrengths: 5,
-      personalityStrengths: 6,
-      spiritualHealth: 7,
-      connectionAvailability: 8,
-    } as const
-  )[currentStep];
   const configuredMinistryQuestionCount = configuration?.ministryQuestionCount;
   const ministryQuestionsPerApproach =
     typeof configuredMinistryQuestionCount === "number" &&
@@ -1932,7 +1928,7 @@ export default function Assessment() {
     return () => subscription.unsubscribe();
   }, [activeMinistryQuestions, form]);
   const validateStep = () => {
-    if (currentStep === "identity") {
+    if (currentStep === "aboutYou") {
       const identity = form.getValues("basicInformation");
       const errors: [keyof typeof identity, string][] = [];
       if (!identity.firstName)
@@ -1988,10 +1984,7 @@ export default function Assessment() {
       );
     }
     const required: Path<Values>[] = [];
-    if (
-      currentStep === "aboutYou" &&
-      subsectionEnabled("aboutYou.personalInformation")
-    ) {
+    if (currentStep === "aboutYou" && subsectionEnabled("aboutYou.personalInformation")) {
       [
         "basicInformation.preferredContact",
         "basicInformation.familySituation",
@@ -2498,7 +2491,7 @@ export default function Assessment() {
             <form onSubmit={(event) => event.preventDefault()}>
               <Card>
                 <CardContent className="p-6 md:p-10 space-y-8">
-                  {step === 1 && (
+                  {currentStep === "aboutYou" && (
                     <>
                       <Heading description="Share the parts of your story that help your church know you.">
                         About You
@@ -2708,7 +2701,7 @@ export default function Assessment() {
                       />
                     </>
                   )}
-                  {step === 2 && (
+                  {currentStep === "skillsExperience" && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">
                           How You Minister
@@ -2832,7 +2825,7 @@ export default function Assessment() {
                       </div>
                     </>
                   )}
-                  {step === 3 && (
+                  {currentStep === "spiritualGifts" && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your lived experience. This is a conversation starter, not a test of spiritual maturity or a placement decision. Choose “Not at all” when a statement does not fit.">
                         {spiritualGiftsLabel}
@@ -2951,7 +2944,7 @@ export default function Assessment() {
                       />
                     </>
                   )}
-                  {step === 4 && (
+                  {currentStep === "passionsInterests" && (
                     <>
                       <Heading description="Who or what has God put on your heart?">
                         Who and where you are drawn toward (Passions)
@@ -2978,7 +2971,7 @@ export default function Assessment() {
                       />
                     </>
                   )}
-                  {step === 5 && (
+                  {currentStep === "naturalStrengths" && (
                     <>
                       <Heading description="This strengths-based reflection looks for recurring ways you contribute, learn, relate, and solve problems. It is not a branded strengths test, diagnosis, or placement decision.">
                         What you naturally do well (Strengths)
@@ -3100,7 +3093,7 @@ export default function Assessment() {
                       />
                     </>
                   )}
-                  {step === 6 && (
+                  {currentStep === "personalityStrengths" && (
                     <>
                       <Heading description="How You Tend to Operate">
                         Personality
@@ -3309,7 +3302,7 @@ export default function Assessment() {
                       </div>
                     </>
                   )}
-                  {step === 7 && (
+                  {currentStep === "spiritualHealth" && (
                     <>
                       <Heading description="Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing.">
                         How you are doing (Spiritual Health)
@@ -3357,7 +3350,7 @@ export default function Assessment() {
                       </div>
                     </>
                   )}
-                  {step === 8 && (
+                  {currentStep === "connectionAvailability" && (
                     <>
                       <Heading description="Tell us how you experience church life and where you are currently connected or serving.">
                         How you are connected
