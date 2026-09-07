@@ -138,22 +138,6 @@ const OPTIONS = {
     "Care ministry",
     "Leadership",
   ],
-  life: [
-    "Grief",
-    "Parenting",
-    "Foster/adoption",
-    "Immigration",
-    "Recovery",
-    "Disability",
-    "Caregiving",
-    "Divorce",
-    "Military service",
-    "Cross-cultural experience",
-    "Mission work",
-    "Financial hardship",
-    "Major career transitions",
-    "Other significant experiences",
-  ],
   availability: [
     "Sunday mornings",
     "Sunday evenings",
@@ -1410,11 +1394,12 @@ function Heading({
     ? (context?.configuration.subsections[configKey] ?? true)
     : title === "About You"
       ? context?.step === "aboutYou"
-      : title === "Skills & Experience"
+      : title === "What You Bring" || title === "Skills & Experience"
         ? context?.step === "skillsExperience" &&
           (context.configuration.subsections["aboutYou.skillsExperience"] ??
             true)
-        : title === "Life Experiences"
+        : title === "Experiences That Have Shaped You" ||
+            title === "Life Experiences"
           ? context?.step === "skillsExperience" &&
             (context.configuration.subsections["aboutYou.lifeExperiences"] ??
               true)
@@ -2709,18 +2694,14 @@ export default function Assessment() {
                           multiline
                         />
                       </div>
-                      <Heading description="Optional. Share only experiences you are comfortable having church leaders know.">
-                        Life Experiences
+                      <Heading description="Optional. Share only what feels relevant, and nothing private that you do not want to explain.">
+                        Experiences That Have Shaped You
                       </Heading>
-                      <MultiSelect
-                        form={form}
-                        name="lifeSelected"
-                        options={OPTIONS.life}
-                      />
                       <TextField
                         form={form}
                         name="lifeNotes"
-                        label="Anything you would like to add (optional)"
+                        label="Is there anything you would like church leaders to understand about your experience?"
+                        description="You do not need to share anything private or explain anything you are not comfortable sharing."
                         multiline
                       />
                     </>

@@ -457,7 +457,7 @@ const CONFIG_SECTIONS: ConfigDef[] = [
       { key: "aboutYou.languages", label: "Languages and proficiency" },
       { key: "aboutYou.profilePhoto", label: "Profile photo" },
       { key: "aboutYou.skillsExperience", label: "Skills & Experience", description: "Occupational background and past ministry involvement." },
-      { key: "aboutYou.lifeExperiences", label: "Life Experiences", description: "Significant events that shape their perspective." }
+      { key: "aboutYou.lifeExperiences", label: "Experiences That Have Shaped You", description: "An optional open reflection; members choose what, if anything, to share." }
     ]
   },
   {
