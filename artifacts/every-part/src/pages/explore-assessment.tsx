@@ -168,7 +168,13 @@ const OPPORTUNITIES = [
 
 const DRAFT_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-export default function ExploreAssessment({ params }: { params: { slug: string } }) {
+export default function ExploreAssessment({
+  params,
+  hallwayCode,
+}: {
+  params: { slug: string };
+  hallwayCode?: string;
+}) {
   const { slug } = params;
   const [, setLocation] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
@@ -466,6 +472,7 @@ export default function ExploreAssessment({ params }: { params: { slug: string }
 
     const payload: ExploreProfileInput = {
       churchSlug: slug,
+      ...(hallwayCode ? { hallwayCode } : {}),
       age: initialAge,
       journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       ...(initialBirthdate ? { birthdate: initialBirthdate } : {}),

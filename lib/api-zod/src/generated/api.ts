@@ -2980,6 +2980,11 @@ export const submitExploreProfileBodyAgeMax = 12;
 
 export const submitExploreProfileBodyProfilePhotoPathMax = 500;
 
+export const submitExploreProfileBodyHallwayCodeMin = 6;
+export const submitExploreProfileBodyHallwayCodeMax = 6;
+
+
+export const submitExploreProfileBodyHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
 export const submitExploreProfileBodyChildFirstNameMax = 80;
 
 export const submitExploreProfileBodyChildLastNameMax = 80;
@@ -3031,6 +3036,7 @@ export const SubmitExploreProfileBody = zod.object({
   "profileType": zod.enum(['explore']),
   "journeyToken": zod.uuid().nullish(),
   "profilePhotoPath": zod.string().max(submitExploreProfileBodyProfilePhotoPathMax).nullish(),
+  "hallwayCode": zod.string().min(submitExploreProfileBodyHallwayCodeMin).max(submitExploreProfileBodyHallwayCodeMax).regex(submitExploreProfileBodyHallwayCodeRegExp).optional(),
   "child": zod.object({
   "firstName": zod.string().min(1).max(submitExploreProfileBodyChildFirstNameMax),
   "lastName": zod.string().min(1).max(submitExploreProfileBodyChildLastNameMax)

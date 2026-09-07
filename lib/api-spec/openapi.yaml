@@ -3060,6 +3060,11 @@ components:
         profileType: { type: string, enum: [explore] }
         journeyToken: { type: ["string", "null"], format: uuid }
         profilePhotoPath: { type: ["string", "null"], maxLength: 500 }
+        hallwayCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: "^[A-HJ-NP-Z2-9]{6}$"
         child:
           type: object
           additionalProperties: false

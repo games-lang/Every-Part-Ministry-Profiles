@@ -31,6 +31,7 @@ import Teams from '@/pages/teams';
 import Assessment from '@/pages/assessment';
 import AgeGateway from '@/pages/age-gateway';
 import DiscoverGate from '@/pages/discover-gate';
+import ExploreGate from '@/pages/explore-gate';
 import DiscoverAssessment from '@/pages/discover-assessment';
 import ExploreAssessment from '@/pages/explore-assessment';
 import DevelopAssessment from '@/pages/develop-assessment';
@@ -47,6 +48,10 @@ import { AppFeedbackForm } from "@/components/app-feedback-form";
 
 const DiscoverRoute = ({ params }: { params: { slug: string } }) => (
     <DiscoverGate params={params} Page={DiscoverAssessment} />
+  );
+
+const ExploreRoute = ({ params }: { params: { slug: string } }) => (
+    <ExploreGate params={params} Page={ExploreAssessment} />
   );
 
 const queryClient = new QueryClient({
@@ -366,7 +371,7 @@ function ClerkProviderWithRoutes() {
               <Route path="/profile/:slug" component={AgeGateway} />
               <Route path="/profile/:slug/adult" component={Assessment} />
               <Route path="/profile/:slug/discover" component={DiscoverRoute} />
-              <Route path="/profile/:slug/explore" component={ExploreAssessment} />
+              <Route path="/profile/:slug/explore" component={ExploreRoute} />
               <Route path="/profile/:slug/develop" component={DevelopAssessment} />
               <Route path="/discover/result/:token" component={DiscoverResult} />
               <Route path="/explore/result/:token" component={ExploreResult} />

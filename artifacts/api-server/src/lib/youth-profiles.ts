@@ -141,6 +141,7 @@ export const exploreSubmissionSchema = z.object({
   age: z.number().int().min(9).max(12),
   birthdate: z.string().date().optional(),
   profileType: z.literal("explore"),
+  hallwayCode: z.string().regex(/^[A-HJ-NP-Z2-9]{6}$/).optional(),
   child: z.object({ firstName: text(80), lastName: text(80) }).strict(),
   guardian: z.object({
     name: text(120),

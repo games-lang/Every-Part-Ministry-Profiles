@@ -2364,6 +2364,12 @@ export interface ExploreProfileInput {
      * @nullable
      */
   profilePhotoPath?: string | null;
+  /**
+     * @minLength 6
+     * @maxLength 6
+     * @pattern ^[A-HJ-NP-Z2-9]{6}$
+     */
+  hallwayCode?: string;
   child: ExploreProfileInputChild;
   guardian: ExploreProfileInputGuardian;
   answers: ExploreAnswersInput;

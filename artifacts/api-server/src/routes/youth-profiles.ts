@@ -226,6 +226,24 @@ router.get("/youth-profiles/:id/result", async (req, res): Promise<void> => {
 });
 
 router.post("/explore-profiles", async (req, res): Promise<void> => {
+  const userId = optionalUserId(req);
+  let authorizedHallwayChurch: typeof churchesTable.$inferSelect | undefined;
+  if (!userId) {
+    const churchSlug =
+      typeof req.body?.churchSlug === "string" ? req.body.churchSlug.trim() : "";
+    if (!churchSlug || !isDiscoverHallwayCode(req.body?.hallwayCode)) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    const [church] = await db.select().from(churchesTable)
+      .where(eq(churchesTable.slug, churchSlug)).limit(1);
+    if (!church || !matchesDiscoverHallwayCode(church.discoverHallwayCode, req.body.hallwayCode)) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    authorizedHallwayChurch = church;
+  }
+
   const generated = SubmitExploreProfileBody.safeParse(req.body);
   const parsed = exploreSubmissionSchema.safeParse(req.body);
   if (!generated.success || !parsed.success) {
@@ -236,8 +254,10 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     });
     return;
   }
-  const [church] = await db.select().from(churchesTable)
-    .where(eq(churchesTable.slug, parsed.data.churchSlug)).limit(1);
+  const [church] = authorizedHallwayChurch
+    ? [authorizedHallwayChurch]
+    : await db.select().from(churchesTable)
+      .where(eq(churchesTable.slug, parsed.data.churchSlug)).limit(1);
   if (!church) {
     res.status(404).json({ error: "Church not found" });
     return;
@@ -254,7 +274,6 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
   const recommended = pathwayForAge(parsed.data.age);
   let overridden = false;
   if (pathwayOverrideRequired("explore", recommended)) {
-    const userId = optionalUserId(req);
     if (!userId || recommended === "adult") {
       res.status(400).json({ error: "This age belongs on a different pathway." });
       return;
