@@ -213,6 +213,12 @@ export const DEFAULT_MINISTRY_INTERESTS = [
 
 export const ASSESSMENT_SUBSECTION_KEYS = [
   "aboutYou.personalInformation",
+  "aboutYou.phone",
+  "aboutYou.preferredContact",
+  "aboutYou.familySituation",
+  "aboutYou.transportation",
+  "aboutYou.languages",
+  "aboutYou.profilePhoto",
   "aboutYou.skillsExperience",
   "aboutYou.lifeExperiences",
   "apest.builder",
@@ -263,6 +269,14 @@ export const ASSESSMENT_SUBSECTION_KEYS = [
 
 type SectionKey = (typeof ASSESSMENT_SECTION_KEYS)[number];
 type SubsectionKey = (typeof ASSESSMENT_SUBSECTION_KEYS)[number];
+const ABOUT_YOU_FIELD_KEYS = [
+  "aboutYou.phone",
+  "aboutYou.preferredContact",
+  "aboutYou.familySituation",
+  "aboutYou.transportation",
+  "aboutYou.languages",
+  "aboutYou.profilePhoto",
+] as const satisfies readonly SubsectionKey[];
 
 /**
  * Response keys include a question index (for example `builder-0`), while
@@ -375,6 +389,14 @@ export function assessmentConfiguration(
     configuration.sections[key] = candidate.sections[key];
   }
   for (const key of ASSESSMENT_SUBSECTION_KEYS) {
+    if (
+      candidate.subsections[key] === undefined &&
+      ABOUT_YOU_FIELD_KEYS.includes(key as (typeof ABOUT_YOU_FIELD_KEYS)[number])
+    ) {
+      configuration.subsections[key] =
+        candidate.subsections["aboutYou.personalInformation"] as boolean;
+      continue;
+    }
     if (typeof candidate.subsections[key] !== "boolean") return null;
     const parent = key.split(".")[0] as SectionKey;
     if (candidate.subsections[key] && !configuration.sections[parent]) return null;

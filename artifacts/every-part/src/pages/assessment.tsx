@@ -1076,29 +1076,37 @@ function fieldIsEnabled(
 ) {
   const configuration = context?.configuration;
   const aboutYouEnabled = configuration?.sections.aboutYou ?? true;
+  const enabled = (key: keyof PublicAssessmentConfiguration["subsections"]) =>
+    configuration?.subsections[key] ?? true;
   if (
     [
       "basicInformation.firstName",
       "basicInformation.lastName",
       "basicInformation.email",
-      "basicInformation.phone",
     ].includes(name)
   )
     return context?.step === "aboutYou";
-  const enabled = (key: keyof PublicAssessmentConfiguration["subsections"]) =>
-    configuration?.subsections[key] ?? true;
-  if (
-    [
-      "basicInformation.preferredContact",
-      "basicInformation.familySituation",
-      "basicInformation.transportation",
-      "languageEntries",
-    ].includes(name)
-  )
+  if (name === "basicInformation.phone")
     return (
       context?.step === "aboutYou" &&
       aboutYouEnabled &&
-      enabled("aboutYou.personalInformation")
+      enabled("aboutYou.personalInformation") &&
+      enabled("aboutYou.phone")
+    );
+  const aboutYouFieldByName = {
+    "basicInformation.preferredContact": "aboutYou.preferredContact",
+    "basicInformation.familySituation": "aboutYou.familySituation",
+    "basicInformation.transportation": "aboutYou.transportation",
+    languageEntries: "aboutYou.languages",
+  } as const;
+  const aboutYouField =
+    aboutYouFieldByName[name as keyof typeof aboutYouFieldByName];
+  if (aboutYouField)
+    return (
+      context?.step === "aboutYou" &&
+      aboutYouEnabled &&
+      enabled("aboutYou.personalInformation") &&
+      enabled(aboutYouField)
     );
   if (name === "occupation" || name.startsWith("skills."))
     return (
@@ -1611,6 +1619,13 @@ export default function Assessment() {
           ([key, value]) => key.startsWith(`${section}.`) && value,
         )
       : true;
+  const optionalAboutYouPanelEnabled =
+    sectionEnabled("aboutYou") &&
+    subsectionEnabled("aboutYou.personalInformation") &&
+    (subsectionEnabled("aboutYou.familySituation") ||
+      subsectionEnabled("aboutYou.transportation") ||
+      subsectionEnabled("aboutYou.languages") ||
+      subsectionEnabled("aboutYou.profilePhoto"));
   const activeSpiritualGifts = SPIRITUAL_GIFTS.filter(
     ([gift]) => church?.enabledSpiritualGifts?.includes(gift) ?? true,
   );
@@ -2191,7 +2206,9 @@ export default function Assessment() {
       }))
       .filter((entry) => entry.language);
     const payload: ProfileInput = {
-      ...(profilePhotoPath ? { profilePhotoPath } : {}),
+      ...(subsectionEnabled("aboutYou.profilePhoto") && profilePhotoPath
+        ? { profilePhotoPath }
+        : {}),
       churchSlug: slug,
       journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
       inviteToken: inviteToken || undefined,
@@ -2199,12 +2216,20 @@ export default function Assessment() {
         firstName: data.basicInformation.firstName,
         lastName: data.basicInformation.lastName,
         email: data.basicInformation.email,
-        phone: data.basicInformation.phone || null,
+        phone: subsectionEnabled("aboutYou.phone")
+          ? data.basicInformation.phone || null
+          : null,
         ...(subsectionEnabled("aboutYou.personalInformation")
           ? {
-              preferredContact: data.basicInformation.preferredContact || null,
-              familySituation: data.basicInformation.familySituation || null,
-              transportation: data.basicInformation.transportation || null,
+              preferredContact: subsectionEnabled("aboutYou.preferredContact")
+                ? data.basicInformation.preferredContact || null
+                : null,
+              familySituation: subsectionEnabled("aboutYou.familySituation")
+                ? data.basicInformation.familySituation || null
+                : null,
+              transportation: subsectionEnabled("aboutYou.transportation")
+                ? data.basicInformation.transportation || null
+                : null,
             }
           : {}),
       },
@@ -2242,7 +2267,9 @@ export default function Assessment() {
             skillsDetails: data.skills,
           }
         : {}),
-      ...(subsectionEnabled("aboutYou.personalInformation") && languageEntries.length
+      ...(subsectionEnabled("aboutYou.personalInformation") &&
+      subsectionEnabled("aboutYou.languages") &&
+      languageEntries.length
         ? {
             languages: {
               entries: languageEntries,
@@ -2516,6 +2543,7 @@ export default function Assessment() {
                           options={["Email", "Phone", "Text"]}
                         />
                       </div>
+                      {optionalAboutYouPanelEnabled && (
                       <div className="rounded-xl border border-border/70 bg-muted/10 p-4">
                         <div className="space-y-6">
                           <p className="text-sm font-medium">
@@ -2545,6 +2573,7 @@ export default function Assessment() {
                               ]}
                             />
                           </div>
+                          {subsectionEnabled("aboutYou.languages") && (
                           <div className="space-y-3">
                             <div>
                               <p className="text-sm font-medium">
@@ -2638,6 +2667,8 @@ export default function Assessment() {
                               Add another language
                             </Button>
                           </div>
+                          )}
+                          {subsectionEnabled("aboutYou.profilePhoto") && (
                           <ProfilePhotoUploader
                             churchSlug={slug}
                             name={`${form.watch("basicInformation.firstName")} ${form.watch("basicInformation.lastName")}`}
@@ -2645,8 +2676,10 @@ export default function Assessment() {
                             onChange={setProfilePhotoPath}
                             onUploadingChange={setPhotoUploading}
                           />
+                          )}
                         </div>
                       </div>
+                      )}
                     </>
                   )}
                   {currentStep === "skillsExperience" && (

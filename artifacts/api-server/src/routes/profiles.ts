@@ -162,12 +162,36 @@ router.post("/profiles", async (req, res): Promise<void> => {
     });
     return;
   }
+  const aboutYouFieldEnabled = (
+    key:
+      | "aboutYou.phone"
+      | "aboutYou.preferredContact"
+      | "aboutYou.familySituation"
+      | "aboutYou.transportation"
+      | "aboutYou.languages"
+      | "aboutYou.profilePhoto",
+  ) =>
+    configuration.sections.aboutYou &&
+    configuration.subsections["aboutYou.personalInformation"] &&
+    configuration.subsections[key];
+  const phoneEnabled = aboutYouFieldEnabled("aboutYou.phone");
+  const preferredContactEnabled = aboutYouFieldEnabled(
+    "aboutYou.preferredContact",
+  );
+  const familySituationEnabled = aboutYouFieldEnabled(
+    "aboutYou.familySituation",
+  );
+  const transportationEnabled = aboutYouFieldEnabled(
+    "aboutYou.transportation",
+  );
+  const languagesEnabled = aboutYouFieldEnabled("aboutYou.languages");
+  const profilePhotoEnabled = aboutYouFieldEnabled("aboutYou.profilePhoto");
   const basicInformation = parsed.data.basicInformation;
   if (!basicInformation) {
     res.status(400).json({ error: "First name, last name, and email are required." });
     return;
   }
-  if (parsed.data.profilePhotoPath) {
+  if (profilePhotoEnabled && parsed.data.profilePhotoPath) {
     try {
       await storage.validateProfilePhoto(parsed.data.profilePhotoPath, church.id);
     } catch (error) {
@@ -186,9 +210,6 @@ router.post("/profiles", async (req, res): Promise<void> => {
     }
     return true;
   };
-  const personalInformationEnabled =
-    configuration.sections.aboutYou &&
-    configuration.subsections["aboutYou.personalInformation"];
   const skillsEnabled =
     configuration.sections.aboutYou &&
     configuration.subsections["aboutYou.skillsExperience"];
@@ -208,13 +229,6 @@ router.post("/profiles", async (req, res): Promise<void> => {
     configuration.sections.passionsInterests &&
     configuration.subsections["passionsInterests.ministryInterests"];
   if (
-    !requireGroup(
-      personalInformationEnabled,
-      basicInformation.preferredContact != null &&
-        basicInformation.familySituation != null &&
-        basicInformation.transportation != null,
-      "Personal information",
-    ) ||
     !requireGroup(skillsEnabled, parsed.data.skills, "Skills and experience") ||
     !requireGroup(
       churchConnectionEnabled,
@@ -339,11 +353,11 @@ router.post("/profiles", async (req, res): Promise<void> => {
           firstName: basicInformation.firstName,
           lastName: basicInformation.lastName,
           email: basicInformation.email,
-          phone: basicInformation.phone ?? null,
+          phone: phoneEnabled ? basicInformation.phone ?? null : null,
           ageRange: null,
-          preferredContact: personalInformationEnabled ? basicInformation.preferredContact ?? null : null,
-          familySituation: personalInformationEnabled ? basicInformation.familySituation ?? null : null,
-          transportation: personalInformationEnabled ? basicInformation.transportation ?? null : null,
+          preferredContact: preferredContactEnabled ? basicInformation.preferredContact ?? null : null,
+          familySituation: familySituationEnabled ? basicInformation.familySituation ?? null : null,
+          transportation: transportationEnabled ? basicInformation.transportation ?? null : null,
           attendanceLength: churchConnectionEnabled ? churchConnection?.attendanceLength ?? null : null,
           connectionLevel: churchConnectionEnabled ? churchConnection?.connectionLevel ?? null : null,
           followingJesusLength: churchConnectionEnabled ? churchConnection?.followingJesusLength ?? null : null,
@@ -359,7 +373,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
           leadershipExperience: skillsEnabled ? skills?.leadershipExperience ?? null : null,
           missionTripExperience: skillsEnabled ? skills?.missionTripExperience ?? null : null,
           lifeExperience: skillsEnabled ? skills?.lifeExperience ?? null : null,
-          languages: personalInformationEnabled ? parsed.data.languages ?? null : null,
+          languages: languagesEnabled ? parsed.data.languages ?? null : null,
           churchDetails: churchConnectionEnabled ? parsed.data.churchDetails ?? null : null,
           skillsDetails: skillsEnabled ? parsed.data.skillsDetails ?? null : null,
           lifeExperiences: lifeExperiencesEnabled ? parsed.data.lifeExperiences ?? null : null,
@@ -372,7 +386,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
           spiritualHealth: filterAssessmentSection("spiritualHealth", parsed.data.assessmentSections?.spiritualHealth, configuration),
           assessmentConfigurationSnapshot: configuration,
           ministryCustomizationSnapshot: customization,
-          profilePhotoPath: parsed.data.profilePhotoPath ?? null,
+          profilePhotoPath: profilePhotoEnabled ? parsed.data.profilePhotoPath ?? null : null,
         })
         .returning();
 

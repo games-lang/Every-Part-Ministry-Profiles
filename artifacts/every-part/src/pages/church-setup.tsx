@@ -67,6 +67,12 @@ const sectionSchema = z.object({
 
 const subsectionSchema = z.object({
   'aboutYou.personalInformation': z.boolean(),
+  'aboutYou.phone': z.boolean(),
+  'aboutYou.preferredContact': z.boolean(),
+  'aboutYou.familySituation': z.boolean(),
+  'aboutYou.transportation': z.boolean(),
+  'aboutYou.languages': z.boolean(),
+  'aboutYou.profilePhoto': z.boolean(),
   'aboutYou.skillsExperience': z.boolean(),
   'aboutYou.lifeExperiences': z.boolean(),
   'apest.builder': z.boolean(),
@@ -254,7 +260,12 @@ function estimateAssessmentTime(
   let reflectionQuestions = 0;
 
   if (sections.aboutYou) {
-    if (subsectionEnabled("aboutYou.personalInformation")) seconds += 90;
+    if (subsectionEnabled("aboutYou.phone")) seconds += 15;
+    if (subsectionEnabled("aboutYou.preferredContact")) seconds += 10;
+    if (subsectionEnabled("aboutYou.familySituation")) seconds += 10;
+    if (subsectionEnabled("aboutYou.transportation")) seconds += 10;
+    if (subsectionEnabled("aboutYou.languages")) seconds += 30;
+    if (subsectionEnabled("aboutYou.profilePhoto")) seconds += 30;
     if (subsectionEnabled("aboutYou.skillsExperience")) seconds += 150;
     if (subsectionEnabled("aboutYou.lifeExperiences")) seconds += 90;
   }
@@ -364,6 +375,12 @@ const DEFAULT_SECTIONS: AssessmentConfigurationSections = {
 
 const DEFAULT_SUBSECTIONS: AssessmentConfigurationSubsections = {
   'aboutYou.personalInformation': true,
+  'aboutYou.phone': true,
+  'aboutYou.preferredContact': true,
+  'aboutYou.familySituation': true,
+  'aboutYou.transportation': true,
+  'aboutYou.languages': true,
+  'aboutYou.profilePhoto': true,
   'aboutYou.skillsExperience': true,
   'aboutYou.lifeExperiences': true,
   'apest.builder': true,
@@ -430,10 +447,15 @@ interface ConfigDef {
 const CONFIG_SECTIONS: ConfigDef[] = [
   {
     key: "aboutYou",
-    label: "Background & Experience",
-    description: "Gather member history, skills, and defining life moments.",
+    label: "About You",
+    description: "Choose which personal details, skills, and experiences members can share.",
     subsections: [
-      { key: "aboutYou.personalInformation", label: "Demographics & Preferences", description: "Age range, contact preferences, family situation, languages." },
+      { key: "aboutYou.phone", label: "Phone number", description: "Optional phone number for church follow-up." },
+      { key: "aboutYou.preferredContact", label: "Preferred contact method", description: "Email, phone, or text." },
+      { key: "aboutYou.familySituation", label: "Family situation" },
+      { key: "aboutYou.transportation", label: "Transportation" },
+      { key: "aboutYou.languages", label: "Languages and proficiency" },
+      { key: "aboutYou.profilePhoto", label: "Profile photo" },
       { key: "aboutYou.skillsExperience", label: "Skills & Experience", description: "Occupational background and past ministry involvement." },
       { key: "aboutYou.lifeExperiences", label: "Life Experiences", description: "Significant events that shape their perspective." }
     ]
@@ -1597,6 +1619,13 @@ export default function ChurchSetup() {
                               form.setValue(`assessmentConfiguration.subsections.${sub.key}` as any, val, { shouldDirty: true });
                             });
                           }
+                           if (section.key === "aboutYou") {
+                             form.setValue(
+                               "assessmentConfiguration.subsections.aboutYou.personalInformation" as any,
+                               val,
+                               { shouldDirty: true },
+                             );
+                           }
                         }}
                       />
                     </div>

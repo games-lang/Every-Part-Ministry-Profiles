@@ -133,6 +133,34 @@ test("spiritual gift question depth defaults legacy configurations to three", ()
   assert.equal(configuration?.spiritualGiftQuestionCount, 3);
 });
 
+test("legacy About You configurations keep every optional field enabled", () => {
+  const defaults = defaultAssessmentConfiguration();
+  const legacySubsections = { ...defaults.subsections } as Record<string, boolean>;
+  for (const key of [
+    "aboutYou.phone",
+    "aboutYou.preferredContact",
+    "aboutYou.familySituation",
+    "aboutYou.transportation",
+    "aboutYou.languages",
+    "aboutYou.profilePhoto",
+  ]) {
+    delete legacySubsections[key];
+  }
+
+  const configuration = assessmentConfiguration({
+    ...defaults,
+    subsections: legacySubsections,
+  });
+
+  assert.ok(configuration);
+  assert.equal(configuration.subsections["aboutYou.phone"], true);
+  assert.equal(configuration.subsections["aboutYou.preferredContact"], true);
+  assert.equal(configuration.subsections["aboutYou.familySituation"], true);
+  assert.equal(configuration.subsections["aboutYou.transportation"], true);
+  assert.equal(configuration.subsections["aboutYou.languages"], true);
+  assert.equal(configuration.subsections["aboutYou.profilePhoto"], true);
+});
+
 test("spiritual gift question depth accepts one through four only", () => {
   for (const spiritualGiftQuestionCount of [1, 2, 3, 4]) {
     const configuration = assessmentConfiguration({

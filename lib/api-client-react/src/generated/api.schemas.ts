@@ -651,6 +651,12 @@ export interface AssessmentConfigurationSections {
 
 export interface AssessmentConfigurationSubsections {
   'aboutYou.personalInformation': boolean;
+  'aboutYou.phone': boolean;
+  'aboutYou.preferredContact': boolean;
+  'aboutYou.familySituation': boolean;
+  'aboutYou.transportation': boolean;
+  'aboutYou.languages': boolean;
+  'aboutYou.profilePhoto': boolean;
   'aboutYou.skillsExperience': boolean;
   'aboutYou.lifeExperiences': boolean;
   'apest.builder': boolean;
