@@ -1822,9 +1822,6 @@ export default function Assessment() {
       enabled("aboutYou.skillsExperience"),
       "occupation",
       "skills.education",
-      "skills.certifications",
-      "skills.skills",
-      "skills.experience",
       "skills.uniqueSkills",
     );
     add(enabled("aboutYou.lifeExperiences"), "lifeSelected", "lifeNotes");
@@ -2259,12 +2256,16 @@ export default function Assessment() {
             skills: {
               occupation: data.occupation || null,
               uniqueSkills: data.skills.uniqueSkills || null,
-              previousMinistryExperience: data.skills.experience || null,
+              previousMinistryExperience: null,
               leadershipExperience: null,
               missionTripExperience: null,
               lifeExperience: null,
             },
-            skillsDetails: data.skills,
+            skillsDetails: {
+              context: data.occupation || null,
+              training: data.skills.education || null,
+              enjoys: data.skills.uniqueSkills || null,
+            },
           }
         : {}),
       ...(subsectionEnabled("aboutYou.personalInformation") &&
@@ -2684,52 +2685,29 @@ export default function Assessment() {
                   )}
                   {currentStep === "skillsExperience" && (
                     <>
-                      <Heading description="Share only what feels useful. Short answers are enough, and every field is optional.">
-                        Skills & Experience
+                      <Heading description="This isn't a résumé or an audition. Share what helps others understand what you bring. Every field is optional.">
+                        What You Bring
                       </Heading>
                       <div className="space-y-5">
                         <TextField
                           form={form}
                           name="occupation"
-                          label="Work, study, or main area of experience"
+                          label="Work, study, or current life context"
+                          description="Share what you're doing these days, or what your current season of life has given you."
                         />
                         <TextField
                           form={form}
-                          name="skills.skills"
-                          label="Skills and strengths"
-                          description="For example: teaching, organizing, music, technology, caregiving, trades, hospitality, or leadership."
-                          multiline
+                          name="skills.education"
+                          label="Training or certifications you'd like to share"
+                          description="Include anything relevant from school, work, ministry, hobbies, or other learning."
                         />
                         <TextField
                           form={form}
-                          name="skills.experience"
-                          label="Experience that may be helpful to your church"
-                          description="This can come from work, volunteering, family life, ministry, or your community."
+                          name="skills.uniqueSkills"
+                          label="What kinds of things do you enjoy doing with or for other people?"
+                          description="Think broadly: welcoming, listening, teaching, organizing, creating, caring, solving problems, working with your hands, or simply being present with people."
                           multiline
                         />
-                        <details className="rounded-xl border border-border/70 bg-muted/10 p-4">
-                          <summary className="cursor-pointer text-sm font-medium">
-                            Add education, training, or something else you do well
-                          </summary>
-                          <div className="mt-5 space-y-5">
-                            <TextField
-                              form={form}
-                              name="skills.education"
-                              label="Education or training"
-                            />
-                            <TextField
-                              form={form}
-                              name="skills.certifications"
-                              label="Certifications"
-                            />
-                            <TextField
-                              form={form}
-                              name="skills.uniqueSkills"
-                              label="Anything else you do well"
-                              multiline
-                            />
-                          </div>
-                        </details>
                       </div>
                       <Heading description="Optional. Share only experiences you are comfortable having church leaders know.">
                         Life Experiences
