@@ -2516,11 +2516,11 @@ export default function Assessment() {
                           options={["Email", "Phone", "Text"]}
                         />
                       </div>
-                      <details className="rounded-xl border border-border/70 bg-muted/10 p-4">
-                        <summary className="cursor-pointer text-sm font-medium">
-                          Add family, transportation, languages, or a photo
-                        </summary>
-                        <div className="mt-5 space-y-6">
+                      <div className="rounded-xl border border-border/70 bg-muted/10 p-4">
+                        <div className="space-y-6">
+                          <p className="text-sm font-medium">
+                            Family, transportation, languages, and photo
+                          </p>
                           <div className="grid gap-5 md:grid-cols-2">
                             <SelectField
                               form={form}
@@ -2646,7 +2646,7 @@ export default function Assessment() {
                             onUploadingChange={setPhotoUploading}
                           />
                         </div>
-                      </details>
+                      </div>
                     </>
                   )}
                   {currentStep === "skillsExperience" && (
