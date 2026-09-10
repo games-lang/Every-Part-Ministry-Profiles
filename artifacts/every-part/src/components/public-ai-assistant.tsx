@@ -37,6 +37,7 @@ function getErrorMessage(error: unknown) {
 export function PublicAiAssistant() {
   const [open, setOpen] = useState(false);
   const [showLauncher, setShowLauncher] = useState(false);
+  const [heroActionsVisibleOnMobile, setHeroActionsVisibleOnMobile] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([welcomeMessage]);
   const [draft, setDraft] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -61,6 +62,19 @@ export function PublicAiAssistant() {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const heroActions = document.querySelector("[data-public-hero-actions]");
+    const mobileViewport = window.matchMedia("(max-width: 639px)");
+    if (!heroActions || !mobileViewport.matches) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeroActionsVisibleOnMobile(entry.isIntersecting),
+      { threshold: 0.05 },
+    );
+    observer.observe(heroActions);
+    return () => observer.disconnect();
   }, []);
 
   async function sendMessage(content: string) {
@@ -164,10 +178,10 @@ export function PublicAiAssistant() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {showLauncher ? (
+        {showLauncher && !heroActionsVisibleOnMobile ? (
           <Button
-            className="h-13 rounded-full border border-primary-foreground/15 px-5 shadow-xl shadow-primary/20 transition hover:-translate-y-0.5"
-            style={{ position: "fixed", bottom: "1.25rem", right: "1.25rem", zIndex: 1000 }}
+            className="h-12 rounded-full border border-primary-foreground/15 px-4 shadow-xl shadow-primary/20 transition hover:-translate-y-0.5 sm:h-13 sm:px-5"
+            style={{ position: "fixed", bottom: "max(0.75rem, env(safe-area-inset-bottom))", right: "0.75rem", zIndex: 1000 }}
             aria-label="Ask the Every Part Guide"
             data-testid="button-open-public-assistant"
           >

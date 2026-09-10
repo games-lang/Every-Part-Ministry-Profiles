@@ -40,7 +40,7 @@ export default function Home() {
               </p>
             </Reveal>
             <Reveal className="[animation-delay:.3s]">
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div data-public-hero-actions className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
                  <Link href="/sign-up" className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground shadow-[0_14px_30px_hsl(var(--foreground)/.16)] transition hover:-translate-y-0.5 hover:bg-accent">
                   Try Every Part <ArrowRight className="h-4 w-4" />
                 </Link>
