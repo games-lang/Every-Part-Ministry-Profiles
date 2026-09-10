@@ -12,7 +12,7 @@ import { differenceInYears, isValid, parseISO } from "date-fns";
 export default function AgeGateway({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const [, setLocation] = useLocation();
-  const { isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   
   const { data: church, isLoading: churchLoading } = useGetPublicChurch(slug);
   const { data: adminAccess } = useGetChurchAdminAccess(slug, { 
@@ -59,6 +59,16 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
     }
 
     const pathway = calculatePathway(calculatedAge);
+
+    if (pathway === "develop" && !isLoaded) {
+      setError("Checking sign-in. Please try again.");
+      return;
+    }
+
+    if (pathway === "develop" && !isSignedIn) {
+      setError("A parent or coordinator must sign in");
+      return;
+    }
 
     if (pathway === "discover" && !isSignedIn) {
             setError("A parent or coordinator must sign in");

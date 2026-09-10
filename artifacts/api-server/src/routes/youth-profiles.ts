@@ -378,6 +378,12 @@ router.get("/explore-profiles/:id/result", async (req, res): Promise<void> => {
 });
 
 router.post("/develop-profiles", async (req, res): Promise<void> => {
+  const userId = optionalUserId(req);
+  if (!userId) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
   const generated = SubmitDevelopProfileBody.safeParse(req.body);
   const parsed = developSubmissionSchema.safeParse(req.body);
   if (!generated.success || !parsed.success) {
@@ -406,8 +412,7 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
   const recommended = pathwayForAge(parsed.data.age);
   let overridden = false;
   if (pathwayOverrideRequired("develop", recommended)) {
-    const userId = optionalUserId(req);
-    if (!userId || recommended === "adult") {
+    if (recommended === "adult") {
       res.status(400).json({ error: "This age belongs on a different pathway." });
       return;
     }
