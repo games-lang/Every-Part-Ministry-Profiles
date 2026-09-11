@@ -5,7 +5,7 @@ import {
   useGetPartFinderLeadershipProfile,
 } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BrainCircuit, FileText, Lightbulb, ListChecks, Users, UsersRound } from "lucide-react";
+import { AlertCircle, BrainCircuit, FileText, Lightbulb, ListChecks, Users, UsersRound } from "lucide-react";
 import { Link, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,7 +26,9 @@ export default function Dashboard() {
   const {
     data: summary,
     isLoading,
+    isPending,
     isFetching,
+    isError,
     refetch,
   } = useGetDashboardSummary({
     query: {
@@ -73,24 +75,36 @@ export default function Dashboard() {
       ].filter(Boolean).slice(0, 4)
     : [];
 
-  if (!isLoading && !summary) {
+  const overviewLoadFailed = !summary && (isError || (!isPending && !isLoading));
+
+  if (overviewLoadFailed) {
     return (
       <div className="container mx-auto max-w-3xl px-4 py-12">
-        <Card className="border-destructive/30">
+        <Card className="border-destructive/30 shadow-sm">
           <CardHeader>
-            <CardTitle>We couldn’t load your church overview</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive" />
+              We couldn’t load your church overview
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Your saved profiles are still safe. Please retry the request.
+              Your saved profiles are still safe. Retry to restore the overview. If
+              the overview is still unavailable, you can open the existing Profiles
+              list directly.
             </p>
-            <Button
-              type="button"
-              onClick={() => void refetch()}
-              disabled={isFetching}
-            >
-              {isFetching ? "Retrying..." : "Retry"}
-            </Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button
+                type="button"
+                onClick={() => void refetch()}
+                disabled={isFetching}
+              >
+                {isFetching ? "Retrying..." : "Retry"}
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/profiles">Open Profiles</Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -592,6 +592,8 @@ export default function ChurchSetup() {
     isLoading,
     isFetching,
     refetch: refetchChurch,
+    isPending: churchPending,
+    isError: churchError,
   } = useGetMyChurch({
     query: {
       queryKey: getGetMyChurchQueryKey(),
@@ -955,17 +957,23 @@ export default function ChurchSetup() {
   const enabledSectionCount = Object.values(assessmentConfiguration.sections).filter(Boolean).length;
   const enabledGiftCount = form.watch("enabledSpiritualGifts").length;
 
-  if (!isLoading && !church) {
+  const churchLoadFailed = !church && (churchError || (!churchPending && !isLoading));
+
+  if (churchLoadFailed) {
     return (
       <div className="container mx-auto max-w-3xl px-4 py-12">
-        <Card className="border-destructive/30">
+        <Card className="border-destructive/30 shadow-sm">
           <CardHeader>
-            <CardTitle>We couldn’t load your church setup</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive" />
+              We couldn’t load your church setup
+            </CardTitle>
             <CardDescription>
-              Retry to load your saved church details and sharing link.
+              Your saved church details are still safe. Retry to load the setup
+              page and sharing link.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
             <Button
               type="button"
               onClick={() => void refetchChurch()}
