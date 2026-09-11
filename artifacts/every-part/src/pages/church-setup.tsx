@@ -44,7 +44,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpenCheck, ChevronDown, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
+import { AlertCircle, BookOpenCheck, ChevronDown, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 import {
   CHURCH_TRADITIONS,
   DEFAULT_MINISTRY_CUSTOMIZATION,
