@@ -1530,6 +1530,9 @@ export default function Assessment() {
   const [submitError, setSubmitError] = useState("");
   const [reflectionValidationError, setReflectionValidationError] =
     useState("");
+  const [submittedJourneyToken, setSubmittedJourneyToken] = useState<
+    string | null
+  >(null);
   const [profilePhotoPath, setProfilePhotoPath] = useState<string | null>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
 
@@ -2350,6 +2353,7 @@ export default function Assessment() {
       {
         onSuccess: (result) => {
           localStorage.setItem("every-part-journey-token", result.journeyToken);
+          setSubmittedJourneyToken(result.journeyToken);
           setStepIndex(stepKeys.length);
           window.scrollTo({ top: 0, behavior: "smooth" });
         },
@@ -2431,14 +2435,22 @@ export default function Assessment() {
         </Card>
       </div>
     );
-  if (stepIndex === stepKeys.length || createProfile.isSuccess)
+  if (
+    submittedJourneyToken ||
+    stepIndex === stepKeys.length ||
+    createProfile.isSuccess
+  )
     return (
       <div
         style={brandStyle}
-        className="pathway-theme pathway-theme-adult min-h-screen grid place-items-center p-4"
+        className="pathway-theme pathway-theme-adult min-h-[100dvh] grid place-items-center bg-muted/20 p-4"
       >
-        <Card className="max-w-md text-center">
-          <CardContent className="p-10 space-y-5">
+        <Card
+          role="status"
+          aria-live="polite"
+          className="w-full max-w-lg border-primary/25 text-center shadow-xl"
+        >
+          <CardContent className="space-y-6 p-8 md:p-12">
             {churchLogo && (
               <img
                 src={churchLogo}
@@ -2446,20 +2458,33 @@ export default function Assessment() {
                 className="mx-auto max-h-20 max-w-[220px] object-contain"
               />
             )}
-            <CheckCircle2 className="w-14 h-14 mx-auto text-primary" />
-            <h1 className="font-serif text-3xl">Thank you</h1>
-            <p className="text-muted-foreground">
-              Your profile has been shared with {church.name}. A leader can
-              follow up thoughtfully about next steps.
-            </p>
-            {createProfile.data?.journeyToken && (
-              <Button asChild variant="outline">
-                <Link href={`/journey/${createProfile.data.journeyToken}`}>
-                  View your private ministry journey
+            <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-primary/10">
+              <CheckCircle2 className="h-12 w-12 text-primary" />
+            </div>
+            <div className="space-y-3">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                Submission complete
+              </p>
+              <h1 className="font-serif text-3xl md:text-4xl">
+                Your Ministry Profile went through
+              </h1>
+              <p className="leading-7 text-muted-foreground">
+                Thank you, {form.getValues("basicInformation.firstName")}. Your
+                completed profile has been securely shared with {church.name}.
+              </p>
+            </div>
+            {(submittedJourneyToken || createProfile.data?.journeyToken) && (
+              <Button asChild size="lg" className="w-full">
+                <Link
+                  href={`/journey/${
+                    submittedJourneyToken ?? createProfile.data?.journeyToken
+                  }`}
+                >
+                  View your Ministry Profile
                 </Link>
               </Button>
             )}
-            <Button asChild>
+            <Button asChild variant="outline" className="w-full">
               <a href={church.profileUrl || "/"}>Return to church profile</a>
             </Button>
           </CardContent>
