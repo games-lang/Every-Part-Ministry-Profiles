@@ -163,10 +163,7 @@ export async function getOrCreateJourney(
         ),
       )
       .limit(1);
-    if (!existing) {
-      throw new Error("Journey not found");
-    }
-    return existing;
+    if (existing) return existing;
   }
   const [created] = await db
     .insert(ministryJourneysTable)

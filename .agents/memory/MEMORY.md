@@ -30,3 +30,4 @@
 - [Every Part origin story](every-part-origin-story.md) — public copy starts with seeing overlooked gifts in a multicultural church, not filling volunteer slots.
 - [Church branding persistence](church-branding-persistence.md) — logo and color saves must remain independent from validation in the larger church setup form.
 - [Profile print privacy](profile-print-privacy.md) — omit sensitive coordinator content from print/PDF, but intentionally retain Spiritual Health.
+- [Ministry journey recovery](ministry-journey-recovery.md) — stale or cross-church browser journey tokens must start a new journey, never block profile submission.
