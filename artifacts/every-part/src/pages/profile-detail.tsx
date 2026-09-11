@@ -27,21 +27,21 @@ const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
   "Administration":"organizing people, resources, and systems effectively", "Apostleship":"pioneering, starting, expanding, and establishing new ministries or works", "Discernment of Spirits":"recognizing what is from God, human influence, or spiritual deception", "Evangelism":"communicating the gospel and helping people respond to Jesus", "Exhortation / Encouragement":"strengthening, motivating, comforting, and challenging others", "Faith":"unusual confidence in God’s power, promises, and provision", "Giving":"generously and joyfully sharing resources to advance God’s work and meet needs", "Healing":"being used by God as an instrument of physical, emotional, or spiritual healing", "Helps / Service":"meeting practical needs and supporting others so ministry can happen", "Hospitality":"welcoming people and creating environments where others feel received and cared for", "Interpretation of Tongues":"interpreting a message spoken in tongues", "Knowledge":"understanding and communicating spiritual truth or insight", "Leadership":"providing direction, motivating others, and helping a group move toward God-given goals", "Mercy":"compassionately caring for people who are hurting, struggling, marginalized, or in need", "Miracles":"being used by God in extraordinary demonstrations of His power", "Pastoring / Shepherding":"caring for, protecting, guiding, and nurturing people spiritually", "Prophecy":"communicating a message believed to be prompted by God for strengthening, correction, encouragement, or direction", "Teaching":"explaining and applying biblical truth so others understand and grow", "Tongues":"speaking in a language or spiritual utterance given through the Holy Spirit", "Wisdom":"applying spiritual truth appropriately to real situations", "Craftsmanship":"using artistic or practical skill for God’s purposes", "Intercession":"persistent, focused prayer for others", "Missionary / Cross-Cultural Ministry":"effectively ministering across cultures and communities", "Music / Worship":"using musical ability to lead and encourage worship", "Celibacy":"a particular grace for remaining unmarried for undivided devotion to ministry", "Voluntary Poverty":"willingly living with less in order to serve God and others",
 };
-const responseLabels = ["", "Not at all", "A little", "Sometimes", "Often", "Very much"];
-const MINISTRY_APPROACHES = [
+export const responseLabels = ["", "Not at all", "A little", "Sometimes", "Often", "Very much"];
+export const MINISTRY_APPROACHES = [
   ["builder", "Starting and building new ministry"], ["insight", "Noticing what needs attention"], ["connector", "Connecting people with faith"], ["caregiver", "Caring for people over time"], ["teacher", "Making ideas clear"],
 ] as const;
-const MINISTRY_TAGS: Record<string, string> = {
+export const MINISTRY_TAGS: Record<string, string> = {
   "Starting and building new ministry": "Apostle",
   "Noticing what needs attention": "Prophet",
   "Connecting people with faith": "Evangelist",
   "Caring for people over time": "Shepherd",
   "Making ideas clear": "Teacher",
 };
-const STRENGTH_APPROACHES = [
+export const STRENGTH_APPROACHES = [
   ["relationalConnection", "Relational connection"], ["encouragement", "Encouragement"], ["teachingExplaining", "Teaching and explaining"], ["listening", "Listening"], ["leadershipInitiative", "Leadership and initiative"], ["organizing", "Organizing"], ["creativeExpression", "Creative expression"], ["problemSolving", "Problem-solving"], ["practicalHandsOn", "Practical hands-on work"], ["hospitality", "Hospitality"], ["compassionCare", "Compassion and care"], ["communicationStorytelling", "Communication and storytelling"], ["discernment", "Discernment"], ["followThrough", "Follow-through"], ["adaptability", "Adaptability"], ["mentoringDevelopment", "Mentoring and development"], ["strategicThinking", "Strategic thinking"], ["advocacyJustice", "Advocacy and justice"],
 ] as const;
-const PERSONALITY_DIMENSIONS = [
+export const PERSONALITY_DIMENSIONS = [
   ["socialEnergy", "Social Energy", "Reflective", "Interactive", "You tend to process internally and may recharge through quieter environments, deeper conversations, or time alone.", "You tend to process through interaction and may gain energy through conversation, activity, and being around others.", "thoughtful and reflective", "energized by interaction", "how you connect with people and communicate in groups"],
   ["decisionLens", "Decision Lens", "Relational", "Principled", "You naturally consider people, relationships, compassion, emotional impact, and how others will be affected.", "You naturally consider logic, consistency, fairness, standards, facts, and what solution makes the most sense.", "relationship-aware", "principled and consistent", "how you weigh people, compassion, fairness, and consistency when making decisions"],
   ["planningStyle", "Planning Style", "Adaptive", "Settled", "You may enjoy flexibility, keeping options open, adjusting as you go, and responding to changing circumstances.", "You may prefer clear expectations, schedules, deadlines, decisions, and knowing what comes next.", "flexible and adaptive", "prepared and settled", "how you respond to change and how much structure helps you serve well"],
@@ -50,15 +50,15 @@ const PERSONALITY_DIMENSIONS = [
   ["pacePreference", "Pace Preference", "Steady", "Dynamic", "You may thrive with consistency, predictable rhythms, focused responsibilities, and sustainable routines.", "You may enjoy variety, change, multiple responsibilities, urgency, and fast-moving environments.", "steady and sustainable", "dynamic and responsive", "what rhythms, pace, and level of change help you remain engaged"],
   ["workStyle", "Work Style", "Independent", "Collaborative", "You may enjoy autonomy, focused responsibility, personal ownership, and being trusted to complete a task.", "You may enjoy shared responsibility, brainstorming, interaction, feedback, and accomplishing things together.", "self-directed", "collaborative", "how you handle responsibility, feedback, teamwork, and shared ownership"],
 ] as const;
-type PersonalityDimension = { label: string; left: string; right: string; leftPercentage: number; rightPercentage: number; tendency: string; explanation: string; dominant: "left" | "right" | "balanced"; leftSummary: string; rightSummary: string; ministry: string };
-function numericResponses(value: unknown) {
+export type PersonalityDimension = { label: string; left: string; right: string; leftPercentage: number; rightPercentage: number; tendency: string; explanation: string; dominant: "left" | "right" | "balanced"; leftSummary: string; rightSummary: string; ministry: string };
+export function numericResponses(value: unknown) {
   const record = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
   return Object.fromEntries(Object.entries(record).filter(([, response]) => typeof response === "number" && Number.isFinite(response))) as Record<string, number>;
 }
-function rankedApproaches(responses: Record<string, number>, approaches: readonly (readonly [string, string])[], isEnabled: (key: string) => boolean) {
+export function rankedApproaches(responses: Record<string, number>, approaches: readonly (readonly [string, string])[], isEnabled: (key: string) => boolean) {
   return approaches.filter(([key]) => isEnabled(key) && Object.keys(responses).some(responseKey => new RegExp(`^${key}-\\d+$`).test(responseKey))).map(([key, label]) => ({ label, score: Object.entries(responses).reduce((total, [responseKey, response]) => new RegExp(`^${key}-\\d+$`).test(responseKey) ? total + response : total, 0) })).sort((a, b) => b.score - a.score);
 }
-function derivedPersonality(responses: Record<string, number>, isEnabled: (key: string) => boolean): PersonalityDimension[] {
+export function derivedPersonality(responses: Record<string, number>, isEnabled: (key: string) => boolean): PersonalityDimension[] {
   return PERSONALITY_DIMENSIONS.filter(([key]) => isEnabled(key) && Object.keys(responses).some(responseKey => new RegExp(`^${key}-\\d+$`).test(responseKey))).map(([key, label, left, right, leftExplanation, rightExplanation, leftSummary, rightSummary, ministry]) => {
     const scores = [0, 1, 2].map(index => responses[`${key}-${index}`] ?? 3);
     const rightPercentage = Math.round(((scores.reduce((total, score) => total + score, 0) / scores.length - 1) / 4) * 100);
@@ -78,27 +78,27 @@ function personalityMinistryConnection(results: PersonalityDimension[]) {
   const tendencies = results.filter(result => result.dominant !== "balanced").slice(0, 3).map(result => result.dominant === "left" ? result.leftSummary : result.rightSummary);
   return tendencies.length ? `In ministry, your ${tendencies.join(", ")} tendencies may influence how you interact with people, communicate, respond to change, make decisions, and handle responsibility. You may feel most energized in environments that fit your natural rhythms while also leaving room for God to stretch you.` : "In ministry, your balanced tendencies may help you adapt across different people, teams, rhythms, and responsibilities.";
 }
-function ResponseLabel({ value }: { value: unknown }) {
+export function ResponseLabel({ value }: { value: unknown }) {
   return <span className="text-muted-foreground">{typeof value === "number" ? responseLabels[value] || "Response shared" : "Response shared"}</span>;
 }
-function SpiritualGifts({ value }: { value: unknown }) {
+export function SpiritualGifts({ value }: { value: unknown }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
   const topGifts = Array.isArray(record.topGifts) ? record.topGifts.filter((gift): gift is string => typeof gift === "string") : [];
   const responses = record.responses && typeof record.responses === "object" ? record.responses as Record<string, unknown> : {};
   if (!topGifts.length && !Object.keys(responses).length) return <p className="text-muted-foreground italic">No spiritual gifts reflection shared.</p>;
   return <div className="space-y-5">{topGifts.length > 0 && <div><h3 className="font-medium mb-2">Gifts selected for conversation</h3><div className="space-y-2">{topGifts.map(gift=><div key={gift} className="rounded-lg border border-border/60 p-3"><strong>{gift}</strong><p className="text-sm text-muted-foreground mt-1">{spiritualGiftMeanings[gift] || "Member-selected gift for pastoral conversation."}</p></div>)}</div></div>}{Object.keys(responses).length > 0 && <div><h3 className="font-medium mb-2">Reflection responses</h3><div className="space-y-3">{Object.entries(responses).map(([gift,response])=><div key={gift} className="rounded-lg border border-border/60 p-3"><div className="text-sm font-medium">{gift}</div>{Array.isArray(response) ? <ol className="mt-2 space-y-2 text-sm">{response.map((entry,index)=>{const reflection=entry && typeof entry === "object" ? entry as Record<string, unknown> : {}; return <li key={index}><p>{typeof reflection.prompt === "string" ? reflection.prompt : `Reflection question ${index + 1}`}</p><ResponseLabel value={reflection.response}/></li>;})}</ol> : <div className="text-sm"><ResponseLabel value={response}/></div>}</div>)}</div></div>}</div>;
 }
-function Value({ label, value }: {label:string;value: unknown}) {
+export function Value({ label, value }: {label:string;value: unknown}) {
   const text = typeof value === "string" || typeof value === "number" ? String(value) : "";
   return <div className="rounded-xl border border-border/60 bg-background/60 p-3.5 break-words"><div className="mb-1 text-xs font-semibold uppercase tracking-[.08em] text-muted-foreground">{label}</div><div className={text ? "" : "text-muted-foreground italic"}>{text || empty}</div></div>;
 }
-function ObjectValues({ value, labels }: {value: unknown; labels?: Record<string, string>}) {
+export function ObjectValues({ value, labels }: {value: unknown; labels?: Record<string, string>}) {
   if (!value || typeof value !== "object") return null;
   const entries = Object.entries(value as Record<string, unknown>).filter(([,v]) => v !== null && v !== "" && (!Array.isArray(v) || v.length));
   if (!entries.length) return null;
   return <div className="grid sm:grid-cols-2 gap-3">{entries.map(([key,val]) => <Value key={key} label={labels?.[key] ?? key.replace(/([A-Z])/g, " $1").replace(/^./,x=>x.toUpperCase())} value={Array.isArray(val) ? val.join(", ") : typeof val === "object" ? JSON.stringify(val) : val}/>)}</div>;
 }
-function Languages({ value }: { value: unknown }) {
+export function Languages({ value }: { value: unknown }) {
   if (!value || typeof value !== "object") return null;
   const record = value as Record<string, unknown>;
   const storedEntries = Array.isArray(record.entries) ? record.entries : [];
@@ -146,7 +146,7 @@ function Languages({ value }: { value: unknown }) {
   }
   return <ObjectValues value={value} />;
 }
-function MinistryAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
+export function MinistryAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
   const legacyLabels: Record<string, string> = {
     Apostle: "Starting and building new ministry",
@@ -179,7 +179,7 @@ function MinistryAssessment({ value, isEnabled }: { value: unknown; isEnabled: (
   );
   return <div className="grid sm:grid-cols-2 gap-3"><div>{tendencyValue("Strongest ministry tendency", primary)}</div><div>{tendencyValue("Second ministry tendency", secondary)}</div></div>;
 }
-function StrengthsAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
+export function StrengthsAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
   const subsectionByStrength: Record<string, string> = { "Relational connection": "relationalConnection", Encouragement: "encouragement", "Teaching and explaining": "teachingExplaining", Listening: "listening", "Leadership and initiative": "leadershipInitiative", Organizing: "organizing", "Creative expression": "creativeExpression", "Problem-solving": "problemSolving", "Practical hands-on work": "practicalHandsOn", Hospitality: "hospitality", "Compassion and care": "compassionCare", "Communication and storytelling": "communicationStorytelling", Discernment: "discernment", "Follow-through": "followThrough", Adaptability: "adaptability", "Mentoring and development": "mentoringDevelopment", "Strategic thinking": "strategicThinking", "Advocacy and justice": "advocacyJustice" };
   const storedSelected = Array.isArray(record.selected) ? record.selected.filter((strength): strength is string => typeof strength === "string" && isEnabled(subsectionByStrength[strength])) : [];
@@ -188,7 +188,7 @@ function StrengthsAssessment({ value, isEnabled }: { value: unknown; isEnabled: 
   if (!selected.length && !notes) return <p className="text-muted-foreground italic">No strengths reflection shared.</p>;
   return <div className="space-y-4">{selected.length > 0 && <div><h3 className="font-medium mb-2">Strengths that stood out</h3><div className="flex flex-wrap gap-2">{selected.map(strength=><Badge key={strength}>{strength}</Badge>)}</div></div>}{notes&&<Value label="Examples shared" value={notes}/>}</div>;
 }
-function PersonalityAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
+export function PersonalityAssessment({ value, isEnabled }: { value: unknown; isEnabled: (subsection: string) => boolean }) {
   const record = value && typeof value === "object" ? value as Record<string, unknown> : {};
   const subsectionByLabel: Record<string, string> = { "Social Energy": "socialEnergy", "Decision Lens": "decisionLens", "Planning Style": "planningStyle", "Focus Style": "focusStyle", "Action Style": "actionStyle", "Pace Preference": "pacePreference", "Work Style": "workStyle" };
   const storedDimensions = Array.isArray(record.dimensions) ? record.dimensions.filter((dimension): dimension is Record<string, unknown> => Boolean(dimension) && typeof dimension === "object") : [];
@@ -200,7 +200,7 @@ function PersonalityAssessment({ value, isEnabled }: { value: unknown; isEnabled
   const ministryConnection = typeof record.ministryConnection === "string" ? record.ministryConnection : derivedDimensions.length ? personalityMinistryConnection(derivedDimensions) : "";
  return <div className="space-y-6"><div><h3 className="mb-3 font-medium">How You Tend to Operate</h3><div className="space-y-4">{dimensions.map((dimension,index)=>{const label=typeof dimension.label==="string"?dimension.label:`Dimension ${index+1}`;const left=typeof dimension.left==="string"?dimension.left:"Left";const right=typeof dimension.right==="string"?dimension.right:"Right";const leftPercentage=typeof dimension.leftPercentage==="number"?dimension.leftPercentage:50;const rightPercentage=typeof dimension.rightPercentage==="number"?dimension.rightPercentage:50;const tendency=typeof dimension.tendency==="string"?dimension.tendency:"Balanced";const explanation=typeof dimension.explanation==="string"?dimension.explanation:"";return <div key={label} className="rounded-xl border border-border/60 bg-background/40 p-4"><div className="flex items-center justify-between gap-4"><h4 className="font-medium">{label}</h4><span className="text-xs text-muted-foreground">{tendency}</span></div><div className="mt-3 flex justify-between gap-3 text-xs text-muted-foreground"><span>{left} — {leftPercentage}%</span><span className="text-right">{right} — {rightPercentage}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-muted-foreground/15" role="img" aria-label={`${label}: ${leftPercentage}% ${left}, ${rightPercentage}% ${right}`}><div className="h-full rounded-full bg-accent" style={{width:`${rightPercentage}%`}}/></div>{explanation&&<p className="mt-3 text-sm leading-6">{explanation}</p>}</div>})}</div></div>{summary&&<div><h3 className="mb-2 font-medium">Your Personality at a Glance</h3><p className="text-sm leading-6">{summary}</p></div>}{ministryConnection&&<div><h3 className="mb-2 font-medium">What This May Mean in Ministry</h3><p className="text-sm leading-6">{ministryConnection}</p><p className="mt-3 text-sm leading-6 text-muted-foreground">Personality helps describe how you tend to operate, not what God can or cannot call you to do. God often uses both our natural strengths and the areas where He is stretching us.</p></div>}</div>;
 }
-function Section({title,children,className}:{title:string;children:React.ReactNode;className?:string}) { return <section className={"space-y-3 print:break-inside-avoid " + (className ?? "")}><h2 className="font-serif text-2xl font-medium tracking-[-.025em]">{title}</h2><Card className="border-border/70 shadow-sm"><CardContent className="p-5 md:p-6">{children}</CardContent></Card></section>; }
+export function Section({title,children,className}:{title:string;children:React.ReactNode;className?:string}) { return <section className={"space-y-3 print:break-inside-avoid " + (className ?? "")}><h2 className="font-serif text-2xl font-medium tracking-[-.025em]">{title}</h2><Card className="border-border/70 shadow-sm"><CardContent className="p-5 md:p-6">{children}</CardContent></Card></section>; }
 function TeamAssignment({ profileId, teamId }: { profileId: number; teamId: number | null }) {
   const queryClient = useQueryClient();
   const { data: teams, isLoading } = useListTeams();
@@ -447,6 +447,54 @@ function DevelopProfileView({ profile }: { profile: MinistryProfile }) {
   </div>;
 }
 
+import { MyMinistryProfile } from "@/components/profile/my-ministry-profile";
+import { LeaderMinistryProfile } from "@/components/profile/leader-ministry-profile";
+
+function AdultProfileView({
+  profile,
+  isPrinting,
+  sectionEnabled,
+  subsectionEnabled,
+}: {
+  profile: MinistryProfile;
+  isPrinting: boolean;
+  sectionEnabled: (section: string) => boolean;
+  subsectionEnabled: (section: string, subsection: string) => boolean;
+}) {
+  const [view, setView] = useState<"individual" | "leader">("individual");
+
+  return (
+    <>
+      {!isPrinting && <CoordinatorAsk profile={profile} />}
+      {!isPrinting && <TeamAssignment profileId={profile.id} teamId={profile.teamId} />}
+      {!isPrinting && <ProfileSchedule profileId={profile.id} />}
+
+      {!isPrinting && (
+        <div className="flex flex-wrap gap-6 border-b border-border/60 pb-2 mt-8 mb-6 no-print">
+          <button 
+            className={`font-serif text-2xl font-medium tracking-tight pb-2 -mb-[10px] ${view === 'individual' ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground hover:text-foreground border-b-2 border-transparent'}`}
+            onClick={() => setView('individual')}
+          >
+            My Ministry Profile
+          </button>
+          <button 
+            className={`font-serif text-2xl font-medium tracking-tight pb-2 -mb-[10px] ${view === 'leader' ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground hover:text-foreground border-b-2 border-transparent'}`}
+            onClick={() => setView('leader')}
+          >
+            Ministry Leader View
+          </button>
+        </div>
+      )}
+
+      {view === 'individual' ? (
+        <MyMinistryProfile profile={profile} isPrinting={isPrinting} isEnabled={subsectionEnabled} />
+      ) : (
+        <LeaderMinistryProfile profile={profile} isPrinting={isPrinting} sectionEnabled={sectionEnabled} subsectionEnabled={subsectionEnabled} />
+      )}
+    </>
+  );
+}
+
 export default function ProfileDetail() {
  const [,params]=useRoute("/profiles/:id"); const id=params?.id?Number(params.id):0; const {data:profile,isLoading,error}=useGetProfile(id,{query:{enabled:!!id,queryKey:getGetProfileQueryKey(id)}});
  const [journeyCopied, setJourneyCopied] = useState(false);
@@ -502,23 +550,12 @@ export default function ProfileDetail() {
    ) : profile.profileType === 'explore' ? (
      <ExploreProfileView profile={profile} />
    ) : (
-     <>
-       {!isPrinting&&<CoordinatorAsk profile={profile} />}
-       {!isPrinting&&<TeamAssignment profileId={profile.id} teamId={profile.teamId} />}
-        {!isPrinting && profile.profileType === "adult" && (
-          <ProfileSchedule profileId={profile.id} />
-        )}
-       <div className="space-y-8">
-            {sectionEnabled("aboutYou")&&<Section title="About You"><div className="space-y-6">{subsectionEnabled("aboutYou","personalInformation")&&<div><h3 className="font-medium mb-2">Personal information</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Age" value={profile.age}/><Value label="Preferred contact" value={basic.preferredContact}/><Value label="Family situation" value={basic.familySituation}/><Value label="Transportation" value={basic.transportation}/></div><div className="mt-3"><Languages value={basic.languages}/></div></div>}{subsectionEnabled("aboutYou","skillsExperience")&&<div><h3 className="font-medium mb-2">{hasConversationSkills ? "What You Bring" : "Skills & experience"}</h3>{hasConversationSkills ? <div className="grid gap-3"><Value label="Work, study, or current life context" value={skillDetails?.context ?? skills.occupation}/><Value label="Training or certifications" value={skillDetails?.training}/><Value label="What they enjoy doing with or for other people" value={skillDetails?.enjoys ?? skills.uniqueSkills}/></div> : <div className="grid sm:grid-cols-2 gap-3"><Value label="Occupation" value={skills.occupation}/><Value label="Unique skill" value={skills.uniqueSkills}/><Value label="Previous ministry experience" value={skills.previousMinistryExperience}/><Value label="Leadership experience" value={skills.leadershipExperience}/><Value label="Mission trip experience" value={skills.missionTripExperience}/></div>}</div>}{!isPrinting&&subsectionEnabled("aboutYou","lifeExperiences")&&hasValues(profile.lifeExperiences)&&<div className="no-print"><h3 className="font-medium mb-2">Experiences that have shaped them</h3><p className="text-sm text-muted-foreground mb-3">Shared voluntarily; please handle with care and discretion.</p><ObjectValues value={profile.lifeExperiences}/></div>}</div></Section>}
-          {sectionEnabled("apest")&&<Section title="How You Minister"><p className="mb-3 text-sm text-muted-foreground">Member self-reflection, not a diagnosis, score, or placement recommendation.</p><MinistryAssessment value={profile.assessmentSections.apest} isEnabled={subsection=>subsectionEnabled("apest",subsection)}/></Section>}
-          {!isPrinting&&sectionEnabled("spiritualGifts")&&<details className="no-print rounded-2xl border bg-card p-4"><summary className="cursor-pointer font-serif text-2xl font-medium">Full gifts reflections</summary><p className="text-sm text-muted-foreground mt-3 mb-3">Member self-reflection, not a diagnosis or placement recommendation.</p><SpiritualGifts value={profile.assessmentSections.spiritualGifts}/></details>}
-         {sectionEnabled("passionsInterests")&&<Section title="Who and where you are drawn toward (Passions)"><div className="space-y-5">{subsectionEnabled("passionsInterests","passions")&&<div><h3 className="font-medium mb-2">Passions</h3><div className="flex flex-wrap gap-2">{profile.passions.length ? profile.passions.map(x=><Badge key={x}>{x}</Badge>) : <span className="italic text-muted-foreground">No passions shared.</span>}</div></div>}{subsectionEnabled("passionsInterests","ministryInterests")&&<div><h3 className="font-medium mb-2">Ministry interests</h3><div className="flex flex-wrap gap-2">{profile.interests.length ? profile.interests.map(x=><Badge key={x} variant="outline">{x}</Badge>) : <span className="italic text-muted-foreground">No interests shared.</span>}</div></div>}</div></Section>}
-         {sectionEnabled("naturalStrengths")&&<Section title="What you naturally do well (Strengths)"><p className="text-sm text-muted-foreground mb-3">Strengths-based self-reflection for conversation, not a branded test, diagnosis, or automatic placement recommendation.</p><StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={subsection=>subsectionEnabled("naturalStrengths",subsection)}/></Section>}
-         {sectionEnabled("personalityStrengths")&&<Section title="Personality"><div className="space-y-5"><div><p className="text-sm text-muted-foreground mb-3">Original ministry-focused self-reflection, not a rigid personality type, diagnosis, or statement about calling.</p><PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={subsection=>subsectionEnabled("personalityStrengths",subsection)}/></div>{subsectionEnabled("personalityStrengths","ministryPreferences")&&hasValues(profile.ministryPreferences)&&<div><h3 className="font-medium mb-2">Ministry preferences & environment</h3><ObjectValues value={profile.ministryPreferences}/></div>}</div></Section>}
-          {sectionEnabled("spiritualHealth")&&hasValues(profile.assessmentSections.spiritualHealth)&&<Section title="How you are doing (Spiritual Health)"><p className="text-sm text-muted-foreground mb-3">Pastoral self-reflection only, never a pass/fail measure.</p><ObjectValues value={profile.assessmentSections.spiritualHealth}/></Section>}
-         {sectionEnabled("connectionAvailability")&&<Section title="How you are connected"><div className="space-y-5">{subsectionEnabled("connectionAvailability","churchConnection")&&<div><h3 className="font-medium mb-2">Church connection</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Attending" value={connection.attendanceLength}/><Value label="Following Jesus" value={connection.followingJesusLength}/><Value label="Connection level (self-reported)" value={connection.connectionLevel}/><Value label="Served here before" value={connection.servedBefore ? "Yes" : "No"}/><Value label="Prior service" value={connection.previousService}/></div><div className="mt-3"><ObjectValues value={connection.details}/></div></div>}{subsectionEnabled("connectionAvailability","availability")&&<div><h3 className="font-medium mb-2">Current availability and serving</h3><div className="grid sm:grid-cols-2 gap-3"><Value label="Frequency" value={profile.servingFrequency}/><Value label="Times" value={profile.availability.join(", ")}/></div><div className="mt-3"><ObjectValues value={profile.availabilityDetails}/></div></div>}</div></Section>}
-       </div>
-     </>
+     <AdultProfileView 
+       profile={profile} 
+       isPrinting={isPrinting} 
+       sectionEnabled={sectionEnabled} 
+       subsectionEnabled={subsectionEnabled} 
+     />
    )}
  </div>;
 }
