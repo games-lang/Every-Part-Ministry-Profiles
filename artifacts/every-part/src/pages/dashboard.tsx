@@ -51,22 +51,22 @@ export default function Dashboard() {
           : null,
         unassignedProfileCount > 0
           ? {
-              label: "Follow-up opportunity",
-              text: `${unassignedProfileCount} completed ${unassignedProfileCount === 1 ? "profile is" : "profiles are"} not currently assigned to a team.`,
+               label: "Formation conversation",
+               text: `${unassignedProfileCount} completed ${unassignedProfileCount === 1 ? "profile has" : "profiles have"} not yet been part of a team conversation. Ask what they may be growing toward.`,
               icon: Users,
             }
           : null,
         leadershipProfile.delegationNeeds
           ? {
               label: "Delegation focus",
-              text: "You identified a responsibility you want to delegate. Ask PartFinder to help break it into possible roles.",
+               text: "You identified a responsibility you want to delegate. Ask PartFinder to help turn it into possible development steps.",
               icon: ListChecks,
             }
           : null,
         leadershipProfile.helpPreferences.includes("develop-leaders")
           ? {
               label: "Leadership development",
-              text: "Ask PartFinder which existing profile signals may be worth exploring in a leadership conversation.",
+               text: "Ask PartFinder which existing profile signals may be worth exploring in a conversation about growth.",
               icon: BrainCircuit,
             }
           : null,
@@ -178,10 +178,10 @@ export default function Dashboard() {
           {!leadershipProfile?.configured ? (
             <div className="rounded-xl border border-dashed border-primary/25 bg-background/70 p-4">
               <div>
-                <p className="font-medium">Make PartFinder more useful to you</p>
+                <p className="font-medium">Make PartFinder more useful for your discernment</p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
                   Share your current ministry priorities and preferred coaching
-                  style to receive a focused leadership brief.
+                  style to receive a focused formation brief.
                 </p>
               </div>
             </div>
@@ -218,9 +218,10 @@ export default function Dashboard() {
             </p>
           )}
           <p className="mt-4 text-xs leading-5 text-muted-foreground">
-            PartFinder surfaces possibilities, not decisions. Consider every
-            suggestion alongside prayer, pastoral wisdom, relationships, and
-            each person’s own sense of calling.
+              PartFinder helps you notice where people may be growing into their
+              part in the body of Christ. Treat every signal as a starting point
+              alongside prayer, pastoral wisdom, relationships, and each person’s
+              own sense of calling.
           </p>
         </CardContent>
       </Card>

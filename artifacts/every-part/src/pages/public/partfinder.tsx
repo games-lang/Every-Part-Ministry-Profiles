@@ -23,10 +23,10 @@ export default function Partfinder() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
                     <Puzzle className="h-5 w-5" />
                   </span>
-                  <p className="text-sm font-semibold uppercase tracking-[.14em]">AI-assisted ministry discovery</p>
+                   <p className="text-sm font-semibold uppercase tracking-[.14em]">Pastoral formation support</p>
                 </div>
                 <p className="mt-6 text-lg leading-8 text-[hsl(var(--landing-light-text))]">
-                  PartFinder helps pastors and volunteer coordinators turn a ministry question into a thoughtful place to begin. Ask about a need, explore structured profile signals, and prepare for a real conversation with a real person.
+                   PartFinder helps pastors notice who someone is becoming, think through a ministry need, and enter a conversation about where that person might grow into their part in the body of Christ.
                 </p>
               </div>
             </Reveal>
@@ -56,10 +56,10 @@ export default function Partfinder() {
             <div className="rounded-[1.75rem] border border-white/15 bg-white/[.07] p-7 sm:p-10">
               <p className="text-xs font-bold uppercase tracking-[.18em] text-[hsl(var(--landing-cyan))]">How it works</p>
               <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_.9fr] lg:gap-16">
-                <div>
-                  <h3 className="font-serif text-2xl tracking-[-.04em] sm:text-3xl">Matching, with humility.</h3>
+                 <div>
+                   <h3 className="font-serif text-2xl tracking-[-.04em] sm:text-3xl">Formation, with humility.</h3>
                   <p className="mt-4 text-sm leading-7 text-[hsl(var(--landing-light-text))]">
-                    PartFinder can help leaders explore a ministry need using structured profile signals and verified evidence. It surfaces places to begin exploring; leaders and members make the decision together.
+                     PartFinder can help leaders notice themes in structured profile signals and verified evidence. It surfaces places to begin a growth conversation; leaders and members discern next steps together.
                   </p>
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
@@ -69,11 +69,11 @@ export default function Partfinder() {
                   </div>
                   <div className="flex gap-3">
                     <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-secondary" />
-                    <p className="text-sm leading-6 text-white/90">Suggests conversations based on shared gifts, passions, and availability.</p>
+                     <p className="text-sm leading-6 text-white/90">Highlights shared gifts, passions, and availability as conversation themes.</p>
                   </div>
                   <div className="flex gap-3">
                     <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-secondary" />
-                    <p className="text-sm leading-6 text-white/90">Never assigns a role or replaces the discernment of leaders and the Holy Spirit.</p>
+                     <p className="text-sm leading-6 text-white/90">Never decides someone’s part or replaces the discernment of leaders and the Holy Spirit.</p>
                   </div>
                 </div>
               </div>

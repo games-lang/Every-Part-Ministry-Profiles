@@ -73,7 +73,7 @@ export const leaderBenefits = [
   "View completed Ministry Profiles",
   "Search by gifts and passions",
   "Understand availability",
-  "Discover potential ministry matches",
+  "Notice pathways for growth",
   "Identify emerging leaders",
   "Discover overlooked abilities",
   "Track profile completion",
@@ -94,14 +94,14 @@ export const partfinderBenefits = [
     ],
   },
   {
-    eyebrow: "For volunteer coordinators",
-    title: "Move from a ministry need to a thoughtful next step.",
+    eyebrow: "For pastors and ministry leaders",
+    title: "Move from a ministry need to a formation conversation.",
     description:
-      "Describe the kind of help your team needs and PartFinder surfaces relevant, verified profile signals so you know where to begin exploring.",
+      "Describe the kind of growth or ministry need you are discerning and PartFinder surfaces relevant, verified profile signals so you know where to begin.",
     points: [
-      "Clarify the role, rhythms, and availability",
-      "Review possible connections from shared evidence",
-      "Keep willingness and relationship at the center",
+      "Clarify the need, rhythms, and current season",
+      "Review conversation themes from shared evidence",
+      "Keep willingness, relationship, and growth at the center",
     ],
   },
 ];

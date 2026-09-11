@@ -35,15 +35,22 @@ type PartFinderMessage = {
 const welcomeMessage: PartFinderMessage = {
   role: "assistant",
   content:
-    "Meet PartFinder\n\nYour ministry placement assistant.\n\nAsk about your people, ministry needs, volunteer opportunities, leadership development, and church-wide serving trends. PartFinder helps you discover possible connections while leaving final decisions to prayer, pastoral wisdom, and personal conversation.",
+    "Meet PartFinder\n\nA pastoral formation companion.\n\nAsk about your people, ministry needs, growth conversations, leadership development, and church-wide patterns. PartFinder helps you notice who someone is becoming and where they might grow into their part in the body of Christ—leaving next steps to prayer, pastoral wisdom, and personal conversation.",
 };
 
 const starterQuestions = [
-  "Find volunteers for kids ministry",
-  "Build a potential hospitality team",
-  "Who completed a profile but is not serving?",
-  "What serving trends do you see in our church?",
+  "Notice who may be growing toward kids ministry",
+  "Explore who may grow through hospitality",
+  "Who may be ready for a formation conversation?",
+  "What growth patterns do you see in our church?",
 ];
+
+function formationSignalLabel(matchLabel: string) {
+  if (matchLabel === "Strong potential match") return "Several signals to explore";
+  if (matchLabel === "Possible match") return "Shared signals to explore";
+  if (matchLabel === "Worth exploring") return "Worth a conversation";
+  return "Conversation signal";
+}
 
 function getErrorMessage(error: unknown) {
   return error instanceof Error
@@ -139,7 +146,7 @@ export function PartFinderAssistant() {
             <div>
               <DialogTitle className="font-serif text-xl">PartFinder</DialogTitle>
               <DialogDescription className="mt-1 text-primary-foreground/75">
-                Ministry discovery for your church
+                Pastoral formation support for your church
               </DialogDescription>
             </div>
           </div>
@@ -195,7 +202,7 @@ export function PartFinderAssistant() {
                               {candidate.memberName}
                             </p>
                             <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-accent">
-                              {candidate.matchLabel}
+                              {formationSignalLabel(candidate.matchLabel)}
                             </p>
                           </div>
                           <Button
@@ -214,7 +221,7 @@ export function PartFinderAssistant() {
                           </Button>
                         </div>
                         <p className="mt-3 text-xs font-semibold text-muted-foreground">
-                          Why PartFinder suggested this person
+                          Why this profile may be worth a conversation
                         </p>
                         <ul className="mt-1.5 space-y-1 text-sm leading-5 text-foreground">
                           {candidate.reasons.map((reason) => (
@@ -255,7 +262,7 @@ export function PartFinderAssistant() {
             {partFinder.isPending && (
               <div className="flex items-center gap-2 pl-10 text-sm text-muted-foreground">
                 <LoaderCircle className="h-4 w-4 animate-spin" />
-                Looking for helpful connections…
+                Looking for patterns worth exploring…
               </div>
             )}
 
@@ -299,8 +306,8 @@ export function PartFinderAssistant() {
             </Button>
           </div>
           <p className="mt-2 px-1 text-[11px] leading-4 text-muted-foreground">
-            Adult profiles only. PartFinder is advisory and never makes placement,
-            calling, eligibility, or safeguarding decisions.
+              Adult profiles only. PartFinder is advisory and never decides a
+              person’s part, calling, readiness, or safeguarding eligibility.
           </p>
         </form>
       </DialogContent>
