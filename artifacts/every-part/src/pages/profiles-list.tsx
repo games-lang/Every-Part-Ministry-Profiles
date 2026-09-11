@@ -37,6 +37,11 @@ type DirectoryFilter = "all" | "completed" | "needs-profile";
 function CandidateCard({ candidate }: { candidate: Candidate }) {
   const isStrong = candidate.matchLevel === "Strong fit";
   const isPotential = candidate.matchLevel === "Potential fit";
+  const formationLabel = isStrong
+    ? "Several signals to explore"
+    : isPotential
+      ? "Shared signals to explore"
+      : "Worth a conversation";
 
   const matchBadgeStyle = isStrong
     ? "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800"
@@ -53,7 +58,7 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
             <div className="flex items-center gap-3">
               <h4 className="font-serif text-xl font-medium group-hover:text-primary transition-colors">{candidate.memberName}</h4>
               <Badge variant="outline" className={matchBadgeStyle}>
-                {candidate.matchLevel}
+                 {formationLabel}
               </Badge>
             </div>
             <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
@@ -61,7 +66,7 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
                  <span className="h-1.5 w-16 overflow-hidden rounded-full bg-muted-foreground/20" role="img" aria-label={`${candidate.score}% alignment`}>
                    <span className="block h-full rounded-full bg-accent" style={{ width: `${candidate.score}%` }} />
                  </span>
-                 <span>{candidate.score}% alignment</span>
+                  <span>{candidate.score}% shared signals</span>
                </span>
               {candidate.servingFrequency && (
                 <>
@@ -82,7 +87,7 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
         <div className="mt-4 bg-muted/30 rounded-lg p-4 border border-border/40">
           <p className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
             <HeartHandshake className="w-4 h-4 text-secondary" />
-            Why they might be a fit
+             Why this profile may be worth exploring
           </p>
           <ul className="space-y-2">
             {candidate.reasons.map((reason, i) => (
@@ -242,7 +247,7 @@ export default function ProfilesList() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/50 pb-5">
         <div>
           <h1 className="font-serif text-3xl font-medium tracking-tight">Ministry Profiles</h1>
-          <p className="text-muted-foreground mt-1 text-lg">Review member assessments and discover volunteers.</p>
+          <p className="text-muted-foreground mt-1 text-lg">Review member reflections and notice who may be growing into their part.</p>
         </div>
         <div
           className="flex space-x-1 bg-muted/50 p-1 rounded-lg border border-border/50 self-start sm:self-auto"
@@ -266,7 +271,7 @@ export default function ProfilesList() {
              className={`flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${activeTab === "match" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
           >
             <Sparkles className="w-4 h-4" />
-            Find Matches
+             Explore Growth
           </button>
           <button
             type="button"
@@ -472,21 +477,21 @@ export default function ProfilesList() {
               <CardHeader className="bg-muted/30 pb-5 border-b border-border/50">
                 <CardTitle className="font-serif text-xl flex items-center gap-2.5">
                   <HeartHandshake className="w-5 h-5 text-primary" />
-                  Describe the Need
+                   Explore a Growth Opportunity
                 </CardTitle>
                 <CardDescription className="leading-relaxed mt-2 text-sm">
-                   Share what you're looking for, and we'll carefully suggest members whose gifts and passions may align with this role.
+                    Describe a ministry need or area of growth, and we’ll surface profile signals worth exploring with a person—not a placement.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
                 <form onSubmit={handleSubmit(onSubmitMatch)} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Role Description <span className="text-destructive">*</span></label>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Growth Opportunity <span className="text-destructive">*</span></label>
                     <Textarea
                       className={`flex min-h-[120px] w-full rounded-md border ${errors.roleDescription ? 'border-destructive focus-visible:ring-destructive' : 'border-input focus-visible:ring-ring'} bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
-                      placeholder="e.g., We need a warm, welcoming presence to coordinate the Sunday morning hospitality team. This involves scheduling volunteers, ensuring coffee is ready, and greeting newcomers."
+                       placeholder="e.g., We’re discerning how to nurture a warm, welcoming presence in Sunday hospitality. What gifts, experience, and next steps might be worth exploring in conversation?"
                       {...register("roleDescription", {
-                        required: "Describe the ministry need.",
+                           required: "Describe the growth opportunity.",
                         minLength: {
                           value: 20,
                           message: "Please provide at least 20 characters.",
@@ -520,10 +525,10 @@ export default function ProfilesList() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Preferred Experience <span className="text-muted-foreground font-normal">(Optional)</span></label>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Helpful Context <span className="text-muted-foreground font-normal">(Optional)</span></label>
                     <Textarea
                       className={`flex min-h-[80px] w-full rounded-md border ${errors.preferredExperience ? 'border-destructive focus-visible:ring-destructive' : 'border-input focus-visible:ring-ring'} bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
-                      placeholder="e.g., Has led a team before, comfortable with basic scheduling software."
+                       placeholder="e.g., Past experience, current season, or context that would help a pastor begin the conversation."
                       {...register("preferredExperience", {
                         maxLength: {
                           value: 500,
@@ -537,7 +542,7 @@ export default function ProfilesList() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2.5">Availability Needed <span className="text-muted-foreground font-normal">(Optional)</span></label>
+                    <label className="block text-sm font-medium text-foreground mb-2.5">Current Capacity or Rhythms <span className="text-muted-foreground font-normal">(Optional)</span></label>
                     <div className="flex flex-wrap gap-2">
                       {AVAILABILITY_OPTIONS.map(option => {
                         const isSelected = selectedAvailability.includes(option);
@@ -569,12 +574,12 @@ export default function ProfilesList() {
                     {matchMutation.isPending ? (
                       <>
                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Finding matches...
+                         Exploring growth signals...
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-5 h-5 mr-2 text-secondary" />
-                        Find Volunteer Matches
+                         Explore Growth Signals
                       </>
                     )}
                   </Button>
@@ -609,8 +614,8 @@ export default function ProfilesList() {
             ) : matchMutation.isError ? (
               <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-10 text-center mt-6">
                 <AlertCircle className="w-12 h-12 text-destructive/60 mx-auto mb-4" />
-                <h3 className="font-serif text-xl font-medium text-destructive mb-2">Failed to find matches</h3>
-                <p className="text-destructive/80 text-sm">Please try adjusting your criteria and submitting again.</p>
+                 <h3 className="font-serif text-xl font-medium text-destructive mb-2">Couldn’t surface growth signals</h3>
+                 <p className="text-destructive/80 text-sm">Try adjusting the growth opportunity and submitting again.</p>
               </div>
             ) : matchMutation.data ? (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -631,19 +636,19 @@ export default function ProfilesList() {
                   <div className="flex items-start gap-4">
                     <Sparkles className="w-6 h-6 text-secondary shrink-0 mt-0.5" />
                     <div>
-                      <h3 className="font-serif text-xl font-medium text-foreground">Matching Summary</h3>
+                         <h3 className="font-serif text-xl font-medium text-foreground">Formation Summary</h3>
                       <p className="text-muted-foreground text-sm mt-2 leading-relaxed">{matchMutation.data.summary}</p>
 
                       <div className="flex items-center gap-2 mt-5 text-xs font-medium text-muted-foreground/80 bg-muted/50 inline-flex px-3 py-1.5 rounded-md">
                         {matchMutation.data.usedAi ? (
                           <>
                             <CheckCircle2 className="w-3.5 h-3.5 text-secondary" />
-                            AI compared the role with relevant, privacy-minimized profile reflections.
+                             Relevant, privacy-minimized profile reflections were compared as conversation signals.
                           </>
                         ) : (
                           <>
                             <AlertCircle className="w-3.5 h-3.5" />
-                            A profile-overlap fallback was used because AI was unavailable.
+                             A profile-overlap view was used because guidance was unavailable.
                           </>
                         )}
                       </div>
@@ -652,9 +657,9 @@ export default function ProfilesList() {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 pb-2 border-b border-border/50">
-                  <h3 className="font-serif text-2xl font-medium">Suggested Candidates</h3>
+                   <h3 className="font-serif text-2xl font-medium">Profiles Worth Exploring</h3>
                   <Badge variant="outline" className="font-normal text-muted-foreground">
-                    {matchMutation.data.candidates.length} {matchMutation.data.candidates.length === 1 ? 'match' : 'matches'}
+                     {matchMutation.data.candidates.length} {matchMutation.data.candidates.length === 1 ? 'signal' : 'signals'}
                   </Badge>
                 </div>
 
@@ -667,8 +672,8 @@ export default function ProfilesList() {
                 ) : (
                   <div className="text-center py-16 bg-card rounded-xl border border-border/60 shadow-sm">
                      <User className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
-                     <p className="font-serif text-xl font-medium text-foreground">No strong matches found</p>
-                     <p className="text-muted-foreground mt-2 max-w-sm mx-auto">Try broadening your role description or making experience optional.</p>
+                      <p className="font-serif text-xl font-medium text-foreground">No clear signals surfaced yet</p>
+                      <p className="text-muted-foreground mt-2 max-w-sm mx-auto">Try broadening the growth opportunity or making helpful context optional.</p>
                   </div>
                 )}
               </div>
@@ -677,9 +682,9 @@ export default function ProfilesList() {
                 <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6 border border-primary/10">
                   <Sparkles className="w-10 h-10 text-primary/40" />
                 </div>
-                  <h3 className="font-serif text-2xl font-medium text-foreground mb-3">Discover Potential Volunteers</h3>
+                   <h3 className="font-serif text-2xl font-medium text-foreground mb-3">Notice Who May Be Growing Into Their Part</h3>
                 <p className="text-muted-foreground max-w-md mx-auto text-base leading-relaxed">
-                    Describe the ministry need on the left. The system will compare relevant profile reflections to suggest people for a thoughtful pastoral conversation.
+                     Describe a growth opportunity on the left. The system will surface relevant profile signals to support a thoughtful pastoral conversation.
                 </p>
               </div>
             )}

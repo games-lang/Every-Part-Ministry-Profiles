@@ -145,7 +145,7 @@ export default function Dashboard() {
 
         <Card className="border-border/70 border-l-4 border-l-secondary shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Assigned Profiles</CardTitle>
+             <CardTitle className="text-sm font-medium text-muted-foreground">Profiles in a Team Conversation</CardTitle>
             <UsersRound className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -318,7 +318,7 @@ export default function Dashboard() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                       Fill out a test profile
+                        Complete a sample profile
                      </a>
                    </Button>
                  </div>
