@@ -1611,8 +1611,12 @@ export default function Assessment() {
       subsectionEnabled("aboutYou.transportation") ||
       subsectionEnabled("aboutYou.languages") ||
       subsectionEnabled("aboutYou.profilePhoto"));
+  const familySituation = form.watch("basicInformation.familySituation");
+  const isMarried = familySituation.startsWith("Married");
   const activeSpiritualGifts = SPIRITUAL_GIFTS.filter(
-    ([gift]) => church?.enabledSpiritualGifts?.includes(gift) ?? true,
+    ([gift]) =>
+      (church?.enabledSpiritualGifts?.includes(gift) ?? true) &&
+      !(isMarried && gift === "Celibacy"),
   );
   const stepKeys = [
     "aboutYou",
@@ -1698,7 +1702,7 @@ export default function Assessment() {
     configuredSpiritualGiftQuestionCount <= 4
       ? configuredSpiritualGiftQuestionCount
       : 3;
-  const activeGiftConfigKey = `${church?.enabledSpiritualGifts?.join("|") ?? "all"}:${spiritualGiftQuestionsPerGift}`;
+  const activeGiftConfigKey = `${church?.enabledSpiritualGifts?.join("|") ?? "all"}:${spiritualGiftQuestionsPerGift}:${isMarried ? "married" : "other"}`;
   const randomizedGiftQuestions = useMemo(
     () =>
       shuffleQuestions(
