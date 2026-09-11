@@ -10,7 +10,7 @@ const appPath = (path: string) => `${basePath}${path}`;
 export default function Home() {
   return (
     <PublicLayout 
-      title="Every Part | Help people discover their part" 
+      title="Every Part | Every believer has a part"
       description="Every Part helps churches prayerfully discover how God has shaped their people and prepare for meaningful ministry conversations."
     >
       <section className="relative mx-auto max-w-7xl px-5 pb-24 pt-16 sm:px-8 sm:pb-32 sm:pt-24 lg:pb-36 lg:pt-28">
@@ -68,7 +68,7 @@ export default function Home() {
             <Reveal className="[animation-delay:.4s]">
               <div className="mt-10 flex items-center gap-3 text-sm text-muted-foreground">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(var(--landing-cyan))] text-primary"><Heart className="h-4 w-4" /></span>
-                  <span>A starting point for the next ministry conversation—not just a spiritual gifts test.</span>
+                  <span>A starting point for the next ministry conversation—not a score or verdict.</span>
               </div>
             </Reveal>
           </div>

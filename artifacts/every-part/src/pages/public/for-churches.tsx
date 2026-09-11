@@ -6,7 +6,7 @@ import { leaderBenefits } from "@/data/public-content";
 export default function ForChurches() {
   return (
     <PublicLayout 
-      title="For Churches | Every Part" 
+      title="Every Part for Churches | Develop Every Person"
       description="Every Part gives leaders a clearer picture of the people God has already placed in their congregation."
     >
       <section className="px-5 py-24 sm:px-8 lg:py-32">

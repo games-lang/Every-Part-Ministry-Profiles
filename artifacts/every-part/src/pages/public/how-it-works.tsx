@@ -4,8 +4,8 @@ import { problemCards, pathway } from "@/data/public-content";
 export default function HowItWorks() {
   return (
     <PublicLayout 
-      title="How It Works | Every Part" 
-      description="See how Every Part provides churches a prayerful pathway from discovery to meaningful ministry."
+      title="How Every Part Helps People Find Their Part"
+      description="Every Part helps every believer find their part in the body of Christ and helps pastors develop them through prayerful ministry conversations."
     >
       <section className="px-5 py-24 sm:px-8 lg:py-32">
         <div className="mx-auto max-w-7xl">
@@ -37,12 +37,12 @@ export default function HowItWorks() {
 
           <Reveal className="mt-10 max-w-4xl">
             <div className="rounded-[1.5rem] border border-secondary/35 bg-secondary/10 p-7 sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">Built for conversation</p>
+                <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">Built for belonging and development</p>
               <p className="mt-3 max-w-3xl font-serif text-2xl leading-tight tracking-[-.04em] sm:text-3xl">
-                Every Part gives your church a pathway from discovery to meaningful ministry—possibilities, not decisions.
+                 Every believer has a part in the body of Christ. Every Part helps them find it, and helps pastors develop them.
               </p>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground">
-                It does not assign volunteers. Prayer, relationship, discernment, and a real conversation still shape the next step.
+                 A profile opens a prayerful path to notice gifts, passions, capacity, and growth. The person, pastor, and church discern the next step together.
               </p>
             </div>
           </Reveal>
@@ -57,12 +57,12 @@ export default function HowItWorks() {
           <div className="mt-32 grid gap-8 lg:grid-cols-[1fr_.72fr] lg:items-end">
             <Reveal>
               <h2 className="max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-6xl">
-                A Prayerful Pathway to Meaningful Ministry
+                Help people find their part. Develop them well.
               </h2>
             </Reveal>
             <Reveal className="[animation-delay:.12s]">
               <p className="max-w-md text-lg leading-8 text-muted-foreground">
-                Every Part keeps technology in its proper place: helping people and leaders prepare for the conversations that technology cannot have for them.
+                Every Part keeps people at the center: helping believers name how God has shaped them and helping pastors nurture their growth with prayer, relationship, and discernment.
               </p>
             </Reveal>
           </div>

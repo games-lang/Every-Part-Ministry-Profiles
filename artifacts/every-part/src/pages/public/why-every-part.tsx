@@ -5,7 +5,7 @@ import { PublicLayout, Reveal, Eyebrow } from "@/components/public-layout";
 export default function WhyEveryPart() {
   return (
     <PublicLayout 
-      title="Why Every Part | The story behind the work" 
+      title="Why Every Part | Every Person Has a Part"
       description="Every Part began with a problem in a real church: how to see the gifts, stories, and potential of people God has already placed in the body."
     >
       <section className="px-5 py-24 sm:px-8 lg:py-32">

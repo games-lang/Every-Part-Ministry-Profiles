@@ -49,7 +49,7 @@ export default function MinistryProfiles() {
 
   return (
     <PublicLayout 
-      title="Ministry Profiles | Every Part" 
+      title="Ministry Profiles | Find Your Part"
       description="A Ministry Profile gathers a fuller picture of someone's story. It gives people language for what they are noticing and gives leaders a gracious place to begin."
     >
       <section className="bg-muted/60 px-5 py-24 sm:px-8 lg:py-32">
@@ -92,7 +92,7 @@ export default function MinistryProfiles() {
                 <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">Four fictional sample profiles</p>
                 <h3 className="mt-3 font-serif text-3xl tracking-[-.045em] sm:text-4xl">See how each pathway starts a different conversation.</h3>
                 <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  These examples show the kind of reflection each profile can surface. They offer possibilities and questions—not labels, conclusions, or automatic placements.
+                  These examples show the kind of reflection each profile can surface. They offer possibilities and questions—not labels or a verdict about anyone’s calling.
                 </p>
               </div>
             </Reveal>

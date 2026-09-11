@@ -7,7 +7,7 @@ const feedbackExamples = [
   "Something that was confusing or difficult to find",
   "A Ministry Profile question that was unclear",
   "A PartFinder recommendation that was especially helpful or unhelpful",
-  "Something a pastor expected the platform to do",
+   "Something a pastor expected Every Part to help with",
   "A feature that would make Every Part more useful in real ministry",
   "Something members struggled to understand",
 ];
@@ -39,7 +39,7 @@ export default function AboutEarlyAccess() {
           <p className="mt-5 text-lg leading-8 text-muted-foreground">
             Every Part Early Access gives a small group of churches the
             opportunity to begin using Every Part today while helping shape the
-            platform for churches everywhere.
+             Every Part for churches everywhere.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export default function AboutEarlyAccess() {
             </CardHeader>
             <CardContent className="leading-7 text-muted-foreground">
               These churches help us learn how Every Part works in real
-              ministry environments and identify ways the platform can become
+               ministry environments and identify ways Every Part can become
               clearer, more useful, and more effective.
             </CardContent>
           </Card>
@@ -78,7 +78,7 @@ export default function AboutEarlyAccess() {
               Early Access does not mean private church or member information
               is publicly exposed or casually used for experimentation.
               Feedback and aggregate usage patterns may help improve the
-              platform, while privacy remains a priority.
+               Every Part, while privacy remains a priority.
             </CardContent>
           </Card>
           <Card className="border-border/70 shadow-sm">
@@ -110,8 +110,8 @@ export default function AboutEarlyAccess() {
               Every person has a part to play in the Body of Christ.
             </p>
             <p className="mt-3">
-              Thank you for helping us build a polished ministry platform that
-              is ready for today and continually refined for tomorrow.
+               Thank you for helping us build a polished way for churches to
+               help every person find their part and keep growing.
             </p>
           </CardContent>
         </Card>

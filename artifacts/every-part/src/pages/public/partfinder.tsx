@@ -5,7 +5,7 @@ import { partfinderBenefits } from "@/data/public-content";
 export default function Partfinder() {
   return (
     <PublicLayout 
-      title="PartFinder | Every Part" 
+      title="PartFinder | Help Pastors Develop People"
       description="PartFinder helps pastors see patterns across adult Ministry Profiles, think through a ministry need, and enter a conversation with better questions."
     >
       <section className="bg-[hsl(var(--primary-deep))] px-5 py-24 text-primary-foreground sm:px-8 lg:py-32">
