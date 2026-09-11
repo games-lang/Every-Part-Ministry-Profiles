@@ -21,51 +21,51 @@ const APEST_BODY_PARTS: Record<string, { part: string; description: string; icon
 
 const TENDENCIES: Record<string, { name: string; description: string; explanation: string; strengths: string[]; blindSpots: string[]; icon: any }> = {
   Hands: {
-    name: "Helper / Doer",
-    description: "You naturally serve by taking action and getting things done.",
-    explanation: "You prefer to meet practical needs, solve problems, and see tangible results. You are likely willing to jump in where help is needed.",
-    strengths: ["Practical", "Action-oriented", "Problem-solving"],
-    blindSpots: ["May overcommit", "May struggle to pause and reflect"],
+    name: "The Doer",
+    description: "You tend to minister like the Hands of the Body.",
+    explanation: "You notice what needs to be done and tend to jump in.",
+    strengths: ["Practical", "Helpful", "Dependable", "Action-oriented", "Service-minded"],
+    blindSpots: ["May begin doing before understanding the deeper need or may carry too much personally."],
     icon: Hand
   },
   Ears: {
     name: "Listener",
-    description: "You naturally serve by hearing people and providing a safe space.",
-    explanation: "You process carefully and make others feel seen and understood. You may pick up on what is unsaid.",
-    strengths: ["Empathetic", "Discernment", "Deep relational care"],
-    blindSpots: ["May hesitate to speak up", "Can absorb others' emotional burdens"],
+    description: "You tend to minister like the Ears of the Body.",
+    explanation: "You tend to slow down, listen, understand, and make space for people.",
+    strengths: ["Patient", "Relational", "Empathetic", "Attentive", "Good one-on-one"],
+    blindSpots: ["May hesitate to speak or act when action is needed."],
     icon: Ear
   },
   Shoulders: {
     name: "Supporter",
-    description: "You naturally serve by coming alongside others to strengthen them.",
-    explanation: "You provide stability, encouragement, and faithful support to leaders and existing ministries.",
-    strengths: ["Loyal", "Encouraging", "Sustainable serving"],
-    blindSpots: ["May avoid taking necessary initiative", "May stay in the background too long"],
+    description: "You tend to minister like the Shoulders of the Body.",
+    explanation: "You naturally help carry responsibility and strengthen other people.",
+    strengths: ["Loyal", "Steady", "Supportive", "Dependable", "Team-oriented"],
+    blindSpots: ["May carry responsibilities that should belong to someone else."],
     icon: Shield
   },
   Voice: {
     name: "Communicator",
-    description: "You naturally serve by sharing stories, truth, or encouragement.",
-    explanation: "You use words to build up the Body, clarify ideas, or inspire others toward God.",
-    strengths: ["Inspiring", "Clear communication", "Teaching"],
-    blindSpots: ["May speak before listening fully", "Words have outsized impact"],
+    description: "You tend to minister like the Voice of the Body.",
+    explanation: "You naturally communicate, encourage, explain, inspire, or influence.",
+    strengths: ["Verbal", "Encouraging", "Expressive", "Comfortable communicating", "Able to rally others"],
+    blindSpots: ["May speak before listening enough."],
     icon: Mic
   },
   Arms: {
-    name: "Connector / Welcomer",
-    description: "You naturally serve by gathering people and creating belonging.",
-    explanation: "You draw people in, make them feel at home, and help them connect with others in the Body.",
-    strengths: ["Hospitality", "Warmth", "Network building"],
-    blindSpots: ["May struggle with boundaries", "Can prioritize harmony over truth"],
+    name: "The Connector",
+    description: "You tend to minister like the Arms of the Body.",
+    explanation: "You tend to bring people together and help people feel welcomed and connected.",
+    strengths: ["Hospitality", "Relationship-building", "Inclusion", "Networking", "Team connection"],
+    blindSpots: ["May prioritize harmony or connection when a difficult conversation is necessary."],
     icon: Users
   },
   Backbone: {
-    name: "Organizer / Stabilizer",
-    description: "You naturally serve by creating structure and clarity.",
-    explanation: "You build the systems, schedules, and plans that allow ministry to happen smoothly.",
-    strengths: ["Reliable", "Strategic", "Detail-oriented"],
-    blindSpots: ["May become rigid", "Can prioritize the system over the person"],
+    name: "The Organizer",
+    description: "You tend to minister like the Backbone of the Body.",
+    explanation: "You naturally bring structure, order, planning, and stability.",
+    strengths: ["Administration", "Planning", "Follow-through", "Organization", "Systems thinking"],
+    blindSpots: ["May become frustrated with ambiguity, spontaneity, or people who work differently."],
     icon: Layers
   }
 };
@@ -149,12 +149,12 @@ export function MyMinistryProfile({
                 <TendencyIcon size={32} />
               </div>
               <div>
-                <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">How You Minister</div>
+                 <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">{ministryTendency.key}</div>
                 <h3 className="text-xl font-serif font-medium">{TENDENCIES[ministryTendency.key]?.name}</h3>
                 <p className="text-sm text-muted-foreground mt-2">{TENDENCIES[ministryTendency.key]?.description}</p>
                  {ministryTendency.secondaryKey && (
                    <p className="mt-2 text-xs font-medium text-muted-foreground">
-                     Close secondary tendency: {TENDENCIES[ministryTendency.secondaryKey]?.name}
+                     Secondary tendency: {ministryTendency.secondaryKey} — {TENDENCIES[ministryTendency.secondaryKey]?.name}
                    </p>
                  )}
               </div>
@@ -176,7 +176,7 @@ export function MyMinistryProfile({
       <div className="grid md:grid-cols-2 gap-8">
         
         {/* 3. APEST RESULT (Detailed) */}
-        {apestResult && (
+        {apestResult ? (
           <Section title="Your Ministry Orientation">
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
@@ -193,14 +193,15 @@ export function MyMinistryProfile({
                 <p className="text-xs text-muted-foreground">{APEST_BODY_PARTS[apestResult.secondary]?.description}</p>
               </div>
             )}
-            {!apestResult && (
-              <p className="text-sm text-muted-foreground">
-                No ministry-orientation result was available in this profile’s saved assessment sections.
-              </p>
-            )}
             <div className="mt-5 rounded-lg bg-muted/30 p-3 text-xs text-muted-foreground italic">
               This is a picture of a ministry tendency, not a limit on how God can use you.
             </div>
+          </Section>
+        ) : (
+          <Section title="Your Ministry Orientation">
+            <p className="text-sm text-muted-foreground">
+              No ministry-orientation result was available in this profile’s saved assessment sections.
+            </p>
           </Section>
         )}
 
@@ -221,6 +222,20 @@ export function MyMinistryProfile({
                   suggesting you may draw on both approaches depending on the people and situation.
                 </p>
               )}
+              <div className="mb-4 rounded-lg border border-border/50 bg-background/60 p-3 text-sm">
+                <div className="font-medium">
+                  Primary tendency: {ministryTendency.key} — {TENDENCIES[ministryTendency.key]?.name}
+                </div>
+                {ministryTendency.secondaryKey && (
+                  <div className="mt-1 font-medium">
+                    Secondary tendency: {ministryTendency.secondaryKey} — {TENDENCIES[ministryTendency.secondaryKey]?.name}
+                  </div>
+                )}
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Score pattern: {ministryTendency.scoring.confidenceLevel}. Determined primarily from How You Tend to Operate,
+                  with enabled strengths used only as supporting evidence.
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Potential Strengths</h4>
@@ -235,6 +250,9 @@ export function MyMinistryProfile({
                   </ul>
                 </div>
               </div>
+              <p className="mt-5 rounded-lg bg-muted/30 p-3 text-xs italic text-muted-foreground">
+                This picture describes a natural ministry tendency, not a fixed identity. God may call us to serve beyond what comes most naturally.
+              </p>
             </div>
           </Section>
         )}

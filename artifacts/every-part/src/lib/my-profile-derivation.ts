@@ -12,6 +12,166 @@ const asRecord = (value: unknown) =>
 const asText = (value: unknown) =>
   typeof value === "string" && value.trim() ? value.trim() : "";
 
+export const MINISTRY_TENDENCY_KEYS = ["Hands", "Ears", "Shoulders", "Voice", "Arms", "Backbone"] as const;
+export type MinistryTendencyKey = typeof MINISTRY_TENDENCY_KEYS[number];
+
+type TendencyScores = Record<MinistryTendencyKey, number>;
+
+const zeroScores = (): TendencyScores => ({
+  Hands: 0,
+  Ears: 0,
+  Shoulders: 0,
+  Voice: 0,
+  Arms: 0,
+  Backbone: 0,
+});
+
+const addSignal = (
+  scores: TendencyScores,
+  key: MinistryTendencyKey,
+  value: number,
+  weight: number,
+) => {
+  scores[key] += Math.max(0, Math.min(1, value)) * weight;
+};
+
+const tendencyName: Record<MinistryTendencyKey, string> = {
+  Hands: "Doer",
+  Ears: "Listener",
+  Shoulders: "Supporter",
+  Voice: "Communicator",
+  Arms: "Connector",
+  Backbone: "Organizer",
+};
+
+export function scoreMinistryTendencies(
+  dimensions: ReturnType<typeof derivedPersonality>,
+  selectedStrengths: string[],
+) {
+  const rawScores = zeroScores();
+  const availableWeight = zeroScores();
+  const dimension = (label: string) => dimensions.find(item => item.label === label);
+  const right = (label: string) => (dimension(label)?.rightPercentage ?? 50) / 100;
+  const has = (label: string) => Boolean(dimension(label));
+  const signal = (
+    key: MinistryTendencyKey,
+    label: string,
+    direction: "left" | "right",
+    weight: number,
+  ) => {
+    if (!has(label)) return;
+    addSignal(rawScores, key, direction === "right" ? right(label) : 1 - right(label), weight);
+    availableWeight[key] += weight;
+  };
+
+  // Primary evidence: the seven original "How You Tend to Operate" spectra.
+  signal("Hands", "Action Style", "right", 3);
+  signal("Hands", "Focus Style", "left", 2);
+  signal("Hands", "Pace Preference", "right", 1);
+  signal("Ears", "Social Energy", "left", 2);
+  signal("Ears", "Decision Lens", "left", 3);
+  signal("Ears", "Pace Preference", "left", 1);
+  signal("Shoulders", "Action Style", "left", 3);
+  signal("Shoulders", "Pace Preference", "left", 2);
+  signal("Shoulders", "Work Style", "right", 1);
+  signal("Voice", "Social Energy", "right", 3);
+  signal("Voice", "Focus Style", "right", 1);
+  signal("Voice", "Work Style", "right", 2);
+  signal("Arms", "Social Energy", "right", 2);
+  signal("Arms", "Decision Lens", "left", 2);
+  signal("Arms", "Work Style", "right", 2);
+  signal("Backbone", "Planning Style", "right", 3);
+  signal("Backbone", "Focus Style", "left", 2);
+  signal("Backbone", "Pace Preference", "left", 1);
+
+  const normalizedScores = zeroScores();
+  for (const key of MINISTRY_TENDENCY_KEYS) {
+    normalizedScores[key] = availableWeight[key]
+      ? rawScores[key] / availableWeight[key]
+      : 0;
+  }
+
+  // Supporting evidence is intentionally capped at 10% so strengths cannot
+  // overpower the personality/operation responses.
+  const strengthSignals: Partial<Record<string, MinistryTendencyKey>> = {
+    "Practical hands-on work": "Hands",
+    "Problem-solving": "Hands",
+    Listening: "Ears",
+    Discernment: "Ears",
+    Encouragement: "Shoulders",
+    "Mentoring and development": "Shoulders",
+    "Communication and storytelling": "Voice",
+    "Teaching and explaining": "Voice",
+    Hospitality: "Arms",
+    "Relational connection": "Arms",
+    Organizing: "Backbone",
+    "Strategic thinking": "Backbone",
+    "Follow-through": "Backbone",
+  };
+  const supportingSignals = zeroScores();
+  for (const strength of selectedStrengths) {
+    const key = strengthSignals[strength];
+    if (key) supportingSignals[key] += 1;
+  }
+  const maxSupportingSignal = Math.max(...Object.values(supportingSignals), 1);
+  const combinedScores = zeroScores();
+  for (const key of MINISTRY_TENDENCY_KEYS) {
+    combinedScores[key] =
+      normalizedScores[key] * 0.9 +
+      (supportingSignals[key] / maxSupportingSignal) * 0.1;
+  }
+
+  const ranked = MINISTRY_TENDENCY_KEYS
+    .map(key => ({ key, score: combinedScores[key] }))
+    .filter(result => availableWeight[result.key] > 0)
+    .sort((a, b) => b.score - a.score);
+  const primary = ranked[0] ?? null;
+  const runnerUp = ranked[1] ?? null;
+  const scoreSpread = primary && runnerUp ? primary.score - runnerUp.score : 0;
+  const secondary = runnerUp && scoreSpread <= 0.08 ? runnerUp : null;
+  const confidenceLevel =
+    !primary || !runnerUp ? "Not enough information" :
+    scoreSpread <= 0.04 ? "Blended" :
+    scoreSpread <= 0.12 ? "Moderate" :
+    "Clear";
+
+  return {
+    rawScores,
+    normalizedScores,
+    combinedScores,
+    primary,
+    secondary,
+    confidenceLevel,
+    scoreSpread,
+    evidence: {
+      primarySource: "How You Tend to Operate",
+      supportingStrengths: selectedStrengths.filter(strength => Boolean(strengthSignals[strength])),
+    },
+  };
+}
+
+function combineOrientationAndTendency(
+  orientation: string,
+  tendency: MinistryTendencyKey,
+) {
+  const orientationClauses: Record<string, string> = {
+    Apostle: "You may naturally move ministry toward new opportunities",
+    Prophet: "You may notice concerns, truth, or spiritual realities that others miss",
+    Evangelist: "You may naturally help people encounter Jesus and the Christian community",
+    Shepherd: "Caring for people and helping them remain connected may be a strong orientation for you",
+    Teacher: "Helping others understand truth and grow in wisdom may be a strong orientation for you",
+  };
+  const tendencyClauses: Record<MinistryTendencyKey, string> = {
+    Hands: "taking practical action may be one of the main ways you contribute",
+    Ears: "listening and making space for people may be one of the main ways you contribute",
+    Shoulders: "carrying responsibility and strengthening others may be one of the main ways you contribute",
+    Voice: "clear communication, encouragement, and explanation may be one of the main ways you contribute",
+    Arms: "building relationships and helping people feel connected may be one of the main ways you contribute",
+    Backbone: "bringing structure, planning, and follow-through may be one of the main ways you contribute",
+  };
+  return `${orientationClauses[orientation] ?? "You bring a meaningful ministry orientation"}, while ${tendencyClauses[tendency]}.`;
+}
+
 export function getMyMinistrySynthesis(
   profile: MinistryProfile,
   sectionEnabled: SectionEnabled,
@@ -21,6 +181,20 @@ export function getMyMinistrySynthesis(
   const apestData = sectionEnabled("apest") ? asRecord(profile.assessmentSections.apest) : {};
   let apestPrimary = typeof apestData.primary === "string" ? apestData.primary : "";
   let apestSecondary = typeof apestData.secondary === "string" ? apestData.secondary : "";
+  const apestSubsectionByValue: Record<string, string> = {
+    Apostle: "builder",
+    "Starting and building new ministry": "builder",
+    Prophet: "insight",
+    "Noticing what needs attention": "insight",
+    Evangelist: "connector",
+    "Connecting people with faith": "connector",
+    Shepherd: "caregiver",
+    "Caring for people over time": "caregiver",
+    Teacher: "teacher",
+    "Making ideas clear": "teacher",
+  };
+  if (!subsectionEnabled("apest", apestSubsectionByValue[apestPrimary] ?? "")) apestPrimary = "";
+  if (!subsectionEnabled("apest", apestSubsectionByValue[apestSecondary] ?? "")) apestSecondary = "";
   
   if (!apestPrimary) {
     const rankings = rankedApproaches(
@@ -40,11 +214,17 @@ export function getMyMinistrySynthesis(
     "Making ideas clear": "Teacher",
   };
 
-  const getApestLabel = (val: string) => legacyLabels[val] || MINISTRY_TAGS[val] || val;
+  const supportedOrientations = new Set(["Apostle", "Prophet", "Evangelist", "Shepherd", "Teacher"]);
+  const getApestLabel = (value: string) => {
+    const label = legacyLabels[value] || MINISTRY_TAGS[value] || value;
+    return supportedOrientations.has(label) ? label : "";
+  };
+  const primaryLabel = getApestLabel(apestPrimary);
+  const secondaryLabel = getApestLabel(apestSecondary);
 
-  const apestResult = apestPrimary ? {
-    label: getApestLabel(apestPrimary),
-    secondary: apestSecondary ? getApestLabel(apestSecondary) : undefined
+  const apestResult = primaryLabel ? {
+    label: primaryLabel,
+    secondary: secondaryLabel || undefined,
   } : null;
 
   // 2. TENDENCY
@@ -78,47 +258,14 @@ export function getMyMinistrySynthesis(
     ).slice(0, 5).map(r => r.label);
   }
 
-  const scores = {
-    Hands: 0, Ears: 0, Shoulders: 0, Voice: 0, Arms: 0, Backbone: 0
-  };
-
-  if (selectedStrengths.includes("Practical hands-on work")) scores.Hands += 2;
-  if (selectedStrengths.includes("Problem-solving")) scores.Hands += 1;
-  if (selectedStrengths.includes("Listening")) scores.Ears += 2;
-  if (selectedStrengths.includes("Discernment")) scores.Ears += 1;
-  if (selectedStrengths.includes("Encouragement")) scores.Shoulders += 2;
-  if (selectedStrengths.includes("Mentoring and development")) scores.Shoulders += 1;
-  if (selectedStrengths.includes("Communication and storytelling")) scores.Voice += 2;
-  if (selectedStrengths.includes("Teaching and explaining")) scores.Voice += 1;
-  if (selectedStrengths.includes("Hospitality")) scores.Arms += 2;
-  if (selectedStrengths.includes("Relational connection")) scores.Arms += 2;
-  if (selectedStrengths.includes("Organizing")) scores.Backbone += 2;
-  if (selectedStrengths.includes("Strategic thinking")) scores.Backbone += 1;
-  if (selectedStrengths.includes("Follow-through")) scores.Backbone += 1;
-
   const getDim = (label: string) => dimensions.find(d => d.label === label);
   const action = getDim("Action Style");
-  if (action?.dominant === "left") scores.Shoulders += 1; 
-  if (action?.dominant === "right") scores.Hands += 1; 
   const decision = getDim("Decision Lens");
-  if (decision?.dominant === "left") scores.Ears += 1; 
-  const planning = getDim("Planning Style");
-  if (planning?.dominant === "right") scores.Backbone += 1; 
   const focus = getDim("Focus Style");
-  if (focus?.dominant === "left") scores.Backbone += 1; 
-  const pace = getDim("Pace Preference");
-  if (pace?.dominant === "left") scores.Shoulders += 1; 
   const social = getDim("Social Energy");
-  if (social?.dominant === "right") { scores.Arms += 1; scores.Voice += 1; }
-
-  const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const primaryTendencyKey = sortedScores[0]?.[1] > 0 ? sortedScores[0][0] : null;
-  const secondaryTendencyKey =
-    primaryTendencyKey &&
-    sortedScores[1]?.[1] > 0 &&
-    sortedScores[0][1] - sortedScores[1][1] <= 1
-      ? sortedScores[1][0]
-      : null;
+  const tendencyScoring = scoreMinistryTendencies(dimensions, selectedStrengths);
+  const primaryTendencyKey = tendencyScoring.primary?.key ?? null;
+  const secondaryTendencyKey = tendencyScoring.secondary?.key ?? null;
 
   // 3. GIFTS
   const spiritualGiftsData = sectionEnabled("spiritualGifts")
@@ -184,8 +331,9 @@ export function getMyMinistrySynthesis(
   // Synthesis text
   let synthesisText = "";
   if (apestResult && primaryTendencyKey) {
-    const tendencyNames: Record<string, string> = { Hands: "a Helper", Ears: "a Listener", Shoulders: "a Supporter", Voice: "a Communicator", Arms: "a Welcomer", Backbone: "an Organizer" };
-    synthesisText = `You have the heart of a ${apestResult.label} and often minister as ${tendencyNames[primaryTendencyKey]}. You may flourish in environments where people need ${apestResult.label === "Shepherd" ? "consistent relationships and care" : apestResult.label === "Apostle" ? "new momentum and exploration" : apestResult.label === "Teacher" ? "truth and understanding" : apestResult.label === "Evangelist" ? "invitation and good news" : "insight and clarity"}, supported by your natural ability to ${primaryTendencyKey === "Hands" ? "take practical action" : primaryTendencyKey === "Ears" ? "listen deeply" : primaryTendencyKey === "Voice" ? "communicate effectively" : primaryTendencyKey === "Arms" ? "connect with others" : primaryTendencyKey === "Backbone" ? "organize details" : "provide steady support"}.`;
+    synthesisText = combineOrientationAndTendency(apestResult.label, primaryTendencyKey);
+  } else if (primaryTendencyKey) {
+    synthesisText = `You tend to minister like the ${primaryTendencyKey} of the Body. As a ${tendencyName[primaryTendencyKey]}, ${combineOrientationAndTendency("", primaryTendencyKey).split("while ")[1]}`;
   }
 
   // 6. ENVIRONMENTS
@@ -285,7 +433,11 @@ export function getMyMinistrySynthesis(
 
   return {
     apestResult,
-    ministryTendency: primaryTendencyKey ? { key: primaryTendencyKey, secondaryKey: secondaryTendencyKey } : null,
+    ministryTendency: primaryTendencyKey ? {
+      key: primaryTendencyKey,
+      secondaryKey: secondaryTendencyKey,
+      scoring: tendencyScoring,
+    } : null,
     topGifts,
     themes: themes.filter((theme, index, all) => all.findIndex(item => item.name === theme.name) === index).slice(0, 3),
     patterns: [...new Set(patterns)].slice(0, 5),

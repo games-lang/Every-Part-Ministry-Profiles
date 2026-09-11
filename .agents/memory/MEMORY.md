@@ -26,6 +26,7 @@
 - [Logo color authority](logo-color-authority.md) — preserve the original Every Part logo unchanged; adapt shared website colors to the logo’s palette.
 - [Profile photo privacy](profile-photo-privacy.md) — store private object paths; only same-church leaders may load photos, and public youth results never include them.
 - [Profile pathway themes](profile-pathway-themes.md) — adult, Discover, Explore, and Develop use distinct scoped accents across assessments, results, and journeys.
+- [Ministry tendency scoring](ministry-tendency-scoring.md) — the six body-based “How You Tend to Minister” results are personality-first, with strengths capped as supporting evidence.
 - [Every Part origin story](every-part-origin-story.md) — public copy starts with seeing overlooked gifts in a multicultural church, not filling volunteer slots.
 - [Church branding persistence](church-branding-persistence.md) — logo and color saves must remain independent from validation in the larger church setup form.
 - [Profile print privacy](profile-print-privacy.md) — omit sensitive coordinator content from print/PDF, but intentionally retain Spiritual Health.
