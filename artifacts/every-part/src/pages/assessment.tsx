@@ -3194,7 +3194,7 @@ export default function Assessment() {
                                           aria-describedby={
                                             unanswered ? errorId : undefined
                                           }
-                                          className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2 outline-none"
+                                          className="mt-3 grid grid-cols-1 gap-2 outline-none sm:grid-cols-5"
                                         >
                                           {personalityResponseOptions(
                                             dimension.left,
@@ -3212,7 +3212,7 @@ export default function Assessment() {
                                                   ? "default"
                                                   : "outline"
                                               }
-                                              className="h-auto min-h-10 px-2 text-xs"
+                                              className="h-auto min-h-10 w-full min-w-0 whitespace-normal break-words px-2 py-2 text-xs leading-4"
                                               onClick={() =>
                                                 field.onChange(optionIndex + 1)
                                               }
