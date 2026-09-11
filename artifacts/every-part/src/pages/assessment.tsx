@@ -2306,7 +2306,7 @@ export default function Assessment() {
           ? {
               naturalStrengths: {
                 selected: strengthResults.slice(0, 5).map(({ label }) => label),
-                notes: data.strengthNotes || null,
+                notes: null,
                 responses: strengthResponses,
               },
             }
@@ -3089,13 +3089,6 @@ export default function Assessment() {
                           },
                         )}
                       </div>
-                      <TextField
-                        form={form}
-                        name="strengthNotes"
-                        label="Where do you see these strengths in action? (optional)"
-                        description="Share examples from ministry, work, home, or community."
-                        multiline
-                      />
                     </>
                   )}
                   {currentStep === "personalityStrengths" && (
