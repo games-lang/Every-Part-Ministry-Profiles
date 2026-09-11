@@ -149,7 +149,7 @@ export default function MinistryProfiles() {
                           <span className="sample-profile-card__avatar" aria-hidden="true">{profile.initials}</span>
                         )}
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/70">{profile.pathway} · {profile.age}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/70">Fictional example · {profile.pathway} · {profile.age}</p>
                           <h4 className="mt-1 font-serif text-2xl tracking-[-.04em] text-white">{profile.name}’s profile</h4>
                         </div>
                       </div>
@@ -158,7 +158,7 @@ export default function MinistryProfiles() {
                     <div className="flex h-full flex-col p-6 sm:p-8">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="sample-profile-card__eyebrow">What a leader might notice</p>
+                          <p className="sample-profile-card__eyebrow">Formation notes to explore</p>
                           <h4 className="mt-2 font-serif text-2xl tracking-[-.035em]">{profile.lead}</h4>
                         </div>
                         <HeartHandshake className="h-6 w-6 shrink-0 text-[hsl(var(--sample-accent))]" />

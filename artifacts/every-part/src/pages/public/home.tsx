@@ -172,8 +172,8 @@ export default function Home() {
                   A fuller picture of every part.
                 </h2>
               </div>
-              <p className="max-w-md text-sm leading-6 text-muted-foreground">
-                Adult, Discover, Explore, and Develop give each person a fitting place to reflect and grow.
+                <p className="max-w-md text-sm leading-6 text-muted-foreground">
+                 These four fictional examples show how Adult, Discover, Explore, and Develop can give each person a fitting place to reflect and grow.
               </p>
             </div>
             <Link href="/ministry-profiles" className="landing-focus mt-2 inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:border-secondary hover:text-secondary">

@@ -160,6 +160,7 @@ export const sampleProfileDetails = [
       { label: "How she tends to minister", text: "Caring for people over time" },
       { label: "How she tends to operate", values: ["Relational", "Reflective", "Organized", "People-centered"] },
       { label: "Passions", values: ["Young Adults", "People in Crisis", "New Believers"] },
+      { label: "Availability & current season", text: "A steady weekly rhythm, with room for healthy boundaries" },
     ],
     notes: [
       "Sarah may bring a gift for encouragement and organization.",
@@ -179,10 +180,11 @@ export const sampleProfileDetails = [
     intro: "A gentle way to notice how a child is growing and helping.",
     lead: "Notice what brings her joy.",
     fields: [
-      { label: "Things she enjoys", values: ["Making things", "Stories", "Singing"] },
+      { label: "Gifts & strengths showing up", values: ["Kindness", "Encouragement", "Creative expression"] },
       { label: "How she might help", text: "Welcoming people and noticing who needs care" },
       { label: "What grown-ups notice", values: ["Kind", "Curious", "Quick to encourage"] },
       { label: "A next conversation", values: ["Where she feels brave", "Who helps her grow"] },
+      { label: "Availability & current season", text: "Short, supported opportunities with a trusted grown-up" },
     ],
     notes: [
       "Leah seems energized when she can make someone feel included.",
@@ -202,10 +204,11 @@ export const sampleProfileDetails = [
     intro: "A snapshot of the questions, strengths, and interests he is exploring.",
     lead: "Follow the curiosity.",
     fields: [
-      { label: "Strengths showing up", values: ["Creative", "Courageous", "Encouraging"] },
+      { label: "Gifts & strengths showing up", values: ["Creative", "Courageous", "Encouraging"] },
       { label: "How he tends to contribute", text: "Bringing energy and ideas to a group" },
       { label: "How he tends to operate", values: ["Imaginative", "Collaborative", "Adventurous", "Observant"] },
       { label: "Interests to explore", values: ["Media", "Games", "Welcome", "Helping younger kids"] },
+      { label: "Availability & current season", text: "Occasional creative projects with a clear guide nearby" },
     ],
     notes: [
       "Marcus may thrive when he can ask questions and help shape the idea.",
@@ -229,6 +232,7 @@ export const sampleProfileDetails = [
       { label: "How Jordan tends to minister", text: "Building trust and taking thoughtful initiative" },
       { label: "How Jordan tends to operate", values: ["Reflective", "Collaborative", "Determined", "People-aware"] },
       { label: "Passions", values: ["Students", "Justice", "Prayer", "Belonging"] },
+      { label: "Availability & current season", text: "One small leadership responsibility with coaching nearby" },
     ],
     notes: [
       "Jordan may be ready to lead a small piece of ministry with coaching nearby.",
