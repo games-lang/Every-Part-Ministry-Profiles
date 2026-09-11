@@ -2548,7 +2548,8 @@ export default function Assessment() {
                                 "Single",
                                 "Married",
                                 "Married with kids at home",
-                                "Empty nester",
+                                "Married empty nester",
+                                "Single empty nester",
                                 "Other",
                               ]}
                             />
