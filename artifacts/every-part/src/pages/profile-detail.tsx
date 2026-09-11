@@ -16,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { personalitySummarySentence } from "@/lib/personality-prose";
-import { CoordinatorAsk, hasValues } from "@/components/coordinator-ask";
+import { CoordinatorAsk } from "@/components/coordinator-ask";
 import { toast } from "@/hooks/use-toast";
 import { ProfileSchedule } from "@/components/profile-schedule";
 import { ProfileHelper } from "@/components/profile-helper";
@@ -465,10 +465,6 @@ function AdultProfileView({
 
   return (
     <>
-      {!isPrinting && <CoordinatorAsk profile={profile} />}
-      {!isPrinting && <TeamAssignment profileId={profile.id} teamId={profile.teamId} />}
-      {!isPrinting && <ProfileSchedule profileId={profile.id} />}
-
       {!isPrinting && (
         <div className="flex flex-wrap gap-6 border-b border-border/60 pb-2 mt-8 mb-6 no-print">
           <button 
@@ -487,9 +483,20 @@ function AdultProfileView({
       )}
 
       {view === 'individual' ? (
-        <MyMinistryProfile profile={profile} isPrinting={isPrinting} isEnabled={subsectionEnabled} />
+        <MyMinistryProfile
+          profile={profile}
+          isPrinting={isPrinting}
+          sectionEnabled={sectionEnabled}
+          subsectionEnabled={subsectionEnabled}
+        />
       ) : (
-        <LeaderMinistryProfile profile={profile} isPrinting={isPrinting} sectionEnabled={sectionEnabled} subsectionEnabled={subsectionEnabled} />
+        <>
+          {!isPrinting && <ProfileHelper profileId={profile.id} memberName={profile.memberName} />}
+          {!isPrinting && <CoordinatorAsk profile={profile} />}
+          {!isPrinting && <TeamAssignment profileId={profile.id} teamId={profile.teamId} />}
+          {!isPrinting && <ProfileSchedule profileId={profile.id} />}
+          <LeaderMinistryProfile profile={profile} isPrinting={isPrinting} sectionEnabled={sectionEnabled} subsectionEnabled={subsectionEnabled} />
+        </>
       )}
     </>
   );
@@ -541,14 +548,12 @@ export default function ProfileDetail() {
      </div>
    </header>
 
-     {!isPrinting && profile.profileType === "adult" && (
-      <ProfileHelper profileId={profile.id} memberName={profile.memberName} />
-    )}
-
    {profile.profileType === 'discover' ? (
      <DiscoverProfileView profile={profile} />
    ) : profile.profileType === 'explore' ? (
      <ExploreProfileView profile={profile} />
+    ) : profile.profileType === 'develop' ? (
+      <DevelopProfileView profile={profile} />
    ) : (
      <AdultProfileView 
        profile={profile} 

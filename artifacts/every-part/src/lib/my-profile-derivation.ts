@@ -1,14 +1,33 @@
 import type { MinistryProfile } from "@workspace/api-client-react";
 import { derivedPersonality, numericResponses, rankedApproaches, MINISTRY_APPROACHES, MINISTRY_TAGS, STRENGTH_APPROACHES } from "../pages/profile-detail";
 
-export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabled: (k: string) => boolean) {
+type SectionEnabled = (section: string) => boolean;
+type SubsectionEnabled = (section: string, subsection: string) => boolean;
+
+const asRecord = (value: unknown) =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {};
+
+const asText = (value: unknown) =>
+  typeof value === "string" && value.trim() ? value.trim() : "";
+
+export function getMyMinistrySynthesis(
+  profile: MinistryProfile,
+  sectionEnabled: SectionEnabled,
+  subsectionEnabled: SubsectionEnabled,
+) {
   // 1. APEST
-  const apestData = profile.assessmentSections.apest && typeof profile.assessmentSections.apest === "object" ? profile.assessmentSections.apest as Record<string, unknown> : {};
+  const apestData = sectionEnabled("apest") ? asRecord(profile.assessmentSections.apest) : {};
   let apestPrimary = typeof apestData.primary === "string" ? apestData.primary : "";
   let apestSecondary = typeof apestData.secondary === "string" ? apestData.secondary : "";
   
   if (!apestPrimary) {
-    const rankings = rankedApproaches(numericResponses(apestData.responses), MINISTRY_APPROACHES, () => true);
+    const rankings = rankedApproaches(
+      numericResponses(apestData.responses),
+      MINISTRY_APPROACHES,
+      key => subsectionEnabled("apest", key),
+    );
     apestPrimary = rankings[0]?.label || "";
     apestSecondary = rankings[1]?.label || "";
   }
@@ -29,13 +48,34 @@ export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabl
   } : null;
 
   // 2. TENDENCY
-  const personalityData = profile.assessmentSections.personalityStrengths && typeof profile.assessmentSections.personalityStrengths === "object" ? profile.assessmentSections.personalityStrengths as Record<string, unknown> : {};
-  const dimensions = derivedPersonality(numericResponses(personalityData.responses), () => true);
+  const personalityData = sectionEnabled("personalityStrengths")
+    ? asRecord(profile.assessmentSections.personalityStrengths)
+    : {};
+  const dimensions = derivedPersonality(
+    numericResponses(personalityData.responses),
+    key => subsectionEnabled("personalityStrengths", key),
+  );
 
-  const strengthsData = profile.assessmentSections.naturalStrengths && typeof profile.assessmentSections.naturalStrengths === "object" ? profile.assessmentSections.naturalStrengths as Record<string, unknown> : {};
-  let selectedStrengths = Array.isArray(strengthsData.selected) ? strengthsData.selected.filter(s => typeof s === "string") as string[] : [];
+  const strengthsData = sectionEnabled("naturalStrengths")
+    ? asRecord(profile.assessmentSections.naturalStrengths)
+    : {};
+  const strengthKeyByLabel = Object.fromEntries(
+    STRENGTH_APPROACHES.map(([key, label]) => [label, key]),
+  ) as Record<string, string>;
+  let selectedStrengths = Array.isArray(strengthsData.selected)
+    ? strengthsData.selected.filter(
+        (strength): strength is string =>
+          typeof strength === "string" &&
+          Boolean(strengthKeyByLabel[strength]) &&
+          subsectionEnabled("naturalStrengths", strengthKeyByLabel[strength]),
+      )
+    : [];
   if (selectedStrengths.length === 0) {
-    selectedStrengths = rankedApproaches(numericResponses(strengthsData.responses), STRENGTH_APPROACHES, isStrengthEnabled).slice(0, 5).map(r => r.label);
+    selectedStrengths = rankedApproaches(
+      numericResponses(strengthsData.responses),
+      STRENGTH_APPROACHES,
+      key => subsectionEnabled("naturalStrengths", key),
+    ).slice(0, 5).map(r => r.label);
   }
 
   const scores = {
@@ -72,21 +112,31 @@ export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabl
   if (social?.dominant === "right") { scores.Arms += 1; scores.Voice += 1; }
 
   const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const primaryTendencyKey = sortedScores[0][1] > 0 ? sortedScores[0][0] : "Hands"; // default fallback
+  const primaryTendencyKey = sortedScores[0]?.[1] > 0 ? sortedScores[0][0] : null;
+  const secondaryTendencyKey =
+    primaryTendencyKey &&
+    sortedScores[1]?.[1] > 0 &&
+    sortedScores[0][1] - sortedScores[1][1] <= 1
+      ? sortedScores[1][0]
+      : null;
 
   // 3. GIFTS
-  const spiritualGiftsData = profile.assessmentSections.spiritualGifts && typeof profile.assessmentSections.spiritualGifts === "object" ? profile.assessmentSections.spiritualGifts as Record<string, unknown> : {};
-  const topGifts = Array.isArray(spiritualGiftsData.topGifts) ? spiritualGiftsData.topGifts.filter(g => typeof g === "string") as string[] : [];
+  const spiritualGiftsData = sectionEnabled("spiritualGifts")
+    ? asRecord(profile.assessmentSections.spiritualGifts)
+    : {};
+  const topGifts = Array.isArray(spiritualGiftsData.topGifts)
+    ? spiritualGiftsData.topGifts.filter((gift): gift is string => typeof gift === "string").slice(0, 3)
+    : [];
 
   // 4. THEMES & PASSIONS
   const themes: { name: string; reason: string }[] = [];
-  if (profile.passions && profile.passions.length > 0) {
+  if (sectionEnabled("passionsInterests") && subsectionEnabled("passionsInterests", "passions") && profile.passions.length > 0) {
     themes.push({
       name: "Reaching specific people",
       reason: `You expressed a passion for: ${profile.passions.join(", ")}.`
     });
   }
-  if (profile.interests && profile.interests.length > 0) {
+  if (sectionEnabled("passionsInterests") && subsectionEnabled("passionsInterests", "ministryInterests") && profile.interests.length > 0) {
     themes.push({
       name: "Serving in specific environments",
       reason: `You are drawn toward: ${profile.interests.join(", ")}.`
@@ -122,6 +172,14 @@ export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabl
   } else if (focus?.dominant === "left") {
     patterns.push("Detail oriented");
   }
+  if (social?.dominant === "left" && selectedStrengths.includes("Listening")) {
+    patterns.push("Depth over quick interaction");
+  } else if (social?.dominant === "right" && selectedStrengths.includes("Communication and storytelling")) {
+    patterns.push("Relational communication");
+  }
+  if (selectedStrengths.includes("Practical hands-on work") && selectedStrengths.includes("Follow-through")) {
+    patterns.push("Practical follow-through");
+  }
 
   // Synthesis text
   let synthesisText = "";
@@ -131,7 +189,7 @@ export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabl
   }
 
   // 6. ENVIRONMENTS
-  const environments: { name: string; match: string; reason: string }[] = [];
+  const environments: { name: string; match: "Strong Alignment" | "Worth Exploring" | "Possible Stretch Area"; reason: string }[] = [];
   if (apestResult?.label === "Shepherd" || primaryTendencyKey === "Ears") {
     environments.push({ name: "Discipleship / Care", match: "Strong Alignment", reason: "Aligns with your pastoral orientation and relational strengths." });
   }
@@ -144,33 +202,80 @@ export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabl
   if (primaryTendencyKey === "Backbone" || topGifts.includes("Administration")) {
     environments.push({ name: "Operations / Logistics", match: "Strong Alignment", reason: "Utilizes your organizing and system-building strengths." });
   }
-  if (environments.length === 0) {
-    environments.push({ name: "Hospitality / Welcome", match: "Worth Exploring", reason: "A great place to connect and learn where you fit best." });
+  for (const interest of profile.interests.slice(0, 2)) {
+    if (!environments.some(environment => environment.name.toLowerCase() === interest.toLowerCase())) {
+      environments.push({
+        name: interest,
+        match: "Worth Exploring",
+        reason: "You named this as an area of ministry interest; a conversation could clarify what draws you toward it.",
+      });
+    }
   }
+  if (environments.length === 1 && primaryTendencyKey) {
+    const stretchByTendency: Record<string, string> = {
+      Hands: "Listening / Personal Care",
+      Ears: "Visible Communication",
+      Shoulders: "Leading a Small Initiative",
+      Voice: "Behind-the-Scenes Service",
+      Arms: "Focused Independent Service",
+      Backbone: "Flexible Relational Ministry",
+    };
+    environments.push({
+      name: stretchByTendency[primaryTendencyKey],
+      match: "Possible Stretch Area",
+      reason: "This may use a less-natural approach and could be explored with support, clear expectations, and room to grow.",
+    });
+  }
+  const uniqueEnvironments = environments
+    .filter((environment, index, all) => all.findIndex(item => item.name === environment.name) === index)
+    .slice(0, 5);
 
   // 7. SEASON
-  let season = "";
-  if (profile.servingFrequency || profile.availability?.length) {
-    season = `You indicated you are available ${profile.servingFrequency?.toLowerCase() || "regularly"} ${profile.availability?.length ? "on " + profile.availability.join(", ") : ""}.`;
-  }
+  const seasonParts: string[] = [];
+  if (profile.servingFrequency) seasonParts.push(`a preferred serving rhythm of ${profile.servingFrequency.toLowerCase()}`);
+  if (profile.availability.length) seasonParts.push(`availability on ${profile.availability.join(", ")}`);
+  const familySituation = asText(profile.basicInformation.familySituation);
+  const transportation = asText(profile.basicInformation.transportation);
+  const availabilityDetails = asRecord(profile.availabilityDetails);
+  const availabilityNotes = Object.values(availabilityDetails).map(asText).filter(Boolean).slice(0, 2);
+  if (familySituation) seasonParts.push(`a family context described as ${familySituation}`);
+  if (transportation) seasonParts.push(`transportation noted as ${transportation}`);
+  if (availabilityNotes.length) seasonParts.push(availabilityNotes.join("; "));
+  const season = seasonParts.length
+    ? `Your profile reflects ${seasonParts.join(", ")}. These details are context for discernment, not measures of commitment.`
+    : "";
 
   // 8. CONNECTION
   const conn = profile.churchConnection;
   let connection = "";
   if (conn.attendanceLength) {
     connection = `You have been attending for ${conn.attendanceLength}.`;
-    if (conn.connectionLevel && conn.connectionLevel >= 4) {
-      connection += " You feel highly connected to the church community.";
-    }
+  }
+  if (conn.connectionLevel) {
+    connection += `${connection ? " " : ""}You described your current connection as ${conn.connectionLevel}.`;
+  }
+  if (conn.servedBefore) {
+    connection += `${connection ? " " : ""}You also shared that you have served here before, which may give you helpful knowledge of the church body.`;
+  }
+  const languages = asRecord(profile.basicInformation.languages);
+  const languageEntries = Array.isArray(languages.entries)
+    ? languages.entries.filter(entry => entry && typeof entry === "object").length
+    : Array.isArray(languages.spoken) ? languages.spoken.length : 0;
+  if (languageEntries > 1) {
+    connection += `${connection ? " " : ""}Your experience with multiple languages may help you build bridges across cultures or generations.`;
   }
 
   // 9. QUESTIONS
   const prayerQuestions = [
     "Where have I seen God use my natural strengths to bless others recently?",
     "Does my current season of life leave room for me to serve joyfully, or do I need to establish healthier rhythms first?",
-    `How might God want to use my tendency as an ${apestResult?.label} to build up the church?`
   ];
-  if (topGifts.length) prayerQuestions.push(`How can I continue to develop my gift of ${topGifts[0]}?`);
+  if (apestResult) prayerQuestions.push(`How might God use my ${apestResult.label.toLowerCase()} tendency to build up the church without making it my whole identity?`);
+  if (primaryTendencyKey) prayerQuestions.push(`When has my ${primaryTendencyKey.toLowerCase()} tendency helped someone else flourish, and when has it needed balance?`);
+  if (topGifts.length) prayerQuestions.push(`Where have trusted people affirmed the gift of ${topGifts[0]} in me?`);
+  if (profile.passions.length) prayerQuestions.push(`Why do ${profile.passions.slice(0, 2).join(" and ")} matter deeply to me?`);
+  if (profile.interests.length) prayerQuestions.push(`What could I learn by prayerfully exploring ${profile.interests[0]} with a ministry leader?`);
+  prayerQuestions.push("Who knows me well enough to help me discern a faithful, sustainable next step?");
 
   // 10. NEXT STEP
   const nextStep = {
@@ -180,14 +285,14 @@ export function getMyMinistrySynthesis(profile: MinistryProfile, isStrengthEnabl
 
   return {
     apestResult,
-    ministryTendency: { key: primaryTendencyKey },
+    ministryTendency: primaryTendencyKey ? { key: primaryTendencyKey, secondaryKey: secondaryTendencyKey } : null,
     topGifts,
-    themes,
-    patterns,
-    environments,
+    themes: themes.filter((theme, index, all) => all.findIndex(item => item.name === theme.name) === index).slice(0, 3),
+    patterns: [...new Set(patterns)].slice(0, 5),
+    environments: uniqueEnvironments,
     season,
     connection,
-    prayerQuestions,
+    prayerQuestions: prayerQuestions.slice(0, 7),
     nextStep,
     synthesisText
   };

@@ -3,8 +3,8 @@ name: Ministry assessment language
 description: User-facing naming and presentation rules for the ministry-style assessment.
 ---
 
-Present this assessment as “How you minister” using neutral reflection statements and plain-language ministry tendencies. Do not show the APEST acronym or its five category names in member or pastor-facing copy. The legacy internal data key is retained only for compatibility.
+Present assessment questions as “How you minister” using neutral reflection statements rather than category labels. Completed adult results may explain the five ministry orientations and their Body-of-Christ pictures when that helps interpretation, but must not treat them as rigid identities or limits on calling. The legacy internal data key remains compatibility-only.
 
-**Why:** The user explicitly wants members to respond to lived-experience statements rather than category labels, and does not want APEST terminology in the product experience.
+**Why:** The user wants members to answer lived-experience statements rather than self-selecting labels, while the completed-profile redesign explicitly calls for transparent orientation names and body metaphors in results.
 
-**How to apply:** Keep assessment questions category-neutral, translate legacy results into plain-language tendencies, and use the same wording in detail, print, reporting, and future assessment-related UI.
+**How to apply:** Keep questions category-neutral. In completed adult results, pair orientation names with plain language, evidence-based synthesis, and a clear non-rigid disclaimer. Do not expose the legacy key name as a product label.

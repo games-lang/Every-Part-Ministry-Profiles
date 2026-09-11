@@ -4,13 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Section, 
-  derivedPersonality, 
-  numericResponses, 
-  rankedApproaches, 
-  MINISTRY_APPROACHES,
-  STRENGTH_APPROACHES,
-  MINISTRY_TAGS,
-  Value
 } from "../../pages/profile-detail";
 import { 
   Footprints, Eye, MessageSquare, Heart, BookOpen,
@@ -84,13 +77,18 @@ const spiritualGiftMeanings: Record<string, string> = {
 export function MyMinistryProfile({ 
   profile, 
   isPrinting,
-  isEnabled
+  sectionEnabled,
+  subsectionEnabled,
 }: { 
   profile: MinistryProfile; 
   isPrinting: boolean;
-  isEnabled: (section: string, subsection: string) => boolean;
+  sectionEnabled: (section: string) => boolean;
+  subsectionEnabled: (section: string, subsection: string) => boolean;
 }) {
-  const synthesis = useMemo(() => getMyMinistrySynthesis(profile, (k) => isEnabled("naturalStrengths", k)), [profile, isEnabled]);
+  const synthesis = useMemo(
+    () => getMyMinistrySynthesis(profile, sectionEnabled, subsectionEnabled),
+    [profile, sectionEnabled, subsectionEnabled],
+  );
 
   const {
     apestResult,
@@ -154,6 +152,11 @@ export function MyMinistryProfile({
                 <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">How You Minister</div>
                 <h3 className="text-xl font-serif font-medium">{TENDENCIES[ministryTendency.key]?.name}</h3>
                 <p className="text-sm text-muted-foreground mt-2">{TENDENCIES[ministryTendency.key]?.description}</p>
+                 {ministryTendency.secondaryKey && (
+                   <p className="mt-2 text-xs font-medium text-muted-foreground">
+                     Close secondary tendency: {TENDENCIES[ministryTendency.secondaryKey]?.name}
+                   </p>
+                 )}
               </div>
             </div>
           )}
@@ -190,6 +193,11 @@ export function MyMinistryProfile({
                 <p className="text-xs text-muted-foreground">{APEST_BODY_PARTS[apestResult.secondary]?.description}</p>
               </div>
             )}
+            {!apestResult && (
+              <p className="text-sm text-muted-foreground">
+                No ministry-orientation result was available in this profile’s saved assessment sections.
+              </p>
+            )}
             <div className="mt-5 rounded-lg bg-muted/30 p-3 text-xs text-muted-foreground italic">
               This is a picture of a ministry tendency, not a limit on how God can use you.
             </div>
@@ -207,6 +215,12 @@ export function MyMinistryProfile({
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                 {TENDENCIES[ministryTendency.key]?.explanation}
               </p>
+              {ministryTendency.secondaryKey && (
+                <p className="mb-4 rounded-lg bg-muted/40 p-3 text-sm text-muted-foreground">
+                  Your scores were close to <strong className="text-foreground">{TENDENCIES[ministryTendency.secondaryKey]?.name}</strong>,
+                  suggesting you may draw on both approaches depending on the people and situation.
+                </p>
+              )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Potential Strengths</h4>
@@ -238,6 +252,9 @@ export function MyMinistryProfile({
                   <h4 className="font-medium">{gift}</h4>
                   <p className="text-sm text-muted-foreground mt-1">
                     {spiritualGiftMeanings[gift] || "An identified area of grace and service."}
+                  </p>
+                  <p className="mt-1 text-sm text-foreground/80">
+                    You may use this gift through prayerful service, relationships, and ministry settings where others can affirm its fruit.
                   </p>
                 </div>
               ))}
