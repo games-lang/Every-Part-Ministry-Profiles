@@ -1,0 +1,309 @@
+I want to redesign the completed Ministry Profile results experience in Every Part.
+
+IMPORTANT:
+Do not remove or change the existing assessment questions or stored profile data unless necessary. This task is primarily about how completed Ministry Profile information is interpreted and displayed.
+
+CORE PHILOSOPHY
+
+Every Part is based on the biblical picture of the Church as the Body of Christ.
+
+The goal of the Ministry Profile is NOT simply:
+- to give someone assessment scores
+- to fill volunteer openings
+- to assign someone a job
+- to put someone into a personality box
+
+The goal is to help a person and their ministry leaders prayerfully understand:
+
+“How has God shaped this person, and how might they faithfully live out their part in the Body of Christ?”
+
+Use 1 Corinthians 12 as the theological picture behind the results.
+
+CREATE TWO VIEWS FROM THE SAME PROFILE DATA:
+
+1. MY MINISTRY PROFILE
+A warm, encouraging, individual-facing profile that helps the person understand how God may have shaped them.
+
+2. MINISTRY LEADER VIEW
+A more detailed view for pastors/ministry leaders that helps prepare them for a personal ministry conversation and possible ministry placement.
+
+-----------------------------------
+MY MINISTRY PROFILE
+-----------------------------------
+
+Create the following sections:
+
+1. HEADER
+
+Person’s name
+Profile completion date
+Profile version/year if available
+
+Include:
+
+“Your Part Matters”
+
+And:
+
+“Now you are the body of Christ, and each one of you is a part of it.”
+— 1 Corinthians 12:27
+
+Include a short explanation:
+
+“This profile is not meant to put you in a box or simply tell you where to volunteer. It is designed to help you and your ministry leaders prayerfully understand how God may be shaping you to serve, grow, and help build up the Church.”
+
+2. YOUR MINISTRY SNAPSHOT
+
+Display:
+
+- Primary APEST orientation
+- APEST body-part picture
+- How You Tend to Minister
+- Ministry tendency body-part picture
+- Top spiritual gifts
+- Major passions/themes
+- Overall ministry theme
+
+This should feel highly visual and easy to understand.
+
+3. APEST RESULT
+
+Instead of showing only “Shepherd,” “Teacher,” etc., connect each APEST orientation to a body picture.
+
+Use this mapping:
+
+Apostle = Feet
+Prophet = Eyes
+Evangelist = Mouth
+Shepherd = Heart
+Teacher = Mind
+
+Explain both the APEST result and the metaphor.
+
+Examples:
+
+HEART — SHEPHERD
+“You naturally help the Body stay connected, cared for, and healthy.”
+
+FEET — APOSTLE
+“You naturally help the Body move forward, cross boundaries, and explore new opportunities.”
+
+EYES — PROPHET
+“You naturally help the Body notice what others may miss and see situations through the lens of God’s truth.”
+
+MOUTH — EVANGELIST
+“You naturally help the Body communicate good news and invite others toward Jesus.”
+
+MIND — TEACHER
+“You naturally help the Body understand truth, gain wisdom, and grow in understanding.”
+
+Do not make these rigid identities. Include language such as:
+
+“This is a picture of a ministry tendency, not a limit on how God can use you.”
+
+4. HOW YOU TEND TO MINISTER
+
+Create a second body-based ministry tendency system.
+
+This should describe HOW the person naturally approaches ministry, rather than their APEST calling.
+
+Possible categories should include concepts such as:
+
+Hands — Helper / Doer
+Ears — Listener
+Shoulders — Supporter
+Voice — Communicator
+Arms — Connector / Welcomer
+Backbone — Organizer / Stabilizer
+
+Do NOT simply duplicate APEST.
+
+Use the existing Personality / How You Tend to Operate responses and other appropriate Ministry Profile data to determine this tendency.
+
+Create clear scoring logic rather than randomly assigning a category.
+
+Allow for:
+- Primary tendency
+- Secondary tendency when scores are close
+
+Each result should have:
+- Body picture
+- tendency name
+- one-sentence description
+- fuller explanation
+- possible strengths
+- possible blind spots
+
+5. PUTTING IT TOGETHER
+
+Create a short personalized synthesis combining the APEST result and Ministry Tendency.
+
+Example:
+
+“You have the heart of a Shepherd and often minister through listening and personal presence. You may flourish in environments where people need consistent relationships, encouragement, discipleship, and care.”
+
+Generate this from actual profile data.
+
+Avoid generic AI-sounding statements.
+
+6. YOUR STRONGEST SPIRITUAL GIFTS
+
+Show the top 3 spiritual gifts.
+
+For each:
+- gift name
+- short description
+- how this gift could appear in ministry
+
+Do not treat the gift as a guaranteed calling.
+
+Use language like:
+“You may use this gift through…”
+
+7. WHAT SEEMS TO MATTER TO YOU
+
+Analyze the person’s passions, populations they care about, ministry interests, and open-response answers.
+
+Identify 1–3 important themes.
+
+Example:
+
+“Helping people grow”
+“Reaching people outside the church”
+“Creating welcoming environments”
+“Serving people in practical ways”
+“Developing the next generation”
+
+Explain WHY the system identified these themes by referencing assessment data.
+
+8. YOUR MINISTRY PATTERN
+
+Create 3–5 synthesized observations from the complete profile.
+
+Examples:
+
+People over projects
+Depth over quick interaction
+Building over maintaining
+Behind-the-scenes over public-facing
+Structure over spontaneity
+Starting over sustaining
+Teaching and development
+Cross-cultural connection
+Compassion and care
+
+These should be generated from multiple parts of the profile, not from a single answer.
+
+9. WHERE YOU MIGHT FLOURISH
+
+Recommend ministry ENVIRONMENTS and ministry AREAS rather than assigning a job.
+
+Create:
+
+Strong Alignment
+Worth Exploring
+Possible Stretch Area
+
+For each recommendation, explain the reason.
+
+Example:
+
+Discipleship / Mentoring
+Strong Alignment
+“Shepherding + Teaching + Mercy + a strong desire to see others grow.”
+
+Never say:
+“You should serve here.”
+
+Instead say:
+“This may be worth prayerfully exploring.”
+
+10. YOUR CURRENT SEASON
+
+Use:
+- availability
+- family situation
+- work schedule
+- transportation
+- frequency preferences
+- current commitments
+- any relevant open-response information
+
+Emphasize sustainability.
+
+Include this concept:
+
+“A healthy ministry fit considers not only what you could do, but what you can faithfully and sustainably carry in your current season.”
+
+11. YOUR CONNECTION TO THE BODY
+
+Use service/congregation connection scores, languages, cross-cultural comfort, experience, and other relevant data.
+
+Identify whether the person may have:
+- deep connection in one congregation
+- cross-congregational connections
+- multicultural potential
+- generational connections
+- bridging potential
+
+Do not overstate conclusions.
+
+12. QUESTIONS TO PRAY ABOUT TOGETHER
+
+Generate approximately 5–7 personalized questions for the individual and ministry leader to discuss.
+
+Questions should emerge from the profile rather than being identical for everyone.
+
+13. POSSIBLE NEXT STEP
+
+Recommend ONE simple next step.
+
+Examples:
+- conversation with a ministry leader
+- explore a ministry team
+- shadow a ministry
+- meet with a team leader
+- try a short-term opportunity
+- develop a gift
+- intentionally rest before adding responsibility
+
+Never automatically enroll someone in ministry.
+
+14. YOUR PART IN ONE PICTURE
+
+Create a final visual summary card:
+
+APEST Body Part
+APEST
+Ministry Tendency Body Part
+Ministry Tendency
+Top 3 Gifts
+Primary Ministry Theme
+Potential Ministry Areas
+Current Season Consideration
+
+This should be easily printable/shareable.
+
+-----------------------------------
+DESIGN
+-----------------------------------
+
+Keep the Every Part visual identity.
+
+Use body-part imagery/icons subtly and respectfully.
+
+The page should feel:
+- pastoral
+- thoughtful
+- warm
+- modern
+- uncluttered
+- encouraging
+
+Avoid making it look like a corporate personality test.
+
+Make the page mobile-friendly and printable.
+
+Do not use overly playful anatomical graphics.
+
+Before implementing, inspect the existing Ministry Profile database fields and reuse existing data wherever possible.
