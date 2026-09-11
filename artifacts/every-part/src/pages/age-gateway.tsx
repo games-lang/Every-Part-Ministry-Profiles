@@ -236,9 +236,9 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
             </div>
             
             <div className="space-y-2">
-              {overrideLink("discover", "Discover (Age 6-8)", 8)}
-              {overrideLink("explore", "Explore (Age 9-12)", 12)}
-              {overrideLink("develop", "Develop (Age 13-17)", 16)}
+               {overrideLink("discover", "Discover (Ages 6–8)", 8)}
+               {overrideLink("explore", "Explore (Ages 9–12)", 12)}
+               {overrideLink("develop", "Develop (Ages 13–17)", 16)}
               {overrideLink("adult", "Adult (Age 18+)", 18)}
             </div>
           </div>

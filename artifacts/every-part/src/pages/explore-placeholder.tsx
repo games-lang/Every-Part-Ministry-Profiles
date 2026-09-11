@@ -13,7 +13,7 @@ export default function ExplorePlaceholder({ params }: { params: { slug: string 
           </div>
           <h1 className="text-2xl font-serif font-medium mb-3">Explore Profile</h1>
           <p className="text-muted-foreground mb-8 leading-relaxed">
-            The Explore pathway for ages 9-12 is currently under development. 
+            The Explore pathway for ages 9–12 is currently under development. 
             Check back later as we continue to expand Every Part.
           </p>
           <Button asChild variant="outline" className="w-full">

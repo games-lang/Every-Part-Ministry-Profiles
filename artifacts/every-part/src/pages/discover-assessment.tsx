@@ -503,7 +503,7 @@ export default function DiscoverAssessment({
             {youthProfile?.profileTitle || "Discover Profile"}
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            {youthProfile?.profileDescription || "For ages 6-8. This is a fun way to explore how God made you!"}
+            {youthProfile?.profileDescription || "For ages 6–8. This is a fun way to explore how God made you!"}
             Grown-ups, help your child answer these questions. There are no wrong answers.
           </p>
           <div className="bg-primary/5 rounded-2xl p-6 text-left border border-primary/10 max-w-xl mx-auto mt-6">

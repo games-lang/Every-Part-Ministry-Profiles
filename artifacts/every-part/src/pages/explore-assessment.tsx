@@ -189,7 +189,7 @@ export default function ExploreAssessment({
           <CardContent className="p-8">
             <h2 className="text-xl font-serif font-medium mb-3">Age Required</h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              This assessment is designed for ages 9-12. Please restart to verify your age.
+              This assessment is designed for ages 9–12. Please restart to verify your age.
             </p>
             <Button asChild variant="default" className="w-full">
               <Link href={`/profile/${slug}`}>

@@ -38,10 +38,10 @@ export default function DevelopGate({
         <CardContent className="p-8 space-y-4">
           <h2 className="text-xl font-serif font-medium">Open Develop</h2>
           <p className="text-muted-foreground leading-relaxed">
-            A parent or coordinator must sign in before a teen begins Develop.
+            A parent or coordinator must sign in before opening Develop.
           </p>
           <Button asChild className="w-full">
-            <Link href={`/sign-in?redirect_url=${next}`}>Sign in</Link>
+            <Link href={`/sign-in?redirect_url=${next}`}>Sign in as a parent or coordinator</Link>
           </Button>
           <Button asChild variant="outline" className="w-full">
             <Link href={`/profile/${params.slug}`}>Return to start</Link>

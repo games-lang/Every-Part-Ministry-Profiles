@@ -85,8 +85,8 @@ export default function ExploreGate({
           <h2 className="text-xl font-serif font-medium">Open Explore</h2>
           <p className="text-muted-foreground leading-relaxed">
             {hasHallwayCode
-              ? "Enter the code shared by your church, or sign in as a parent or coordinator."
-              : "Sign in as a parent or coordinator to open Explore."}
+              ? "Enter the code shared by your church, or have a parent or coordinator sign in."
+              : "A parent or coordinator must sign in before opening Explore."}
           </p>
           {hasHallwayCode && (
             <>
@@ -123,7 +123,7 @@ export default function ExploreGate({
             </>
           )}
           <Button asChild className="w-full">
-            <Link href={`/sign-in?redirect_url=${next}`}>Sign in</Link>
+            <Link href={`/sign-in?redirect_url=${next}`}>Sign in as a parent or coordinator</Link>
           </Button>
           <Button asChild variant="outline" className="w-full">
             <Link href={`/profile/${params.slug}`}>Return to start</Link>
