@@ -731,6 +731,18 @@
   .page-break {
     page-break-before: always;
   }
+  .profile-infographic {
+    font-size: 11pt;
+  }
+  .profile-infographic p,
+  .profile-infographic li {
+    font-size: 9pt !important;
+    line-height: 1.35 !important;
+  }
+  .profile-infographic > div:nth-child(2) > div > div {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
 
 /* Ministry journey: a quiet, editorial rhythm for stories that unfold over time. */

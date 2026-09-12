@@ -10,6 +10,7 @@ import {
   Hand, Ear, Shield, Mic, Users, Layers, Star
 } from "lucide-react";
 import { getMyMinistrySynthesis } from "../../lib/my-profile-derivation";
+import { ProfileInfographic } from "./infographic/profile-infographic";
 
 const APEST_BODY_PARTS: Record<string, { part: string; description: string; icon: any }> = {
   Apostle: { part: "Feet", description: "You naturally help the Body move forward, cross boundaries, and explore new opportunities.", icon: Footprints },
@@ -29,7 +30,7 @@ const TENDENCIES: Record<string, { name: string; description: string; explanatio
     icon: Hand
   },
   Ears: {
-    name: "Listener",
+    name: "The Listener",
     description: "You tend to minister like the Ears of the Body.",
     explanation: "You tend to slow down, listen, understand, and make space for people.",
     strengths: ["Patient", "Relational", "Empathetic", "Attentive", "Good one-on-one"],
@@ -37,7 +38,7 @@ const TENDENCIES: Record<string, { name: string; description: string; explanatio
     icon: Ear
   },
   Shoulders: {
-    name: "Supporter",
+    name: "The Supporter",
     description: "You tend to minister like the Shoulders of the Body.",
     explanation: "You naturally help carry responsibility and strengthen other people.",
     strengths: ["Loyal", "Steady", "Supportive", "Dependable", "Team-oriented"],
@@ -45,7 +46,7 @@ const TENDENCIES: Record<string, { name: string; description: string; explanatio
     icon: Shield
   },
   Voice: {
-    name: "Communicator",
+    name: "The Communicator",
     description: "You tend to minister like the Voice of the Body.",
     explanation: "You naturally communicate, encourage, explain, inspire, or influence.",
     strengths: ["Verbal", "Encouraging", "Expressive", "Comfortable communicating", "Able to rally others"],
@@ -106,11 +107,27 @@ export function MyMinistryProfile({
   const ApestIcon = apestResult ? APEST_BODY_PARTS[apestResult.label]?.icon || Star : Star;
   const TendencyIcon = ministryTendency ? TENDENCIES[ministryTendency.key]?.icon || Star : Star;
 
+  const infographic = (
+    <ProfileInfographic
+      profile={profile}
+      synthesis={synthesis}
+      bodyParts={APEST_BODY_PARTS}
+      tendencies={TENDENCIES}
+      spiritualGiftMeanings={spiritualGiftMeanings}
+      sectionEnabled={sectionEnabled}
+      subsectionEnabled={subsectionEnabled}
+    />
+  );
+
+  if (isPrinting) {
+    return infographic;
+  }
+
   return (
     <div className="space-y-12 pb-16">
       
       {/* 1. HEADER EXPLANATION */}
-      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8 relative overflow-hidden">
+      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8 relative overflow-hidden print:hidden">
         <div className="absolute right-0 top-0 opacity-10 text-primary -mt-8 -mr-8">
           <Heart size={180} />
         </div>
@@ -127,7 +144,7 @@ export function MyMinistryProfile({
       </section>
 
       {/* 2. YOUR MINISTRY SNAPSHOT */}
-      <section>
+      <section className="print:hidden">
         <h2 className="font-serif text-3xl font-medium tracking-[-.025em] mb-6">Your Ministry Snapshot</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {apestResult && (
@@ -136,7 +153,7 @@ export function MyMinistryProfile({
                 <ApestIcon size={32} />
               </div>
               <div>
-                <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">Body Part: {APEST_BODY_PARTS[apestResult.label]?.part}</div>
+                <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">Like the: {APEST_BODY_PARTS[apestResult.label]?.part}</div>
                 <h3 className="text-xl font-serif font-medium">{apestResult.label}</h3>
                 <p className="text-sm text-muted-foreground mt-2">{APEST_BODY_PARTS[apestResult.label]?.description}</p>
               </div>
@@ -173,7 +190,7 @@ export function MyMinistryProfile({
         )}
       </section>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-8 print:hidden">
         
         {/* 3. APEST RESULT (Detailed) */}
         {apestResult ? (
@@ -259,7 +276,7 @@ export function MyMinistryProfile({
 
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-8 print:hidden">
         {/* 6. YOUR STRONGEST SPIRITUAL GIFTS */}
         {topGifts.length > 0 && (
           <Section title="Spiritual Gifts">
@@ -300,7 +317,7 @@ export function MyMinistryProfile({
 
       {/* 8. YOUR MINISTRY PATTERN */}
       {patterns.length > 0 && (
-        <Section title="Your Ministry Pattern">
+        <Section title="Your Ministry Pattern" className="print:hidden">
           <p className="text-sm text-muted-foreground mb-5">Looking across your whole profile, these patterns emerge in how you approach ministry:</p>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
             {patterns.map(pattern => (
@@ -314,7 +331,7 @@ export function MyMinistryProfile({
 
       {/* 9. WHERE YOU MIGHT FLOURISH */}
       {environments.length > 0 && (
-        <Section title="Where You Might Flourish">
+        <Section title="Where You Might Flourish" className="print:hidden">
            <p className="text-sm text-muted-foreground mb-5">These are not job assignments, but environments that align with your shape. They may be worth prayerfully exploring.</p>
            <div className="space-y-4">
             {environments.map(env => (
@@ -325,7 +342,7 @@ export function MyMinistryProfile({
                   </h4>
                   <p className="text-sm text-muted-foreground mt-1">{env.reason}</p>
                 </div>
-                <Badge variant={env.match === "Strong Alignment" ? "default" : env.match === "Worth Exploring" ? "secondary" : "outline"} className="shrink-0 whitespace-nowrap">
+                <Badge variant="outline" className="shrink-0 whitespace-nowrap">
                   {env.match}
                 </Badge>
               </div>
@@ -334,7 +351,7 @@ export function MyMinistryProfile({
         </Section>
       )}
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-8 print:hidden">
         {/* 10. YOUR CURRENT SEASON */}
         {season && (
           <Section title="Your Current Season">
@@ -353,7 +370,7 @@ export function MyMinistryProfile({
         )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-8 print:hidden">
         {/* 12. QUESTIONS TO PRAY ABOUT */}
         {prayerQuestions.length > 0 && (
           <Section title="Questions to Pray About">
@@ -381,68 +398,10 @@ export function MyMinistryProfile({
         )}
       </div>
 
-      {/* 14. YOUR PART IN ONE PICTURE */}
+      {/* 14. INFOGRAPHIC (SCREEN & PRINT) */}
       <section className="print:mt-12 break-inside-avoid">
-        <h2 className="font-serif text-2xl font-medium tracking-[-.025em] mb-4 print:hidden">Your Part in One Picture</h2>
-        <Card className="border-border/80 shadow-md bg-card overflow-hidden">
-          <div className="bg-primary p-6 text-primary-foreground flex justify-between items-center">
-            <div>
-              <h2 className="font-serif text-2xl font-medium">{profile.memberName}</h2>
-              <p className="text-primary-foreground/80 text-sm mt-1">Ministry Profile Summary</p>
-            </div>
-            <Heart className="h-8 w-8 text-primary-foreground/30" />
-          </div>
-          <CardContent className="p-6 md:p-8">
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {apestResult && (
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-2">
-                    <ApestIcon size={14}/> {APEST_BODY_PARTS[apestResult.label]?.part}
-                  </div>
-                  <div className="font-serif text-xl">{apestResult.label}</div>
-                </div>
-              )}
-              {ministryTendency && (
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-2">
-                    <TendencyIcon size={14}/> How You Minister
-                  </div>
-                  <div className="font-serif text-xl">{TENDENCIES[ministryTendency.key]?.name}</div>
-                </div>
-              )}
-              {topGifts.length > 0 && (
-                <div>
-                  <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Top Gifts</div>
-                  <div className="space-y-1">
-                    {topGifts.slice(0, 3).map(g => <div key={g} className="text-sm font-medium">{g}</div>)}
-                  </div>
-                </div>
-              )}
-              {themes.length > 0 && (
-                <div className="sm:col-span-2 md:col-span-3 border-t border-border/40 pt-6 mt-2">
-                  <div className="grid md:grid-cols-3 gap-8">
-                    <div>
-                      <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Primary Themes</div>
-                      <div className="space-y-1">
-                        {themes.map(t => <div key={t.name} className="text-sm font-medium">{t.name}</div>)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Potential Areas</div>
-                      <div className="space-y-1">
-                        {environments.slice(0, 3).map(e => <div key={e.name} className="text-sm font-medium">{e.name}</div>)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Current Season</div>
-                      <div className="text-sm text-muted-foreground line-clamp-3">{season || "Available to serve"}</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <h2 className="font-serif text-3xl font-medium tracking-[-.025em] mb-6 print:hidden">Your Part in One Picture</h2>
+        {infographic}
       </section>
       
     </div>

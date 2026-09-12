@@ -463,6 +463,17 @@ function AdultProfileView({
 }) {
   const [view, setView] = useState<"individual" | "leader">("individual");
 
+  if (isPrinting) {
+    return (
+      <MyMinistryProfile
+        profile={profile}
+        isPrinting
+        sectionEnabled={sectionEnabled}
+        subsectionEnabled={subsectionEnabled}
+      />
+    );
+  }
+
   return (
     <>
       {!isPrinting && (
@@ -527,7 +538,7 @@ export default function ProfileDetail() {
   const subsectionEnabled=(section: string, subsection: string)=>configuration.subsections[`${section}.${subsection}` as keyof typeof configuration.subsections];
   return <div className="container mx-auto max-w-5xl space-y-8 px-4 py-8 print:max-w-none print:p-0">
    {!isPrinting&&<div className="no-print flex justify-between"><Button variant="ghost" asChild><Link href="/profiles"><ArrowLeft className="mr-2 h-4 w-4"/>Back</Link></Button><Button variant="outline" onClick={printProfile}><Printer className="mr-2 h-4 w-4"/>Print profile</Button></div>}
-    <header className="overflow-hidden rounded-[1.5rem] border border-primary/15 bg-card p-7 shadow-sm md:p-10">
+     <header className={`overflow-hidden rounded-[1.5rem] border border-primary/15 bg-card p-7 shadow-sm md:p-10 ${profile.profileType === "adult" ? "print:hidden" : ""}`}>
       <div className="brand-rule -mx-7 -mt-7 mb-7 h-1 md:-mx-10 md:-mt-10" aria-hidden="true" />
        <ChurchProfileBranding branding={profile.branding} className="mb-7" />
      {profile.profileType !== 'adult' && (
