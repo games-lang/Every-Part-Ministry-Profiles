@@ -1,16 +1,16 @@
 import { useMemo } from "react";
 import type { MinistryProfile } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Section, 
-} from "../../pages/profile-detail";
+import { Value, Languages, ObjectValues } from "../../pages/profile-detail";
 import { 
   Footprints, Eye, MessageSquare, Heart, BookOpen,
-  Hand, Ear, Shield, Mic, Users, Layers, Star
+  Hand, Ear, Shield, Mic, Users, Layers, Star,
+  Compass, Lightbulb, MapPin
 } from "lucide-react";
 import { getMyMinistrySynthesis } from "../../lib/my-profile-derivation";
 import { ProfileInfographic } from "./infographic/profile-infographic";
+import { PortraitChapter } from "./portrait-chapter";
+import { buildMinistryPortrait } from "../../lib/ministry-portrait";
 
 const APEST_BODY_PARTS: Record<string, { part: string; description: string; icon: any }> = {
   Apostle: { part: "Feet", description: "You naturally help the Body move forward, cross boundaries, and explore new opportunities.", icon: Footprints },
@@ -21,54 +21,12 @@ const APEST_BODY_PARTS: Record<string, { part: string; description: string; icon
 };
 
 const TENDENCIES: Record<string, { name: string; description: string; explanation: string; strengths: string[]; blindSpots: string[]; icon: any }> = {
-  Hands: {
-    name: "The Doer",
-    description: "You tend to minister like the Hands of the Body.",
-    explanation: "You notice what needs to be done and tend to jump in.",
-    strengths: ["Practical", "Helpful", "Dependable", "Action-oriented", "Service-minded"],
-    blindSpots: ["May begin doing before understanding the deeper need or may carry too much personally."],
-    icon: Hand
-  },
-  Ears: {
-    name: "The Listener",
-    description: "You tend to minister like the Ears of the Body.",
-    explanation: "You tend to slow down, listen, understand, and make space for people.",
-    strengths: ["Patient", "Relational", "Empathetic", "Attentive", "Good one-on-one"],
-    blindSpots: ["May hesitate to speak or act when action is needed."],
-    icon: Ear
-  },
-  Shoulders: {
-    name: "The Supporter",
-    description: "You tend to minister like the Shoulders of the Body.",
-    explanation: "You naturally help carry responsibility and strengthen other people.",
-    strengths: ["Loyal", "Steady", "Supportive", "Dependable", "Team-oriented"],
-    blindSpots: ["May carry responsibilities that should belong to someone else."],
-    icon: Shield
-  },
-  Voice: {
-    name: "The Communicator",
-    description: "You tend to minister like the Voice of the Body.",
-    explanation: "You naturally communicate, encourage, explain, inspire, or influence.",
-    strengths: ["Verbal", "Encouraging", "Expressive", "Comfortable communicating", "Able to rally others"],
-    blindSpots: ["May speak before listening enough."],
-    icon: Mic
-  },
-  Arms: {
-    name: "The Connector",
-    description: "You tend to minister like the Arms of the Body.",
-    explanation: "You tend to bring people together and help people feel welcomed and connected.",
-    strengths: ["Hospitality", "Relationship-building", "Inclusion", "Networking", "Team connection"],
-    blindSpots: ["May prioritize harmony or connection when a difficult conversation is necessary."],
-    icon: Users
-  },
-  Backbone: {
-    name: "The Organizer",
-    description: "You tend to minister like the Backbone of the Body.",
-    explanation: "You naturally bring structure, order, planning, and stability.",
-    strengths: ["Administration", "Planning", "Follow-through", "Organization", "Systems thinking"],
-    blindSpots: ["May become frustrated with ambiguity, spontaneity, or people who work differently."],
-    icon: Layers
-  }
+  Hands: { name: "The Doer", description: "You tend to minister like the Hands of the Body.", explanation: "You notice what needs to be done and tend to jump in.", strengths: ["Practical", "Helpful", "Dependable", "Action-oriented", "Service-minded"], blindSpots: ["May begin doing before understanding the deeper need or may carry too much personally."], icon: Hand },
+  Ears: { name: "The Listener", description: "You tend to minister like the Ears of the Body.", explanation: "You tend to slow down, listen, understand, and make space for people.", strengths: ["Patient", "Relational", "Empathetic", "Attentive", "Good one-on-one"], blindSpots: ["May hesitate to speak or act when action is needed."], icon: Ear },
+  Shoulders: { name: "The Supporter", description: "You tend to minister like the Shoulders of the Body.", explanation: "You naturally help carry responsibility and strengthen other people.", strengths: ["Loyal", "Steady", "Supportive", "Dependable", "Team-oriented"], blindSpots: ["May carry responsibilities that should belong to someone else."], icon: Shield },
+  Voice: { name: "The Communicator", description: "You tend to minister like the Voice of the Body.", explanation: "You naturally communicate, encourage, explain, inspire, or influence.", strengths: ["Verbal", "Encouraging", "Expressive", "Comfortable communicating", "Able to rally others"], blindSpots: ["May speak before listening enough."], icon: Mic },
+  Arms: { name: "The Connector", description: "You tend to minister like the Arms of the Body.", explanation: "You tend to bring people together and help people feel welcomed and connected.", strengths: ["Hospitality", "Relationship-building", "Inclusion", "Networking", "Team connection"], blindSpots: ["May prioritize harmony or connection when a difficult conversation is necessary."], icon: Users },
+  Backbone: { name: "The Organizer", description: "You tend to minister like the Backbone of the Body.", explanation: "You naturally bring structure, order, planning, and stability.", strengths: ["Administration", "Planning", "Follow-through", "Organization", "Systems thinking"], blindSpots: ["May become frustrated with ambiguity, spontaneity, or people who work differently."], icon: Layers }
 };
 
 const spiritualGiftMeanings: Record<string, string> = {
@@ -96,7 +54,6 @@ export function MyMinistryProfile({
     ministryTendency,
     topGifts,
     themes,
-    patterns,
     environments,
     season,
     connection,
@@ -104,34 +61,52 @@ export function MyMinistryProfile({
     nextStep
   } = synthesis;
 
+  const skills = profile.skills;
+  const skillDetails = skills.details && typeof skills.details === "object" && !Array.isArray(skills.details) ? skills.details as Record<string, unknown> : null;
+  const hasConversationSkills = Boolean(skillDetails && ("context" in skillDetails || "training" in skillDetails || "enjoys" in skillDetails));
+  const portrait = buildMinistryPortrait(
+    profile,
+    synthesis,
+    sectionEnabled,
+    subsectionEnabled,
+    "participant",
+  );
+  const spiritualHealth = sectionEnabled("spiritualHealth")
+    ? Object.fromEntries(
+        Object.entries(
+          profile.assessmentSections.spiritualHealth &&
+            typeof profile.assessmentSections.spiritualHealth === "object"
+            ? profile.assessmentSections.spiritualHealth
+            : {},
+        ).filter(([key]) => subsectionEnabled("spiritualHealth", key)),
+      )
+    : {};
+  const hasSpiritualHealth = Object.keys(spiritualHealth).length > 0;
+
   const ApestIcon = apestResult ? APEST_BODY_PARTS[apestResult.label]?.icon || Star : Star;
   const TendencyIcon = ministryTendency ? TENDENCIES[ministryTendency.key]?.icon || Star : Star;
 
-  const infographic = (
-    <ProfileInfographic
-      profile={profile}
-      synthesis={synthesis}
-      bodyParts={APEST_BODY_PARTS}
-      tendencies={TENDENCIES}
-      spiritualGiftMeanings={spiritualGiftMeanings}
-      sectionEnabled={sectionEnabled}
-      subsectionEnabled={subsectionEnabled}
-    />
-  );
-
   if (isPrinting) {
-    return infographic;
+    return (
+      <ProfileInfographic
+        profile={profile}
+        synthesis={synthesis}
+        bodyParts={APEST_BODY_PARTS}
+        tendencies={TENDENCIES}
+        spiritualGiftMeanings={spiritualGiftMeanings}
+        sectionEnabled={sectionEnabled}
+        subsectionEnabled={subsectionEnabled}
+      />
+    );
   }
 
   return (
-    <div className="space-y-12 pb-16">
-      
-      {/* 1. HEADER EXPLANATION */}
-      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8 relative overflow-hidden print:hidden">
-        <div className="absolute right-0 top-0 opacity-10 text-primary -mt-8 -mr-8">
+    <div className="max-w-3xl mx-auto pb-16 print:hidden">
+      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8 relative overflow-hidden mb-12">
+        <div className="absolute right-0 top-0 opacity-10 text-primary -mt-8 -mr-8 pointer-events-none">
           <Heart size={180} />
         </div>
-        <div className="relative z-10 max-w-3xl">
+        <div className="relative z-10">
           <h2 className="text-xl md:text-2xl font-serif text-primary font-medium tracking-tight mb-2">Your Part Matters</h2>
           <blockquote className="text-lg italic text-foreground mb-4 border-l-2 border-primary/30 pl-4 py-1">
             "Now you are the body of Christ, and each one of you is a part of it." <br />
@@ -143,267 +118,260 @@ export function MyMinistryProfile({
         </div>
       </section>
 
-      {/* 2. YOUR MINISTRY SNAPSHOT */}
-      <section className="print:hidden">
-        <h2 className="font-serif text-3xl font-medium tracking-[-.025em] mb-6">Your Ministry Snapshot</h2>
-        <div className="grid md:grid-cols-2 gap-4">
-          {apestResult && (
-            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex items-start gap-4">
-              <div className="flex-none p-4 rounded-full bg-primary/10 text-primary">
-                <ApestIcon size={32} />
-              </div>
-              <div>
-                <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">Like the: {APEST_BODY_PARTS[apestResult.label]?.part}</div>
-                <h3 className="text-xl font-serif font-medium">{apestResult.label}</h3>
-                <p className="text-sm text-muted-foreground mt-2">{APEST_BODY_PARTS[apestResult.label]?.description}</p>
-              </div>
-            </div>
-          )}
-          
-          {ministryTendency && (
-            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm flex items-start gap-4">
-              <div className="flex-none p-4 rounded-full bg-accent/10 text-accent">
-                <TendencyIcon size={32} />
-              </div>
-              <div>
-                 <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-1">{ministryTendency.key}</div>
-                <h3 className="text-xl font-serif font-medium">{TENDENCIES[ministryTendency.key]?.name}</h3>
-                <p className="text-sm text-muted-foreground mt-2">{TENDENCIES[ministryTendency.key]?.description}</p>
-                 {ministryTendency.secondaryKey && (
-                   <p className="mt-2 text-xs font-medium text-muted-foreground">
-                     Secondary tendency: {ministryTendency.secondaryKey} — {TENDENCIES[ministryTendency.secondaryKey]?.name}
-                   </p>
-                 )}
-              </div>
-            </div>
-          )}
-        </div>
-        
-        {/* 5. PUTTING IT TOGETHER */}
-        {(apestResult || ministryTendency) && (
-          <div className="mt-4 rounded-2xl bg-secondary/15 p-6 border border-secondary/30">
-            <h3 className="font-medium mb-2 text-foreground">Putting It Together</h3>
-            <p className="text-foreground/80 leading-relaxed">
-              {synthesis.synthesisText}
-            </p>
-          </div>
-        )}
-      </section>
-
-      <div className="grid md:grid-cols-2 gap-8 print:hidden">
-        
-        {/* 3. APEST RESULT (Detailed) */}
-        {apestResult ? (
-          <Section title="Your Ministry Orientation">
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <ApestIcon size={20} className="text-primary" />
-                <h3 className="font-medium text-lg">{apestResult.label}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+      <div className="space-y-0">
+        {apestResult && (
+        <PortraitChapter number={1} title="Your Part in the Body" icon={ApestIcon}>
+          {apestResult ? (
+            <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Like the {APEST_BODY_PARTS[apestResult.label]?.part}</div>
+              <h3 className="text-2xl font-serif font-medium mb-3">{apestResult.label}</h3>
+              <p className="text-muted-foreground leading-relaxed text-lg">
                 {APEST_BODY_PARTS[apestResult.label]?.description}
               </p>
-            </div>
-            {apestResult.secondary && (
-              <div className="mt-4 pt-4 border-t border-border/40">
-                <h4 className="text-sm font-medium mb-1">Secondary: {apestResult.secondary}</h4>
-                <p className="text-xs text-muted-foreground">{APEST_BODY_PARTS[apestResult.secondary]?.description}</p>
+              {apestResult.secondary && (
+                <div className="mt-6 pt-5 border-t border-border/40">
+                  <h4 className="text-sm font-medium mb-1 text-foreground">Secondary Orientation: {apestResult.secondary}</h4>
+                  <p className="text-sm text-muted-foreground">{APEST_BODY_PARTS[apestResult.secondary]?.description}</p>
+                </div>
+              )}
+              <div className="mt-6 rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground italic border border-border/50">
+                This is a picture of a ministry orientation, not a limit on how God can use you.
               </div>
-            )}
-            <div className="mt-5 rounded-lg bg-muted/30 p-3 text-xs text-muted-foreground italic">
-              This is a picture of a ministry tendency, not a limit on how God can use you.
             </div>
-          </Section>
-        ) : (
-          <Section title="Your Ministry Orientation">
-            <p className="text-sm text-muted-foreground">
+          ) : (
+            <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
               No ministry-orientation result was available in this profile’s saved assessment sections.
-            </p>
-          </Section>
+            </div>
+          )}
+        </PortraitChapter>
         )}
 
-        {/* 4. HOW YOU TEND TO MINISTER (Detailed) */}
         {ministryTendency && (
-          <Section title="How You Tend to Minister">
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TendencyIcon size={20} className="text-accent" />
-                <h3 className="font-medium text-lg">{TENDENCIES[ministryTendency.key]?.name}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+        <PortraitChapter number={2} title="How You Tend to Minister" icon={TendencyIcon}>
+          {ministryTendency ? (
+            <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+              <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Like the {ministryTendency.key}</div>
+              <h3 className="text-2xl font-serif font-medium mb-3">{TENDENCIES[ministryTendency.key]?.name}</h3>
+              <p className="text-muted-foreground leading-relaxed text-lg mb-6">
                 {TENDENCIES[ministryTendency.key]?.explanation}
               </p>
               {ministryTendency.secondaryKey && (
-                <p className="mb-4 rounded-lg bg-muted/40 p-3 text-sm text-muted-foreground">
-                  Your scores were close to <strong className="text-foreground">{TENDENCIES[ministryTendency.secondaryKey]?.name}</strong>,
-                  suggesting you may draw on both approaches depending on the people and situation.
-                </p>
+                <div className="mb-6 rounded-xl bg-accent/5 border border-accent/10 p-4 text-sm text-foreground/80">
+                  Your scores were close to <strong className="font-medium text-accent-foreground">{TENDENCIES[ministryTendency.secondaryKey]?.name}</strong>, suggesting you may draw on both approaches depending on the people and situation.
+                </div>
               )}
-              <div className="mb-4 rounded-lg border border-border/50 bg-background/60 p-3 text-sm">
-                <div className="font-medium">
-                  Primary tendency: {ministryTendency.key} — {TENDENCIES[ministryTendency.key]?.name}
-                </div>
-                {ministryTendency.secondaryKey && (
-                  <div className="mt-1 font-medium">
-                    Secondary tendency: {ministryTendency.secondaryKey} — {TENDENCIES[ministryTendency.secondaryKey]?.name}
-                  </div>
-                )}
-                <div className="mt-2 text-xs text-muted-foreground">
-                  Score pattern: {ministryTendency.scoring.confidenceLevel}. Determined primarily from How You Tend to Operate,
-                  with enabled strengths used only as supporting evidence.
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+
+              <div className="grid md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-border/40">
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Potential Strengths</h4>
-                  <ul className="text-sm space-y-1">
-                    {TENDENCIES[ministryTendency.key]?.strengths.map(s => <li key={s} className="flex gap-2"><span className="text-primary/60">•</span>{s}</li>)}
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Things to Watch</h4>
-                  <ul className="text-sm space-y-1 text-muted-foreground">
-                    {TENDENCIES[ministryTendency.key]?.blindSpots.map(s => <li key={s} className="flex gap-2"><span className="text-destructive/40">•</span>{s}</li>)}
-                  </ul>
-                </div>
-              </div>
-              <p className="mt-5 rounded-lg bg-muted/30 p-3 text-xs italic text-muted-foreground">
-                This picture describes a natural ministry tendency, not a fixed identity. God may call us to serve beyond what comes most naturally.
-              </p>
-            </div>
-          </Section>
-        )}
-
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8 print:hidden">
-        {/* 6. YOUR STRONGEST SPIRITUAL GIFTS */}
-        {topGifts.length > 0 && (
-          <Section title="Spiritual Gifts">
-            <p className="text-sm text-muted-foreground mb-5">These are areas you identified as being strong or prominent in your life.</p>
-            <div className="space-y-4">
-              {topGifts.map(gift => (
-                <div key={gift} className="border-l-2 border-primary/30 pl-4 py-1">
-                  <h4 className="font-medium">{gift}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {spiritualGiftMeanings[gift] || "An identified area of grace and service."}
-                  </p>
-                  <p className="mt-1 text-sm text-foreground/80">
-                    You may use this gift through prayerful service, relationships, and ministry settings where others can affirm its fruit.
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-lg bg-muted/30 p-3 text-xs text-muted-foreground italic">
-              Spiritual gifts are given by God for the common good. You may use these gifts through many different environments or relationships.
-            </div>
-          </Section>
-        )}
-
-        {/* 7. WHAT SEEMS TO MATTER TO YOU */}
-        {themes.length > 0 && (
-          <Section title="What Matters To You">
-             <div className="space-y-4">
-              {themes.map(theme => (
-                <div key={theme.name}>
-                  <Badge variant="secondary" className="mb-2">{theme.name}</Badge>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{theme.reason}</p>
-                </div>
-              ))}
-            </div>
-          </Section>
-        )}
-      </div>
-
-      {/* 8. YOUR MINISTRY PATTERN */}
-      {patterns.length > 0 && (
-        <Section title="Your Ministry Pattern" className="print:hidden">
-          <p className="text-sm text-muted-foreground mb-5">Looking across your whole profile, these patterns emerge in how you approach ministry:</p>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {patterns.map(pattern => (
-              <div key={pattern} className="rounded-xl bg-card border border-border/60 p-4 shadow-sm text-center">
-                <span className="font-medium text-foreground">{pattern}</span>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* 9. WHERE YOU MIGHT FLOURISH */}
-      {environments.length > 0 && (
-        <Section title="Where You Might Flourish" className="print:hidden">
-           <p className="text-sm text-muted-foreground mb-5">These are not job assignments, but environments that align with your shape. They may be worth prayerfully exploring.</p>
-           <div className="space-y-4">
-            {environments.map(env => (
-              <div key={env.name} className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between rounded-xl border border-border/50 p-4 bg-muted/10">
-                <div>
-                  <h4 className="font-medium flex items-center gap-2">
-                    {env.name}
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary/40"></div>
+                    Potential Strengths
                   </h4>
-                  <p className="text-sm text-muted-foreground mt-1">{env.reason}</p>
+                  <ul className="text-sm space-y-2 text-foreground/80">
+                    {TENDENCIES[ministryTendency.key]?.strengths.map(s => <li key={s} className="flex gap-3"><span className="text-primary/40">•</span><span className="leading-snug">{s}</span></li>)}
+                  </ul>
                 </div>
-                <Badge variant="outline" className="shrink-0 whitespace-nowrap">
-                  {env.match}
-                </Badge>
+                <div>
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-amber-500/60"></div>
+                    Things to Watch
+                  </h4>
+                  <ul className="text-sm space-y-2 text-foreground/80">
+                    {TENDENCIES[ministryTendency.key]?.blindSpots.map(s => <li key={s} className="flex gap-3"><span className="text-amber-500/60">•</span><span className="leading-snug">{s}</span></li>)}
+                  </ul>
+                </div>
               </div>
-            ))}
-           </div>
-        </Section>
-      )}
-
-      <div className="grid md:grid-cols-2 gap-8 print:hidden">
-        {/* 10. YOUR CURRENT SEASON */}
-        {season && (
-          <Section title="Your Current Season">
-             <p className="text-sm text-foreground/90 leading-relaxed mb-4">{season}</p>
-             <div className="rounded-lg bg-muted/30 p-4 text-sm text-muted-foreground border border-border/40">
-               <span className="font-medium text-foreground">Note:</span> A healthy ministry fit considers not only what you could do, but what you can faithfully and sustainably carry in your current season.
-             </div>
-          </Section>
-        )}
-
-        {/* 11. YOUR CONNECTION TO THE BODY */}
-        {connection && (
-          <Section title="Connection to the Body">
-            <p className="text-sm leading-relaxed">{connection}</p>
-          </Section>
-        )}
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8 print:hidden">
-        {/* 12. QUESTIONS TO PRAY ABOUT */}
-        {prayerQuestions.length > 0 && (
-          <Section title="Questions to Pray About">
-            <p className="text-sm text-muted-foreground mb-4">Use these questions for personal reflection or conversation with a leader:</p>
-            <ul className="space-y-3">
-              {prayerQuestions.map((q, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="text-primary/50 font-serif font-bold italic">{i+1}.</span>
-                  <span className="text-sm leading-relaxed">{q}</span>
-                </li>
-              ))}
-            </ul>
-          </Section>
-        )}
-
-        {/* 13. POSSIBLE NEXT STEP */}
-        {nextStep && (
-          <Section title="Possible Next Step">
-            <div className="rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
-              <Footprints className="mx-auto mb-3 h-8 w-8 text-primary/60" />
-              <h3 className="font-serif text-xl font-medium mb-2">{nextStep.title}</h3>
-              <p className="text-sm text-muted-foreground">{nextStep.description}</p>
             </div>
-          </Section>
+          ) : (
+            <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
+              No ministry tendency result was available.
+            </div>
+          )}
+        </PortraitChapter>
         )}
-      </div>
 
-      {/* 14. INFOGRAPHIC (SCREEN & PRINT) */}
-      <section className="print:mt-12 break-inside-avoid">
-        <h2 className="font-serif text-3xl font-medium tracking-[-.025em] mb-6 print:hidden">Your Part in One Picture</h2>
-        {infographic}
-      </section>
-      
+        {sectionEnabled("spiritualGifts") && (
+        <PortraitChapter number={3} title="What God May Have Equipped You With" icon={Lightbulb}>
+          {topGifts.length > 0 ? (
+            <div className="space-y-4">
+              <p className="text-muted-foreground mb-4">These are spiritual gifts you identified as being strong or prominent in your life.</p>
+              <div className="grid gap-4">
+                {topGifts.map(gift => (
+                  <div key={gift} className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
+                    <h4 className="text-lg font-serif font-medium text-foreground">{gift}</h4>
+                    <p className="text-muted-foreground mt-1">
+                      {spiritualGiftMeanings[gift] || "An identified area of grace and service."}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground italic border border-border/50">
+                Spiritual gifts are given by God for the common good. You may use these gifts through many different environments or relationships.
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
+              No spiritual gifts selected.
+            </div>
+          )}
+        </PortraitChapter>
+        )}
+
+        {sectionEnabled("passionsInterests") && (
+        <PortraitChapter number={4} title="What Moves Your Heart" icon={Heart}>
+          {themes.length > 0 ? (
+            <div className="space-y-4">
+              {themes.map(theme => (
+                <div key={theme.name} className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
+                  <Badge variant="secondary" className="mb-3 bg-secondary/20 hover:bg-secondary/30 text-foreground border-secondary/30">{theme.name}</Badge>
+                  <p className="text-muted-foreground leading-relaxed">{theme.reason}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
+              No themes or passions identified.
+            </div>
+          )}
+        </PortraitChapter>
+        )}
+
+        {sectionEnabled("aboutYou") && (
+        <PortraitChapter number={5} title="What Your Story Has Prepared You For" icon={BookOpen}>
+          <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+            <div className="grid md:grid-cols-2 gap-6">
+              {sectionEnabled("aboutYou") && subsectionEnabled("aboutYou", "skillsExperience") && (
+                <>
+                  {hasConversationSkills ? (
+                    <div className="md:col-span-2 grid sm:grid-cols-2 gap-6">
+                      <Value label="Context / Work" value={skillDetails?.context ?? skills.occupation} />
+                      <Value label="Training" value={skillDetails?.training} />
+                      <Value label="What you enjoy doing" value={skillDetails?.enjoys ?? skills.uniqueSkills} />
+                    </div>
+                  ) : (
+                    <div className="md:col-span-2 grid sm:grid-cols-2 gap-6">
+                      <Value label="Occupation" value={skills.occupation} />
+                      <Value label="Unique skill" value={skills.uniqueSkills} />
+                      <Value label="Previous ministry experience" value={skills.previousMinistryExperience} />
+                      <Value label="Leadership experience" value={skills.leadershipExperience} />
+                      <Value label="Mission trip experience" value={skills.missionTripExperience} />
+                    </div>
+                  )}
+                </>
+              )}
+              {sectionEnabled("aboutYou") && subsectionEnabled("aboutYou", "personalInformation") && profile.basicInformation.languages && (
+                <div className="md:col-span-2 mt-2">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Languages</h4>
+                  <Languages value={profile.basicInformation.languages} />
+                </div>
+              )}
+            </div>
+            {!(sectionEnabled("aboutYou") && (subsectionEnabled("aboutYou", "skillsExperience") || subsectionEnabled("aboutYou", "personalInformation"))) && (
+              <div className="text-muted-foreground italic">No story details available.</div>
+            )}
+          </div>
+        </PortraitChapter>
+        )}
+
+        {(season || connection || hasSpiritualHealth) && (
+        <PortraitChapter number={6} title="Your Current Season" icon={Compass}>
+          {(season || connection) ? (
+            <div className="space-y-6">
+              {season && (
+                <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+                  <h3 className="text-lg font-serif font-medium mb-3">Capacity & Availability</h3>
+                  <p className="text-foreground/90 leading-relaxed mb-6">{season}</p>
+                  <div className="rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground border border-border/50 italic">
+                    A healthy ministry fit considers not only what you could do, but what you can faithfully and sustainably carry in your current season.
+                  </div>
+                </div>
+              )}
+              {connection && (
+                <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+                  <h3 className="text-lg font-serif font-medium mb-3">Connection to the Body</h3>
+                  <p className="text-foreground/90 leading-relaxed">{connection}</p>
+                </div>
+              )}
+              {hasSpiritualHealth && (
+                <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+                  <h3 className="text-lg font-serif font-medium mb-2">Spiritual Wellbeing</h3>
+                  <p className="mb-5 text-sm text-muted-foreground">
+                    This reflection adds context for care, prayer, and a sustainable next step. It is not a measure of worth or readiness.
+                  </p>
+                  <ObjectValues value={spiritualHealth} />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
+              No season or connection details available.
+            </div>
+          )}
+        </PortraitChapter>
+        )}
+
+        <PortraitChapter number={7} title="Where These Things Come Together" icon={MapPin}>
+          {environments.length > 0 || (apestResult || ministryTendency) ? (
+            <div className="space-y-6">
+              {portrait.length > 0 && (
+                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8">
+                  <h3 className="text-lg font-serif font-medium mb-3 text-foreground">Putting It Together</h3>
+                  <div className="space-y-3 text-foreground/90 leading-relaxed">
+                    {portrait.map((sentence) => <p key={sentence}>{sentence}</p>)}
+                  </div>
+                </div>
+              )}
+
+              {environments.length > 0 && (
+                <div className="space-y-4 pt-2">
+                  <p className="text-muted-foreground mb-4">You named these as areas of interest. They may be worth prayerfully exploring in conversation, without assuming assignment or readiness.</p>
+                  {environments.map(env => (
+                    <div key={env.name} className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between rounded-2xl border border-border/80 p-5 bg-card shadow-sm">
+                      <div>
+                        <h4 className="text-lg font-medium">{env.name}</h4>
+                        <p className="text-sm text-muted-foreground mt-1">{env.reason}</p>
+                      </div>
+                      <Badge variant="outline" className="shrink-0 whitespace-nowrap bg-background">
+                        {env.match}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
+              No synthesis or environments available.
+            </div>
+          )}
+        </PortraitChapter>
+
+        <PortraitChapter number={8} title="The Conversation" icon={MessageSquare}>
+          <div className="grid md:grid-cols-2 gap-6">
+            {prayerQuestions.length > 0 && (
+              <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm">
+                <h3 className="text-lg font-serif font-medium mb-4">Questions to Pray About</h3>
+                <ul className="space-y-4">
+                  {prayerQuestions.map((q, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="text-primary/50 font-serif font-bold italic mt-0.5">{i+1}.</span>
+                      <span className="leading-relaxed text-foreground/90">{q}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {nextStep && (
+              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8 text-center flex flex-col items-center justify-center">
+                <Footprints className="mb-4 h-10 w-10 text-primary/60" />
+                <h3 className="font-serif text-2xl font-medium mb-3">{nextStep.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{nextStep.description}</p>
+              </div>
+            )}
+          </div>
+        </PortraitChapter>
+      </div>
     </div>
   );
 }

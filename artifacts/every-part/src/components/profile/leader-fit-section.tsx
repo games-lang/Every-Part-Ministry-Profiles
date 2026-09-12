@@ -75,16 +75,14 @@ export function LeaderFitSection({ ministryFit }: { ministryFit: MinistryFit }) 
     0;
 
   return (
-    <section className="space-y-4">
-      <h3 className="flex items-center gap-2 font-serif text-2xl font-medium">
-        <Target className="h-6 w-6 text-primary/70" />
-        Ministry Fit
-      </h3>
-      <div className="space-y-7 rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <p className="text-sm leading-6 text-muted-foreground">
+    <div className="space-y-7 rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+      <div>
+        <h3 className="text-lg font-serif font-medium mb-2">Ministry Fit</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">
           These are reasons to begin a prayerful conversation, not assignments,
           declarations of calling, or judgments about readiness.
         </p>
+      </div>
         <FitGroup
           title="Strong Alignment"
           description="The person named this interest and several independent profile signals support discussing it."
@@ -109,7 +107,6 @@ export function LeaderFitSection({ ministryFit }: { ministryFit: MinistryFit }) 
             available for a responsible fit conversation.
           </div>
         )}
-      </div>
-    </section>
+    </div>
   );
 }

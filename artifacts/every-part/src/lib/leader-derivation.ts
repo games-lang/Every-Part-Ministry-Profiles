@@ -317,6 +317,7 @@ export function getLeaderSynthesis(
   ].slice(0, 8);
 
   return {
+    participantSynthesis: synthesis,
     snapshot,
     ministryFit,
     thingsWorthDiscussing,
