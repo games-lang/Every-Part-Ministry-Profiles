@@ -1,6 +1,5 @@
 import {
   date,
-  foreignKey,
   integer,
   pgTable,
   serial,
@@ -18,7 +17,9 @@ export const pastorNotesTable = pgTable(
   {
     id: serial("id").primaryKey(),
     churchId: integer("church_id").notNull().references(() => churchesTable.id, { onDelete: "cascade" }),
-    profileId: integer("profile_id").notNull(),
+    profileId: integer("profile_id")
+      .notNull()
+      .references(() => ministryProfilesTable.id, { onDelete: "cascade" }),
     authorClerkUserId: text("author_clerk_user_id").notNull(),
     whatIHeard: text("what_i_heard").notNull().default(""),
     bringsLife: text("brings_life").notNull().default(""),
@@ -32,11 +33,6 @@ export const pastorNotesTable = pgTable(
   },
   (table) => [
     unique("pastor_notes_profile_author_unique").on(table.profileId, table.authorClerkUserId),
-    foreignKey({
-      columns: [table.profileId, table.churchId],
-      foreignColumns: [ministryProfilesTable.id, ministryProfilesTable.churchId],
-      name: "pastor_notes_profile_church_fk",
-    }),
   ],
 );
 
