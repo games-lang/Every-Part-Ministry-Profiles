@@ -1,0 +1,193 @@
+Now create the “How You Tend to Minister” framework for Every Part.
+
+This is DIFFERENT from APEST.
+
+APEST answers:
+“What kind of contribution or orientation might I bring to the Body?”
+
+How You Tend to Minister answers:
+“How do I naturally tend to engage people, responsibilities, and ministry?”
+
+I want this expressed through additional parts of the Body of Christ.
+
+Create an original Every Part framework.
+
+Start with these six categories:
+
+1. HANDS — THE DOER
+
+Core tendency:
+“I notice what needs to be done and tend to jump in.”
+
+Common strengths:
+practical
+helpful
+dependable
+action-oriented
+service-minded
+
+Potential caution:
+May begin doing before understanding the deeper need or may carry too much personally.
+
+2. EARS — THE LISTENER
+
+Core tendency:
+“I tend to slow down, listen, understand, and make space for people.”
+
+Common strengths:
+patient
+relational
+empathetic
+attentive
+good one-on-one
+
+Potential caution:
+May hesitate to speak or act when action is needed.
+
+3. SHOULDERS — THE SUPPORTER
+
+Core tendency:
+“I naturally help carry responsibility and strengthen other people.”
+
+Common strengths:
+loyal
+steady
+supportive
+dependable
+team-oriented
+
+Potential caution:
+May carry responsibilities that should belong to someone else.
+
+4. VOICE — THE COMMUNICATOR
+
+Core tendency:
+“I naturally communicate, encourage, explain, inspire, or influence.”
+
+Common strengths:
+verbal
+encouraging
+expressive
+comfortable communicating
+able to rally others
+
+Potential caution:
+May speak before listening enough.
+
+5. ARMS — THE CONNECTOR
+
+Core tendency:
+“I tend to bring people together and help people feel welcomed and connected.”
+
+Common strengths:
+hospitality
+relationship-building
+inclusion
+networking
+team connection
+
+Potential caution:
+May prioritize harmony or connection when a difficult conversation is necessary.
+
+6. BACKBONE — THE ORGANIZER
+
+Core tendency:
+“I naturally bring structure, order, planning, and stability.”
+
+Common strengths:
+administration
+planning
+follow-through
+organization
+systems thinking
+
+Potential caution:
+May become frustrated with ambiguity, spontaneity, or people who work differently.
+
+IMPORTANT:
+
+Do not assume these six are final.
+
+Review the existing Every Part assessment questions, especially:
+- personality / How You Tend to Operate
+- spiritual gifts
+- service interests
+- ministry experiences
+- open-response questions
+
+Determine whether these six provide enough differentiation.
+
+If a seventh category is clearly needed, propose it before adding it.
+
+Do NOT create categories simply to make every body part available.
+
+--------------------------------
+SCORING
+--------------------------------
+
+Create transparent scoring logic.
+
+The result should primarily be determined by “How You Tend to Operate” responses, with other profile information serving only as supporting signals.
+
+Do NOT allow spiritual gifts or APEST to overpower the ministry tendency score. We want these assessments to tell us different things.
+
+Store:
+- raw scores for each tendency
+- normalized score
+- primary tendency
+- secondary tendency
+- confidence level / score spread
+
+If the top two results are very close, display:
+
+“Primary tendency: Ears — Listener
+Secondary tendency: Shoulders — Supporter”
+
+Do not pretend the assessment is more scientifically precise than it is.
+
+Avoid percentages that imply validated psychometric precision unless we have actually validated the instrument.
+
+--------------------------------
+RESULT LANGUAGE
+--------------------------------
+
+The output should say:
+
+“You tend to minister like the Ears of the Body…”
+
+rather than:
+
+“You ARE the Ears.”
+
+This distinction matters.
+
+Include:
+
+“This picture describes a natural ministry tendency, not a fixed identity. God may call us to serve beyond what comes most naturally.”
+
+--------------------------------
+COMBINING WITH APEST
+--------------------------------
+
+Build logic capable of combining any APEST orientation with any ministry tendency.
+
+Examples:
+
+Shepherd + Listener
+“Shepherding is a strong orientation for you, and listening may be one of the primary ways you care for people.”
+
+Apostle + Organizer
+“You may naturally move ministry toward new opportunities while bringing structure that helps new ideas become sustainable.”
+
+Evangelist + Connector
+“You may naturally help people encounter Jesus through relationships, hospitality, and connecting people with the Christian community.”
+
+Teacher + Communicator
+“You may naturally help others understand truth through clear explanation and communication.”
+
+Prophet + Supporter
+“You may notice concerns or spiritual realities others miss while preferring to strengthen leaders and communities rather than always taking center stage.”
+
+Write combination templates carefully but allow AI-assisted personalization from the person's real profile.
+
+Never imply that a particular combination is better or more spiritually mature than another.
