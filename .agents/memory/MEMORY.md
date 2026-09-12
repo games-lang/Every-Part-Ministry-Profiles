@@ -31,3 +31,4 @@
 - [Church branding persistence](church-branding-persistence.md) — logo and color saves must remain independent from validation in the larger church setup form.
 - [Profile print privacy](profile-print-privacy.md) — omit sensitive coordinator content from print/PDF, but intentionally retain Spiritual Health.
 - [Ministry journey recovery](ministry-journey-recovery.md) — stale or cross-church browser journey tokens must start a new journey, never block profile submission.
+- [Private pastor notes](private-pastor-notes.md) — notes are per-author leader records; never mix them into profile, participant, print, youth, AI, or PartFinder payloads.

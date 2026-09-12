@@ -5,6 +5,50 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface PastorNote {
+  profileId: number;
+  authorClerkUserId: string;
+  /** @maxLength 5000 */
+  whatIHeard: string;
+  /** @maxLength 5000 */
+  bringsLife: string;
+  /** @maxLength 5000 */
+  areasToExplore: string;
+  /** @maxLength 5000 */
+  areasToAvoidForNow: string;
+  /** @maxLength 5000 */
+  trainingNeeded: string;
+  /** @maxLength 5000 */
+  nextStep: string;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  followUpDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PastorNoteInput {
+  /** @maxLength 5000 */
+  whatIHeard: string;
+  /** @maxLength 5000 */
+  bringsLife: string;
+  /** @maxLength 5000 */
+  areasToExplore: string;
+  /** @maxLength 5000 */
+  areasToAvoidForNow: string;
+  /** @maxLength 5000 */
+  trainingNeeded: string;
+  /** @maxLength 5000 */
+  nextStep: string;
+  /**
+     * @nullable
+     * @pattern ^\d{4}-\d{2}-\d{2}$
+     */
+  followUpDate: string | null;
+}
+
 export type AssistantChatMessageRole = typeof AssistantChatMessageRole[keyof typeof AssistantChatMessageRole];
 
 

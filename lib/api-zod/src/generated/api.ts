@@ -3652,6 +3652,111 @@ export const GetProfileResponse = zod.object({
 
 
 /**
+ * @summary Get the signed-in leader's private note for an adult profile
+ */
+
+
+
+export const GetPastorNoteParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const getPastorNoteResponseWhatIHeardMax = 5000;
+
+export const getPastorNoteResponseBringsLifeMax = 5000;
+
+export const getPastorNoteResponseAreasToExploreMax = 5000;
+
+export const getPastorNoteResponseAreasToAvoidForNowMax = 5000;
+
+export const getPastorNoteResponseTrainingNeededMax = 5000;
+
+export const getPastorNoteResponseNextStepMax = 5000;
+
+export const getPastorNoteResponseFollowUpDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const GetPastorNoteResponse = zod.object({
+  "profileId": zod.int(),
+  "authorClerkUserId": zod.string(),
+  "whatIHeard": zod.string().max(getPastorNoteResponseWhatIHeardMax),
+  "bringsLife": zod.string().max(getPastorNoteResponseBringsLifeMax),
+  "areasToExplore": zod.string().max(getPastorNoteResponseAreasToExploreMax),
+  "areasToAvoidForNow": zod.string().max(getPastorNoteResponseAreasToAvoidForNowMax),
+  "trainingNeeded": zod.string().max(getPastorNoteResponseTrainingNeededMax),
+  "nextStep": zod.string().max(getPastorNoteResponseNextStepMax),
+  "followUpDate": zod.string().regex(getPastorNoteResponseFollowUpDateRegExp).nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Save the signed-in leader's private note for an adult profile
+ */
+
+
+
+export const UpdatePastorNoteParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const updatePastorNoteBodyWhatIHeardMax = 5000;
+
+export const updatePastorNoteBodyBringsLifeMax = 5000;
+
+export const updatePastorNoteBodyAreasToExploreMax = 5000;
+
+export const updatePastorNoteBodyAreasToAvoidForNowMax = 5000;
+
+export const updatePastorNoteBodyTrainingNeededMax = 5000;
+
+export const updatePastorNoteBodyNextStepMax = 5000;
+
+export const updatePastorNoteBodyFollowUpDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const UpdatePastorNoteBody = zod.object({
+  "whatIHeard": zod.string().max(updatePastorNoteBodyWhatIHeardMax),
+  "bringsLife": zod.string().max(updatePastorNoteBodyBringsLifeMax),
+  "areasToExplore": zod.string().max(updatePastorNoteBodyAreasToExploreMax),
+  "areasToAvoidForNow": zod.string().max(updatePastorNoteBodyAreasToAvoidForNowMax),
+  "trainingNeeded": zod.string().max(updatePastorNoteBodyTrainingNeededMax),
+  "nextStep": zod.string().max(updatePastorNoteBodyNextStepMax),
+  "followUpDate": zod.string().regex(updatePastorNoteBodyFollowUpDateRegExp).nullable()
+})
+
+export const updatePastorNoteResponseWhatIHeardMax = 5000;
+
+export const updatePastorNoteResponseBringsLifeMax = 5000;
+
+export const updatePastorNoteResponseAreasToExploreMax = 5000;
+
+export const updatePastorNoteResponseAreasToAvoidForNowMax = 5000;
+
+export const updatePastorNoteResponseTrainingNeededMax = 5000;
+
+export const updatePastorNoteResponseNextStepMax = 5000;
+
+export const updatePastorNoteResponseFollowUpDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+
+
+export const UpdatePastorNoteResponse = zod.object({
+  "profileId": zod.int(),
+  "authorClerkUserId": zod.string(),
+  "whatIHeard": zod.string().max(updatePastorNoteResponseWhatIHeardMax),
+  "bringsLife": zod.string().max(updatePastorNoteResponseBringsLifeMax),
+  "areasToExplore": zod.string().max(updatePastorNoteResponseAreasToExploreMax),
+  "areasToAvoidForNow": zod.string().max(updatePastorNoteResponseAreasToAvoidForNowMax),
+  "trainingNeeded": zod.string().max(updatePastorNoteResponseTrainingNeededMax),
+  "nextStep": zod.string().max(updatePastorNoteResponseNextStepMax),
+  "followUpDate": zod.string().regex(updatePastorNoteResponseFollowUpDateRegExp).nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
  * @summary Assign or remove a profile's current team
  */
 export const UpdateProfileTeamParams = zod.object({

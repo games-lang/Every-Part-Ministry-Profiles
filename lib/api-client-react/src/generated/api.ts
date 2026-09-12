@@ -73,6 +73,8 @@ import type {
   PartFinderLeadershipProfile,
   PartFinderLeadershipProfileInput,
   PartFinderResponse,
+  PastorNote,
+  PastorNoteInput,
   ProfileHelperInput,
   ProfileHelperResponse,
   ProfileInput,
@@ -4842,6 +4844,164 @@ export function useGetProfile<TData = Awaited<ReturnType<typeof getProfile>>, TE
 
 
 
+
+export const getGetPastorNoteUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}/pastor-note`
+}
+
+/**
+ * @summary Get the signed-in leader's private note for an adult profile
+ */
+export const getPastorNote = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<PastorNote> => {
+
+  return customFetch<PastorNote>(getGetPastorNoteUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPastorNoteQueryKey = (id: number,) => {
+    return [
+    `/api/profiles/${id}/pastor-note`
+    ] as const;
+    }
+
+
+export const getGetPastorNoteQueryOptions = <TData = Awaited<ReturnType<typeof getPastorNote>>, TError = ErrorType<void>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPastorNote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPastorNoteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPastorNote>>> = ({ signal }) => getPastorNote(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPastorNote>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPastorNoteQueryResult = NonNullable<Awaited<ReturnType<typeof getPastorNote>>>
+export type GetPastorNoteQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the signed-in leader's private note for an adult profile
+ */
+
+export function useGetPastorNote<TData = Awaited<ReturnType<typeof getPastorNote>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPastorNote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPastorNoteQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdatePastorNoteUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}/pastor-note`
+}
+
+/**
+ * @summary Save the signed-in leader's private note for an adult profile
+ */
+export const updatePastorNote = async (id: number,
+    pastorNoteInput: PastorNoteInput, options?: Parameters<typeof customFetch>[1]): Promise<PastorNote> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<PastorNote>(getUpdatePastorNoteUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(pastorNoteInput)
+  }
+);}
+
+
+
+
+
+export const getUpdatePastorNoteMutationKey = () => ['updatePastorNote'] as const;
+
+export const getUpdatePastorNoteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePastorNote>>, TError,UpdatePastorNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePastorNote>>, TError,UpdatePastorNoteMutationVariables, TContext> => {
+
+const mutationKey = getUpdatePastorNoteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePastorNote>>, UpdatePastorNoteMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updatePastorNote(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePastorNoteMutationResult = NonNullable<Awaited<ReturnType<typeof updatePastorNote>>>
+    export type UpdatePastorNoteMutationBody = BodyType<PastorNoteInput>
+    export type UpdatePastorNoteMutationError = ErrorType<void>
+    export type UpdatePastorNoteMutationVariables = {id: number;data: BodyType<PastorNoteInput>}
+
+    /**
+ * @summary Save the signed-in leader's private note for an adult profile
+ */
+export const useUpdatePastorNote = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePastorNote>>, TError,UpdatePastorNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updatePastorNote>>,
+        TError,
+        UpdatePastorNoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdatePastorNoteMutationOptions(options));
+    }
 
 export const getUpdateProfileTeamUrl = (id: number,) => {
 

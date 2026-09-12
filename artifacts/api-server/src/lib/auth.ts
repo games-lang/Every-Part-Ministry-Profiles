@@ -1,5 +1,7 @@
 import { getAuth } from "@clerk/express";
 import type { Request, Response } from "express";
+import { and, eq } from "drizzle-orm";
+import { churchAdminsTable, db } from "@workspace/db";
 
 export function requireUserId(req: Request, res: Response): string | null {
   const auth = getAuth(req);
@@ -37,4 +39,38 @@ export function isAppAdminUser(userId: string): boolean {
     .map((value) => value.trim())
     .filter(Boolean)
     .includes(userId);
+}
+
+const trustedChurchLeaderRoles = new Set([
+  "owner",
+  "admin",
+  "pastor",
+  "ministry_leader",
+]);
+
+/** Verifies that a user is a trusted leader in the requested church. */
+export async function requireChurchLeader(
+  userId: string,
+  churchId: number,
+  res: Response,
+): Promise<typeof churchAdminsTable.$inferSelect | null> {
+  const [membership] = await db
+    .select()
+    .from(churchAdminsTable)
+    .where(
+      and(
+        eq(churchAdminsTable.churchId, churchId),
+        eq(churchAdminsTable.clerkUserId, userId),
+      ),
+    )
+    .limit(1);
+  if (!membership || !trustedChurchLeaderRoles.has(membership.role)) {
+    res.status(403).json({ error: "Church leader access is required." });
+    return null;
+  }
+  return membership;
+}
+
+export function isTrustedChurchLeaderRole(role: string): boolean {
+  return trustedChurchLeaderRoles.has(role);
 }

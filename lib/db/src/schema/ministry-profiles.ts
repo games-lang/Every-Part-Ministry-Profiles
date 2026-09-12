@@ -87,6 +87,7 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
     .defaultNow(),
 }, (table) => [
   uniqueIndex("ministry_profiles_result_token_unique").on(table.resultToken),
+  uniqueIndex("ministry_profiles_church_id_unique").on(table.churchId, table.id),
   check(
     "ministry_profiles_profile_type_check",
     sql`${table.profileType} in ('adult', 'discover', 'explore', 'develop')`,

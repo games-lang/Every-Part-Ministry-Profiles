@@ -210,6 +210,8 @@ export * from './partFinderRecommendation';
 export * from './partFinderRecommendationMatchLabel';
 export * from './partFinderResponse';
 export * from './partFinderResponseMode';
+export * from './pastorNote';
+export * from './pastorNoteInput';
 export * from './profileHelperInput';
 export * from './profileHelperResponse';
 export * from './profileInput';

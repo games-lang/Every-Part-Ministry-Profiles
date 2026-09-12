@@ -12,6 +12,9 @@ import {
   ListProfilesResponse,
   UpdateProfileTeamBody,
   UpdateProfileTeamResponse,
+  GetPastorNoteResponse,
+  UpdatePastorNoteBody,
+  UpdatePastorNoteResponse,
 } from "@workspace/api-zod";
 import {
   churchesTable,
@@ -20,8 +23,9 @@ import {
   ministryProfilesTable,
   ministryPeopleTable,
   ministryTeamsTable,
+  pastorNotesTable,
 } from "@workspace/db";
-import { requireUserId } from "../lib/auth";
+import { requireChurchLeader, requireUserId } from "../lib/auth";
 import { churchBranding, getOrCreateChurch } from "../lib/churches";
 import { profileListItem, profileResponse } from "../lib/profiles";
 import {
@@ -601,6 +605,99 @@ router.get("/profiles/:id", async (req, res): Promise<void> => {
   res.json(
     GetProfileResponse.parse(profileResponse(profile, churchBranding(church))),
   );
+});
+
+router.get("/profiles/:id/pastor-note", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+  const params = GetProfileParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  const [membership] = await db
+    .select({ churchId: churchAdminsTable.churchId })
+    .from(churchAdminsTable)
+    .where(eq(churchAdminsTable.clerkUserId, userId))
+    .limit(1);
+  if (!membership) {
+    res.status(403).json({ error: "Church leader access is required." });
+    return;
+  }
+  if (!(await requireChurchLeader(userId, membership.churchId, res))) return;
+  const [profile] = await db
+    .select({ id: ministryProfilesTable.id, profileType: ministryProfilesTable.profileType })
+    .from(ministryProfilesTable)
+    .where(and(eq(ministryProfilesTable.id, params.data.id), eq(ministryProfilesTable.churchId, membership.churchId)))
+    .limit(1);
+  if (!profile || profile.profileType !== "adult") {
+    res.status(404).json({ error: "Adult profile not found" });
+    return;
+  }
+  const [note] = await db.select().from(pastorNotesTable).where(and(
+    eq(pastorNotesTable.profileId, profile.id),
+    eq(pastorNotesTable.churchId, membership.churchId),
+    eq(pastorNotesTable.authorClerkUserId, userId),
+  )).limit(1);
+  res.setHeader("Cache-Control", "no-store");
+  res.json(GetPastorNoteResponse.parse(note ?? {
+    profileId: profile.id,
+    authorClerkUserId: userId,
+    whatIHeard: "",
+    bringsLife: "",
+    areasToExplore: "",
+    areasToAvoidForNow: "",
+    trainingNeeded: "",
+    nextStep: "",
+    followUpDate: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }));
+});
+
+router.put("/profiles/:id/pastor-note", async (req, res): Promise<void> => {
+  const userId = requireUserId(req, res);
+  if (!userId) return;
+  const params = GetProfileParams.safeParse(req.params);
+  const parsed = UpdatePastorNoteBody.safeParse(req.body);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  const [membership] = await db
+    .select({ churchId: churchAdminsTable.churchId })
+    .from(churchAdminsTable)
+    .where(eq(churchAdminsTable.clerkUserId, userId))
+    .limit(1);
+  if (!membership) {
+    res.status(403).json({ error: "Church leader access is required." });
+    return;
+  }
+  if (!(await requireChurchLeader(userId, membership.churchId, res))) return;
+  const [profile] = await db
+    .select({ id: ministryProfilesTable.id, profileType: ministryProfilesTable.profileType })
+    .from(ministryProfilesTable)
+    .where(and(eq(ministryProfilesTable.id, params.data.id), eq(ministryProfilesTable.churchId, membership.churchId)))
+    .limit(1);
+  if (!profile || profile.profileType !== "adult") {
+    res.status(404).json({ error: "Adult profile not found" });
+    return;
+  }
+  const [note] = await db.insert(pastorNotesTable).values({
+    ...parsed.data,
+    profileId: profile.id,
+    churchId: membership.churchId,
+    authorClerkUserId: userId,
+  }).onConflictDoUpdate({
+    target: [pastorNotesTable.profileId, pastorNotesTable.authorClerkUserId],
+    set: { ...parsed.data, updatedAt: new Date() },
+  }).returning();
+  res.setHeader("Cache-Control", "no-store");
+  res.json(UpdatePastorNoteResponse.parse(note));
 });
 
 router.get("/profiles/:id/photo", async (req, res): Promise<void> => {
