@@ -1,0 +1,190 @@
+Now build a “Ministry Leader View” for completed Ministry Profiles.
+
+This view is NOT visible to the participant unless church permissions allow it.
+
+The purpose is to help pastors and ministry leaders prepare for a meaningful ministry conversation.
+
+The goal is NOT:
+“Here are the people you can use.”
+
+The goal is:
+“Here is what we currently understand about this person so you can listen, pray, ask better questions, and help them discover their part.”
+
+--------------------------------
+LEADER SNAPSHOT
+--------------------------------
+
+At the top show:
+
+Name
+Age/life stage when appropriate
+Congregation/service
+Languages
+Profile completion date
+
+APEST
+APEST body picture
+
+Primary Ministry Tendency
+Ministry tendency body picture
+
+Top spiritual gifts
+Top passions
+Primary ministry theme
+
+Current availability
+
+Previous ministry experience
+
+--------------------------------
+MINISTRY FIT
+--------------------------------
+
+Create suggested areas in three categories:
+
+STRONG ALIGNMENT
+WORTH EXPLORING
+POSSIBLE STRETCH / DEVELOPMENT
+
+Every recommendation must include WHY.
+
+Example:
+
+Discipleship / Mentoring
+Strong Alignment
+
+Signals:
+- Shepherd APEST
+- Mercy gift
+- Teaching gift
+- strong interest in spiritual growth
+- relational ministry preference
+- previous small-group experience
+
+Do NOT create a mysterious AI recommendation.
+
+Allow the leader to click “Why?” and see which profile signals contributed to the recommendation.
+
+--------------------------------
+IMPORTANT DISTINCTION
+--------------------------------
+
+Separate:
+
+ABILITY
+INTEREST
+CALLING SIGNALS
+AVAILABILITY
+EXPERIENCE
+
+For example, someone may be:
+Highly capable
+Highly interested
+But unavailable
+
+That should NOT produce a strong immediate ministry-placement recommendation.
+
+Display something such as:
+
+“Strong potential fit — current availability may make this a future rather than immediate opportunity.”
+
+--------------------------------
+PASTORAL CONSIDERATIONS
+--------------------------------
+
+Create a section called:
+
+“Things Worth Discussing”
+
+This can identify things such as:
+
+- limited time
+- family responsibilities
+- possible overcommitment
+- very broad ministry interests
+- limited experience
+- leadership potential
+- cross-cultural potential
+- desire for training
+- uncertainty about calling
+- strengths that may be underused
+- areas where answers seem inconsistent and are worth discussing
+
+Do not diagnose, judge, or label the person negatively.
+
+Use language such as:
+
+“This may be worth discussing…”
+
+--------------------------------
+CONVERSATION GUIDE
+--------------------------------
+
+Generate 5–8 personalized questions for the pastor.
+
+Examples:
+
+“You indicated that watching others grow is especially meaningful to you. Can you tell me about a time you experienced that?”
+
+“You appear interested in several ministry areas. Which one gives you the most energy when you imagine serving there?”
+
+“You have strong organizational tendencies but also indicated that family time is important right now. What level of responsibility would feel healthy in this season?”
+
+“Your profile suggests you connect across several of our congregations. Do you enjoy serving as a bridge between different groups?”
+
+Make these specific to the profile.
+
+--------------------------------
+PASTOR NOTES
+--------------------------------
+
+Allow pastors to add private notes after the conversation.
+
+Include fields such as:
+
+What I heard
+What seems to bring this person life
+Areas to explore
+Areas to avoid for now
+Training/development needed
+Next step
+Follow-up date
+
+These notes should NEVER alter the person's original assessment answers.
+
+--------------------------------
+MINISTRY MATCHING
+--------------------------------
+
+Prepare this data structure so that Part Finder can later use it.
+
+Part Finder should eventually be able to answer questions such as:
+
+“Who might be worth talking to about helping lead a teen discipleship group?”
+
+But Part Finder should recommend people FOR A CONVERSATION, not assign them.
+
+Language should be:
+
+“These people may be worth prayerfully talking with.”
+
+Never:
+
+“These are the best people for the job.”
+
+--------------------------------
+PRIVACY
+--------------------------------
+
+Make sure churches can control who can access Leader View.
+
+Sensitive personal information should not automatically be visible to every ministry team leader.
+
+Build the permissions system so future roles could include:
+
+Church Admin
+Pastor
+Ministry Leader
+Participant
+
+Do not expose private pastoral notes to participants or unauthorized leaders.
