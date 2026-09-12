@@ -5,7 +5,7 @@ import {
   useGetPartFinderLeadershipProfile,
 } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, BrainCircuit, FileText, Lightbulb, ListChecks, Users, UsersRound } from "lucide-react";
+import { AlertCircle, BrainCircuit, FileText, Lightbulb, ListChecks, Puzzle, Users, UsersRound } from "lucide-react";
 import { Link, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -178,7 +178,8 @@ export default function Dashboard() {
             <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">
               This week
             </p>
-            <CardTitle className="mt-1 font-serif text-2xl">
+            <CardTitle className="mt-1 flex items-center gap-2 font-serif text-2xl">
+              <Puzzle className="h-6 w-6 text-primary" aria-hidden="true" />
               Your PartFinder Brief
             </CardTitle>
           </div>
