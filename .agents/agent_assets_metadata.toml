@@ -56,3 +56,31 @@ mtime_ms = 1789584641132
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/30fe683f-8de0-4646-b6d4-dc7ca88aa892/6db964bc-d72a-4ee8-aaad-8944f95631a6"
 storage_version_token = "1789584678303259"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "qxBN8546WU1OJKAYRBp1W"
+uri = "file://reports/revised-integrated-content-design.html"
+type = "text"
+title = "Revised Assessment — Coverage & Content Report"
+description = "Complete revised bank, change log, primary/secondary coverage, four high-mapping item reviews, cultural concerns, and classification proposals requiring approval."
+logical_id = "e513b1db-7bdf-4ded-b34a-210098148cfe"
+content_hash = "sha256:0259ed7a1a7437fa9dc9da034f7d12b65788198755e33d0d6e5264475007990c"
+size = 43380
+mtime_ms = 1789585755116
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/e513b1db-7bdf-4ded-b34a-210098148cfe/99b7f697-0341-4e90-b521-f7dfd2e563be"
+storage_version_token = "1789585777833927"
+content_type = "text/html"
+
+[[outputs]]
+id = "rIsn3jTHcU8QLczjQlBx1"
+uri = "file://reports/revised-integrated-question-bank.json"
+type = "unspecified"
+title = "Revised Question Bank & Weighted Scoring Map"
+description = "83 proposed core questions plus 15 optional prompts, stable mixed order, explicit weights, mapping rationales, and optional-module toggle rules."
+logical_id = "b499a308-1e38-4ca1-a02b-2d22c0c1f2af"
+content_hash = "sha256:ea31a68df5a617bd7501c5b9e149e48432e63b37e90ca5ec61a19ed8dd48e088"
+size = 60468
+mtime_ms = 1789585724821
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/b499a308-1e38-4ca1-a02b-2d22c0c1f2af/128de50a-a27f-4166-a288-72430637f356"
+storage_version_token = "1789585778385972"
+content_type = "application/octet-stream"

@@ -33,3 +33,9 @@ The shorter adult bank must be newly designed, not just the existing questions b
 **Why:** The owner explicitly prioritizes trustworthy evidence over hitting a 55–65 core-question target. Missing coverage must be disclosed rather than filled with weak links. Humility or seeking guidance around extraordinary experiences does not itself establish a spiritual gift.
 
 **How to apply:** Audit distinct indicators and mapping rationales before approving scores. Preserve all seven Personality spectra and the actual Serving Pattern calculation; any taxonomy or optional-module changes require review.
+
+The owner approved retaining 21 neutral Personality items (three per spectrum) and permits focused additions beyond the shorter-bank target rather than weakening evidence.
+
+**Why:** Construct coverage takes priority over an arbitrary question count.
+
+**How to apply:** Report primary and secondary opportunities separately. The requested minimum is three meaningful distinct indicators, not an automatically imposed three-primary-only rule; classify any stricter gate as a separate proposal.

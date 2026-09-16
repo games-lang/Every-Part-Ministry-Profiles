@@ -1,0 +1,431 @@
+# EVERY PART — REVISE THE INTEGRATED QUESTION BANK TO CLOSE COVERAGE GAPS
+
+Thank you. Do NOT implement the assessment yet.
+
+The current design direction is approved:
+
+- 43 integrated behavior questions
+- 21 Personality questions
+- 15 optional Spiritual Experience & Discernment prompts
+- Four distinct scoring categories
+- Mixed participant flow
+- Church Spiritual Gift toggles
+- Historical profile protection
+- Adult-only pilot
+
+However, the content report correctly shows that the current bank does not yet provide enough evidence for every construct.
+
+Do NOT weaken the evidence thresholds merely to keep the assessment shorter.
+
+The next task is to revise the question bank strategically so every scored construct has enough defensible evidence.
+
+==================================================
+KEEP THE 21 PERSONALITY QUESTIONS
+==================================================
+
+Keep the current 21 neutral Personality questions:
+
+7 spectra × 3 questions each.
+
+Do NOT reduce these to 15 simply to shorten the assessment.
+
+Personality should remain independently measured and should not be inferred from ministry behaviors.
+
+Only rewrite a Personality question if there is a clarity, translation, balance, or scoring problem.
+
+==================================================
+FOCUS THIS REVISION ON APEST, GIFTS, AND STRENGTHS
+==================================================
+
+Do not rewrite the entire assessment.
+
+Start with the existing integrated behavior bank.
+
+Identify only the constructs that currently lack sufficient evidence.
+
+For each gap, determine whether it can responsibly be solved by:
+
+1. improving an existing question,
+2. adding a legitimate Secondary mapping to an existing question,
+3. replacing a weak/redundant question,
+4. or adding a new focused question.
+
+Prefer improving or replacing existing questions before adding large numbers of new ones.
+
+However, do NOT create artificial cross-mappings simply to hit coverage numbers.
+
+==================================================
+APEST REQUIREMENT
+==================================================
+
+Every APEST orientation must have enough meaningful evidence.
+
+Target:
+
+6–8 strong indicators per orientation.
+
+The five orientations are:
+
+- Apostle
+- Prophet
+- Evangelist
+- Shepherd
+- Teacher
+
+Prefer a mix of:
+
+- direct Primary indicators
+- a smaller number of genuinely supportive Secondary indicators
+
+Avoid giving one orientation dramatically more evidence than another.
+
+Do not count an item merely because it has a superficial relationship to the orientation.
+
+The question should actually help distinguish that orientation.
+
+==================================================
+SPIRITUAL GIFT REQUIREMENT
+==================================================
+
+For each ordinary enabled Spiritual Gift that Every Part intends to publish as an assessment result, require:
+
+at least 3 meaningful indicators.
+
+Prefer:
+
+3–5 indicators
+
+where feasible.
+
+A gift should NOT receive a publishable score based on one or two broad overlapping questions.
+
+Do not solve gaps by tagging unrelated questions.
+
+If a Spiritual Gift cannot responsibly be measured within a reasonable questionnaire length, flag it for a different treatment rather than weakening scoring.
+
+Possible treatment options include:
+
+- assessment-scored
+- Spiritual Experience module
+- conversation/discernment only
+
+Do NOT make that classification change without showing it for review first.
+
+==================================================
+STRENGTH REQUIREMENT
+==================================================
+
+Every scored Strength should generally have:
+
+at least 3 meaningful indicators.
+
+Prefer:
+
+3–5
+
+when feasible.
+
+Questions should reflect observable ability or recurring capability.
+
+Do not confuse Strengths with:
+
+- Personality
+- Spiritual Gifts
+- APEST
+- spiritual maturity.
+
+==================================================
+SPECIAL SPIRITUAL GIFTS
+==================================================
+
+Review gifts such as:
+
+- Healing
+- Miracles
+- Tongues
+- Interpretation of Tongues
+
+separately.
+
+The current report correctly notes that contextual questions about humility, guidance, discernment, or openness are NOT themselves evidence that a supernatural gift is present.
+
+Do not count contextual questions as gift indicators.
+
+For a special gift to receive an assessment result, require actual experience-based evidence appropriate to that gift.
+
+Otherwise display it only as:
+
+"An area for conversation or discernment"
+
+rather than publishing a scored gift result.
+
+Preserve:
+
+"Not sure / I have not experienced this / this is not part of my tradition"
+
+as an unscored response.
+
+==================================================
+REVIEW QUESTIONS WITH TOO MANY MAPPINGS
+==================================================
+
+The report identified four questions with five proposed mappings.
+
+Review each one individually.
+
+As a general guideline, an integrated behavior question should normally have no more than:
+
+- 1 Primary APEST mapping
+- optionally 1 Secondary APEST mapping
+- 1 Primary Spiritual Gift mapping
+- optionally 1 Secondary Gift mapping
+- 1 Primary Strength mapping
+- optionally 1 Secondary Strength mapping
+
+But do not automatically use all of these.
+
+Most questions should have fewer mappings.
+
+Five mappings are acceptable only when each relationship is strong and independently defensible.
+
+For each of the four high-mapping questions, provide:
+
+- question text
+- all mappings
+- why each mapping exists
+- which mappings could be removed
+- your recommended final mapping
+
+==================================================
+DO NOT USE MAPPING COUNT AS THE GOAL
+==================================================
+
+A question that scores three constructs well is better than a question that scores six constructs weakly.
+
+Optimize for:
+
+CONCEPTUAL QUALITY
+
+not:
+
+MAXIMUM REUSE.
+
+The purpose of integrated scoring is to reduce unnecessary duplicate questions, not to make every response score everything.
+
+==================================================
+TARGET LENGTH
+==================================================
+
+The current 64 core questions are not a hard ceiling.
+
+If coverage cannot responsibly be achieved at 64, add focused questions.
+
+Prefer a final core assessment somewhere around:
+
+65–75 questions
+
+if that provides substantially better evidence.
+
+It is acceptable to exceed this range slightly if the production taxonomy genuinely requires it.
+
+Do not add questions just to reach a target.
+
+Also do not keep the bank artificially short if doing so weakens the results.
+
+The guiding principle remains:
+
+Use the shortest assessment that still produces sufficiently supported ministry-discernment patterns.
+
+==================================================
+LOOK FOR REDUNDANCY
+==================================================
+
+Before adding a question, inspect the current bank for questions that are:
+
+- highly repetitive
+- weakly worded
+- measuring almost the same behavior
+- carrying little unique scoring value.
+
+Where possible:
+
+replace one weak/redundant item with a stronger question that closes a coverage gap.
+
+This is preferable to endlessly increasing total length.
+
+==================================================
+PRIMARY VS SECONDARY EVIDENCE
+==================================================
+
+Continue using:
+
+Primary mapping = 1.0
+
+Secondary mapping = 0.5
+
+However, coverage reports must distinguish between them.
+
+Do not claim a construct has six equally strong indicators if:
+
+2 are Primary
+
+and
+
+4 are weak Secondary mappings.
+
+For every construct show:
+
+- number of Primary indicators
+- number of Secondary indicators
+- total weighted evidence opportunities.
+
+==================================================
+QUESTION QUALITY TEST
+==================================================
+
+For every newly written or substantially revised behavior question, test:
+
+1. Is this one clear behavior?
+
+2. Could a participant answer from ordinary life, not only church ministry?
+
+3. Does one response sound obviously more spiritual than another?
+
+4. Can it translate cleanly into other languages?
+
+5. Does it actually distinguish the intended construct?
+
+6. Is it substantially different from other questions?
+
+7. Are the proposed mappings directly supported by the behavior?
+
+8. Could someone score high for a legitimate reason unrelated to the intended construct?
+
+If the final question creates significant ambiguity, rewrite it.
+
+==================================================
+CULTURAL AND MULTILINGUAL REVIEW
+==================================================
+
+Every Part is intended for multilingual and multicultural churches.
+
+Review the question bank for behaviors that may be strongly influenced by:
+
+- American church culture
+- leadership culture
+- educational background
+- communication style
+- economic circumstances
+- cultural expectations around authority
+- introversion/extroversion
+- access to ministry opportunities.
+
+Avoid rewarding one cultural style as spiritually superior.
+
+Use plain, concrete wording suitable for translation.
+
+==================================================
+RESULT PUBLISHING RULE
+==================================================
+
+Keep the minimum-evidence rule.
+
+Do NOT publish a scored construct when there is insufficient evidence.
+
+Instead display:
+
+"Not enough information yet."
+
+This is preferable to giving someone an unreliable result.
+
+==================================================
+CONVERSATION-ONLY CONSTRUCTS
+==================================================
+
+If after careful design a construct cannot be responsibly measured with at least three meaningful indicators without making the assessment excessively long or repetitive:
+
+do NOT invent weak questions.
+
+Flag the construct.
+
+Recommend whether it should become:
+
+A. Assessment-scored
+
+B. Optional experience/discernment module
+
+C. Conversation-only / community-discerned
+
+Provide the reasoning.
+
+Do not change its classification until approved.
+
+==================================================
+NEW REVISION REPORT
+==================================================
+
+Do NOT implement yet.
+
+Produce a revised content report containing:
+
+1. Revised complete question bank.
+
+2. Final proposed number of core questions.
+
+3. Final optional Spiritual Experience question count.
+
+4. Questions added.
+
+5. Questions removed.
+
+6. Questions rewritten.
+
+7. Questions whose mappings changed.
+
+8. Full Primary/Secondary map.
+
+9. APEST coverage:
+   - Primary count
+   - Secondary count
+   - weighted coverage
+   for all five orientations.
+
+10. Spiritual Gift coverage for every production gift.
+
+11. Strength coverage for every production Strength.
+
+12. Personality coverage for all seven spectra.
+
+13. List of any construct still below minimum evidence.
+
+14. Recommended treatment for those constructs.
+
+15. Detailed review of the four questions that previously had five mappings.
+
+16. Questions with more than four final mappings.
+
+17. Questions that may have cultural or translation concerns.
+
+18. Estimated completion time.
+
+19. Expected participant question count when all ordinary gifts are enabled.
+
+20. Expected count when special Spiritual Experience gifts are disabled.
+
+21. Confirmation that church gift toggles still work.
+
+22. Confirmation that Personality remains independently scored.
+
+23. Confirmation that historical profiles remain untouched.
+
+24. Confirmation that youth pathways remain unchanged.
+
+==================================================
+DO NOT IMPLEMENT YET
+==================================================
+
+This is still a content-design and validation stage.
+
+Do not modify the live assessment engine, database, or participant experience yet.
+
+Wait for approval of the revised question bank and coverage report before implementation.
