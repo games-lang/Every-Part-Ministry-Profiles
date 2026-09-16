@@ -1,0 +1,23 @@
+---
+name: Four-part profile framework
+description: Completed adult results must always present four distinct named areas (APEST, Spiritual Gifts, Strengths, Personality); the six body-metaphor tendencies are a synthesis, not a fifth area.
+---
+
+Completed adult results (participant view, leader view, print infographic) must keep four distinct, separately titled areas:
+
+1. **How You Tend to Minister** — APEST (Apostle, Prophet, Evangelist, Shepherd, Teacher)
+2. **How God Has Equipped You** — Spiritual Gifts
+3. **What You Are Naturally Good At** — Strengths
+4. **How You Tend to Operate** — Personality
+
+Leader view uses the same titles in third person ("How They Tend to Minister", etc.).
+
+Forbidden merged labels: "Your Wiring", "Your Ministry Type", "Your Ministry Personality", "Your Overall Score", or anything that collapses these four into one identity or score. Do not rename or merge the four without the owner's approval.
+
+The six body-metaphor serving patterns (Hands, Ears, Shoulders, Voice, Arms, Backbone) are derived from strengths + personality and are shown as **"Your/Their Serving Pattern"** inside the synthesis chapter ("Where These Things Come Together"). They must not be titled "How You Tend to Minister" (that title belongs to APEST) and must not appear as a fifth framework area.
+
+The remaining chapters (Heart, Story, Season, Synthesis, Conversation, plus leader-only Private Pastor Notes) stay.
+
+**Why:** Owner's written requirement (September 2026). Even if the assessment becomes one blended question flow, results must sort back into these four areas so pastors and PartFinder keep the distinctions.
+
+**How to apply:** Any change to results, print, PartFinder summaries, or leader-facing summaries must preserve four separately labeled areas. A blended assessment may reorder questions but must still score per area.

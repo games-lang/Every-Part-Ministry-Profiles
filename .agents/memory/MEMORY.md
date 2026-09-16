@@ -32,4 +32,5 @@
 - [Profile print privacy](profile-print-privacy.md) — omit sensitive coordinator content from print/PDF, but intentionally retain Spiritual Health.
 - [Ministry journey recovery](ministry-journey-recovery.md) — stale or cross-church browser journey tokens must start a new journey, never block profile submission.
 - [Private pastor notes](private-pastor-notes.md) — notes are per-author leader records; never mix them into profile, participant, print, youth, AI, or PartFinder payloads.
+- [Four-part profile framework](four-part-profile-framework.md) — results always show APEST, Gifts, Strengths, Personality as four named areas; serving patterns live only in synthesis.
 - [Completed profile portrait](completed-profile-portrait.md) — adult results unfold as one eight-part ministry story; assessments supply evidence but never become stacked result sections.

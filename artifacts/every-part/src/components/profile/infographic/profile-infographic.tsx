@@ -88,7 +88,9 @@ export function ProfileInfographic({
     season,
     connection,
     prayerQuestions,
-    nextStep
+    nextStep,
+    selectedStrengths,
+    personalityLeanings,
   } = synthesis;
 
   const primaryColor = profile.branding?.primaryColor || "hsl(var(--primary))";
@@ -176,9 +178,10 @@ export function ProfileInfographic({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 print:grid-cols-2 print:gap-4 print:text-sm">
           
           {/* BLOCK 1: APEST */}
+          {sectionEnabled("apest") && (
           <InfographicBlock 
             number="1" 
-            title="MINISTRY ORIENTATION" 
+            title="HOW YOU TEND TO MINISTER" 
             color={primaryColor}
             isEmpty={!apestResult}
           >
@@ -190,7 +193,7 @@ export function ProfileInfographic({
                   </div>
                   <div>
                     <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">
-                      Tends to minister like the {bodyParts[apestResult.label]?.part}
+                      APEST · Like the {bodyParts[apestResult.label]?.part}
                     </div>
                     <h3 className="text-xl font-serif font-medium text-slate-800 leading-none">{apestResult.label}</h3>
                   </div>
@@ -207,11 +210,135 @@ export function ProfileInfographic({
               </div>
             )}
           </InfographicBlock>
+          )}
 
-          {/* BLOCK 2: TENDENCY */}
+          {/* BLOCK 2: GIFTS */}
+          {sectionEnabled("spiritualGifts") && (
           <InfographicBlock 
             number="2" 
-            title="HOW YOU TEND TO MINISTER" 
+            title="HOW GOD HAS EQUIPPED YOU" 
+            color={primaryColor}
+            isEmpty={topGifts.length === 0}
+          >
+            <div className="flex flex-col h-full">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
+                Spiritual gifts
+              </div>
+              <div className="space-y-3 flex-grow">
+                {topGifts.slice(0, 3).map((gift: string) => (
+                  <div key={gift}>
+                    <h4 className="font-serif text-base font-medium text-slate-800 leading-tight mb-0.5">{gift}</h4>
+                    <p className="text-[11px] text-slate-500 leading-snug">
+                      {spiritualGiftMeanings[gift] || "An identified area of grace and service."}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </InfographicBlock>
+          )}
+
+          {/* BLOCK 3: STRENGTHS */}
+          {sectionEnabled("naturalStrengths") && (
+          <InfographicBlock 
+            number="3" 
+            title="WHAT YOU ARE NATURALLY GOOD AT" 
+            color={accentColor}
+            isEmpty={selectedStrengths.length === 0}
+          >
+            <div className="flex flex-col h-full">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
+                Strengths
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {selectedStrengths.slice(0, 6).map((strength: string) => (
+                  <span key={strength} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700">
+                    {strength}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-auto pt-3 text-[10px] text-slate-500 italic">
+                What tends to come naturally — a starting point for conversation, not a placement.
+              </p>
+            </div>
+          </InfographicBlock>
+          )}
+
+          {/* BLOCK 4: PERSONALITY */}
+          {sectionEnabled("personalityStrengths") && (
+          <InfographicBlock 
+            number="4" 
+            title="HOW YOU TEND TO OPERATE" 
+            color={primaryColor}
+            isEmpty={personalityLeanings.length === 0}
+          >
+            <div className="flex flex-col h-full">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
+                Personality
+              </div>
+              <ul className="space-y-1.5">
+                {personalityLeanings.map((dimension: { label: string; leaning: string; tendency: string }) => (
+                  <li key={dimension.label} className="flex items-baseline justify-between gap-2 text-[11px]">
+                    <span className="text-slate-500">{dimension.label}</span>
+                    <span className="font-medium text-slate-700 text-right">{dimension.leaning}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-auto pt-3 text-[10px] text-slate-500 italic">
+                Flexible tendencies, not a type or a limit on calling.
+              </p>
+            </div>
+          </InfographicBlock>
+          )}
+
+          {/* BLOCK 5: WHAT MATTERS */}
+          {sectionEnabled("passionsInterests") && (
+          <InfographicBlock 
+            number="5" 
+            title="WHAT MATTERS TO YOU" 
+            color={accentColor}
+            isEmpty={themes.length === 0}
+          >
+            <div className="flex flex-col h-full">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
+                Themes & Passions
+              </div>
+              <div className="space-y-3">
+                  {themes.slice(0, 3).map((theme) => (
+                  <div key={theme.name} className="flex gap-2">
+                    <div className="mt-0.5 text-slate-300 shrink-0"><Heart size={14} fill="currentColor" /></div>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-800 mb-0.5">{theme.name}</h4>
+                      <p className="text-[11px] text-slate-500 leading-snug">{theme.reason}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </InfographicBlock>
+          )}
+
+          {/* BLOCK 6: PATTERNS */}
+          <InfographicBlock 
+            number="6" 
+            title="YOUR PROFILE IN ONE SENTENCE" 
+            color={primaryColor}
+            isEmpty={!synthesis.synthesisText}
+          >
+            <div className="flex flex-col h-full">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
+                A starting point for reflection
+              </div>
+              <p className="font-serif text-lg leading-relaxed text-slate-700">
+                {synthesis.synthesisText}
+              </p>
+            </div>
+          </InfographicBlock>
+
+          {/* SERVING PATTERN (synthesis of the four areas) */}
+          <InfographicBlock 
+            number="7" 
+            title="YOUR SERVING PATTERN" 
             color={accentColor}
             isEmpty={!ministryTendency}
           >
@@ -223,7 +350,7 @@ export function ProfileInfographic({
                   </div>
                   <div>
                   <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">
-                       You tend to minister like the {ministryTendency.key}
+                       In practice, like the {ministryTendency.key}
                     </div>
                     <h3 className="text-xl font-serif font-medium text-slate-800 leading-none">
                       {tendencies[ministryTendency.key]?.name}
@@ -234,7 +361,7 @@ export function ProfileInfographic({
                   {tendencies[ministryTendency.key]?.explanation}
                 </p>
                 <p className="text-[10px] text-slate-500 italic mb-4">
-                  This describes a flexible tendency, not a fixed identity or a ministry assignment.
+                  A summary of how the four areas above tend to come together in practice — not a fixed identity or a ministry assignment.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-3 mt-auto">
@@ -269,75 +396,9 @@ export function ProfileInfographic({
             )}
           </InfographicBlock>
 
-          {/* BLOCK 3: GIFTS */}
+          {/* BLOCK 8: SPIRITUAL HEALTH */}
           <InfographicBlock 
-            number="3" 
-            title="SPIRITUAL GIFTS" 
-            color={primaryColor}
-            isEmpty={topGifts.length === 0}
-          >
-            <div className="flex flex-col h-full">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
-                Identified areas of grace
-              </div>
-              <div className="space-y-3 flex-grow">
-                {topGifts.slice(0, 3).map((gift: string) => (
-                  <div key={gift}>
-                    <h4 className="font-serif text-base font-medium text-slate-800 leading-tight mb-0.5">{gift}</h4>
-                    <p className="text-[11px] text-slate-500 leading-snug">
-                      {spiritualGiftMeanings[gift] || "An identified area of grace and service."}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </InfographicBlock>
-
-          {/* BLOCK 4: WHAT MATTERS */}
-          <InfographicBlock 
-            number="4" 
-            title="WHAT MATTERS TO YOU" 
-            color={accentColor}
-            isEmpty={themes.length === 0}
-          >
-            <div className="flex flex-col h-full">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
-                Themes & Passions
-              </div>
-              <div className="space-y-3">
-                  {themes.slice(0, 3).map((theme) => (
-                  <div key={theme.name} className="flex gap-2">
-                    <div className="mt-0.5 text-slate-300 shrink-0"><Heart size={14} fill="currentColor" /></div>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 mb-0.5">{theme.name}</h4>
-                      <p className="text-[11px] text-slate-500 leading-snug">{theme.reason}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </InfographicBlock>
-
-          {/* BLOCK 5: PATTERNS */}
-          <InfographicBlock 
-            number="5" 
-            title="YOUR PROFILE IN ONE SENTENCE" 
-            color={primaryColor}
-            isEmpty={!synthesis.synthesisText}
-          >
-            <div className="flex flex-col h-full">
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
-                A starting point for reflection
-              </div>
-              <p className="font-serif text-lg leading-relaxed text-slate-700">
-                {synthesis.synthesisText}
-              </p>
-            </div>
-          </InfographicBlock>
-
-          {/* BLOCK 6: SPIRITUAL HEALTH */}
-          <InfographicBlock 
-            number="6" 
+            number="8" 
             title="SPIRITUAL HEALTH" 
             color="#10B981"
             isEmpty={Object.keys(healthData).length === 0}
@@ -396,7 +457,7 @@ export function ProfileInfographic({
 
           {/* BLOCK 7: CONNECTION & SEASON */}
           <InfographicBlock 
-            number="7" 
+            number="9" 
             title="CONNECTION & SEASON" 
             color={accentColor}
             isEmpty={!connection && !season}
@@ -423,7 +484,7 @@ export function ProfileInfographic({
 
           {/* BLOCK 8: ENVIRONMENTS */}
           <InfographicBlock 
-            number="8" 
+            number="10" 
             title="MINISTRY INTERESTS YOU NAMED" 
             color={primaryColor}
             isEmpty={environments.length === 0}
@@ -450,7 +511,7 @@ export function ProfileInfographic({
 
           {/* BLOCK 9: NEXT STEP */}
           <InfographicBlock 
-            number="9" 
+            number="11" 
             title="NEXT STEP & REFLECTION" 
             color={accentColor}
             isEmpty={!nextStep && prayerQuestions.length === 0}

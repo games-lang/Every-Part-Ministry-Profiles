@@ -429,6 +429,12 @@ export function getMyMinistrySynthesis(
       scoring: tendencyScoring,
     } : null,
     topGifts,
+    selectedStrengths,
+    personalityLeanings: dimensions.map(d => ({
+      label: d.label,
+      leaning: d.dominant === "left" ? d.left : d.dominant === "right" ? d.right : "Balanced",
+      tendency: d.tendency,
+    })),
     themes: themes.filter((theme, index, all) => all.findIndex(item => item.name === theme.name) === index).slice(0, 3),
     patterns: [...new Set(patterns)].slice(0, 5),
     environments: uniqueEnvironments,

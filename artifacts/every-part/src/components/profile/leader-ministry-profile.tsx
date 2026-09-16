@@ -1,13 +1,14 @@
 import { useMemo } from "react";
 import type { MinistryProfile } from "@workspace/api-client-react";
 import { Badge } from "@/components/ui/badge";
-import { Value, ObjectValues, Languages } from "../../pages/profile-detail";
+import { Value, ObjectValues, Languages, StrengthsAssessment, PersonalityAssessment } from "../../pages/profile-detail";
 import { hasValues } from "@/components/coordinator-ask";
 import { getLeaderSynthesis } from "../../lib/leader-derivation";
 import { PastorNotesEditor } from "./pastor-notes-editor";
 import { LeaderFitSection } from "./leader-fit-section";
 import { PortraitChapter } from "./portrait-chapter";
 import { buildMinistryPortrait } from "../../lib/ministry-portrait";
+import { ServingPatternCard } from "./serving-pattern-card";
 import {
   AlertCircle,
   BookOpen,
@@ -26,7 +27,9 @@ import {
   Lightbulb,
   Compass,
   MapPin,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles,
+  SlidersHorizontal
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -50,6 +53,8 @@ const TENDENCIES: Record<string, { name: string; description: string; explanatio
 const spiritualGiftMeanings: Record<string, string> = {
   "Administration":"organizing people, resources, and systems effectively", "Apostleship":"pioneering, starting, expanding, and establishing new ministries or works", "Discernment of Spirits":"recognizing what is from God, human influence, or spiritual deception", "Evangelism":"communicating the gospel and helping people respond to Jesus", "Exhortation / Encouragement":"strengthening, motivating, comforting, and challenging others", "Faith":"unusual confidence in God’s power, promises, and provision", "Giving":"generously and joyfully sharing resources to advance God’s work and meet needs", "Healing":"being used by God as an instrument of physical, emotional, or spiritual healing", "Helps / Service":"meeting practical needs and supporting others so ministry can happen", "Hospitality":"welcoming people and creating environments where others feel received and cared for", "Interpretation of Tongues":"interpreting a message spoken in tongues", "Knowledge":"understanding and communicating spiritual truth or insight", "Leadership":"providing direction, motivating others, and helping a group move toward God-given goals", "Mercy":"compassionately caring for people who are hurting, struggling, marginalized, or in need", "Miracles":"being used by God in extraordinary demonstrations of His power", "Pastoring / Shepherding":"caring for, protecting, guiding, and nurturing people spiritually", "Prophecy":"communicating a message believed to be prompted by God for strengthening, correction, encouragement, or direction", "Teaching":"explaining and applying biblical truth so others understand and grow", "Tongues":"speaking in a language or spiritual utterance given through the Holy Spirit", "Wisdom":"applying spiritual truth appropriately to real situations", "Craftsmanship":"using artistic or practical skill for God’s purposes", "Intercession":"persistent, focused prayer for others", "Missionary / Cross-Cultural Ministry":"effectively ministering across cultures and communities", "Music / Worship":"using musical ability to lead and encourage worship", "Celibacy":"a particular grace for remaining unmarried for undivided devotion to ministry", "Voluntary Poverty":"willingly living with less in order to serve God and others",
 };
+
+const thirdPerson = (text?: string) => (text ?? "").replace(/\bYou naturally\b/g, "They naturally").replace(/\bYou\b/g, "They").replace(/\byou\b/g, "they");
 
 export function LeaderMinistryProfile({
   profile,
@@ -93,7 +98,6 @@ export function LeaderMinistryProfile({
   const apestResult = participantSynthesis.apestResult;
   const ministryTendency = participantSynthesis.ministryTendency;
   const ApestIcon = apestResult ? APEST_BODY_PARTS[apestResult.label]?.icon || Star : Star;
-  const TendencyIcon = ministryTendency ? TENDENCIES[ministryTendency.key]?.icon || Star : Star;
 
   return (
     <div className="space-y-0 pb-16 mt-8 max-w-4xl mx-auto">
@@ -112,81 +116,31 @@ export function LeaderMinistryProfile({
       </section>
 
       {apestResult && (
-      <PortraitChapter number={1} title="Their Part in the Body" icon={ApestIcon}>
-        {apestResult ? (
-          <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
-            <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Like the {APEST_BODY_PARTS[apestResult.label]?.part}</div>
-            <h3 className="text-2xl font-serif font-medium mb-3">{apestResult.label}</h3>
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              {APEST_BODY_PARTS[apestResult.label]?.description}
-            </p>
-            {apestResult.secondary && (
-              <div className="mt-6 pt-5 border-t border-border/40">
-                <h4 className="text-sm font-medium mb-1 text-foreground">Secondary Orientation: {apestResult.secondary}</h4>
-                <p className="text-sm text-muted-foreground">{APEST_BODY_PARTS[apestResult.secondary]?.description}</p>
-              </div>
-            )}
-            <div className="mt-6 rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground italic border border-border/50">
-              This is a picture of a ministry orientation, not a limit on how God can use them.
+      <PortraitChapter number={1} title="How They Tend to Minister" icon={ApestIcon}>
+        <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+          <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Ministry Orientation (APEST) · Like the {APEST_BODY_PARTS[apestResult.label]?.part}</div>
+          <h3 className="text-2xl font-serif font-medium mb-3">{apestResult.label}</h3>
+          <p className="text-muted-foreground leading-relaxed text-lg">
+            {thirdPerson(APEST_BODY_PARTS[apestResult.label]?.description)}
+          </p>
+          {apestResult.secondary && (
+            <div className="mt-6 pt-5 border-t border-border/40">
+              <h4 className="text-sm font-medium mb-1 text-foreground">Secondary Orientation: {apestResult.secondary}</h4>
+              <p className="text-sm text-muted-foreground">{thirdPerson(APEST_BODY_PARTS[apestResult.secondary]?.description)}</p>
             </div>
+          )}
+          <div className="mt-6 rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground italic border border-border/50">
+            This is a picture of a ministry orientation, not a limit on how God can use them.
           </div>
-        ) : (
-          <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
-            No ministry-orientation result was available in this profile’s saved assessment sections.
-          </div>
-        )}
-      </PortraitChapter>
-      )}
-
-      {ministryTendency && (
-      <PortraitChapter number={2} title="How They Tend to Minister" icon={TendencyIcon}>
-        {ministryTendency ? (
-          <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
-            <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Like the {ministryTendency.key}</div>
-            <h3 className="text-2xl font-serif font-medium mb-3">{TENDENCIES[ministryTendency.key]?.name}</h3>
-            <p className="text-muted-foreground leading-relaxed text-lg mb-6">
-              {TENDENCIES[ministryTendency.key]?.explanation}
-            </p>
-            {ministryTendency.secondaryKey && (
-              <div className="mb-6 rounded-xl bg-accent/5 border border-accent/10 p-4 text-sm text-foreground/80">
-                Their responses were close to <strong className="font-medium text-accent-foreground">{TENDENCIES[ministryTendency.secondaryKey]?.name}</strong>, suggesting they may draw on both approaches depending on the people and situation.
-              </div>
-            )}
-
-            <div className="grid md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-border/40">
-              <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-primary/40"></div>
-                  Potential Strengths
-                </h4>
-                <ul className="text-sm space-y-2 text-foreground/80">
-                  {TENDENCIES[ministryTendency.key]?.strengths.map(s => <li key={s} className="flex gap-3"><span className="text-primary/40">•</span><span className="leading-snug">{s}</span></li>)}
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-amber-500/60"></div>
-                  Things to Watch
-                </h4>
-                <ul className="text-sm space-y-2 text-foreground/80">
-                  {TENDENCIES[ministryTendency.key]?.blindSpots.map(s => <li key={s} className="flex gap-3"><span className="text-amber-500/60">•</span><span className="leading-snug">{s}</span></li>)}
-                </ul>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-xl border border-border/50 bg-muted/20 p-6 text-muted-foreground italic">
-            No ministry tendency result was available.
-          </div>
-        )}
+        </div>
       </PortraitChapter>
       )}
 
       {sectionEnabled("spiritualGifts") && (
-      <PortraitChapter number={3} title="What God May Have Equipped Them With" icon={Lightbulb}>
+      <PortraitChapter number={2} title="How God Has Equipped Them" icon={Lightbulb}>
         {participantSynthesis.topGifts.length > 0 ? (
           <div className="space-y-4">
-            <p className="text-muted-foreground mb-4">These are spiritual gifts they identified as being strong or prominent in their life.</p>
+            <p className="text-muted-foreground mb-4">Spiritual gifts they identified as being strong or prominent in their life.</p>
             <div className="grid gap-4">
               {participantSynthesis.topGifts.map((gift: string) => (
                 <div key={gift} className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
@@ -206,8 +160,26 @@ export function LeaderMinistryProfile({
       </PortraitChapter>
       )}
 
+      {sectionEnabled("naturalStrengths") && (
+      <PortraitChapter number={3} title="What They Are Naturally Good At" icon={Sparkles}>
+        <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+          <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Strengths</div>
+          <StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={(sub) => subsectionEnabled("naturalStrengths", sub)} />
+        </div>
+      </PortraitChapter>
+      )}
+
+      {sectionEnabled("personalityStrengths") && (
+      <PortraitChapter number={4} title="How They Tend to Operate" icon={SlidersHorizontal}>
+        <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
+          <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Personality</div>
+          <PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={(sub) => subsectionEnabled("personalityStrengths", sub)} perspective="leader" />
+        </div>
+      </PortraitChapter>
+      )}
+
       {sectionEnabled("passionsInterests") && (
-      <PortraitChapter number={4} title="What Moves Their Heart" icon={Heart}>
+      <PortraitChapter number={5} title="What Moves Their Heart" icon={Heart}>
         {participantSynthesis.themes.length > 0 ? (
           <div className="space-y-4">
             {participantSynthesis.themes.map((theme: { name: string; reason: string }) => (
@@ -226,7 +198,7 @@ export function LeaderMinistryProfile({
       )}
 
       {sectionEnabled("aboutYou") && (
-      <PortraitChapter number={5} title="What Their Story Has Prepared Them For" icon={BookOpen}>
+      <PortraitChapter number={6} title="What Their Story Has Prepared Them For" icon={BookOpen}>
         <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
           <div className="grid md:grid-cols-2 gap-6">
             {sectionEnabled("aboutYou") && subsectionEnabled("aboutYou", "skillsExperience") && (
@@ -273,7 +245,7 @@ export function LeaderMinistryProfile({
       )}
 
       {(participantSynthesis.season || participantSynthesis.connection || hasSpiritualHealth) && (
-      <PortraitChapter number={6} title="Their Current Season" icon={Compass}>
+      <PortraitChapter number={7} title="Their Current Season" icon={Compass}>
         {(participantSynthesis.season || participantSynthesis.connection) ? (
           <div className="space-y-6">
             {participantSynthesis.season && (
@@ -309,8 +281,11 @@ export function LeaderMinistryProfile({
       </PortraitChapter>
       )}
 
-      <PortraitChapter number={7} title="Where These Things Come Together" icon={MapPin}>
+      <PortraitChapter number={8} title="Where These Things Come Together" icon={MapPin}>
         <div className="space-y-6">
+          {ministryTendency && (
+            <ServingPatternCard tendency={ministryTendency} tendencies={TENDENCIES} perspective="leader" />
+          )}
           {portrait.length > 0 && (
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-8">
               <h3 className="text-lg font-serif font-medium mb-3 text-foreground">Putting It Together</h3>
@@ -323,7 +298,7 @@ export function LeaderMinistryProfile({
         </div>
       </PortraitChapter>
 
-      <PortraitChapter number={8} title="The Conversation" icon={MessageSquare}>
+      <PortraitChapter number={9} title="The Conversation" icon={MessageSquare}>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm">
             <h3 className="text-lg font-serif font-medium mb-4 flex items-center gap-2">
@@ -367,7 +342,7 @@ export function LeaderMinistryProfile({
       </PortraitChapter>
 
       {!isPrinting && (
-        <PortraitChapter number={9} title="Private Pastor Notes" icon={ClipboardList} className="no-print border-l-transparent pb-0">
+        <PortraitChapter number={10} title="Private Pastor Notes" icon={ClipboardList} className="no-print border-l-transparent pb-0">
           <PastorNotesEditor profileId={profile.id} />
         </PortraitChapter>
       )}
