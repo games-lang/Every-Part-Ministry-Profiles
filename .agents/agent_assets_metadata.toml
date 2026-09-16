@@ -28,3 +28,31 @@ mtime_ms = 1789583217124
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/10b016e1-6693-4db6-9afa-44583a67292b/f3dbd61e-3f1c-4889-a2ae-457d3aadf650"
 storage_version_token = "1789583276146577"
 content_type = "text/csv"
+
+[[outputs]]
+id = "zgFo0uzdB1ZEVxHpdYhQH"
+uri = "file://reports/short-integrated-content-design.html"
+type = "text"
+title = "Shorter Assessment — Content Design Report"
+description = "Complete proposed 64-question core, optional 15-question module, mapping rationales, coverage tables, and explicit evidence gaps. Review draft—not ready for implementation."
+logical_id = "08c72524-c097-46f4-ba12-4f1511631ebf"
+content_hash = "sha256:51e86abb72df73a087db0831e0ac5f9878f70f06cf8fe797d09b48fbeb743751"
+size = 39135
+mtime_ms = 1789584644688
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/08c72524-c097-46f4-ba12-4f1511631ebf/5165ba63-d6a9-453a-8904-80ddcff941ac"
+storage_version_token = "1789584677817569"
+content_type = "text/html"
+
+[[outputs]]
+id = "Ku-7sewlbafVVLwVdAxGu"
+uri = "file://reports/short-integrated-question-bank.json"
+type = "unspecified"
+title = "Proposed Question Bank & Scoring Map"
+description = "Stable question IDs, wording, mixed-round order, primary and secondary mappings, weights, and unscored contextual prompts."
+logical_id = "30fe683f-8de0-4646-b6d4-dc7ca88aa892"
+content_hash = "sha256:4b796dbb4c508fa220a76cf88b0ad3bdecbbba70c3bd88ebbaa24ca9f6537598"
+size = 33903
+mtime_ms = 1789584641132
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/30fe683f-8de0-4646-b6d4-dc7ca88aa892/6db964bc-d72a-4ee8-aaad-8944f95631a6"
+storage_version_token = "1789584678303259"
+content_type = "application/octet-stream"

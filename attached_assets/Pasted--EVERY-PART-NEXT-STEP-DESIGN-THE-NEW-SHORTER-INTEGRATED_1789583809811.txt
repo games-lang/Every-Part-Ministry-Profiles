@@ -1,0 +1,587 @@
+# EVERY PART — NEXT STEP: DESIGN THE NEW SHORTER INTEGRATED QUESTION BANK
+
+Thank you for the design report.
+
+Do NOT implement the 168-question blended flow yet.
+
+The report revealed an important issue:
+
+Blending the existing question bank would improve the interface, but it would not accomplish the main goal of the integrated assessment because participants would still answer approximately 168 questions.
+
+The goal of this project is NOT merely to shuffle the existing four assessments together.
+
+The goal is to create a NEW, shorter integrated assessment that preserves useful measurement while substantially reducing unnecessary overlap.
+
+We now need to redesign the QUESTION BANK and SCORING MAP before implementation.
+
+==================================================
+TARGET EXPERIENCE
+==================================================
+
+Create a new adult integrated assessment targeting approximately:
+
+55–65 core questions
+
+PLUS, when applicable:
+
+a short optional Spiritual Experience & Discernment module.
+
+Do not force the assessment to exactly 60 questions.
+
+The goal is:
+
+the shortest assessment that still gives each important construct enough meaningful independent evidence to support a useful ministry conversation.
+
+Target completion time:
+
+approximately 12–18 minutes.
+
+Do not implement the current 168-question version as the new integrated assessment.
+
+==================================================
+IMPORTANT — DO NOT SIMPLY DELETE QUESTIONS
+==================================================
+
+Do not shorten the existing assessment by randomly deleting questions.
+
+Instead:
+
+1. Audit the existing APEST questions.
+2. Audit the existing Spiritual Gift questions.
+3. Audit the existing Strength questions.
+4. Audit the existing Personality questions.
+5. Identify where multiple questions are measuring closely related behaviors.
+6. Write new behavior-based questions that can legitimately provide evidence for more than one construct.
+
+The new question bank should be intentionally designed for integrated scoring.
+
+==================================================
+ONE QUESTION MAY SUPPORT MULTIPLE CATEGORIES
+==================================================
+
+Unlike the current question bank, the new integrated bank MAY allow one response to contribute to more than one category when the behavior genuinely supports both.
+
+Example:
+
+"When I notice an unmet need, I tend to take the first practical step toward addressing it."
+
+This could potentially support:
+
+APEST:
+Apostle
+
+Spiritual Gift:
+Leadership or Administration
+
+Strength:
+Initiative
+
+That does NOT mean every question should score three areas.
+
+Only create cross-category mappings when there is a strong conceptual relationship.
+
+Do not manufacture connections merely to reduce question count.
+
+==================================================
+PERSONALITY SHOULD REMAIN MORE INDEPENDENT
+==================================================
+
+Do NOT aggressively cross-score Personality from ministry behaviors.
+
+Personality / How You Tend to Operate should primarily use its own neutral questions.
+
+Examples:
+
+Prayer does not automatically indicate Conscientiousness.
+
+Mercy does not automatically indicate Agreeableness.
+
+Leadership does not automatically indicate Extraversion.
+
+Public speaking does not automatically indicate Extraversion.
+
+Tongues does not automatically indicate Openness.
+
+Giving does not automatically determine Personality.
+
+Aim for approximately:
+
+15 Personality questions
+
+covering the existing seven spectra or whatever Personality taxonomy is currently active in production.
+
+Because the current production version contains seven spectra, preserve those seven unless there is an explicit approved change.
+
+==================================================
+APEST COVERAGE
+==================================================
+
+Maintain:
+
+Apostle
+Prophet
+Evangelist
+Shepherd
+Teacher
+
+Aim for approximately balanced evidence across all five.
+
+Each orientation should have approximately:
+
+6–10 meaningful indicators
+
+depending on overlap and question quality.
+
+Do not recreate the previous imbalance where one orientation receives dramatically more opportunities than another.
+
+A question may contain:
+
+Primary APEST mapping = 1.0
+
+Optional Secondary APEST mapping = 0.5
+
+Do not assign a question to several APEST orientations unless clearly justified.
+
+==================================================
+SPIRITUAL GIFT COVERAGE
+==================================================
+
+Use the CURRENT production Every Part gift taxonomy.
+
+Do not invent or rename gifts.
+
+For ordinary gifts, aim for at least:
+
+3 meaningful indicators
+
+and preferably:
+
+3–5
+
+depending on the construct.
+
+Because the integrated assessment is shorter, questions may sometimes provide evidence for both a Spiritual Gift and another category.
+
+Use:
+
+Primary Gift = 1.0
+
+Optional Secondary Gift = 0.5
+
+Do not attach a long list of gifts to a broad question.
+
+==================================================
+STRENGTH COVERAGE
+==================================================
+
+Use the CURRENT production Strength taxonomy.
+
+Aim for approximately:
+
+3–5 meaningful indicators per Strength.
+
+Strengths may often pair naturally with APEST or Spiritual Gift questions.
+
+Example:
+
+A question about explaining complex ideas clearly might provide evidence for:
+
+Teaching Spiritual Gift
+
+Teacher APEST
+
+Teaching/Explanation Strength
+
+This type of overlap is desirable because the SAME observable behavior provides evidence for several distinct concepts.
+
+However, the resulting scores must still remain separate.
+
+==================================================
+SPECIAL SPIRITUAL EXPERIENCE MODULE
+==================================================
+
+Keep questions for constructs such as:
+
+Tongues
+Interpretation of Tongues
+Healing
+Miracles
+
+in a separate optional:
+
+Spiritual Experience & Discernment
+
+module.
+
+Do not use those questions to infer Personality.
+
+Do not automatically use them to infer APEST.
+
+Dynamically include or omit them based on the church's enabled Spiritual Gifts.
+
+Provide:
+
+Not sure / I have not experienced this / not part of my tradition
+
+as an unscored option.
+
+==================================================
+SPIRITUAL GIFT SETTINGS
+==================================================
+
+Preserve the existing ability for churches to turn individual gifts ON or OFF.
+
+A new integrated question may still remain if it measures another active construct.
+
+Example:
+
+Question measures:
+
+Evangelism Gift
+Evangelist APEST
+Communication Strength
+
+If Evangelism Gift is disabled:
+
+keep the question for APEST and Strength scoring.
+
+Disable only the Evangelism scoring connection.
+
+If a question exists solely for disabled constructs:
+
+omit it.
+
+==================================================
+SCORING ARCHITECTURE
+==================================================
+
+Create a new scoring map that supports:
+
+Primary mapping = weight 1.0
+
+Secondary mapping = weight 0.5
+
+Calculate each construct separately.
+
+Formula:
+
+weighted score =
+sum(response × mapping weight)
+/
+sum(answered weights)
+
+N/A and skipped responses contribute nothing to numerator or denominator.
+
+The four result categories remain independent:
+
+APEST
+Spiritual Gifts
+Strengths
+Personality
+
+Never create one combined numerical score.
+
+==================================================
+MINIMUM EVIDENCE
+==================================================
+
+A shortened assessment must not produce confident results from one or two answers.
+
+Require sufficient answered evidence before publishing a result.
+
+Generally require:
+
+at least 3 meaningful indicators
+
+for a construct.
+
+If insufficient:
+
+"Not enough information yet."
+
+==================================================
+WRITE NEW QUESTIONS FROM BEHAVIOR
+==================================================
+
+Use observable behaviors rather than labels.
+
+Prefer:
+
+"I notice when someone feels overlooked and usually make an effort to include them."
+
+Instead of:
+
+"I have the gift of hospitality."
+
+Prefer:
+
+"I enjoy studying something until I can explain it clearly to another person."
+
+Instead of:
+
+"I am a teacher."
+
+Prefer recent ordinary-life behaviors across:
+
+church
+work
+home
+school
+community
+
+rather than only formal church-ministry experience.
+
+This is important because participants may not yet have had many ministry opportunities.
+
+==================================================
+MULTILINGUAL QUALITY
+==================================================
+
+Write questions using plain language that can be translated accurately.
+
+Avoid:
+
+idioms
+American-only phrases
+complex theological jargon
+double negatives
+multiple unrelated behaviors in one question
+subtle English wordplay
+
+Every question needs a stable language-independent ID.
+
+==================================================
+MIXED-ROUND STRUCTURE
+==================================================
+
+Once the new question bank is created, organize it into approximately 5–6 participant-friendly mixed rounds.
+
+Possible headings:
+
+How You Notice and Respond
+
+How You Work With Others
+
+How You Communicate and Guide
+
+How You Care and Serve
+
+How You Think and Approach Change
+
+How You Tend to Work
+
+These are UX headings only.
+
+They are NOT scoring categories.
+
+Do not force equal numbers into every round.
+
+Place questions where they feel most natural.
+
+==================================================
+KEEP THE REST OF THE PROFILE UNCHANGED
+==================================================
+
+Do not redesign:
+
+What Moves Your Heart
+
+What Your Story Has Prepared You For
+
+Your Current Season
+
+Spiritual Health
+
+Interests
+
+Availability
+
+Experience
+
+Languages
+
+Family information
+
+Conversation
+
+or other existing profile components.
+
+Only redesign the four assessment question banks into one integrated assessment.
+
+==================================================
+YOUR SERVING PATTERN
+==================================================
+
+Do not create new questions specifically for the six body-metaphor tendencies.
+
+Your Serving Pattern remains a synthesis feature.
+
+The current report correctly notes that it presently relies primarily on Personality and Strengths.
+
+Do NOT start claiming that it mathematically uses all four areas unless its calculation is intentionally redesigned later.
+
+For now, preserve its actual calculation and describe it accurately.
+
+We can redesign the Serving Pattern algorithm separately later if desired.
+
+==================================================
+SAVE / RESUME AND SNAPSHOTS
+==================================================
+
+The design report correctly identified that the current adult assessment lacks reliable draft save/resume and immutable active-question snapshots.
+
+The new integrated assessment should include:
+
+automatic draft save
+
+resume from last position
+
+frozen active-question list when an assessment attempt begins
+
+church configuration snapshot
+
+enabled-gifts snapshot
+
+question-set version
+
+scoring-model version.
+
+If church settings change while a participant is halfway through an assessment, their active assessment should continue using the frozen configuration with which they began.
+
+The change should apply to future attempts.
+
+==================================================
+N/A
+==================================================
+
+The design report also correctly identified that the current controls do not provide N/A.
+
+Add:
+
+N/A — Not Sure / I Have Not Had the Opportunity
+
+N/A is missing information.
+
+It is NOT zero.
+
+It must not:
+
+lower a score
+
+count as a negative answer
+
+penalize completion calculations improperly.
+
+==================================================
+YOUTH PATHWAYS
+==================================================
+
+Do not modify youth pathways yet.
+
+Keep:
+
+children
+preteens
+teens
+
+on their current assessment systems.
+
+We will intentionally redesign those after the adult integrated assessment has been validated.
+
+==================================================
+DO NOT IMPLEMENT YET
+==================================================
+
+For this step, DO NOT build the new assessment yet.
+
+First produce the NEW CONTENT DESIGN REPORT.
+
+I want to review the actual question bank and coverage before implementation.
+
+==================================================
+NEW CONTENT DESIGN REPORT
+==================================================
+
+Produce:
+
+1. The complete proposed 55–65 question bank.
+
+2. Stable question ID for every question.
+
+3. Participant-facing question text.
+
+4. Proposed mixed round for every question.
+
+5. Every Primary scoring mapping.
+
+6. Every Secondary scoring mapping.
+
+7. Category for each mapping:
+   - APEST
+   - Spiritual Gift
+   - Strength
+   - Personality
+
+8. Weight assigned to each mapping.
+
+9. Coverage table for all five APEST orientations.
+
+10. Coverage table for every active production Spiritual Gift.
+
+11. Coverage table for every Strength.
+
+12. Coverage table for all seven current Personality spectra.
+
+13. Identify constructs with fewer than 3 meaningful indicators.
+
+14. Identify constructs with unusually high coverage.
+
+15. Identify questions mapped to too many constructs.
+
+16. Explain why each cross-category mapping is conceptually justified.
+
+17. Estimated assessment completion time.
+
+18. Number of questions a participant would see with all gifts enabled.
+
+19. Number they would see with special-experience gifts disabled.
+
+20. Questions included in the optional Spiritual Experience & Discernment module.
+
+21. Confirmation that gift ON/OFF settings continue working.
+
+22. Proposed N/A behavior.
+
+23. Proposed save/resume and frozen-attempt behavior.
+
+24. Confirmation that historical profiles remain untouched.
+
+25. Confirmation that youth pathways remain unchanged.
+
+==================================================
+QUALITY STANDARD
+==================================================
+
+Do not consider the new question bank ready merely because it contains fewer questions.
+
+It should meet BOTH goals:
+
+SHORTER PARTICIPANT EXPERIENCE
+
+AND
+
+ENOUGH QUALITY EVIDENCE FOR USEFUL RESULTS.
+
+If 60 questions cannot responsibly cover the current production taxonomy, clearly explain which constructs create the problem rather than silently weakening the assessment.
+
+We can then decide whether:
+
+the assessment needs slightly more questions
+
+some constructs belong in optional modules
+
+or some parts should be handled through leader conversation rather than forced into the questionnaire.
+
+The goal is not an arbitrary question count.
+
+The goal is a shorter, trustworthy ministry-discovery experience.

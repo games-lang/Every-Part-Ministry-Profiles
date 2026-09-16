@@ -27,3 +27,9 @@ The owner confirmed the current portrait structure on 2026-09-16. Adult assessme
 **Why:** The owner wants less assessment friction without merging independent constructs or changing the approved portrait.
 
 **How to apply:** Review a full question-to-round/scoring inventory before implementation; retain the legacy flow during an adult-only pilot. Freeze active questions and configuration per attempt, and treat N/A and skipped answers as unscored rather than zero.
+
+The shorter adult bank must be newly designed, not just the existing questions blended. Cross-category links are permitted only when the same observable behavior directly supports each construct; neutral Personality items remain separate.
+
+**Why:** The owner explicitly prioritizes trustworthy evidence over hitting a 55–65 core-question target. Missing coverage must be disclosed rather than filled with weak links. Humility or seeking guidance around extraordinary experiences does not itself establish a spiritual gift.
+
+**How to apply:** Audit distinct indicators and mapping rationales before approving scores. Preserve all seven Personality spectra and the actual Serving Pattern calculation; any taxonomy or optional-module changes require review.
