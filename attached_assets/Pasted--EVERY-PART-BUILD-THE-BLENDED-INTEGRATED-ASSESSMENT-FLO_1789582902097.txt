@@ -1,0 +1,557 @@
+# EVERY PART — BUILD THE BLENDED INTEGRATED ASSESSMENT FLOW
+
+The finished profile restructure is correct. Keep the current result structure exactly as it now exists, including:
+
+1. How You Tend to Minister — APEST
+2. How God Has Equipped You — Spiritual Gifts
+3. What You Are Naturally Good At — Strengths
+4. How You Tend to Operate — Personality
+5. What Moves Your Heart
+6. What Your Story Has Prepared You For
+7. Your Current Season
+8. Where These Things Come Together — including Your Serving Pattern
+9. The Conversation
+
+Now redesign the assessment-taking experience for the adult pathway so that the first four assessment areas are completed as ONE blended assessment.
+
+Do not merge the result categories.
+
+The participant should experience one unified questionnaire, while the scoring engine must continue calculating APEST, Spiritual Gifts, Strengths, and Personality independently.
+
+==================================================
+BLEND ONLY THESE FOUR AREAS
+==================================================
+
+Blend together:
+
+- How You Tend to Minister — APEST
+- How God Has Equipped You — Spiritual Gifts
+- What You Are Naturally Good At — Strengths
+- How You Tend to Operate — Personality
+
+Do NOT weave the following into the blended assessment:
+
+- What Moves Your Heart
+- Story
+- Season
+- Spiritual Health
+- Interests
+- Availability
+- Free-text reflection
+- Other existing profile sections
+
+Those should remain separate steps in the profile flow.
+
+==================================================
+USE MIXED ROUNDS — NOT FULL RANDOMIZATION
+==================================================
+
+Do NOT fully shuffle all questions into a random order.
+
+Instead, organize the blended assessment into several natural mixed rounds.
+
+Each round should contain questions from multiple scoring areas where appropriate.
+
+Suggested participant-facing round names:
+
+1. How You Notice and Respond
+2. How You Work With Others
+3. How You Communicate and Guide
+4. How You Care and Serve
+5. How You Think and Approach Change
+6. How You Tend to Work
+
+These are user-experience headings only.
+
+They are NOT new scoring categories.
+
+The purpose is to make the assessment feel cohesive without revealing the scoring structure.
+
+==================================================
+HIDE THE SCORING CATEGORIES WHILE ANSWERING
+==================================================
+
+Participants should NOT see labels such as:
+
+- APEST
+- Spiritual Gifts
+- Strengths
+- Personality
+
+while answering questions.
+
+They should not know which category or construct a question feeds.
+
+Keep all scoring tags hidden.
+
+The participant should feel like they are simply answering one thoughtful set of questions about how they tend to serve, respond, think, relate, and work.
+
+==================================================
+KEEP THE FOUR RESULT SYSTEMS SEPARATE
+==================================================
+
+Even though the questions are blended visually, continue calculating these independently:
+
+APEST
+
+Spiritual Gifts
+
+Strengths
+
+Personality
+
+Do not create a combined master score.
+
+Do not merge the scoring tables.
+
+Do not flatten them into one result category.
+
+The blended flow is a participant-experience change, not a scoring-category merger.
+
+==================================================
+KEEP CHURCH TOGGLES WORKING
+==================================================
+
+All current section, subsection, and Spiritual Gift toggles must continue working.
+
+If a church disables an area or construct, adapt the blended flow dynamically.
+
+If a question only measures a disabled construct:
+
+remove that question from the active assessment.
+
+If a question measures both a disabled construct and an enabled construct:
+
+KEEP the question
+
+but disable only the inactive scoring connection.
+
+Example:
+
+A question contributes to:
+
+- Evangelism Spiritual Gift
+- Evangelist APEST
+- Communication Strength
+
+If the church disables the Evangelism Spiritual Gift:
+
+keep the question if it still contributes to Evangelist APEST and Communication Strength.
+
+Do not calculate or display Evangelism as a Spiritual Gift.
+
+==================================================
+SPIRITUAL GIFT ON/OFF SETTINGS MUST REMAIN
+==================================================
+
+Continue allowing authorized church leaders to turn individual Spiritual Gifts on or off.
+
+Turning a gift off must:
+
+- hide that gift from current results
+- stop scoring that gift
+- stop Part Finder from using that gift
+- remove gift-only questions when appropriate
+
+Turning a gift off must NOT:
+
+- delete historical answers
+- delete historical scores
+- rewrite old profiles
+- alter previous saved snapshots
+
+Historical assessments must remain tied to the gift configuration that existed when they were completed.
+
+==================================================
+SPECIAL SPIRITUAL EXPERIENCE QUESTIONS
+==================================================
+
+Do NOT randomly scatter questions about things such as:
+
+- Tongues
+- Interpretation of Tongues
+- Healing
+- Miracles
+
+throughout the normal blended rounds.
+
+If enabled Spiritual Gifts require these questions, place them near the end of the integrated assessment in a short subsection called something like:
+
+SPIRITUAL EXPERIENCE & DISCERNMENT
+
+This remains part of the overall integrated assessment, but it should feel intentionally distinct.
+
+Include an appropriate option such as:
+
+"Not sure / I have not experienced this / this is not part of my church tradition."
+
+That response must remain unscored.
+
+Do not use these spiritual-experience answers to infer Personality unless there is an independently justified scoring reason.
+
+Do not automatically infer APEST from extraordinary spiritual experiences.
+
+==================================================
+PERSONALITY QUESTIONS
+==================================================
+
+Personality questions can be blended into the ordinary mixed rounds where they fit naturally.
+
+However:
+
+Personality must continue to be scored independently.
+
+Do not infer Personality from spiritual behaviors.
+
+Examples:
+
+Prayer does not automatically mean Conscientiousness.
+
+Mercy does not automatically mean Agreeableness.
+
+Leadership does not automatically mean Extraversion.
+
+Speaking in tongues does not automatically mean Openness.
+
+Public speaking does not automatically mean Extroversion.
+
+==================================================
+KEEP HEART, STORY, SEASON, AND SPIRITUAL HEALTH SEPARATE
+==================================================
+
+After the integrated assessment, continue the rest of the Ministry Profile as separate reflective steps.
+
+Suggested overall adult flow:
+
+1. Prayer / Profile Introduction
+
+2. Integrated Assessment
+   - APEST
+   - Spiritual Gifts
+   - Strengths
+   - Personality
+
+3. What Moves Your Heart
+
+4. What Your Story Has Prepared You For
+
+5. Your Current Season
+
+6. Spiritual Health, if currently enabled
+
+7. Existing interests, availability, experience, language, family, and other profile sections
+
+8. Results / Portrait
+
+9. Synthesis — including Your Serving Pattern
+
+10. Conversation
+
+If the current order of non-assessment profile sections differs, preserve the existing order unless there is a strong UX or technical reason to change it.
+
+Do not unnecessarily redesign those sections.
+
+==================================================
+PROGRESS INDICATOR
+==================================================
+
+Use ONE overall progress indicator for the integrated assessment.
+
+Do not show separate progress such as:
+
+"APEST complete"
+
+"Starting Spiritual Gifts"
+
+"Strengths 40%"
+
+Instead, show the participant progress through the blended assessment as one experience.
+
+For example:
+
+"Assessment progress: 45%"
+
+The progress calculation must be based only on questions currently active for:
+
+- that church
+- that pathway
+- that participant
+
+Disabled questions must not count against progress.
+
+==================================================
+STABLE ORDER — DO NOT RANDOMIZE EACH ATTEMPT
+==================================================
+
+For the first version, use a stable designed order within the mixed rounds.
+
+Do not randomly reshuffle the questions every time someone takes the assessment.
+
+A stable order will make:
+
+- testing easier
+- translation easier
+- debugging easier
+- pilot comparisons easier
+- participant feedback more useful
+- scoring discrepancies easier to investigate
+
+We can consider controlled randomization later if testing shows a benefit.
+
+==================================================
+SAVE AND RESUME
+==================================================
+
+Preserve automatic saving.
+
+Participants must be able to:
+
+- leave during the integrated assessment
+- return later
+- resume at the correct point
+- keep all previous answers
+
+Do not lose progress when questions are dynamically generated from church settings.
+
+Store enough information in the assessment snapshot to know exactly which questions were active when the attempt began.
+
+==================================================
+N/A HANDLING
+==================================================
+
+Keep the existing N/A behavior.
+
+N/A means:
+
+Not sure / no opportunity / not enough experience
+
+N/A must:
+
+- remain unscored
+- not become zero
+- not lower a construct score
+- not count as a negative response
+
+Skipped items should also remain missing rather than zero.
+
+==================================================
+HISTORICAL SNAPSHOTS
+==================================================
+
+Do not alter historical completed assessments.
+
+Each new integrated assessment should preserve:
+
+- assessment_version
+- question_set_version
+- scoring_model_version
+- enabled_gifts_snapshot
+- active_section_snapshot
+- active_question_ids
+- date started
+- date completed
+
+Historical results must remain tied to the configuration and scoring rules that existed when the participant completed them.
+
+==================================================
+DO NOT MODIFY YOUTH PATHWAYS YET
+==================================================
+
+Do NOT apply the adult integrated assessment design automatically to:
+
+- children
+- preteens
+- teens
+- youth pathways
+
+Leave current youth assessment flows unchanged for now.
+
+Only make compatibility changes if technically necessary.
+
+Once the adult integrated assessment is stable and tested, the youth pathways can be reviewed separately and intentionally adapted by age group.
+
+==================================================
+ROUND DESIGN REQUIREMENTS
+==================================================
+
+Create approximately 5–6 mixed rounds.
+
+Each round should feel coherent to the participant.
+
+Avoid situations where:
+
+one round is almost entirely APEST
+
+another is almost entirely Personality
+
+another is almost entirely Strengths.
+
+The rounds should feel genuinely blended.
+
+However, do not force a question into a round where it does not naturally fit.
+
+Use thoughtful UX grouping rather than mechanical equal distribution.
+
+==================================================
+QUESTION-TO-ROUND LOGIC
+==================================================
+
+Assign questions to rounds based on the behavior or experience being described.
+
+For example:
+
+Questions about noticing needs, initiating action, and responding to opportunity could fit under:
+
+HOW YOU NOTICE AND RESPOND
+
+Questions about collaboration, empathy, listening, and relationships could fit under:
+
+HOW YOU WORK WITH OTHERS
+
+Questions about explaining, teaching, influencing, inviting, and communication could fit under:
+
+HOW YOU COMMUNICATE AND GUIDE
+
+Questions about practical service, care, hospitality, encouragement, and support could fit under:
+
+HOW YOU CARE AND SERVE
+
+Questions about discernment, learning, strategy, change, flexibility, and evaluation could fit under:
+
+HOW YOU THINK AND APPROACH CHANGE
+
+Questions about structure, planning, pace, organization, and work style could fit under:
+
+HOW YOU TEND TO WORK
+
+These are examples.
+
+Use the actual final question bank and scoring map to determine the best placement.
+
+==================================================
+BODY-METAPHOR TENDENCIES
+==================================================
+
+Do not create questions specifically as a fifth body-metaphor assessment.
+
+The six body-metaphor tendencies must remain in:
+
+WHERE THESE THINGS COME TOGETHER
+
+under:
+
+YOUR SERVING PATTERN
+
+They should continue functioning as a synthesis of the four main assessment areas rather than becoming an independent fifth result.
+
+Do not add body-metaphor labels to participant questions.
+
+==================================================
+PART FINDER
+==================================================
+
+Part Finder should continue receiving and understanding the four assessment categories separately.
+
+Do not flatten the integrated assessment into one data source.
+
+Part Finder should still understand:
+
+APEST is ministry orientation.
+
+Spiritual Gifts are gifts to explore.
+
+Strengths are natural capabilities.
+
+Personality describes how someone tends to operate.
+
+The blended assessment changes how the information is collected, not how Part Finder interprets it.
+
+==================================================
+BEFORE BUILDING — PRODUCE A DESIGN REPORT
+==================================================
+
+Before modifying the assessment engine, first produce a design/scoping report.
+
+Include:
+
+1. The proposed mixed-round names and order.
+
+2. The number of questions in each round.
+
+3. Every question ID assigned to each round.
+
+4. Which scoring categories and constructs each question contributes to.
+
+5. Which questions disappear if a section is disabled.
+
+6. Which questions remain because they still support another enabled construct.
+
+7. How Spiritual Gift ON/OFF settings affect the blended flow.
+
+8. How progress percentage will be calculated.
+
+9. How save/resume works if church configuration changes after an assessment has started.
+
+10. What gets stored in the assessment snapshot.
+
+11. Confirmation that old profiles remain untouched.
+
+12. Confirmation that youth pathways remain unchanged.
+
+13. Confirmation that the four result sections remain separate.
+
+14. Confirmation that Your Serving Pattern remains synthesis rather than a fifth assessment.
+
+15. Any risks or conflicts found in the current implementation.
+
+Do not begin destructive database changes.
+
+Flag anything uncertain rather than guessing.
+
+==================================================
+IMPLEMENT BEHIND PILOT MODE
+==================================================
+
+After the design is reviewed, implement the adult integrated assessment behind the existing or new pilot/feature flag.
+
+For example:
+
+integrated_assessment_enabled
+
+integrated_assessment_pilot_mode
+
+Do not immediately remove the old assessment.
+
+Keep the current assessment available during pilot testing.
+
+==================================================
+FINAL GOAL
+==================================================
+
+The participant experience should feel like:
+
+ONE coherent assessment
+
+followed by the deeper reflective parts of the Ministry Profile.
+
+The system should still understand and present:
+
+HOW YOU TEND TO MINISTER
+APEST
+
+HOW GOD HAS EQUIPPED YOU
+Spiritual Gifts
+
+WHAT YOU ARE NATURALLY GOOD AT
+Strengths
+
+HOW YOU TEND TO OPERATE
+Personality
+
+The assessment flow should become simpler.
+
+The profile itself should remain rich.
+
+The goal is not to flatten a person into a single score.
+
+The goal is to reduce unnecessary assessment friction while preserving the depth needed for prayer, discernment, conversation, ministry discovery, and growth.

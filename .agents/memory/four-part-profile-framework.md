@@ -21,3 +21,9 @@ The remaining chapters (Heart, Story, Season, Synthesis, Conversation, plus lead
 **Why:** Owner's written requirement (September 2026). Even if the assessment becomes one blended question flow, results must sort back into these four areas so pastors and PartFinder keep the distinctions.
 
 **How to apply:** Any change to results, print, PartFinder summaries, or leader-facing summaries must preserve four separately labeled areas. A blended assessment may reorder questions but must still score per area.
+
+The owner confirmed the current portrait structure on 2026-09-16. Adult assessment blending must use stable, semantically mixed rounds with hidden scoring labels, not random shuffling. Heart, Story, Season, Spiritual Health, and other reflective steps remain separate; youth flows are not included.
+
+**Why:** The owner wants less assessment friction without merging independent constructs or changing the approved portrait.
+
+**How to apply:** Review a full question-to-round/scoring inventory before implementation; retain the legacy flow during an adult-only pilot. Freeze active questions and configuration per attempt, and treat N/A and skipped answers as unscored rather than zero.

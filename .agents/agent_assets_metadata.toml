@@ -1,0 +1,30 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "geB6jZtchXKJD09-7VU4d"
+uri = "file://reports/integrated-assessment-design.html"
+type = "text"
+title = "Adult Integrated Assessment — Design Report"
+description = "Proposed rounds, full question mapping, configuration rules, scoring boundaries, save/resume design, snapshot requirements, and pilot risks."
+logical_id = "cb31e17b-afb1-4cce-b92c-e03384277808"
+content_hash = "sha256:52698a9a0d845f388a642eda909c6d01a189f1a4b913e670be2d5c5819eae334"
+size = 91291
+mtime_ms = 1789583217124
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/cb31e17b-afb1-4cce-b92c-e03384277808/fb9ce287-29df-483f-887c-d89dee370180"
+storage_version_token = "1789583275542290"
+content_type = "text/html"
+
+[[outputs]]
+id = "3yk3YgeOZkGPNUj2bTKab"
+uri = "file://reports/integrated-assessment-question-map.csv"
+type = "table"
+title = "Complete Question-to-Round Map"
+description = "199 available questions with proposed stable order, original response keys, scoring constructs, toggles, and default versus optional slots."
+logical_id = "10b016e1-6693-4db6-9afa-44583a67292b"
+content_hash = "sha256:97acc292b2e1ebd46af69774b740152befad4e876b3c08df551df693b16545b1"
+size = 95996
+mtime_ms = 1789583217124
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/10b016e1-6693-4db6-9afa-44583a67292b/f3dbd61e-3f1c-4889-a2ae-457d3aadf650"
+storage_version_token = "1789583276146577"
+content_type = "text/csv"
