@@ -18,13 +18,20 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
       const model = models[question.responseModel];
       const poles = question.poles;
       const anchors = model?.anchors ?? [];
+      const responseLabel = (value: 1 | 2 | 3 | 4 | 5) => {
+        if (!poles) return anchors[value - 1] ?? String(value);
+        if (value === 1) return `Definitely: ${poles[0]}`;
+        if (value === 2) return `Usually: ${poles[0]}`;
+        if (value === 3) return "Both equally / it depends";
+        if (value === 4) return `Usually: ${poles[1]}`;
+        return `Definitely: ${poles[1]}`;
+      };
       return <fieldset id={`integrated-question-${question.id}`} key={question.id} className="space-y-4">
         <legend className="text-lg font-serif leading-relaxed">{offset + index + 1}. {question.text}</legend>
         {model?.instructions && <p className="text-sm text-muted-foreground">{model.instructions}</p>}
-        {poles && <p className="flex justify-between gap-4 text-sm font-medium"><span>1 — {poles[0]}</span><span>5 — {poles[1]}</span></p>}
         <div className="flex flex-wrap gap-2" role="group" aria-label={`Responses to reflection ${offset + index + 1}`}>
           {([1, 2, 3, 4, 5, "na", "skip"] as const).map((value) => {
-            const label = value === "skip" ? "Skip" : value === "na" ? model?.na ?? "N/A" : anchors[value - 1] ?? String(value);
+            const label = value === "skip" ? "Skip" : value === "na" ? model?.na ?? "N/A" : responseLabel(value);
             return <Button key={value} type="button" variant={answers[question.id] === value ? "default" : "outline"}
               className="h-auto min-h-11 whitespace-normal text-left" aria-pressed={answers[question.id] === value}
               onClick={() => onAnswer(question.id, value)}>{label}</Button>;

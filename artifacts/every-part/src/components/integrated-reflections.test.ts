@@ -26,7 +26,7 @@ const attempt = {
       na: "N/A — Not sure / I have not had the opportunity",
     },
     personalityBipolar: {
-      anchors: ["Strongly left pole", "Slightly left pole", "Balanced / both fit", "Slightly right pole", "Strongly right pole"],
+      anchors: ["Definitely the first choice", "Usually the first choice", "Both equally / it depends", "Usually the second choice", "Definitely the second choice"],
       na: "N/A — Not sure / I have not had the opportunity",
     },
   },
@@ -42,7 +42,9 @@ test("reflection renderer uses exact server text, anchors and poles, without con
   }));
   assert.match(html, /The approved unchanged reflection\./);
   assert.match(html, /Not at all like me/);
-  assert.match(html, /Strongly left pole/);
+  assert.match(html, /Definitely: Reflective/);
+  assert.match(html, /Usually: Interactive/);
+  assert.doesNotMatch(html, /left pole/);
   assert.match(html, /1 — Reflective/);
   assert.match(html, /5 — Interactive/);
   assert.match(html, /aria-pressed="true"/);

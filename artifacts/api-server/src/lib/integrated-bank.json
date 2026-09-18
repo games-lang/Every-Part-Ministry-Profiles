@@ -28,13 +28,13 @@
         5
       ],
       "anchors": [
-        "Strongly left pole",
-        "Slightly left pole",
-        "Balanced / both fit",
-        "Slightly right pole",
-        "Strongly right pole"
+        "Definitely the first choice",
+        "Usually the first choice",
+        "Both equally / it depends",
+        "Usually the second choice",
+        "Definitely the second choice"
       ],
-      "na": "N/A — Not sure / I have not had the opportunity"
+      "na": "N/A — Not sure"
     },
     "specialExperienceLikert": {
       "values": [
@@ -112,11 +112,11 @@
     },
     {
       "id": "EP-I-58",
-      "text": "After a busy week, I usually recover energy more through quiet time or through being with people.",
+      "text": "After a busy week, which usually helps you recover your energy?",
       "responseModel": "personalityBipolar",
       "poles": [
-        "Reflective",
-        "Interactive"
+        "Quiet time by myself",
+        "Time with other people"
       ],
       "maps": [
         {
