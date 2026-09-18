@@ -2506,11 +2506,22 @@ export default function Assessment() {
     "--accent": hexToHsl(church.accentColor),
     "--accent-foreground": colorForeground(church.accentColor),
   } as React.CSSProperties;
+  const assessmentStyle = integratedPilotEnabled
+    ? ({
+        "--primary": "276 55% 42%",
+        "--primary-foreground": "42 35% 98%",
+        "--ring": "276 55% 48%",
+        "--secondary": "338 68% 52%",
+        "--secondary-foreground": "42 35% 98%",
+        "--accent": "324 58% 43%",
+        "--accent-foreground": "42 35% 98%",
+      } as React.CSSProperties)
+    : brandStyle;
   const churchLogo = brandLogoSource(church.logoUrl);
   if (!started)
     return (
       <div
-        style={brandStyle}
+        style={assessmentStyle}
         className={`pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-screen grid place-items-center bg-muted/20 p-4`}
       >
         <Card className="max-w-xl text-center">
@@ -2525,6 +2536,11 @@ export default function Assessment() {
               <HeartHandshake className="w-12 h-12 mx-auto text-primary" />
             )}
             <div>
+              {integratedPilotEnabled && (
+                <p className="mb-3 inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-[.16em] text-primary">
+                  New integrated format
+                </p>
+              )}
               <p className="mb-2 text-sm font-medium text-primary">
                 {church.name}
               </p>
@@ -2578,7 +2594,7 @@ export default function Assessment() {
   )
     return (
       <div
-        style={brandStyle}
+        style={assessmentStyle}
         className={`pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] grid place-items-center bg-muted/20 p-4`}
       >
         <Card
@@ -2629,7 +2645,7 @@ export default function Assessment() {
     );
   return (
     <div
-      style={brandStyle}
+      style={assessmentStyle}
       className={`pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] bg-muted/20`}
     >
       <header className="sticky top-0 z-10 border-b border-border/80 bg-background/95 backdrop-blur-xl">

@@ -388,6 +388,10 @@
   --accent: 324 58% 43%;
   --accent-foreground: 42 35% 98%;
   --ring: 276 55% 48%;
+  background:
+    radial-gradient(circle at 88% 2%, hsl(var(--pathway-primary) / .24), transparent 28rem),
+    radial-gradient(circle at 5% 42%, hsl(var(--pathway-secondary) / .18), transparent 24rem),
+    hsl(276 35% 97%);
 }
 
 .pathway-theme-discover {
