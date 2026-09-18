@@ -378,6 +378,18 @@
   --pathway-secondary: 218 63% 14%;
 }
 
+.pathway-theme-integrated {
+  --pathway-primary: 276 55% 48%;
+  --pathway-secondary: 338 68% 52%;
+  --primary: 276 55% 42%;
+  --primary-foreground: 42 35% 98%;
+  --secondary: 338 68% 52%;
+  --secondary-foreground: 42 35% 98%;
+  --accent: 324 58% 43%;
+  --accent-foreground: 42 35% 98%;
+  --ring: 276 55% 48%;
+}
+
 .pathway-theme-discover {
   --pathway-primary: 145 42% 32%;
   --pathway-secondary: 152 48% 52%;
