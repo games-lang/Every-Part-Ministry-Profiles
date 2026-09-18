@@ -16,7 +16,13 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
   return <div className="space-y-10">
     {questions.map((question, index) => {
       const model = models[question.responseModel];
-      const poles = question.poles;
+      const isLegacySocialEnergyQuestion = question.id === "EP-I-58";
+      const questionText = isLegacySocialEnergyQuestion
+        ? "After a busy week, which usually helps you recover your energy?"
+        : question.text;
+      const poles = isLegacySocialEnergyQuestion
+        ? ["Quiet time by myself", "Time with other people"] as const
+        : question.poles;
       const anchors = model?.anchors ?? [];
       const responseLabel = (value: 1 | 2 | 3 | 4 | 5) => {
         if (!poles) return anchors[value - 1] ?? String(value);
@@ -27,11 +33,15 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
         return `Definitely: ${poles[1]}`;
       };
       return <fieldset id={`integrated-question-${question.id}`} key={question.id} className="space-y-4">
-        <legend className="text-lg font-serif leading-relaxed">{offset + index + 1}. {question.text}</legend>
+        <legend className="text-lg font-serif leading-relaxed">{offset + index + 1}. {questionText}</legend>
         {model?.instructions && <p className="text-sm text-muted-foreground">{model.instructions}</p>}
         <div className="flex flex-wrap gap-2" role="group" aria-label={`Responses to reflection ${offset + index + 1}`}>
           {([1, 2, 3, 4, 5, "na", "skip"] as const).map((value) => {
-            const label = value === "skip" ? "Skip" : value === "na" ? model?.na ?? "N/A" : responseLabel(value);
+            const label = value === "skip"
+              ? "Skip"
+              : value === "na"
+                ? question.responseModel === "personalityBipolar" ? "N/A — Not sure" : model?.na ?? "N/A"
+                : responseLabel(value);
             return <Button key={value} type="button" variant={answers[question.id] === value ? "default" : "outline"}
               className="h-auto min-h-11 whitespace-normal text-left" aria-pressed={answers[question.id] === value}
               onClick={() => onAnswer(question.id, value)}>{label}</Button>;

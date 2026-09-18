@@ -45,10 +45,30 @@ test("reflection renderer uses exact server text, anchors and poles, without con
   assert.match(html, /Definitely: Reflective/);
   assert.match(html, /Usually: Interactive/);
   assert.doesNotMatch(html, /left pole/);
-  assert.match(html, /1 — Reflective/);
-  assert.match(html, /5 — Interactive/);
+  assert.doesNotMatch(html, /1 — Reflective/);
+  assert.doesNotMatch(html, /5 — Interactive/);
   assert.match(html, /aria-pressed="true"/);
   assert.doesNotMatch(html, /Hidden gift tag/);
+});
+
+test("a frozen social-energy draft renders the corrected question and concrete choices", () => {
+  const html = renderToStaticMarkup(React.createElement(exported.IntegratedReflections, {
+    attempt,
+    questions: [{
+      id: "EP-I-58",
+      text: "After a busy week, I usually recover energy more through quiet time or through being with people.",
+      responseModel: "personalityBipolar",
+      poles: ["Reflective", "Interactive"],
+    }],
+    answers: {},
+    onAnswer() {},
+  }));
+
+  assert.match(html, /After a busy week, which usually helps you recover your energy\?/);
+  assert.match(html, /Definitely: Quiet time by myself/);
+  assert.match(html, /Usually: Time with other people/);
+  assert.match(html, /N\/A — Not sure/);
+  assert.doesNotMatch(html, /Reflective|Interactive|I have not had the opportunity/);
 });
 
 test("optional questions are distinguishable without gift metadata; a core round renders at most eight", () => {
