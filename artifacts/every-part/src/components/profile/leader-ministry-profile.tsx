@@ -9,6 +9,7 @@ import { LeaderFitSection } from "./leader-fit-section";
 import { PortraitChapter } from "./portrait-chapter";
 import { buildMinistryPortrait } from "../../lib/ministry-portrait";
 import { ServingPatternCard } from "./serving-pattern-card";
+import { IntegratedAreaResults } from "./integrated-area-results";
 import {
   AlertCircle,
   BookOpen,
@@ -115,7 +116,11 @@ export function LeaderMinistryProfile({
         </div>
       </section>
 
-      {apestResult && (
+      {participantSynthesis.integrated && sectionEnabled("apest") ? (
+        <PortraitChapter number={1} title="How They Tend to Minister" icon={ApestIcon}>
+          <IntegratedAreaResults results={participantSynthesis.integrated} category="APEST" />
+        </PortraitChapter>
+      ) : apestResult && (
       <PortraitChapter number={1} title="How They Tend to Minister" icon={ApestIcon}>
         <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
           <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Ministry Orientation (APEST) · Like the {APEST_BODY_PARTS[apestResult.label]?.part}</div>
@@ -138,7 +143,7 @@ export function LeaderMinistryProfile({
 
       {sectionEnabled("spiritualGifts") && (
       <PortraitChapter number={2} title="How God Has Equipped Them" icon={Lightbulb}>
-        {participantSynthesis.topGifts.length > 0 ? (
+        {participantSynthesis.integrated ? <IntegratedAreaResults results={participantSynthesis.integrated} category="Gift" /> : participantSynthesis.topGifts.length > 0 ? (
           <div className="space-y-4">
             <p className="text-muted-foreground mb-4">Spiritual gifts they identified as being strong or prominent in their life.</p>
             <div className="grid gap-4">
@@ -164,7 +169,9 @@ export function LeaderMinistryProfile({
       <PortraitChapter number={3} title="What They Are Naturally Good At" icon={Sparkles}>
         <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
           <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Strengths</div>
-          <StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={(sub) => subsectionEnabled("naturalStrengths", sub)} />
+          {participantSynthesis.integrated
+            ? <IntegratedAreaResults results={participantSynthesis.integrated} category="Strength" />
+            : <StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={(sub) => subsectionEnabled("naturalStrengths", sub)} />}
         </div>
       </PortraitChapter>
       )}
@@ -173,7 +180,9 @@ export function LeaderMinistryProfile({
       <PortraitChapter number={4} title="How They Tend to Operate" icon={SlidersHorizontal}>
         <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
           <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Personality</div>
-          <PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={(sub) => subsectionEnabled("personalityStrengths", sub)} perspective="leader" />
+          {participantSynthesis.integrated
+            ? <IntegratedAreaResults results={participantSynthesis.integrated} category="Personality" />
+            : <PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={(sub) => subsectionEnabled("personalityStrengths", sub)} perspective="leader" />}
         </div>
       </PortraitChapter>
       )}
@@ -282,6 +291,9 @@ export function LeaderMinistryProfile({
       )}
 
       <PortraitChapter number={8} title="Where These Things Come Together" icon={MapPin}>
+        {participantSynthesis.integrated && !ministryTendency && sectionEnabled("personalityStrengths") && (
+          <p className="mb-4 text-muted-foreground">Their Serving Pattern: Not enough information yet</p>
+        )}
         <div className="space-y-6">
           {ministryTendency && (
             <ServingPatternCard tendency={ministryTendency} tendencies={TENDENCIES} perspective="leader" />

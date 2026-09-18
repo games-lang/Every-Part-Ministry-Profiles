@@ -66,6 +66,7 @@ export const ministryProfilesTable = pgTable("ministry_profiles", {
   missionTripExperience: text("mission_trip_experience"),
   lifeExperience: text("life_experience"),
   apest: jsonb("apest"),
+  integratedAssessment: jsonb("integrated_assessment").$type<unknown>(),
   spiritualGifts: jsonb("spiritual_gifts"),
   personalityStrengths: jsonb("personality_strengths"),
   naturalStrengths: jsonb("natural_strengths"),

@@ -1,4 +1,5 @@
 import type { MinistryProfile } from "@workspace/db";
+import { integratedSignals } from "./integrated-assessment.ts";
 import { adultProfilesOnly } from "./youth-profiles.ts";
 
 const ADVISORY =
@@ -103,6 +104,7 @@ function topSpiritualGifts(value: unknown): string[] {
 }
 
 function toSafeCandidate(profile: MinistryProfile): SafeCandidate {
+  const integrated = integratedSignals(profile.integratedAssessment);
   const ministry = objectRecord(profile.apest);
   const strengths = objectRecord(profile.naturalStrengths);
   const personality = objectRecord(profile.personalityStrengths);
@@ -136,6 +138,7 @@ function toSafeCandidate(profile: MinistryProfile): SafeCandidate {
     spiritualGifts: topSpiritualGifts(profile.spiritualGifts),
     strengths: strings(strengths.selected).slice(0, 5),
     personalityTendencies: dimensions,
+    ...(integrated ?? {}),
   };
 }
 

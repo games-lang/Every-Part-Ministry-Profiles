@@ -11,7 +11,7 @@ export type TendencyDefinition = {
 
 /**
  * The six body-metaphor serving patterns (Hands, Ears, Shoulders, Voice, Arms, Backbone).
- * This is a synthesis of the four framework areas, so it lives inside
+ * This is calculated from personality with supporting natural strengths, and lives inside
  * "Where These Things Come Together" and is never presented as a fifth framework area.
  */
 export function ServingPatternCard({
@@ -44,7 +44,7 @@ export function ServingPatternCard({
         {isParticipant ? definition.explanation : definition.explanation.replace(/\bYou\b/g, "They").replace(/\byou\b/g, "they")}
       </p>
       <p className="text-sm text-muted-foreground mb-6">
-        This pattern draws together the four areas above — ministry orientation, spiritual gifts, strengths, and personality — into one picture of how {isParticipant ? "you" : "they"} tend to show up in practice. It is a summary, not a separate result.
+        This pattern is calculated from personality spectra, with natural strengths as supporting evidence. Ministry orientation and spiritual gifts are not inputs to this calculation. It describes how {isParticipant ? "you" : "they"} may tend to show up in practice, not a separate framework area or a placement.
       </p>
       {secondary && (
         <div className="mb-6 rounded-xl bg-accent/5 border border-accent/10 p-4 text-sm text-foreground/80">

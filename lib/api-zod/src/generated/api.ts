@@ -9,6 +9,158 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Start a frozen anonymous adult pilot assessment
+ */
+
+
+
+export const StartIntegratedAttemptParams = zod.object({
+  "churchId": zod.coerce.number().int().min(1)
+})
+
+export const StartIntegratedAttemptBody = zod.object({
+  "adultConfirmed": zod.literal(true),
+  "celibacyEligible": zod.boolean(),
+  "optionalExperienceOptIn": zod.boolean()
+})
+
+export const startIntegratedAttemptResponseQuestionsItemPolesMin = 2;
+export const startIntegratedAttemptResponseQuestionsItemPolesMax = 2;
+
+export const startIntegratedAttemptResponseAnswersOneMax = 5;
+
+
+
+export const StartIntegratedAttemptResponse = zod.object({
+  "attemptId": zod.uuid(),
+  "token": zod.string().optional().describe('Present only at creation. Treat as a private bearer credential.'),
+  "revision": zod.int(),
+  "expiresAt": zod.coerce.date(),
+  "status": zod.enum(['draft', 'completed']),
+  "profileId": zod.int().nullish(),
+  "bankVersion": zod.string(),
+  "scoringVersion": zod.string(),
+  "snapshot": zod.record(zod.string(), zod.unknown()),
+  "responseModels": zod.record(zod.string(), zod.unknown()),
+  "questions": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string(),
+  "responseModel": zod.enum(['reflectionLikert', 'personalityBipolar', 'specialExperienceLikert']),
+  "poles": zod.array(zod.string()).min(startIntegratedAttemptResponseQuestionsItemPolesMin).max(startIntegratedAttemptResponseQuestionsItemPolesMax).optional()
+})),
+  "answers": zod.record(zod.string(), zod.union([zod.int().min(1).max(startIntegratedAttemptResponseAnswersOneMax),zod.enum(['na', 'skip'])])),
+  "formState": zod.record(zod.string(), zod.unknown())
+})
+
+
+/**
+ * @summary Resume the original frozen adult assessment
+ */
+
+
+
+export const GetIntegratedAttemptParams = zod.object({
+  "churchId": zod.coerce.number().int().min(1),
+  "attemptId": zod.uuid()
+})
+
+export const getIntegratedAttemptHeaderAuthorizationRegExp = new RegExp('^Bearer [A-Za-z0-9_-]{43}$');
+
+
+export const GetIntegratedAttemptHeader = zod.object({
+  "Authorization": zod.string().regex(getIntegratedAttemptHeaderAuthorizationRegExp)
+})
+
+export const getIntegratedAttemptResponseQuestionsItemPolesMin = 2;
+export const getIntegratedAttemptResponseQuestionsItemPolesMax = 2;
+
+export const getIntegratedAttemptResponseAnswersOneMax = 5;
+
+
+
+export const GetIntegratedAttemptResponse = zod.object({
+  "attemptId": zod.uuid(),
+  "token": zod.string().optional().describe('Present only at creation. Treat as a private bearer credential.'),
+  "revision": zod.int(),
+  "expiresAt": zod.coerce.date(),
+  "status": zod.enum(['draft', 'completed']),
+  "profileId": zod.int().nullish(),
+  "bankVersion": zod.string(),
+  "scoringVersion": zod.string(),
+  "snapshot": zod.record(zod.string(), zod.unknown()),
+  "responseModels": zod.record(zod.string(), zod.unknown()),
+  "questions": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string(),
+  "responseModel": zod.enum(['reflectionLikert', 'personalityBipolar', 'specialExperienceLikert']),
+  "poles": zod.array(zod.string()).min(getIntegratedAttemptResponseQuestionsItemPolesMin).max(getIntegratedAttemptResponseQuestionsItemPolesMax).optional()
+})),
+  "answers": zod.record(zod.string(), zod.union([zod.int().min(1).max(getIntegratedAttemptResponseAnswersOneMax),zod.enum(['na', 'skip'])])),
+  "formState": zod.record(zod.string(), zod.unknown())
+})
+
+
+/**
+ * @summary Atomically save bounded progress at the expected revision
+ */
+
+
+
+export const SaveIntegratedAttemptParams = zod.object({
+  "churchId": zod.coerce.number().int().min(1),
+  "attemptId": zod.uuid()
+})
+
+export const saveIntegratedAttemptHeaderAuthorizationRegExp = new RegExp('^Bearer [A-Za-z0-9_-]{43}$');
+
+
+export const SaveIntegratedAttemptHeader = zod.object({
+  "Authorization": zod.string().regex(saveIntegratedAttemptHeaderAuthorizationRegExp)
+})
+
+export const saveIntegratedAttemptBodyRevisionMin = 0;
+export const saveIntegratedAttemptBodyRevisionMax = 2147483646;
+
+export const saveIntegratedAttemptBodyAnswersOneMax = 5;
+
+
+
+export const SaveIntegratedAttemptBody = zod.object({
+  "revision": zod.int().min(saveIntegratedAttemptBodyRevisionMin).max(saveIntegratedAttemptBodyRevisionMax),
+  "answers": zod.record(zod.string(), zod.union([zod.int().min(1).max(saveIntegratedAttemptBodyAnswersOneMax),zod.enum(['na', 'skip'])])),
+  "formState": zod.record(zod.string(), zod.unknown()).describe('Allowlisted non-assessment wizard fields, at most 48KB.')
+})
+
+export const saveIntegratedAttemptResponseQuestionsItemPolesMin = 2;
+export const saveIntegratedAttemptResponseQuestionsItemPolesMax = 2;
+
+export const saveIntegratedAttemptResponseAnswersOneMax = 5;
+
+
+
+export const SaveIntegratedAttemptResponse = zod.object({
+  "attemptId": zod.uuid(),
+  "token": zod.string().optional().describe('Present only at creation. Treat as a private bearer credential.'),
+  "revision": zod.int(),
+  "expiresAt": zod.coerce.date(),
+  "status": zod.enum(['draft', 'completed']),
+  "profileId": zod.int().nullish(),
+  "bankVersion": zod.string(),
+  "scoringVersion": zod.string(),
+  "snapshot": zod.record(zod.string(), zod.unknown()),
+  "responseModels": zod.record(zod.string(), zod.unknown()),
+  "questions": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string(),
+  "responseModel": zod.enum(['reflectionLikert', 'personalityBipolar', 'specialExperienceLikert']),
+  "poles": zod.array(zod.string()).min(saveIntegratedAttemptResponseQuestionsItemPolesMin).max(saveIntegratedAttemptResponseQuestionsItemPolesMax).optional()
+})),
+  "answers": zod.record(zod.string(), zod.union([zod.int().min(1).max(saveIntegratedAttemptResponseAnswersOneMax),zod.enum(['na', 'skip'])])),
+  "formState": zod.record(zod.string(), zod.unknown())
+})
+
+
+/**
  * Returns server health status
  * @summary Health check
  */
@@ -600,6 +752,7 @@ export const CreateBillingPortalResponse = zod.object({
 /**
  * @summary Get the signed-in administrator's church
  */
+export const getMyChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
 export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
@@ -656,6 +809,7 @@ export const getMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax =
 
 
 export const GetMyChurchResponse = zod.object({
+  "integratedAssessmentPilotEnabled": zod.boolean().default(getMyChurchResponseIntegratedAssessmentPilotEnabledDefault),
   "id": zod.int(),
   "name": zod.string(),
   "slug": zod.string(),
@@ -859,6 +1013,7 @@ export const updateMyChurchBodyMinistryCustomizationMinistryInterestsLabelMax = 
 
 
 export const UpdateMyChurchBody = zod.object({
+  "integratedAssessmentPilotEnabled": zod.boolean().optional(),
   "name": zod.string().min(1).optional(),
   "logoUrl": zod.string().regex(updateMyChurchBodyLogoUrlRegExp).nullish(),
   "primaryColor": zod.string().regex(updateMyChurchBodyPrimaryColorRegExp).optional(),
@@ -984,6 +1139,7 @@ export const UpdateMyChurchBody = zod.object({
   "onboardingCompleted": zod.boolean().optional()
 })
 
+export const updateMyChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
 export const updateMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
@@ -1040,6 +1196,7 @@ export const updateMyChurchResponseMinistryCustomizationMinistryInterestsLabelMa
 
 
 export const UpdateMyChurchResponse = zod.object({
+  "integratedAssessmentPilotEnabled": zod.boolean().default(updateMyChurchResponseIntegratedAssessmentPilotEnabledDefault),
   "id": zod.int(),
   "name": zod.string(),
   "slug": zod.string(),
@@ -1222,6 +1379,7 @@ export const GetPublicChurchParams = zod.object({
   "slug": zod.coerce.string()
 })
 
+export const getPublicChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
 export const getPublicChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseEnabledSpiritualGiftsMin = 3;
@@ -1279,6 +1437,8 @@ export const getPublicChurchResponseMinistryCustomizationMinistryInterestsLabelM
 
 
 export const GetPublicChurchResponse = zod.object({
+  "id": zod.int().optional(),
+  "integratedAssessmentPilotEnabled": zod.boolean().default(getPublicChurchResponseIntegratedAssessmentPilotEnabledDefault),
   "name": zod.string(),
   "slug": zod.string(),
   "logoUrl": zod.string().nullish(),
@@ -1522,6 +1682,7 @@ export const RequestProfilePhotoUploadUrlResponse = zod.object({
 /**
  * @summary Get dashboard totals and recent profile activity
  */
+export const getDashboardSummaryResponseChurchIntegratedAssessmentPilotEnabledDefault = false;
 export const getDashboardSummaryResponseChurchPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDashboardSummaryResponseChurchAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDashboardSummaryResponseChurchDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
@@ -1582,6 +1743,7 @@ export const getDashboardSummaryResponseRecentProfilesItemAgeMax = 120;
 
 export const GetDashboardSummaryResponse = zod.object({
   "church": zod.object({
+  "integratedAssessmentPilotEnabled": zod.boolean().default(getDashboardSummaryResponseChurchIntegratedAssessmentPilotEnabledDefault),
   "id": zod.int(),
   "name": zod.string(),
   "slug": zod.string(),
@@ -2033,6 +2195,10 @@ export const ListProfilesResponse = zod.array(ListProfilesResponseItem)
 /**
  * @summary Submit a Ministry Profile for a church
  */
+export const createProfileBodyIntegratedAttemptTokenRegExp = new RegExp('^[A-Za-z0-9_-]{43}$');
+export const createProfileBodyIntegratedAttemptRevisionMin = 0;
+export const createProfileBodyIntegratedAttemptRevisionMax = 2147483646;
+
 
 export const createProfileBodyAgeMin = 18;
 export const createProfileBodyAgeMax = 120;
@@ -2051,6 +2217,11 @@ export const createProfileBodyAssessmentSectionsSpiritualGiftsResponsesMaxOne = 
 
 
 export const CreateProfileBody = zod.object({
+  "integratedAttempt": zod.object({
+  "attemptId": zod.uuid(),
+  "token": zod.string().regex(createProfileBodyIntegratedAttemptTokenRegExp),
+  "revision": zod.int().min(createProfileBodyIntegratedAttemptRevisionMin).max(createProfileBodyIntegratedAttemptRevisionMax)
+}).optional(),
   "churchSlug": zod.string().min(1),
   "age": zod.int().min(createProfileBodyAgeMin).max(createProfileBodyAgeMax),
   "birthdate": zod.coerce.date().optional(),
@@ -2109,6 +2280,18 @@ export const CreateProfileBody = zod.object({
 
 export const createProfileResponseOneAgeMin = 6;
 export const createProfileResponseOneAgeMax = 120;
+
+export const createProfileResponseTwoIntegratedAssessmentOneAnswersOneMax = 5;
+
+export const createProfileResponseTwoIntegratedAssessmentOneConstructsItemMeanMax = 5;
+
+export const createProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredCountMin = 0;
+
+export const createProfileResponseTwoIntegratedAssessmentOneConstructsItemAvailableCountMin = 0;
+
+export const createProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredWeightMin = 0;
+
+export const createProfileResponseTwoIntegratedAssessmentOneOptionalExperiencesItemAnswerOneMax = 5;
 
 export const createProfileResponseTwoBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const createProfileResponseTwoBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
@@ -2176,6 +2359,37 @@ export const CreateProfileResponse = zod.object({
   "age": zod.int().min(createProfileResponseOneAgeMin).max(createProfileResponseOneAgeMax).nullable(),
   "profilePhotoUrl": zod.string().nullish()
 }).and(zod.object({
+  "integratedAssessment": zod.union([zod.object({
+  "version": zod.enum(['integrated-assessment-v1']),
+  "bankVersion": zod.string(),
+  "scoringVersion": zod.string(),
+  "completedAt": zod.coerce.date(),
+  "snapshot": zod.record(zod.string(), zod.unknown()),
+  "answers": zod.record(zod.string(), zod.union([zod.int().min(1).max(createProfileResponseTwoIntegratedAssessmentOneAnswersOneMax),zod.enum(['na', 'skip'])])),
+  "constructs": zod.array(zod.object({
+  "category": zod.enum(['APEST', 'Gift', 'Strength', 'Personality']),
+  "construct": zod.string(),
+  "sectionKey": zod.enum(['apest', 'spiritualGifts', 'naturalStrengths', 'personalityStrengths']),
+  "subsectionKey": zod.string().nullable(),
+  "mean": zod.number().min(1).max(createProfileResponseTwoIntegratedAssessmentOneConstructsItemMeanMax).nullable(),
+  "answeredCount": zod.int().min(createProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredCountMin),
+  "availableCount": zod.int().min(createProfileResponseTwoIntegratedAssessmentOneConstructsItemAvailableCountMin),
+  "answeredWeight": zod.number().min(createProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredWeightMin),
+  "eligible": zod.boolean(),
+  "evidence": zod.enum(['sufficient', 'insufficient']),
+  "poles": zod.array(zod.string()).nullable(),
+  "tendency": zod.string().nullable()
+})),
+  "optionalExperiences": zod.array(zod.object({
+  "questionId": zod.string(),
+  "construct": zod.string(),
+  "kind": zod.string(),
+  "text": zod.string(),
+  "answer": zod.union([zod.int().min(1).max(createProfileResponseTwoIntegratedAssessmentOneOptionalExperiencesItemAnswerOneMax),zod.enum(['na', 'skip']),zod.null()])
+})),
+  "conversationOnlyGifts": zod.array(zod.string()),
+  "limitations": zod.array(zod.string())
+}),zod.null()]).optional(),
   "branding": zod.object({
   "name": zod.string(),
   "logoUrl": zod.string().nullable(),
@@ -3411,6 +3625,18 @@ export const GetProfileParams = zod.object({
 export const getProfileResponseOneAgeMin = 6;
 export const getProfileResponseOneAgeMax = 120;
 
+export const getProfileResponseTwoIntegratedAssessmentOneAnswersOneMax = 5;
+
+export const getProfileResponseTwoIntegratedAssessmentOneConstructsItemMeanMax = 5;
+
+export const getProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredCountMin = 0;
+
+export const getProfileResponseTwoIntegratedAssessmentOneConstructsItemAvailableCountMin = 0;
+
+export const getProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredWeightMin = 0;
+
+export const getProfileResponseTwoIntegratedAssessmentOneOptionalExperiencesItemAnswerOneMax = 5;
+
 export const getProfileResponseTwoBrandingPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getProfileResponseTwoBrandingAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 
@@ -3477,6 +3703,37 @@ export const GetProfileResponse = zod.object({
   "age": zod.int().min(getProfileResponseOneAgeMin).max(getProfileResponseOneAgeMax).nullable(),
   "profilePhotoUrl": zod.string().nullish()
 }).and(zod.object({
+  "integratedAssessment": zod.union([zod.object({
+  "version": zod.enum(['integrated-assessment-v1']),
+  "bankVersion": zod.string(),
+  "scoringVersion": zod.string(),
+  "completedAt": zod.coerce.date(),
+  "snapshot": zod.record(zod.string(), zod.unknown()),
+  "answers": zod.record(zod.string(), zod.union([zod.int().min(1).max(getProfileResponseTwoIntegratedAssessmentOneAnswersOneMax),zod.enum(['na', 'skip'])])),
+  "constructs": zod.array(zod.object({
+  "category": zod.enum(['APEST', 'Gift', 'Strength', 'Personality']),
+  "construct": zod.string(),
+  "sectionKey": zod.enum(['apest', 'spiritualGifts', 'naturalStrengths', 'personalityStrengths']),
+  "subsectionKey": zod.string().nullable(),
+  "mean": zod.number().min(1).max(getProfileResponseTwoIntegratedAssessmentOneConstructsItemMeanMax).nullable(),
+  "answeredCount": zod.int().min(getProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredCountMin),
+  "availableCount": zod.int().min(getProfileResponseTwoIntegratedAssessmentOneConstructsItemAvailableCountMin),
+  "answeredWeight": zod.number().min(getProfileResponseTwoIntegratedAssessmentOneConstructsItemAnsweredWeightMin),
+  "eligible": zod.boolean(),
+  "evidence": zod.enum(['sufficient', 'insufficient']),
+  "poles": zod.array(zod.string()).nullable(),
+  "tendency": zod.string().nullable()
+})),
+  "optionalExperiences": zod.array(zod.object({
+  "questionId": zod.string(),
+  "construct": zod.string(),
+  "kind": zod.string(),
+  "text": zod.string(),
+  "answer": zod.union([zod.int().min(1).max(getProfileResponseTwoIntegratedAssessmentOneOptionalExperiencesItemAnswerOneMax),zod.enum(['na', 'skip']),zod.null()])
+})),
+  "conversationOnlyGifts": zod.array(zod.string()),
+  "limitations": zod.array(zod.string())
+}),zod.null()]).optional(),
   "branding": zod.object({
   "name": zod.string(),
   "logoUrl": zod.string().nullable(),

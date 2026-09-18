@@ -59,6 +59,9 @@ import type {
   HealthStatus,
   ImportPeopleInput,
   ImportPeopleResult,
+  IntegratedAttemptSaveInput,
+  IntegratedAttemptStartInput,
+  IntegratedAttemptView,
   JourneyCompareResponse,
   JourneyEntry,
   JourneyEntryInput,
@@ -124,6 +127,252 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getStartIntegratedAttemptUrl = (churchId: number,) => {
+
+
+
+
+  return `/api/churches/${churchId}/integrated-attempts`
+}
+
+/**
+ * @summary Start a frozen anonymous adult pilot assessment
+ */
+export const startIntegratedAttempt = async (churchId: number,
+    integratedAttemptStartInput: IntegratedAttemptStartInput, options?: Parameters<typeof customFetch>[1]): Promise<IntegratedAttemptView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<IntegratedAttemptView>(getStartIntegratedAttemptUrl(churchId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(integratedAttemptStartInput)
+  }
+);}
+
+
+
+
+
+export const getStartIntegratedAttemptMutationKey = () => ['startIntegratedAttempt'] as const;
+
+export const getStartIntegratedAttemptMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startIntegratedAttempt>>, TError,StartIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startIntegratedAttempt>>, TError,StartIntegratedAttemptMutationVariables, TContext> => {
+
+const mutationKey = getStartIntegratedAttemptMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startIntegratedAttempt>>, StartIntegratedAttemptMutationVariables> = (props) => {
+          const {churchId,data} = props ?? {};
+
+          return  startIntegratedAttempt(churchId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartIntegratedAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof startIntegratedAttempt>>>
+    export type StartIntegratedAttemptMutationBody = BodyType<IntegratedAttemptStartInput>
+    export type StartIntegratedAttemptMutationError = ErrorType<void>
+    export type StartIntegratedAttemptMutationVariables = {churchId: number;data: BodyType<IntegratedAttemptStartInput>}
+
+    /**
+ * @summary Start a frozen anonymous adult pilot assessment
+ */
+export const useStartIntegratedAttempt = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startIntegratedAttempt>>, TError,StartIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof startIntegratedAttempt>>,
+        TError,
+        StartIntegratedAttemptMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStartIntegratedAttemptMutationOptions(options));
+    }
+
+export const getGetIntegratedAttemptUrl = (churchId: number,
+    attemptId: string,) => {
+
+
+
+
+  return `/api/churches/${churchId}/integrated-attempts/${attemptId}`
+}
+
+/**
+ * @summary Resume the original frozen adult assessment
+ */
+export const getIntegratedAttempt = async (churchId: number,
+    attemptId: string, options?: Parameters<typeof customFetch>[1]): Promise<IntegratedAttemptView> => {
+
+  return customFetch<IntegratedAttemptView>(getGetIntegratedAttemptUrl(churchId,attemptId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetIntegratedAttemptQueryKey = (churchId: number,
+    attemptId: string,) => {
+    return [
+    `/api/churches/${churchId}/integrated-attempts/${attemptId}`
+    ] as const;
+    }
+
+
+export const getGetIntegratedAttemptQueryOptions = <TData = Awaited<ReturnType<typeof getIntegratedAttempt>>, TError = ErrorType<void>>(churchId: number,
+    attemptId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getIntegratedAttempt>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetIntegratedAttemptQueryKey(churchId,attemptId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getIntegratedAttempt>>> = ({ signal }) => getIntegratedAttempt(churchId,attemptId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: churchId !== null && churchId !== undefined && attemptId !== null && attemptId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getIntegratedAttempt>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetIntegratedAttemptQueryResult = NonNullable<Awaited<ReturnType<typeof getIntegratedAttempt>>>
+export type GetIntegratedAttemptQueryError = ErrorType<void>
+
+
+/**
+ * @summary Resume the original frozen adult assessment
+ */
+
+export function useGetIntegratedAttempt<TData = Awaited<ReturnType<typeof getIntegratedAttempt>>, TError = ErrorType<void>>(
+ churchId: number,
+    attemptId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getIntegratedAttempt>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetIntegratedAttemptQueryOptions(churchId,attemptId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveIntegratedAttemptUrl = (churchId: number,
+    attemptId: string,) => {
+
+
+
+
+  return `/api/churches/${churchId}/integrated-attempts/${attemptId}`
+}
+
+/**
+ * @summary Atomically save bounded progress at the expected revision
+ */
+export const saveIntegratedAttempt = async (churchId: number,
+    attemptId: string,
+    integratedAttemptSaveInput: IntegratedAttemptSaveInput, options?: Parameters<typeof customFetch>[1]): Promise<IntegratedAttemptView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+return customFetch<IntegratedAttemptView>(getSaveIntegratedAttemptUrl(churchId,attemptId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(integratedAttemptSaveInput)
+  }
+);}
+
+
+
+
+
+export const getSaveIntegratedAttemptMutationKey = () => ['saveIntegratedAttempt'] as const;
+
+export const getSaveIntegratedAttemptMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveIntegratedAttempt>>, TError,SaveIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveIntegratedAttempt>>, TError,SaveIntegratedAttemptMutationVariables, TContext> => {
+
+const mutationKey = getSaveIntegratedAttemptMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveIntegratedAttempt>>, SaveIntegratedAttemptMutationVariables> = (props) => {
+          const {churchId,attemptId,data} = props ?? {};
+
+          return  saveIntegratedAttempt(churchId,attemptId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveIntegratedAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof saveIntegratedAttempt>>>
+    export type SaveIntegratedAttemptMutationBody = BodyType<IntegratedAttemptSaveInput>
+    export type SaveIntegratedAttemptMutationError = ErrorType<void>
+    export type SaveIntegratedAttemptMutationVariables = {churchId: number;attemptId: string;data: BodyType<IntegratedAttemptSaveInput>}
+
+    /**
+ * @summary Atomically save bounded progress at the expected revision
+ */
+export const useSaveIntegratedAttempt = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveIntegratedAttempt>>, TError,SaveIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveIntegratedAttempt>>,
+        TError,
+        SaveIntegratedAttemptMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveIntegratedAttemptMutationOptions(options));
+    }
 
 export const getHealthCheckUrl = () => {
 

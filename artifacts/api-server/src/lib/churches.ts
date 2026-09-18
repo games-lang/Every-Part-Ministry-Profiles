@@ -114,6 +114,7 @@ export function churchResponse(
     profileUrl: `/profile/${church.slug}`,
     completedProfileCount,
     enabledSpiritualGifts: church.enabledSpiritualGifts,
+    integratedAssessmentPilotEnabled: church.integratedAssessmentPilotEnabled,
     assessmentConfiguration: configuration,
     ministryCustomization: customization,
     onboardingCompletedAt: church.onboardingCompletedAt,

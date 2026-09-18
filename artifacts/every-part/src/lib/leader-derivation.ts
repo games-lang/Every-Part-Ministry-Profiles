@@ -107,7 +107,7 @@ export function getLeaderSynthesis(
   const strengthData = sectionEnabled("naturalStrengths")
     ? asRecord(profile.assessmentSections.naturalStrengths)
     : {};
-  const selectedStrengths = Array.isArray(strengthData.selected)
+  const selectedStrengths = synthesis.integrated ? synthesis.selectedStrengths : Array.isArray(strengthData.selected)
     ? strengthData.selected.filter((value): value is string => typeof value === "string")
     : [];
   const previousExperience = skillsEnabled

@@ -22,6 +22,7 @@ import { ProfileSchedule } from "@/components/profile-schedule";
 import { ProfileHelper } from "@/components/profile-helper";
 import { ProfileAvatar } from "@/components/profile-photo-uploader";
 import { ChurchProfileBranding } from "@/components/church-profile-branding";
+import { integratedResults } from "@/lib/integrated-results";
 
 const empty = "Not shared";
 const spiritualGiftMeanings: Record<string, string> = {
@@ -463,6 +464,7 @@ function AdultProfileView({
   subsectionEnabled: (section: string, subsection: string) => boolean;
 }) {
   const [view, setView] = useState<"individual" | "leader">("individual");
+  const integrated = integratedResults(profile, sectionEnabled, subsectionEnabled);
 
   if (isPrinting) {
     return (
@@ -477,6 +479,13 @@ function AdultProfileView({
 
   return (
     <>
+      {integrated && (
+        <p className="mt-6 text-sm text-muted-foreground" data-testid="integrated-result-version">
+          {integrated.valid
+            ? "Adult integrated pilot · Results use the question bank and church settings saved with this assessment. This is a reflection for conversation, not a validated assessment or an assignment."
+            : "This integrated result version is not supported. No legacy results have been substituted."}
+        </p>
+      )}
       {!isPrinting && (
         <div className="flex flex-wrap gap-6 border-b border-border/60 pb-2 mt-8 mb-6 no-print">
           <button 

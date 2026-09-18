@@ -29,3 +29,4 @@ export * from "./app-feedback";
 export * from "./partfinder-leadership-profiles";
 export * from "./early-access";
 export * from "./pastor-notes";
+export * from "./integrated-attempts";

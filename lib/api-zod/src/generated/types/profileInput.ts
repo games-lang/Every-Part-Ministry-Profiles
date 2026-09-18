@@ -8,6 +8,7 @@
 import type { AssessmentSectionsInput } from './assessmentSectionsInput';
 import type { BasicInformationInput } from './basicInformationInput';
 import type { ChurchConnectionInput } from './churchConnectionInput';
+import type { IntegratedAttemptCredentials } from './integratedAttemptCredentials';
 import type { ProfileInputAvailabilityDetails } from './profileInputAvailabilityDetails';
 import type { ProfileInputChurchDetails } from './profileInputChurchDetails';
 import type { ProfileInputLanguages } from './profileInputLanguages';
@@ -18,6 +19,7 @@ import type { ProfileInputSkillsDetails } from './profileInputSkillsDetails';
 import type { SkillsAndExperienceInput } from './skillsAndExperienceInput';
 
 export interface ProfileInput {
+  integratedAttempt?: IntegratedAttemptCredentials;
   /** @minLength 1 */
   churchSlug: string;
   /**

@@ -10,6 +10,7 @@ import type { BasicInformation } from './basicInformation';
 import type { ChurchBranding } from './churchBranding';
 import type { ChurchConnection } from './churchConnection';
 import type { FutureAssessmentSections } from './futureAssessmentSections';
+import type { IntegratedAssessmentResult } from './integratedAssessmentResult';
 import type { MinistryProfileAvailabilityDetails } from './ministryProfileAvailabilityDetails';
 import type { MinistryProfileGuardian } from './ministryProfileGuardian';
 import type { MinistryProfileGuardianObservations } from './ministryProfileGuardianObservations';
@@ -21,7 +22,8 @@ import type { MinistryProfileYouthResponses } from './ministryProfileYouthRespon
 import type { ProfileListItem } from './profileListItem';
 import type { SkillsAndExperience } from './skillsAndExperience';
 
-export type MinistryProfile = ProfileListItem & {
+export type MinistryProfile = ProfileListItem & ({
+  integratedAssessment?: IntegratedAssessmentResult | null;
   branding: ChurchBranding;
   basicInformation: BasicInformation;
   churchConnection: ChurchConnection;
@@ -47,4 +49,4 @@ export type MinistryProfile = ProfileListItem & {
   guardian: MinistryProfileGuardian;
   /** @nullable */
   youth: MinistryProfileYouth;
-};
+});

@@ -10,6 +10,7 @@ import type { MinistryCustomization } from './ministryCustomization';
 import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface ChurchUpdate {
+  integratedAssessmentPilotEnabled?: boolean;
   /** @minLength 1 */
   name?: string;
   /**

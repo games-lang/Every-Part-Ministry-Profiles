@@ -12,6 +12,7 @@ import { ProfileInfographic } from "./infographic/profile-infographic";
 import { PortraitChapter } from "./portrait-chapter";
 import { buildMinistryPortrait } from "../../lib/ministry-portrait";
 import { ServingPatternCard } from "./serving-pattern-card";
+import { IntegratedAreaResults } from "./integrated-area-results";
 
 const APEST_BODY_PARTS: Record<string, { part: string; description: string; icon: any }> = {
   Apostle: { part: "Feet", description: "You naturally help the Body move forward, cross boundaries, and explore new opportunities.", icon: Footprints },
@@ -119,7 +120,11 @@ export function MyMinistryProfile({
       </section>
 
       <div className="space-y-0">
-        {apestResult && (
+        {synthesis.integrated && sectionEnabled("apest") ? (
+          <PortraitChapter number={1} title="How You Tend to Minister" icon={ApestIcon}>
+            <IntegratedAreaResults results={synthesis.integrated} category="APEST" />
+          </PortraitChapter>
+        ) : apestResult && (
         <PortraitChapter number={1} title="How You Tend to Minister" icon={ApestIcon}>
           <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
             <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Ministry Orientation (APEST) · Like the {APEST_BODY_PARTS[apestResult.label]?.part}</div>
@@ -142,7 +147,7 @@ export function MyMinistryProfile({
 
         {sectionEnabled("spiritualGifts") && (
         <PortraitChapter number={2} title="How God Has Equipped You" icon={Lightbulb}>
-          {topGifts.length > 0 ? (
+          {synthesis.integrated ? <IntegratedAreaResults results={synthesis.integrated} category="Gift" /> : topGifts.length > 0 ? (
             <div className="space-y-4">
               <p className="text-muted-foreground mb-4">Spiritual gifts you identified as being strong or prominent in your life.</p>
               <div className="grid gap-4">
@@ -171,7 +176,9 @@ export function MyMinistryProfile({
         <PortraitChapter number={3} title="What You Are Naturally Good At" icon={Sparkles}>
           <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
             <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Strengths</div>
-            <StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={(sub) => subsectionEnabled("naturalStrengths", sub)} />
+            {synthesis.integrated
+              ? <IntegratedAreaResults results={synthesis.integrated} category="Strength" />
+              : <StrengthsAssessment value={profile.assessmentSections.naturalStrengths} isEnabled={(sub) => subsectionEnabled("naturalStrengths", sub)} />}
             <div className="mt-6 rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground italic border border-border/50">
               Strengths describe what tends to come naturally to you. They are a starting point for conversation, not a placement.
             </div>
@@ -183,7 +190,9 @@ export function MyMinistryProfile({
         <PortraitChapter number={4} title="How You Tend to Operate" icon={SlidersHorizontal}>
           <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
             <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Personality</div>
-            <PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={(sub) => subsectionEnabled("personalityStrengths", sub)} />
+            {synthesis.integrated
+              ? <IntegratedAreaResults results={synthesis.integrated} category="Personality" />
+              : <PersonalityAssessment value={profile.assessmentSections.personalityStrengths} isEnabled={(sub) => subsectionEnabled("personalityStrengths", sub)} />}
           </div>
         </PortraitChapter>
         )}
@@ -282,6 +291,9 @@ export function MyMinistryProfile({
         )}
 
         <PortraitChapter number={8} title="Where These Things Come Together" icon={MapPin}>
+          {synthesis.integrated && !ministryTendency && sectionEnabled("personalityStrengths") && (
+            <p className="mb-4 text-muted-foreground">Your Serving Pattern: Not enough information yet</p>
+          )}
           {environments.length > 0 || (apestResult || ministryTendency) ? (
             <div className="space-y-6">
               {ministryTendency && (

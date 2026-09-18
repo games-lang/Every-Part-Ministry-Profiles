@@ -1,4 +1,5 @@
 import type { MinistryProfile } from "@workspace/db";
+import { integratedSignals } from "./integrated-assessment.ts";
 import {
   DEFAULT_MINISTRY_INTERESTS,
   DEFAULT_PASSIONS,
@@ -84,6 +85,7 @@ function topGifts(value: unknown): string[] {
 }
 
 export function profileHelperSignals(profile: MinistryProfile) {
+  const integrated = integratedSignals(profile.integratedAssessment);
   const ministry = objectRecord(profile.apest);
   const strengths = objectRecord(profile.naturalStrengths);
   const personality = objectRecord(profile.personalityStrengths);
@@ -118,5 +120,6 @@ export function profileHelperSignals(profile: MinistryProfile) {
     spiritualGifts: topGifts(profile.spiritualGifts),
     strengths: stringList(strengths.selected, SAFE_STRENGTHS, 5),
     personalityTendencies: dimensions,
+    ...(integrated ?? {}),
   };
 }

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "incremental": true,
-    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "tsBuildInfoFile": ".tsbuildinfo",
     "outDir": "dist",
     "rootDir": "src",

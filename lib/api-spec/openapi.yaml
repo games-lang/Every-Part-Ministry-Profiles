@@ -27,6 +27,65 @@ tags:
   - name: assistant
     description: Public Every Part website assistant
 paths:
+  /churches/{churchId}/integrated-attempts:
+    post:
+      operationId: startIntegratedAttempt
+      tags: [profiles]
+      summary: Start a frozen anonymous adult pilot assessment
+      parameters:
+        - { name: churchId, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/IntegratedAttemptStartInput" }
+      responses:
+        "201":
+          description: Draft created; token is returned only once
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IntegratedAttemptView" }
+        "400": { description: Adult confirmation or church configuration invalid }
+        "404": { description: Pilot not enabled }
+        "429": { description: Too many drafts }
+  /churches/{churchId}/integrated-attempts/{attemptId}:
+    parameters:
+      - { name: churchId, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      - { name: attemptId, in: path, required: true, schema: { type: string, format: uuid } }
+      - { name: Authorization, in: header, required: true, schema: { type: string, pattern: "^Bearer [A-Za-z0-9_-]{43}$" } }
+    get:
+      operationId: getIntegratedAttempt
+      tags: [profiles]
+      summary: Resume the original frozen adult assessment
+      responses:
+        "200":
+          description: Saved draft without credential hash or scoring maps
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IntegratedAttemptView" }
+        "404": { description: Draft not found or unauthorized }
+        "410": { description: Draft expired }
+        "429": { description: Request rate exceeded }
+    patch:
+      operationId: saveIntegratedAttempt
+      tags: [profiles]
+      summary: Atomically save bounded progress at the expected revision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/IntegratedAttemptSaveInput" }
+      responses:
+        "200":
+          description: Progress saved with incremented revision
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/IntegratedAttemptView" }
+        "400": { description: Invalid answer or form progress }
+        "404": { description: Draft not found or unauthorized }
+        "409": { description: Revision conflict or already completed; saved answers unchanged }
+        "410": { description: Draft expired }
+        "429": { description: Request rate exceeded }
   /healthz:
     get:
       operationId: healthCheck
@@ -2033,6 +2092,7 @@ components:
       type: object
       required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd, discoverHallwayCode]
       properties:
+        integratedAssessmentPilotEnabled: { type: boolean, default: false }
         id: { type: integer }
         name: { type: string }
         slug: { type: string }
@@ -2091,6 +2151,7 @@ components:
     ChurchUpdate:
       type: object
       properties:
+        integratedAssessmentPilotEnabled: { type: boolean }
         name: { type: string, minLength: 1 }
         logoUrl:
           type: ["string", "null"]
@@ -2162,6 +2223,8 @@ components:
       type: object
       required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, discoverAccessAvailable]
       properties:
+        id: { type: integer }
+        integratedAssessmentPilotEnabled: { type: boolean, default: false }
         name: { type: string }
         slug: { type: string }
         logoUrl: { type: ["string", "null"] }
@@ -2680,6 +2743,10 @@ components:
         - type: object
           required: [branding, basicInformation, churchConnection, skills, experience, assessmentSections, assessmentConfiguration, conversations, recommendedProfileType, profileTypeOverridden, youthResponses, guardianObservations, guardian, youth, journeyToken]
           properties:
+            integratedAssessment:
+              anyOf:
+                - { $ref: "#/components/schemas/IntegratedAssessmentResult" }
+                - { type: "null" }
             branding:
               $ref: "#/components/schemas/ChurchBranding"
             basicInformation:
@@ -2719,6 +2786,8 @@ components:
       type: object
       required: [churchSlug, age, profileType, basicInformation]
       properties:
+        integratedAttempt:
+          $ref: "#/components/schemas/IntegratedAttemptCredentials"
         churchSlug: { type: string, minLength: 1 }
         age: { type: integer, minimum: 18, maximum: 120 }
         birthdate: { type: string, format: date }
@@ -2750,6 +2819,105 @@ components:
         ministryPreferences: { type: ["object", "null"], additionalProperties: true }
         assessmentSections:
           $ref: "#/components/schemas/AssessmentSectionsInput"
+    IntegratedAttemptCredentials:
+      type: object
+      additionalProperties: false
+      required: [attemptId, token, revision]
+      properties:
+        attemptId: { type: string, format: uuid }
+        token: { type: string, pattern: "^[A-Za-z0-9_-]{43}$" }
+        revision: { type: integer, minimum: 0, maximum: 2147483646 }
+    IntegratedAttemptStartInput:
+      type: object
+      additionalProperties: false
+      required: [adultConfirmed, celibacyEligible, optionalExperienceOptIn]
+      properties:
+        adultConfirmed: { type: boolean, enum: [true] }
+        celibacyEligible: { type: boolean }
+        optionalExperienceOptIn: { type: boolean }
+    IntegratedAnswers:
+      type: object
+      additionalProperties:
+        oneOf:
+          - { type: integer, minimum: 1, maximum: 5 }
+          - { type: string, enum: [na, skip] }
+    IntegratedAttemptSaveInput:
+      type: object
+      additionalProperties: false
+      required: [revision, answers, formState]
+      properties:
+        revision: { type: integer, minimum: 0, maximum: 2147483646 }
+        answers: { $ref: "#/components/schemas/IntegratedAnswers" }
+        formState: { type: object, additionalProperties: true, description: "Allowlisted non-assessment wizard fields, at most 48KB." }
+    IntegratedQuestionView:
+      type: object
+      required: [id, text, responseModel]
+      properties:
+        id: { type: string }
+        text: { type: string }
+        responseModel: { type: string, enum: [reflectionLikert, personalityBipolar, specialExperienceLikert] }
+        poles: { type: array, items: { type: string }, minItems: 2, maxItems: 2 }
+    IntegratedAttemptView:
+      type: object
+      required: [attemptId, revision, expiresAt, status, bankVersion, scoringVersion, snapshot, questions, answers, formState, responseModels]
+      properties:
+        attemptId: { type: string, format: uuid }
+        token: { type: string, description: "Present only at creation. Treat as a private bearer credential." }
+        revision: { type: integer }
+        expiresAt: { type: string, format: date-time }
+        status: { type: string, enum: [draft, completed] }
+        profileId: { type: ["integer", "null"] }
+        bankVersion: { type: string }
+        scoringVersion: { type: string }
+        snapshot: { type: object, additionalProperties: true }
+        responseModels: { type: object, additionalProperties: true }
+        questions: { type: array, items: { $ref: "#/components/schemas/IntegratedQuestionView" } }
+        answers: { $ref: "#/components/schemas/IntegratedAnswers" }
+        formState: { type: object, additionalProperties: true }
+    IntegratedConstructScore:
+      type: object
+      required: [category, construct, sectionKey, subsectionKey, mean, answeredCount, availableCount, answeredWeight, eligible, evidence, poles, tendency]
+      properties:
+        category: { type: string, enum: [APEST, Gift, Strength, Personality] }
+        construct: { type: string }
+        sectionKey: { type: string, enum: [apest, spiritualGifts, naturalStrengths, personalityStrengths] }
+        subsectionKey: { type: ["string", "null"] }
+        mean: { type: ["number", "null"], minimum: 1, maximum: 5 }
+        answeredCount: { type: integer, minimum: 0 }
+        availableCount: { type: integer, minimum: 0 }
+        answeredWeight: { type: number, minimum: 0 }
+        eligible: { type: boolean }
+        evidence: { type: string, enum: [sufficient, insufficient] }
+        poles: { type: ["array", "null"], items: { type: string } }
+        tendency: { type: ["string", "null"] }
+    IntegratedAssessmentResult:
+      type: object
+      required: [version, bankVersion, scoringVersion, completedAt, snapshot, answers, constructs, optionalExperiences, conversationOnlyGifts, limitations]
+      properties:
+        version: { type: string, enum: [integrated-assessment-v1] }
+        bankVersion: { type: string }
+        scoringVersion: { type: string }
+        completedAt: { type: string, format: date-time }
+        snapshot: { type: object, additionalProperties: true }
+        answers: { $ref: "#/components/schemas/IntegratedAnswers" }
+        constructs: { type: array, items: { $ref: "#/components/schemas/IntegratedConstructScore" } }
+        optionalExperiences:
+          type: array
+          items:
+            type: object
+            required: [questionId, construct, kind, text, answer]
+            properties:
+              questionId: { type: string }
+              construct: { type: string }
+              kind: { type: string }
+              text: { type: string }
+              answer:
+                oneOf:
+                  - { type: integer, minimum: 1, maximum: 5 }
+                  - { type: string, enum: [na, skip] }
+                  - { type: "null" }
+        conversationOnlyGifts: { type: array, items: { type: string } }
+        limitations: { type: array, items: { type: string } }
     BasicInformation:
       type: object
       required: [firstName, lastName, email, ageRange, preferredContact, familySituation, transportation]

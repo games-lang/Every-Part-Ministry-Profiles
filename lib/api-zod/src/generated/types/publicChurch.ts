@@ -10,6 +10,8 @@ import type { MinistryCustomization } from './ministryCustomization';
 import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface PublicChurch {
+  id?: number;
+  integratedAssessmentPilotEnabled?: boolean;
   name: string;
   slug: string;
   /** @nullable */

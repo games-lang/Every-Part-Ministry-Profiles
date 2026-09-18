@@ -11,6 +11,7 @@ function profile(
   overrides: Partial<MinistryProfile> = {},
 ): MinistryProfile {
   return {
+    integratedAssessment: null,
     id: 1,
     churchId: 10,
     firstName: "Alex",
@@ -219,6 +220,33 @@ test("falls back to local evidence without contact or sensitive fields", async (
     ]) {
       assert.equal(responseText.includes(sensitiveValue), false);
     }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("volunteer matching never substitutes legacy conclusions for unsupported integrated versions", async () => {
+  const versions = { version: "integrated-assessment-v1", bankVersion: "adult-integrated-83-v1", scoringVersion: "independent-weighted-mean-v1" };
+  const fixture = profile({
+    interests: [], passions: [], availability: [], uniqueSkills: null,
+    previousMinistryExperience: null, leadershipExperience: null, missionTripExperience: null,
+    spiritualGifts: { topGifts: ["Teaching"] }, naturalStrengths: { selected: ["Teaching and explaining"] },
+  });
+  const originalFetch = globalThis.fetch;
+  let networkCalls = 0;
+  globalThis.fetch = async () => { networkCalls++; throw new Error("Must not ask AI to infer unsupported assessments"); };
+  try {
+    for (const key of ["version", "bankVersion", "scoringVersion"] as const) {
+      const result = await withOpenAiKey(() => findVolunteerMatches([{
+        ...fixture, integratedAssessment: {
+          ...versions, [key]: "unknown",
+          constructs: [{ category: "Gift", construct: "Teaching", mean: 5, answeredCount: 3, eligible: true, evidence: "sufficient" }],
+        },
+      }], { roleDescription: "Teaching" }, 10));
+      assert.deepEqual(result.candidates, [], key);
+      assert.equal(result.usedAi, false);
+    }
+    assert.equal(networkCalls, 0);
   } finally {
     globalThis.fetch = originalFetch;
   }

@@ -885,6 +885,7 @@ export interface MinistryCustomization {
 }
 
 export interface Church {
+  integratedAssessmentPilotEnabled?: boolean;
   id: number;
   name: string;
   slug: string;
@@ -933,6 +934,7 @@ export interface ChurchBranding {
 }
 
 export interface ChurchUpdate {
+  integratedAssessmentPilotEnabled?: boolean;
   /** @minLength 1 */
   name?: string;
   /**
@@ -1001,6 +1003,8 @@ export interface DiscoverAccessResponse {
 }
 
 export interface PublicChurch {
+  id?: number;
+  integratedAssessmentPilotEnabled?: boolean;
   name: string;
   slug: string;
   /** @nullable */
@@ -1554,6 +1558,92 @@ export type MinistryProfileGuardian = {
  */
 export type MinistryProfileYouth = { [key: string]: unknown } | null;
 
+export type IntegratedAssessmentResultVersion = typeof IntegratedAssessmentResultVersion[keyof typeof IntegratedAssessmentResultVersion];
+
+
+export const IntegratedAssessmentResultVersion = {
+  'integrated-assessment-v1': 'integrated-assessment-v1',
+} as const;
+
+export interface IntegratedAnswers {[key: string]: number | 'na' | 'skip'}
+
+export type IntegratedConstructScoreCategory = typeof IntegratedConstructScoreCategory[keyof typeof IntegratedConstructScoreCategory];
+
+
+export const IntegratedConstructScoreCategory = {
+  APEST: 'APEST',
+  Gift: 'Gift',
+  Strength: 'Strength',
+  Personality: 'Personality',
+} as const;
+
+export type IntegratedConstructScoreSectionKey = typeof IntegratedConstructScoreSectionKey[keyof typeof IntegratedConstructScoreSectionKey];
+
+
+export const IntegratedConstructScoreSectionKey = {
+  apest: 'apest',
+  spiritualGifts: 'spiritualGifts',
+  naturalStrengths: 'naturalStrengths',
+  personalityStrengths: 'personalityStrengths',
+} as const;
+
+export type IntegratedConstructScoreEvidence = typeof IntegratedConstructScoreEvidence[keyof typeof IntegratedConstructScoreEvidence];
+
+
+export const IntegratedConstructScoreEvidence = {
+  sufficient: 'sufficient',
+  insufficient: 'insufficient',
+} as const;
+
+export interface IntegratedConstructScore {
+  category: IntegratedConstructScoreCategory;
+  construct: string;
+  sectionKey: IntegratedConstructScoreSectionKey;
+  /** @nullable */
+  subsectionKey: string | null;
+  /**
+     * @minimum 1
+     * @maximum 5
+     * @nullable
+     */
+  mean: number | null;
+  /** @minimum 0 */
+  answeredCount: number;
+  /** @minimum 0 */
+  availableCount: number;
+  /** @minimum 0 */
+  answeredWeight: number;
+  eligible: boolean;
+  evidence: IntegratedConstructScoreEvidence;
+  /** @nullable */
+  poles: string[] | null;
+  /** @nullable */
+  tendency: string | null;
+}
+
+export type IntegratedAssessmentResultSnapshot = { [key: string]: unknown };
+
+export type IntegratedAssessmentResultOptionalExperiencesItem = {
+  questionId: string;
+  construct: string;
+  kind: string;
+  text: string;
+  answer: number | 'na' | 'skip' | null;
+};
+
+export interface IntegratedAssessmentResult {
+  version: IntegratedAssessmentResultVersion;
+  bankVersion: string;
+  scoringVersion: string;
+  completedAt: string;
+  snapshot: IntegratedAssessmentResultSnapshot;
+  answers: IntegratedAnswers;
+  constructs: IntegratedConstructScore[];
+  optionalExperiences: IntegratedAssessmentResultOptionalExperiencesItem[];
+  conversationOnlyGifts: string[];
+  limitations: string[];
+}
+
 /**
  * @nullable
  */
@@ -1663,7 +1753,8 @@ export interface FutureAssessmentSections {
   spiritualHealth: FutureAssessmentSectionsSpiritualHealth;
 }
 
-export type MinistryProfile = ProfileListItem & {
+export type MinistryProfile = ProfileListItem & ({
+  integratedAssessment?: IntegratedAssessmentResult | null;
   branding: ChurchBranding;
   basicInformation: BasicInformation;
   churchConnection: ChurchConnection;
@@ -1689,7 +1780,7 @@ export type MinistryProfile = ProfileListItem & {
   guardian: MinistryProfileGuardian;
   /** @nullable */
   youth: MinistryProfileYouth;
-};
+});
 
 export type ProfileInputProfileType = typeof ProfileInputProfileType[keyof typeof ProfileInputProfileType];
 
@@ -1727,6 +1818,17 @@ export type ProfileInputAvailabilityDetails = { [key: string]: unknown } | null;
  * @nullable
  */
 export type ProfileInputMinistryPreferences = { [key: string]: unknown } | null;
+
+export interface IntegratedAttemptCredentials {
+  attemptId: string;
+  /** @pattern ^[A-Za-z0-9_-]{43}$ */
+  token: string;
+  /**
+     * @minimum 0
+     * @maximum 2147483646
+     */
+  revision: number;
+}
 
 export interface BasicInformationInput {
   /** @minLength 1 */
@@ -1827,6 +1929,7 @@ export interface AssessmentSectionsInput {
 }
 
 export interface ProfileInput {
+  integratedAttempt?: IntegratedAttemptCredentials;
   /** @minLength 1 */
   churchSlug: string;
   /**
@@ -1865,6 +1968,80 @@ export interface ProfileInput {
   /** @nullable */
   ministryPreferences?: ProfileInputMinistryPreferences;
   assessmentSections?: AssessmentSectionsInput;
+}
+
+export interface IntegratedAttemptStartInput {
+  adultConfirmed: true;
+  celibacyEligible: boolean;
+  optionalExperienceOptIn: boolean;
+}
+
+/**
+ * Allowlisted non-assessment wizard fields, at most 48KB.
+ */
+export type IntegratedAttemptSaveInputFormState = { [key: string]: unknown };
+
+export interface IntegratedAttemptSaveInput {
+  /**
+     * @minimum 0
+     * @maximum 2147483646
+     */
+  revision: number;
+  answers: IntegratedAnswers;
+  /** Allowlisted non-assessment wizard fields, at most 48KB. */
+  formState: IntegratedAttemptSaveInputFormState;
+}
+
+export type IntegratedQuestionViewResponseModel = typeof IntegratedQuestionViewResponseModel[keyof typeof IntegratedQuestionViewResponseModel];
+
+
+export const IntegratedQuestionViewResponseModel = {
+  reflectionLikert: 'reflectionLikert',
+  personalityBipolar: 'personalityBipolar',
+  specialExperienceLikert: 'specialExperienceLikert',
+} as const;
+
+export interface IntegratedQuestionView {
+  id: string;
+  text: string;
+  responseModel: IntegratedQuestionViewResponseModel;
+  /**
+     * @minItems 2
+     * @maxItems 2
+     */
+  poles?: string[];
+}
+
+export type IntegratedAttemptViewStatus = typeof IntegratedAttemptViewStatus[keyof typeof IntegratedAttemptViewStatus];
+
+
+export const IntegratedAttemptViewStatus = {
+  draft: 'draft',
+  completed: 'completed',
+} as const;
+
+export type IntegratedAttemptViewSnapshot = { [key: string]: unknown };
+
+export type IntegratedAttemptViewResponseModels = { [key: string]: unknown };
+
+export type IntegratedAttemptViewFormState = { [key: string]: unknown };
+
+export interface IntegratedAttemptView {
+  attemptId: string;
+  /** Present only at creation. Treat as a private bearer credential. */
+  token?: string;
+  revision: number;
+  expiresAt: string;
+  status: IntegratedAttemptViewStatus;
+  /** @nullable */
+  profileId?: number | null;
+  bankVersion: string;
+  scoringVersion: string;
+  snapshot: IntegratedAttemptViewSnapshot;
+  responseModels: IntegratedAttemptViewResponseModels;
+  questions: IntegratedQuestionView[];
+  answers: IntegratedAnswers;
+  formState: IntegratedAttemptViewFormState;
 }
 
 export interface MinistryPersonInput {

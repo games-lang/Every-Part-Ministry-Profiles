@@ -27,6 +27,7 @@ export const churchesTable = pgTable(
     adminName: text("admin_name").notNull(),
     adminEmail: text("admin_email").notNull(),
     enabledSpiritualGifts: jsonb("enabled_spiritual_gifts").$type<string[]>(),
+    integratedAssessmentPilotEnabled: boolean("integrated_assessment_pilot_enabled").notNull().default(false),
     assessmentConfiguration: jsonb("assessment_configuration").$type<unknown>(),
     ministryCustomization: jsonb("ministry_customization").$type<unknown>(),
     earlyAccessStatus: text("early_access_status").notNull().default("early_access"),

@@ -429,6 +429,8 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
 
   res.json(
     GetPublicChurchResponse.parse({
+      id: church.id,
+      integratedAssessmentPilotEnabled: church.integratedAssessmentPilotEnabled,
       name: church.name,
       slug: church.slug,
       logoUrl: church.logoUrl

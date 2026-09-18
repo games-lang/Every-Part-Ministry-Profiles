@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -52,6 +54,8 @@ import { personalitySummarySentence } from "@/lib/personality-prose";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
 import { ProfileParts } from "@/components/profile-parts";
 import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
+import { useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
+import { IntegratedConflict, IntegratedReflections, INTEGRATED_ROUND_SIZE, isOptionalReflection } from "@/components/integrated-reflections";
 
 function hexToHsl(hex: string) {
   const value = hex.replace("#", "");
@@ -1114,7 +1118,7 @@ function fieldIsEnabled(
     );
   if (name.startsWith("preferences."))
     return (
-      context?.step === "personalityStrengths" &&
+      (context?.step === "personalityStrengths" || context?.step === "integratedPreferences") &&
       enabled("personalityStrengths.ministryPreferences")
     );
   if (name.startsWith("spiritualHealth."))
@@ -1536,39 +1540,58 @@ export default function Assessment() {
   const [profilePhotoPath, setProfilePhotoPath] = useState<string | null>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
 
-  if (!age || isNaN(age)) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4 ep-landing">
-        <Card className="w-full max-w-md border-border/60 shadow-lg text-center landing-reveal">
-          <CardContent className="p-8">
-            <h2 className="text-xl font-serif font-medium mb-3">Age Required</h2>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              We need to know your age to ensure we provide the right ministry profile.
-            </p>
-            <Button asChild variant="default" className="w-full">
-              <Link href={`/profile/${slug}`}>
-                Return to start
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const setStep = (updater: number | ((current: number) => number)) =>
-    setStepIndex((current) => {
-      const next = typeof updater === "function" ? updater(current) : updater;
-      if (next < 0) {
-        setStarted(false);
-        return 0;
-      }
-      return next;
-    });
   const giftGroupRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const submissionStarted = useRef(false);
   const initializedGiftConfig = useRef<string | null>(null);
   const form = useForm<Values>({ defaultValues });
+  const [legacyChosen, setLegacyChosen] = useState(false);
+  const [adultConfirmed, setAdultConfirmed] = useState(false);
+  const [celibacyEligible, setCelibacyEligible] = useState(false);
+  const [optionalExperienceOptIn, setOptionalExperienceOptIn] = useState(false);
+  const [integratedRound, setIntegratedRound] = useState(0);
+  const [integratedQuestionIndex, setIntegratedQuestionIndex] = useState(0);
+  const resumeQuestion = useRef<number | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const restoring = useRef(false);
+  const integrated = useIntegratedAttempt(church?.id, (saved: DraftForm) => {
+    restoring.current = true;
+    // Drafts omit legacy assessment fields. Keep all default field shapes valid.
+    const restored = { ...structuredClone(defaultValues), ...saved } as Values;
+    for (const key of ["basicInformation", "churchConnection", "skills", "churchDetails", "availabilityDetails", "preferences", "spiritualHealth"] as const) {
+      (restored as any)[key] = { ...defaultValues[key], ...(saved[key] as object ?? {}) };
+    }
+    form.reset(restored);
+    setStepIndex(typeof saved._stepIndex === "number" ? Math.max(0, saved._stepIndex) : 0);
+    setIntegratedRound(typeof saved.round === "number" ? Math.max(0, saved.round) : 0);
+    const questionIndex = typeof saved.questionIndex === "number" ? Math.max(0, saved.questionIndex) : 0;
+    setIntegratedQuestionIndex(questionIndex);
+    resumeQuestion.current = questionIndex;
+    setProfilePhotoPath(typeof saved.profilePhotoPath === "string" ? saved.profilePhotoPath : null);
+    restoring.current = false;
+  });
+  const { attempt: integratedAttempt, answers: integratedAnswers, saving: integratedSaving } = integrated;
+  useEffect(() => {
+    if (integrated.completed) setStarted(false);
+  }, [integrated.completed]);
+  const progressRef = useRef({ stepIndex, integratedRound, integratedQuestionIndex, profilePhotoPath });
+  progressRef.current = { stepIndex, integratedRound, integratedQuestionIndex, profilePhotoPath };
+  const draftActions = useRef(integrated);
+  draftActions.current = integrated;
+  const captureProgress = () => ({
+    ...form.getValues(), _stepIndex: progressRef.current.stepIndex,
+    round: progressRef.current.integratedRound, questionIndex: progressRef.current.integratedQuestionIndex,
+    profilePhotoPath: progressRef.current.profilePhotoPath,
+  });
+  useEffect(() => {
+    const subscription = form.watch(() => {
+      if (!restoring.current && !submissionStarted.current) draftActions.current.updateForm(captureProgress());
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+  useEffect(() => {
+    if (!integrated.loading && !submissionStarted.current) integrated.updateForm(captureProgress());
+  }, [stepIndex, integratedRound, integratedQuestionIndex, profilePhotoPath, integrated.loading]);
+
   const {
     fields: languageFields,
     append: appendLanguage,
@@ -1579,18 +1602,20 @@ export default function Assessment() {
   });
   const invitationApplied = useRef(false);
   useEffect(() => {
-    if (!invitedPerson || invitationApplied.current) return;
+    if (!invitedPerson || invitationApplied.current || integrated.loading || integrated.hasDraft) return;
     invitationApplied.current = true;
     form.setValue("basicInformation.firstName", invitedPerson.firstName);
     form.setValue("basicInformation.lastName", invitedPerson.lastName);
     form.setValue("basicInformation.email", invitedPerson.email ?? "");
     form.setValue("basicInformation.phone", invitedPerson.phone ?? "");
-  }, [form, invitedPerson]);
-  const configuration = church?.assessmentConfiguration;
+  }, [form, invitedPerson, integrated.loading, integrated.hasDraft]);
+  const configuration = integratedAttempt?.snapshot.assessmentConfiguration ?? church?.assessmentConfiguration;
+  const customization = integratedAttempt?.snapshot.ministryCustomization ?? church?.ministryCustomization;
+  const enabledGifts = integratedAttempt?.snapshot.enabledSpiritualGifts ?? church?.enabledSpiritualGifts;
   const spiritualGiftsLabel =
-    church?.ministryCustomization.spiritualGiftsLabel ?? "Spiritual Gifts";
+    customization?.spiritualGiftsLabel ?? "Spiritual Gifts";
   const ministryInterestsLabel =
-    church?.ministryCustomization.ministryInterestsLabel ??
+    customization?.ministryInterestsLabel ??
     "Ministry Interests";
   const passionOptions = configuration?.passions ?? OPTIONS.passions;
   const ministryInterestOptions =
@@ -1615,12 +1640,22 @@ export default function Assessment() {
       subsectionEnabled("aboutYou.languages") ||
       subsectionEnabled("aboutYou.profilePhoto"));
   const familySituation = form.watch("basicInformation.familySituation");
-  const isMarried = familySituation.startsWith("Married");
+  const isMarried = (familySituation ?? "").startsWith("Married");
   const activeSpiritualGifts = SPIRITUAL_GIFTS.filter(
     ([gift]) =>
-      (church?.enabledSpiritualGifts?.includes(gift) ?? true) &&
+      (enabledGifts?.includes(gift) ?? true) &&
       !(isMarried && gift === "Celibacy"),
   );
+
+  const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft || (!legacyChosen && !!church?.integratedAssessmentPilotEnabled);
+  const coreQuestions = integratedAttempt?.questions.filter(q => !isOptionalReflection(q)) ?? [];
+  const optionalQuestions = integratedAttempt?.questions.filter(isOptionalReflection) ?? [];
+  const roundCount = Math.max(1, Math.ceil(coreQuestions.length / INTEGRATED_ROUND_SIZE));
+  const currentRound = Math.min(integratedRound, roundCount - 1);
+  const roundQuestions = coreQuestions.slice(currentRound * INTEGRATED_ROUND_SIZE, (currentRound + 1) * INTEGRATED_ROUND_SIZE);
+
+  const legacyAssessmentSections = ["apest", "spiritualGifts", "naturalStrengths", "personalityStrengths"] as const;
+
   const stepKeys = [
     "aboutYou",
     ...(sectionEnabled("aboutYou") &&
@@ -1628,6 +1663,7 @@ export default function Assessment() {
       subsectionEnabled("aboutYou.lifeExperiences"))
       ? ["skillsExperience"]
       : []),
+    ...(["integratedPilot"].filter(() => integratedPilotEnabled)),
     ...(
       [
         "apest",
@@ -1641,12 +1677,27 @@ export default function Assessment() {
     ).filter(
       (section) =>
         sectionEnabled(section) &&
+        (integratedPilotEnabled ? !legacyAssessmentSections.includes(section as any) : true) &&
         (section === "spiritualGifts"
           ? activeSpiritualGifts.length > 0
           : hasEnabledSubsections(section)),
     ),
+    ...(integratedPilotEnabled && sectionEnabled("personalityStrengths") && subsectionEnabled("personalityStrengths.ministryPreferences") ? ["integratedPreferences"] : []),
+    ...(integratedPilotEnabled && optionalQuestions.length ? ["integratedOptional"] : []),
+    ...(integratedPilotEnabled ? ["integratedReview"] : []),
   ];
   const currentStep = stepKeys[stepIndex] ?? "aboutYou";
+  useEffect(() => {
+    if (church && !integrated.loading && started && !submissionStarted.current) {
+      setStepIndex(index => Math.min(Math.max(0, index), stepKeys.length - 1));
+    }
+  }, [church?.id, integrated.loading, started, stepKeys.length]);
+  useEffect(() => {
+    if (!started || integrated.loading || resumeQuestion.current === null || currentStep !== "integratedPilot") return;
+    const question = coreQuestions[resumeQuestion.current];
+    resumeQuestion.current = null;
+    if (question) requestAnimationFrame(() => document.getElementById(`integrated-question-${question.id}`)?.scrollIntoView({ block: "center" }));
+  }, [started, integrated.loading, currentStep]);
   const progressLabels: Record<string, string> = {
     aboutYou: "About you",
     skillsExperience: "Skills & experience",
@@ -1657,6 +1708,10 @@ export default function Assessment() {
     personalityStrengths: "How you operate",
     spiritualHealth: "Spiritual health",
     connectionAvailability: "Connection",
+    integratedPilot: "Reflections",
+    integratedPreferences: "Preferences",
+    integratedOptional: "Optional experiences",
+    integratedReview: "Review",
   };
   const configuredMinistryQuestionCount = configuration?.ministryQuestionCount;
   const ministryQuestionsPerApproach =
@@ -1705,7 +1760,7 @@ export default function Assessment() {
     configuredSpiritualGiftQuestionCount <= 4
       ? configuredSpiritualGiftQuestionCount
       : 3;
-  const activeGiftConfigKey = `${church?.enabledSpiritualGifts?.join("|") ?? "all"}:${spiritualGiftQuestionsPerGift}:${isMarried ? "married" : "other"}`;
+  const activeGiftConfigKey = `${enabledGifts?.join("|") ?? "all"}:${spiritualGiftQuestionsPerGift}:${isMarried ? "married" : "other"}`;
   const randomizedGiftQuestions = useMemo(
     () =>
       shuffleQuestions(
@@ -1796,7 +1851,7 @@ export default function Assessment() {
     spiritualGiftQuestionsPerGift,
   ]);
   useEffect(() => {
-    if (!configuration) return;
+    if (!configuration || !started || integratedPilotEnabled || integrated.loading) return;
     const hidden: string[] = [];
     const add = (enabled: boolean, ...names: string[]) => {
       if (!enabled) hidden.push(...names);
@@ -1898,7 +1953,7 @@ export default function Assessment() {
       ),
     );
     form.unregister(hidden as Path<Values>[]);
-  }, [configuration, form, ministryQuestionsPerApproach]);
+  }, [configuration, form, ministryQuestionsPerApproach, integratedPilotEnabled, integrated.loading, started]);
   useEffect(() => {
     const subscription = form.watch((values, info) => {
       if (info.name) form.clearErrors(info.name as Path<Values>);
@@ -1955,7 +2010,9 @@ export default function Assessment() {
       }
     }
     const unanswered =
-      currentStep === "apest"
+      currentStep === "integratedPilot"
+        ? (integratedAttempt ? roundQuestions.some(q => !integratedAnswers[q.id]) : true)
+        : currentStep === "apest"
         ? randomizedMinistryQuestions.some(
             ({ gift, questionIndex }) =>
               !(form.getValues(
@@ -2035,6 +2092,17 @@ export default function Assessment() {
       return false;
     }
     if (!unanswered) return true;
+    if (currentStep === "integratedPilot" && integratedAttempt) {
+      const firstUnansweredIndex = roundQuestions.findIndex(q => !integratedAnswers[q.id]);
+      if (firstUnansweredIndex >= 0) {
+        setReflectionValidationError(
+          `Choose a response, N/A, or Skip for each reflection in this round. Question ${currentRound * INTEGRATED_ROUND_SIZE + firstUnansweredIndex + 1} still needs a choice.`,
+        );
+        requestAnimationFrame(() =>
+          document.getElementById(`integrated-question-${roundQuestions[firstUnansweredIndex].id}`)?.scrollIntoView({ behavior: "smooth", block: "center" })
+        );
+      }
+    }
     if (currentStep === "apest") {
       const firstUnansweredIndex = randomizedMinistryQuestions.findIndex(
         ({ gift, questionIndex }) =>
@@ -2110,14 +2178,44 @@ export default function Assessment() {
     return false;
   };
   const next = () => {
+    if (integrated.loading || submitting) return;
     if (!validateStep()) return;
-    setStepIndex((value) => Math.min(value + 1, stepKeys.length - 1));
+    if (currentStep === "integratedPilot" && currentRound < roundCount - 1) {
+      setIntegratedRound(currentRound + 1);
+      setReflectionValidationError("");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const nextStep = Math.min(stepIndex + 1, stepKeys.length - 1);
+    setStepIndex(nextStep);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const submit = (data: Values) => {
-    if (submissionStarted.current || photoUploading) return;
+  const submit = async (data: Values) => {
+    if (stepIndex !== stepKeys.length - 1 || submissionStarted.current || photoUploading || integrated.loading) return;
+    if (!validateStep()) return;
+    if (integratedPilotEnabled && !integratedAttempt) {
+      setSubmitError("Start or resume your reflection before submitting."); return;
+    }
+    const missing = coreQuestions.findIndex(q => !integratedAnswers[q.id]);
+    if (integratedAttempt && missing >= 0) {
+      setStepIndex(stepKeys.indexOf("integratedPilot"));
+      setIntegratedRound(Math.floor(missing / INTEGRATED_ROUND_SIZE));
+      setReflectionValidationError("Choose a response, N/A, or Skip for each core reflection before submitting.");
+      return;
+    }
     submissionStarted.current = true;
+    setSubmitting(true);
     setSubmitError("");
+    let finalAttempt = integratedAttempt;
+    if (integratedAttempt) {
+      integrated.updateForm(captureProgress());
+      finalAttempt = await integrated.flush();
+      if (!finalAttempt || finalAttempt.status !== "draft") {
+        submissionStarted.current = false; setSubmitting(false);
+        setSubmitError("Your profile has not been submitted. Resolve the draft save error or conflict, then try again.");
+        return;
+      }
+    }
     const activeMinistryKeys = new Set(
       activeMinistryQuestions.map(
         ({ key, questionIndex }) => `${key}-${questionIndex}`,
@@ -2134,17 +2232,17 @@ export default function Assessment() {
       ),
     );
     const ministryResponses = Object.fromEntries(
-      Object.entries(data.ministryResponses).filter(([key]) =>
+      Object.entries(data.ministryResponses ?? {}).filter(([key]) =>
         activeMinistryKeys.has(key),
       ),
     );
     const strengthResponses = Object.fromEntries(
-      Object.entries(data.strengthResponses).filter(([key]) =>
+      Object.entries(data.strengthResponses ?? {}).filter(([key]) =>
         activeStrengthKeys.has(key),
       ),
     );
     const personalityResponses = Object.fromEntries(
-      Object.entries(data.personalityResponses).filter(([key]) =>
+      Object.entries(data.personalityResponses ?? {}).filter(([key]) =>
         activePersonalityKeys.has(key),
       ),
     );
@@ -2188,7 +2286,7 @@ export default function Assessment() {
       personalityResponses,
       activePersonalityDimensions,
     );
-    const languageEntries = data.languageEntries
+    const languageEntries = (data.languageEntries ?? [])
       .map((entry) => ({
         language: entry.language.trim(),
         proficiency: entry.proficiency || null,
@@ -2199,7 +2297,10 @@ export default function Assessment() {
         ? { profilePhotoPath }
         : {}),
       churchSlug: slug,
-      journeyToken: localStorage.getItem("every-part-journey-token") || undefined,
+      journeyToken: (() => {
+        try { return localStorage.getItem("every-part-journey-token") || undefined; }
+        catch { return undefined; }
+      })(),
       inviteToken: inviteToken || undefined,
       basicInformation: {
         firstName: data.basicInformation.firstName,
@@ -2285,7 +2386,7 @@ export default function Assessment() {
         ? { ministryPreferences: data.preferences }
         : {}),
       assessmentSections: {
-        ...(sectionEnabled("spiritualGifts") && activeSpiritualGifts.length
+        ...(!integratedAttempt && sectionEnabled("spiritualGifts") && activeSpiritualGifts.length
           ? {
               spiritualGifts: {
                 responses: Object.fromEntries(
@@ -2300,7 +2401,7 @@ export default function Assessment() {
               },
             }
           : {}),
-        ...(sectionEnabled("apest") && activeMinistryQuestions.length
+        ...(!integratedAttempt && sectionEnabled("apest") && activeMinistryQuestions.length
           ? {
               apest: {
                 primary: ministryResults[0]?.label || null,
@@ -2309,7 +2410,7 @@ export default function Assessment() {
               },
             }
           : {}),
-        ...(sectionEnabled("naturalStrengths") && activeStrengthQuestions.length
+        ...(!integratedAttempt && sectionEnabled("naturalStrengths") && activeStrengthQuestions.length
           ? {
               naturalStrengths: {
                 selected: strengthResults.slice(0, 5).map(({ label }) => label),
@@ -2318,7 +2419,7 @@ export default function Assessment() {
               },
             }
           : {}),
-        ...(sectionEnabled("personalityStrengths") &&
+        ...(!integratedAttempt && sectionEnabled("personalityStrengths") &&
         activePersonalityQuestions.length
           ? {
               personalityStrengths: {
@@ -2347,24 +2448,40 @@ export default function Assessment() {
       age,
       birthdate,
       profileType: "adult",
+      integratedAttempt: finalAttempt ? {
+        attemptId: finalAttempt.attemptId,
+        token: finalAttempt.token,
+        revision: finalAttempt.revision
+      } : undefined
     };
     createProfile.mutate(
       { data: payload },
       {
         onSuccess: (result) => {
-          localStorage.setItem("every-part-journey-token", result.journeyToken);
+          integrated.clear();
+          try { localStorage.setItem("every-part-journey-token", result.journeyToken); } catch { /* The on-screen journey link remains available. */ }
           setSubmittedJourneyToken(result.journeyToken);
+          setSubmitting(false);
           setStepIndex(stepKeys.length);
           window.scrollTo({ top: 0, behavior: "smooth" });
         },
         onError: (error) => {
           submissionStarted.current = false;
+          setSubmitting(false);
           setSubmitError(profileSubmissionError(error));
+          if (integratedAttempt && (error as { status?: number }).status === 409) void integrated.refreshConflict();
         },
       },
     );
   };
-  if (isLoading)
+  // All hooks run before pathway guards, including when age changes in the URL.
+  if (!Number.isInteger(age) || age < 18)
+    return <div className="min-h-screen grid place-items-center p-4"><Card><CardContent className="p-8 space-y-4">
+      <h2 className="text-xl font-serif">Adult age confirmation required</h2>
+      <p>Return to the start to enter your age and use the appropriate profile pathway.</p>
+      <Button asChild><Link href={`/profile/${slug}`}>Return to start</Link></Button>
+    </CardContent></Card></div>;
+  if (isLoading || integrated.loading)
     return (
       <div className="min-h-screen grid place-items-center">
         <Loader2 className="animate-spin text-primary" />
@@ -2423,21 +2540,40 @@ export default function Assessment() {
               opportunity to pray, reflect, and learn a little more about how
               God may be inviting you to serve.
             </p>
+            {integrated.completed && <p role="status" className="rounded-lg bg-muted p-3 text-sm">This draft has already been submitted and is no longer open for editing. Use your private journey link to view your profile, or contact your church if you need that link.</p>}
+            {(integrated.error || integrated.storageError) && <p role="alert" className="text-sm text-destructive">{integrated.error || integrated.storageError}</p>}
+            {integrated.hasDraft && <p className="text-sm">A private adult draft is saved in this browser. Resume with its original questions and church settings.</p>}
             <Button
+              disabled={integrated.hasDraft && !integratedAttempt}
               onClick={() => {
-                setStep(0);
+                if (!integratedAttempt) { setStepIndex(0); setLegacyChosen(false); }
                 setStarted(true);
               }}
             >
-              Begin <ArrowRight className="w-4 h-4 ml-2" />
+              {integratedAttempt ? "Resume saved profile" : "Begin"} <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
+            {integrated.hasDraft && !integratedAttempt && <Button variant="outline" onClick={() => void integrated.load()}>Retry loading draft</Button>}
+            {integrated.hasDraft && <div className="flex flex-wrap justify-center gap-3">
+              <Button variant="outline" disabled={integratedSaving} onClick={() => {
+                if (!window.confirm("Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted.")) return;
+                integrated.clear(); form.reset(defaultValues); setProfilePhotoPath(null);
+                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(false);
+              }}>Discard draft and start fresh</Button>
+              <Button variant="ghost" disabled={integratedSaving} onClick={() => {
+                if (!window.confirm("Discard this saved draft and use the standard adult assessment instead? Your draft answers will not transfer.")) return;
+                integrated.clear(); form.reset(defaultValues); setProfilePhotoPath(null);
+                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(true); setStarted(true);
+              }}>Use standard assessment instead</Button>
+            </div>}
+            {!integrated.hasDraft && church.integratedAssessmentPilotEnabled && <Button variant="ghost" onClick={() => {
+              setLegacyChosen(true); setStepIndex(0); setStarted(true);
+            }}>Use standard assessment instead</Button>}
           </CardContent>
         </Card>
       </div>
     );
   if (
     submittedJourneyToken ||
-    stepIndex === stepKeys.length ||
     createProfile.isSuccess
   )
     return (
@@ -2523,6 +2659,20 @@ export default function Assessment() {
         >
           <Form {...form}>
             <form onSubmit={(event) => event.preventDefault()}>
+              {(integratedAttempt || integrated.error || integrated.storageError) && <section className="mb-6 space-y-3 rounded-xl border bg-card p-4">
+                {integratedAttempt && <p role="status" className="text-sm">
+                  {integratedSaving ? "Saving progress…" : integrated.error ? "Draft needs attention." : integrated.dirty ? "Changes on this device are waiting to save." : "Progress saved."}
+                  {" "}Return in this browser to resume. Drafts expire after 30 days.
+                </p>}
+                {integrated.error && <div role="alert" className="space-y-2">
+                  <p className="text-sm text-destructive">{integrated.error}</p>
+                  {!integrated.conflict && <Button type="button" variant="outline" disabled={integratedSaving} onClick={() => void integrated.retry()}>Retry save / load</Button>}
+                </div>}
+                {integrated.storageError && <p role="alert" className="text-sm text-destructive">{integrated.storageError}</p>}
+                {integrated.conflict && <IntegratedConflict conflict={integrated.conflict} answers={integratedAnswers} onResolve={choice => void integrated.resolve(choice)} />}
+                <Button type="button" variant="ghost" disabled={submitting || integratedSaving} onClick={() => setStarted(false)}>Draft options / start over</Button>
+              </section>}
+              <fieldset disabled={submitting || integrated.loading} className="min-w-0">
               <Card>
                 <CardContent className="p-6 md:p-10 space-y-8">
                   {currentStep === "aboutYou" && (
@@ -2736,6 +2886,101 @@ export default function Assessment() {
                       />
                     </>
                   )}
+                  {currentStep === "integratedPilot" && (
+                    <>
+                      <Heading description="This is a thoughtful reflection on how you serve, relate, and contribute.">
+                        Your Ministry Profile
+                      </Heading>
+                      {!integratedAttempt ? (
+                        <div className="space-y-6">
+                          <p className="text-sm leading-6 text-muted-foreground">
+                            Before we begin the reflection, please confirm a few details.
+                          </p>
+                          <div className="space-y-5 rounded-xl border p-5 bg-card shadow-sm">
+                             <div className="flex items-start gap-3">
+                               <Checkbox id="integrated-adult" checked={adultConfirmed} onCheckedChange={(c) => setAdultConfirmed(c === true)} />
+                               <div className="space-y-1">
+                                 <Label htmlFor="integrated-adult" className="text-base cursor-pointer">I am 18 years or older</Label>
+                                 <p className="text-xs text-muted-foreground">This reflection is designed for adults.</p>
+                               </div>
+                             </div>
+
+                             {enabledGifts?.includes("Celibacy") && !isMarried && (
+                               <div className="flex items-start gap-3">
+                                 <Checkbox id="integrated-celibacy" checked={celibacyEligible} onCheckedChange={(c) => setCelibacyEligible(c === true)} />
+                                 <div className="space-y-1">
+                                   <Label htmlFor="integrated-celibacy" className="text-base cursor-pointer">I am currently single / unmarried</Label>
+                                   <p className="text-xs text-muted-foreground">Allows reflection on singleness as an undivided devotion to ministry.</p>
+                                 </div>
+                               </div>
+                             )}
+
+                             {sectionEnabled("spiritualGifts") && activeSpiritualGifts.length > 0 && (
+                               <div className="flex items-start gap-3">
+                                 <Checkbox id="integrated-optional" checked={optionalExperienceOptIn} onCheckedChange={(c) => setOptionalExperienceOptIn(c === true)} />
+                                 <div className="space-y-1">
+                                   <Label htmlFor="integrated-optional" className="text-base cursor-pointer">Include optional experience reflections</Label>
+                                   <p className="text-xs text-muted-foreground">Optional, unscored questions in a separate module near the end. You may leave them unanswered.</p>
+                                 </div>
+                               </div>
+                             )}
+                          </div>
+                          <Button
+                            type="button"
+                            disabled={integrated.starting || integrated.loading || integrated.hasDraft || !adultConfirmed || age < 18}
+                            onClick={() => integrated.start({
+                              adultConfirmed: true,
+                              celibacyEligible: !isMarried && celibacyEligible,
+                              optionalExperienceOptIn: sectionEnabled("spiritualGifts") && activeSpiritualGifts.length > 0 && optionalExperienceOptIn,
+                            }, captureProgress())}
+                          >
+                            {integrated.starting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Start Reflection"}
+                          </Button>
+                          {!integrated.hasDraft && <Button type="button" variant="ghost" disabled={integrated.starting} onClick={() => {
+                            setLegacyChosen(true); setStepIndex(0);
+                          }}>Use the standard adult assessment instead</Button>}
+                        </div>
+                      ) : (
+                        <div className="space-y-8">
+                          <div className="sticky top-0 z-10 flex justify-between items-center bg-card/95 backdrop-blur p-4 rounded-xl border shadow-sm">
+                            <p className="text-sm font-medium">
+                              Round {currentRound + 1} of {roundCount} · {coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of {coreQuestions.length} reflections answered
+                            </p>
+                              <Button type="button" variant="outline" size="sm" onClick={async () => {
+                                try {
+                                  await navigator.clipboard.writeText(window.location.href);
+                                  toast({ title: "Page link copied", description: "Resume in this same browser and device. The link does not contain your private draft credentials." });
+                                } catch {
+                                  toast({ title: "Could not copy link", description: "Bookmark this page in this browser to return to your draft.", variant: "destructive" });
+                                }
+                              }}>
+                                Copy page link
+                              </Button>
+                          </div>
+                          {reflectionValidationError && <p role="alert" className="text-destructive">{reflectionValidationError}</p>}
+                          <IntegratedReflections attempt={integratedAttempt} questions={roundQuestions} answers={integratedAnswers}
+                            offset={currentRound * INTEGRATED_ROUND_SIZE} onAnswer={(id, value) => {
+                              integrated.setAnswer(id, value);
+                              setIntegratedQuestionIndex(coreQuestions.findIndex(q => q.id === id));
+                              setReflectionValidationError("");
+                            }} />
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {currentStep === "integratedOptional" && integratedAttempt && <>
+                    <Heading description="These reflections are optional and unscored. They are conversation starters, not proof of a gift. Leave any or all unanswered, or choose Skip.">
+                      Optional experiences
+                    </Heading>
+                    <IntegratedReflections attempt={integratedAttempt} questions={optionalQuestions} answers={integratedAnswers} onAnswer={integrated.setAnswer} />
+                  </>}
+                  {currentStep === "integratedReview" && <>
+                    <Heading description="You can go back to review any part before submitting. Your answers inform a thoughtful conversation, not a fixed label or ministry placement.">
+                      Ready to submit your profile?
+                    </Heading>
+                    <p className="text-sm">{coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of {coreQuestions.length} core reflections have a response. N/A and skipped answers are not scored. Optional experiences may be left unanswered.</p>
+                    <p className="text-sm text-muted-foreground">Your draft uses the church settings and question wording saved when you started, even if the church has changed its settings since then.</p>
+                  </>}
                   {currentStep === "apest" && (
                     <>
                       <Heading description="Read each statement and choose how well it fits your experience. There are no right answers; use what feels true of how you naturally serve and relate to others.">
@@ -3270,6 +3515,10 @@ export default function Assessment() {
                           results={currentPersonalityResults}
                         />
                       )}
+                    </>
+                  )}
+                  {(currentStep === "personalityStrengths" || currentStep === "integratedPreferences") && (
+                    <>
                       <Heading description="Optional preferences help begin a thoughtful conversation, not determine placement.">
                         Ministry Preferences & Environment
                       </Heading>
@@ -3631,7 +3880,20 @@ export default function Assessment() {
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={() => setStep((value) => value - 1)}
+                  onClick={() => {
+                    if (currentStep === "integratedPilot" && currentRound > 0) {
+                      setIntegratedRound(currentRound - 1);
+                      setReflectionValidationError("");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                      return;
+                    }
+                    const nextStep = stepIndex - 1;
+                    if (nextStep < 0) {
+                      setStarted(false);
+                    } else {
+                      setStepIndex(nextStep);
+                    }
+                  }}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
@@ -3639,20 +3901,21 @@ export default function Assessment() {
                 {stepIndex === stepKeys.length - 1 ? (
                   <Button
                     type="button"
-                    disabled={createProfile.isPending || photoUploading}
+                    disabled={submitting || createProfile.isPending || photoUploading || !!integrated.conflict}
                     onClick={() => void form.handleSubmit(submit)()}
                   >
-                    {createProfile.isPending && (
+                    {(submitting || createProfile.isPending || integratedSaving) && (
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     )}
                     Submit profile
                   </Button>
                 ) : (
-                  <Button type="button" onClick={next}>
-                    Continue <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button type="button" onClick={next} disabled={currentStep === "integratedPilot" && !integratedAttempt}>
+                    {currentStep === "integratedPilot" && currentRound < roundCount - 1 ? "Next round" : "Continue"} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 )}
               </div>
+              </fieldset>
             </form>
           </Form>
         </AssessmentConfigurationContext.Provider>

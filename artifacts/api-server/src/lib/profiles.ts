@@ -121,6 +121,7 @@ export function profileResponse(
       ),
     },
     assessmentConfiguration: configuration,
+    integratedAssessment: profile.integratedAssessment ?? null,
     lifeExperiences: profile.lifeExperiences,
     availabilityDetails: profile.availabilityDetails,
     ministryPreferences: profile.ministryPreferences,

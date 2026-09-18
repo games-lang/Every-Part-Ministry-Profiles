@@ -1,0 +1,1778 @@
+{
+  "bankVersion": "adult-integrated-83-v1",
+  "scoringVersion": "independent-weighted-mean-v1",
+  "responseModels": {
+    "reflectionLikert": {
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchors": [
+        "Not at all like me",
+        "A little like me",
+        "Sometimes like me",
+        "Often like me",
+        "Very much like me"
+      ],
+      "na": "N/A — Not sure / I have not had the opportunity",
+      "instructions": "Answer from recurring actual behavior, not what you think a good Christian should say. There is no preferred contribution. Use N/A if opportunity is absent; a low response is not a judgment of faithfulness."
+    },
+    "personalityBipolar": {
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchors": [
+        "Strongly left pole",
+        "Slightly left pole",
+        "Balanced / both fit",
+        "Slightly right pole",
+        "Strongly right pole"
+      ],
+      "na": "N/A — Not sure / I have not had the opportunity"
+    },
+    "specialExperienceLikert": {
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "anchors": [
+        "Not at all like me",
+        "A little like me",
+        "Sometimes like me",
+        "Often like me",
+        "Very much like me"
+      ],
+      "na": "Not sure / I have not experienced this / this is not part of my church tradition",
+      "scoring": "All optional responses unscored, including numeric choices; context is never proof. Frequency/fit choices are conversation aids, not gift evidence thresholds."
+    }
+  },
+  "coreQuestions": [
+    {
+      "id": "EP-I-01",
+      "text": "I guide people in choosing how to begin serving a community where no such effort is established.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Apostle",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Apostleship",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Leadership",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Leadership and initiative",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-02",
+      "text": "I turn an idea for a new way of serving a community into steps that people can use to establish it.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Apostle",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Apostleship",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Administration",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Organizing",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-58",
+      "text": "After a busy week, I usually recover energy more through quiet time or through being with people.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Reflective",
+        "Interactive"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Social Energy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-03",
+      "text": "I adjust how I build relationships when people in a community follow customs different from mine.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Missionary / Cross-Cultural Ministry",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Relational connection",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Adaptability",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-04",
+      "text": "I organize people, information, or supplies so a group can carry out a plan.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Administration",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Organizing",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-05",
+      "text": "I guide a group toward its first shared action when it is beginning a new effort to serve people.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Apostle",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Leadership",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Leadership and initiative",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-67",
+      "text": "When I first look at a situation, I notice immediate details or broader patterns.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Detail",
+        "Big Picture"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Focus Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-07",
+      "text": "I notice when a group's actions conflict with the Christian commitments it says it follows.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Prophet",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Discernment",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-70",
+      "text": "When work needs to begin, I prefer to strengthen an existing effort or create the first movement.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Support",
+        "Initiate"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Action Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-10",
+      "text": "I identify who is being left out of a group's activity so their exclusion can be addressed.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Strength",
+          "construct": "Advocacy and justice",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-59",
+      "text": "In a new group, I tend to think privately first or talk through what I notice.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Reflective",
+        "Interactive"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Social Energy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-15",
+      "text": "I build genuine relationships with people who are curious about Christian faith.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Evangelist",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Evangelism",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Relational connection",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-18",
+      "text": "I adapt the help I offer in a different culture or community after learning how local people understand the need.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Missionary / Cross-Cultural Ministry",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Adaptability",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-61",
+      "text": "When choosing between good options, I first consider the people affected or the most consistent principle.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Relational",
+        "Principled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Decision Lens",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-19",
+      "text": "I adapt how I explain a group's activities so a newcomer with different language or customs can take part.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Missionary / Cross-Cultural Ministry",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Hospitality",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Hospitality",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Adaptability",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-44",
+      "text": "I bring people together to begin a new ministry response where no group is yet addressing the need.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Apostle",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Apostleship",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Leadership",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Leadership and initiative",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-72",
+      "text": "In a group task, I prefer to take a supporting role or start a new direction.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Support",
+        "Initiate"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Action Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-47",
+      "text": "When someone asks about Christian faith, I listen to what they want to understand before sharing my response.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Evangelist",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Evangelism",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Listening",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-76",
+      "text": "When developing an idea, I prefer focused time alone or brainstorming with other people.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Independent",
+        "Collaborative"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Work Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-50",
+      "text": "When a person I support spiritually withdraws, I carry out an agreed check-in to learn what care they need.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Shepherd",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Pastoring / Shepherding",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Follow-through",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Compassion and care",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-78",
+      "text": "Responsibility feels healthiest when I can own a task or when I can work through it with others.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Independent",
+        "Collaborative"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Work Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-08",
+      "text": "When a group's use of Christian teaching could harm someone, I raise the concern in a way the group can consider.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Prophet",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Advocacy and justice",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-16",
+      "text": "I can explain why Christian faith matters in words that connect with another person’s questions.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Evangelist",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Evangelism",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Communication and storytelling",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-60",
+      "text": "When thinking through an idea, I prefer to reflect alone or exchange thoughts with someone.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Reflective",
+        "Interactive"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Social Energy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-17",
+      "text": "When someone is exploring Christian faith, I listen to the questions they hesitate to ask so we can explore them together.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Evangelist",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Evangelism",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Listening",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-28",
+      "text": "I explain a teaching from Scripture in simple language after learning what it means.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Teacher",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Teaching",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Knowledge",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Teaching and explaining",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-29",
+      "text": "I study a faith topic carefully and explain what I learned in an order another person can follow.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Teacher",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Knowledge",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Teaching",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Teaching and explaining",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-30",
+      "text": "I use an example, story, or picture to help another person understand a message from Scripture or faith.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Teacher",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Teaching",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Teaching and explaining",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Communication and storytelling",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-31",
+      "text": "I ask questions to learn where someone is confused before I explain a Scripture idea more.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Teacher",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Teaching",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Teaching and explaining",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Listening",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-32",
+      "text": "I communicate what I have learned from Scripture so another person can examine the meaning with me.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Teacher",
+          "weight": 0.5
+        },
+        {
+          "category": "Gift",
+          "construct": "Knowledge",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Communication and storytelling",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-53",
+      "text": "After explaining a faith idea, I invite the person to describe what they understood so I can clarify my explanation.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Teacher",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Teaching",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Teaching and explaining",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-49",
+      "text": "I share a short part of my faith story when it fits a real conversation, without pressuring the other person.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Evangelist",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Evangelism",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Communication and storytelling",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-51",
+      "text": "After a setback in someone's faith journey, I encourage them toward a next step suited to their situation.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Shepherd",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Pastoring / Shepherding",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Exhortation / Encouragement",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Encouragement",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-55",
+      "text": "Before a gathering, I think through practical details that help a new person know where to go and what to expect.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Hospitality",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Hospitality",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-56",
+      "text": "I notice who has not yet been included in a conversation and help make space for them to take part.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Hospitality",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Hospitality",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Relational connection",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-35",
+      "text": "I use musical expression to help a group participate in worship.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Music / Worship",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Creative expression",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-58A",
+      "text": "I practice musical parts so I can contribute them dependably to a group's worship.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Music / Worship",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Craftsmanship",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-59A",
+      "text": "I adapt music so a particular group can participate in worship.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Music / Worship",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Creative expression",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-20",
+      "text": "I notice progress in people and tell them what I see with honest encouragement.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Exhortation / Encouragement",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Encouragement",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-21",
+      "text": "After someone shares a difficult time in their faith, I carry out the follow-up care I agreed to offer.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Shepherd",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Pastoring / Shepherding",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Mercy",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Follow-through",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-22",
+      "text": "I help someone I support in their faith choose a next step suited to their present stage of growth.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Shepherd",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Pastoring / Shepherding",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Mentoring and development",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-23",
+      "text": "I remain available for spiritual support to a person whose distress continues over time.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Shepherd",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Pastoring / Shepherding",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Mercy",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Compassion and care",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-24",
+      "text": "I provide practical help that a person in distress says would support them.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Mercy",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Helps / Service",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Compassion and care",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-25",
+      "text": "I continue praying for another person's need because I trust God's care, even when no change is visible.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Intercession",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Faith",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-26",
+      "text": "I offer a hopeful word or prayer when someone feels discouraged.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Exhortation / Encouragement",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Encouragement",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-43",
+      "text": "I share money, time, or useful resources thoughtfully when I see a real need.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Giving",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-54",
+      "text": "I return regularly to pray for specific needs people have asked me to remember.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Intercession",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-57",
+      "text": "I complete a practical task such as setting up, cleaning, or carrying supplies so others can do their part.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Helps / Service",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Practical hands-on work",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Follow-through",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-61A",
+      "text": "When a group faces uncertainty, I encourage its next step by expressing trust in God's care without promising an outcome.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Faith",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Exhortation / Encouragement",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-06",
+      "text": "When a group faces a problem with several possible solutions, I compare how each would affect its longer-term goal.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Strength",
+          "construct": "Strategic thinking",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Problem-solving",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-09",
+      "text": "Before offering guidance from my faith, I listen to the person's situation so the guidance fits the details they share.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Wisdom",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Listening",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Discernment",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-11",
+      "text": "I recognize an early sign that a teaching about faith could lead people toward a harmful choice.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Prophet",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Discernment",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-12",
+      "text": "When a group's Christian commitments to care for people are overlooked, I ask the group to address the neglected need.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Prophet",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Advocacy and justice",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-62",
+      "text": "A decision feels strongest to me when it protects relationships or when it follows a clear standard.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Relational",
+        "Principled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Decision Lens",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-13",
+      "text": "I point out a repeated practice that unfairly burdens people and conflicts with our Christian commitment to care for them.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Prophet",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Advocacy and justice",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-14",
+      "text": "Before a group decides, I examine how its choice fits the biblical teaching it is trying to follow.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Prophet",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Wisdom",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Discernment",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-63",
+      "text": "When people are affected differently by a choice, I first weigh personal impact or fairness and consistency.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Relational",
+        "Principled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Decision Lens",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-27",
+      "text": "When people face an uncertain outcome, I pray for them and take the next available action while trusting God's care.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Faith",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Intercession",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-33",
+      "text": "I apply a teaching from my faith to a practical choice in a way that takes account of the facts and people affected.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Wisdom",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Discernment",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-65",
+      "text": "If circumstances change, I prefer to adjust as I go or return to a clear plan.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Adaptive",
+        "Settled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Planning Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-45",
+      "text": "When a new effort to serve people stalls, I work out a way past the obstacle that still supports its longer-term purpose.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Apostle",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Apostleship",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Problem-solving",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Strategic thinking",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-46",
+      "text": "For a new effort to serve people, I organize its stages and limited resources around what must happen first to reach its longer-term purpose.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Apostle",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Administration",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Organizing",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Strategic thinking",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-68",
+      "text": "I naturally ask what needs attention now or what this could become.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Detail",
+        "Big Picture"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Focus Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-48",
+      "text": "I help a person exploring Christian faith plan steps for their own learning that fit the questions they want to explore.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Evangelist",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Evangelism",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Mentoring and development",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-52",
+      "text": "As someone learns a role serving others, I keep the support commitments I have made for their spiritual growth.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "APEST",
+          "construct": "Shepherd",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Pastoring / Shepherding",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Mentoring and development",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Follow-through",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-60A",
+      "text": "When a practical plan breaks down, I identify the main problem and try a different workable approach.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Strength",
+          "construct": "Problem-solving",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-74",
+      "text": "When several needs appear at once, I prefer a sustainable pace or a fast-moving response.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Steady",
+        "Dynamic"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Pace Preference",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-62A",
+      "text": "I plan what resources I can share regularly while meeting the responsibilities already entrusted to me.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Giving",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Organizing",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-34",
+      "text": "I adapt a design to make a useful object suited to a group's activity.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Craftsmanship",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Helps / Service",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Practical hands-on work",
+          "weight": 1
+        },
+        {
+          "category": "Strength",
+          "construct": "Creative expression",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-64",
+      "text": "When beginning a project, I prefer to keep options open or settle the plan early.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Adaptive",
+        "Settled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Planning Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-36",
+      "text": "I repair an item that a group needs so it can be used again in the group's work.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Craftsmanship",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Helps / Service",
+          "weight": 0.5
+        },
+        {
+          "category": "Strength",
+          "construct": "Practical hands-on work",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-37",
+      "text": "As an unmarried person, I freely choose to remain unmarried in this season so I can devote myself to serving God.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Celibacy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-66",
+      "text": "I feel most comfortable when next steps can stay flexible or are already decided.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Adaptive",
+        "Settled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Planning Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-38",
+      "text": "As an unmarried person, I have found sustained contentment in an unmarried life devoted to serving God.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Celibacy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-39",
+      "text": "As an unmarried person, I keep my freely chosen commitment to unmarried service even when others expect me to marry.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Celibacy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-69",
+      "text": "I prefer to clarify practical steps or connect ideas and possibilities.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Detail",
+        "Big Picture"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Focus Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-40",
+      "text": "I voluntarily reduce my personal spending so I can share the resources saved with others.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Voluntary Poverty",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Giving",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-41",
+      "text": "When I could choose more for myself, I choose a simpler option so I can give the difference to meet a need.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Voluntary Poverty",
+          "weight": 1
+        },
+        {
+          "category": "Gift",
+          "construct": "Giving",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "EP-I-71",
+      "text": "I feel most useful when I improve what is already working or turn a new idea into action.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Support",
+        "Initiate"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Action Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-42",
+      "text": "I sustain a voluntarily simpler way of living because it frees me to serve others.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Voluntary Poverty",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-73",
+      "text": "My ideal weekly rhythm has steady repetition or frequent variety and change.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Steady",
+        "Dynamic"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Pace Preference",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-75",
+      "text": "I sustain my best work through predictable rhythms or a changing mix of responsibilities.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Steady",
+        "Dynamic"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Pace Preference",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-77",
+      "text": "I do my best work with personal ownership or with shared responsibility and feedback.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Independent",
+        "Collaborative"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Work Style",
+          "weight": 1
+        }
+      ]
+    }
+  ],
+  "optionalQuestions": [
+    {
+      "id": "EP-ESD-01",
+      "text": "I have experienced prayer connected with healing in a way I believe may have helped another person.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "experience-evidence-unscored",
+      "construct": "Healing",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-02",
+      "text": "I seek appropriate care and wise guidance when praying with someone about healing.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Healing",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-03",
+      "text": "When I pray for healing, I remain humble about the outcome and respectful of the person.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Healing",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-04",
+      "text": "I have experienced an interpretation of tongues that I believe was helpful to a gathered community.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "experience-evidence-unscored",
+      "construct": "Interpretation of Tongues",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-05",
+      "text": "When considering an interpretation of tongues, I welcome confirmation and pastoral guidance.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Interpretation of Tongues",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-06",
+      "text": "I approach interpretation of tongues with humility and care for the gathered community.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Interpretation of Tongues",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-07",
+      "text": "I have experienced an extraordinary answer to prayer in a situation involving me.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "experience-evidence-unscored",
+      "construct": "Miracles",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-08",
+      "text": "I seek wise confirmation before describing an experience as an extraordinary work of God.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Miracles",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-09",
+      "text": "I can pray expectantly while remaining humble about what will happen.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Miracles",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-10",
+      "text": "I have shared an impression I believed God was prompting for another person's encouragement or direction.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "experience-evidence-unscored",
+      "construct": "Prophecy",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-11",
+      "text": "Before sharing a spiritual impression, I seek discernment and appropriate confirmation.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Prophecy",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-12",
+      "text": "I hold spiritual impressions humbly and remain open to correction.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Prophecy",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-13",
+      "text": "I have experienced speaking in tongues or a spiritual utterance that I believe was given by the Holy Spirit.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "experience-evidence-unscored",
+      "construct": "Tongues",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-14",
+      "text": "I welcome pastoral guidance and confirmation as I understand experiences of tongues.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Tongues",
+      "maps": []
+    },
+    {
+      "id": "EP-ESD-15",
+      "text": "I practice tongues with care for the gathered community and its shared discernment.",
+      "responseModel": "specialExperienceLikert",
+      "kind": "context-only",
+      "construct": "Tongues",
+      "maps": []
+    }
+  ]
+}

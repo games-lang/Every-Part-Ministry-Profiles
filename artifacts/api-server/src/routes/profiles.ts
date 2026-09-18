@@ -21,6 +21,7 @@ import {
   churchAdminsTable,
   db,
   ministryProfilesTable,
+  integratedAttemptsTable,
   ministryPeopleTable,
   ministryTeamsTable,
   pastorNotesTable,
@@ -62,6 +63,8 @@ import {
   reserveAiCredits,
 } from "../lib/ai-credits";
 import { ObjectNotFoundError, ObjectStorageService } from "../lib/objectStorage";
+import { answersError, scoreIntegratedAssessment, type Answers, type IntegratedSnapshot } from "../lib/integrated-assessment";
+import { assertAttemptAvailable, attemptCredentials, attemptPredicate, IntegratedAttemptError, loadIntegratedAttempt } from "../lib/integrated-attempts";
 
 const router: IRouter = Router();
 const storage = new ObjectStorageService();
@@ -124,6 +127,54 @@ router.post("/profiles", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Church not found" });
     return;
   }
+  const credentials = req.body.integratedAttempt === undefined ? null : attemptCredentials.safeParse(req.body.integratedAttempt);
+  if (credentials && !credentials.success) {
+    res.status(400).json({ error: "Invalid assessment draft credentials or revision." });
+    return;
+  }
+  const integrated = credentials?.success ? credentials.data : null;
+  let attempt: Awaited<ReturnType<typeof loadIntegratedAttempt>> | null = null;
+  if (integrated) {
+    // This route never permits a youth pathway override for integrated assessments.
+    if (parsed.data.profileType !== "adult" || parsed.data.age < 18) {
+      res.status(400).json({ error: "Integrated assessments are available only to adults age 18 or older." });
+      return;
+    }
+    if (parsed.data.birthdate) {
+      const now = new Date();
+      const birthday = parsed.data.birthdate;
+      const exactAge = now.getUTCFullYear() - birthday.getUTCFullYear() -
+        (now.getUTCMonth() < birthday.getUTCMonth() || (now.getUTCMonth() === birthday.getUTCMonth() && now.getUTCDate() < birthday.getUTCDate()) ? 1 : 0);
+      if (exactAge < 18 || exactAge !== parsed.data.age) {
+        res.status(400).json({ error: "Age and birthdate must agree and confirm the adult pathway." });
+        return;
+      }
+    }
+    try {
+      attempt = await loadIntegratedAttempt(church.id, integrated.attemptId, integrated.token);
+      if (attempt.status === "completed") {
+        const [existing] = await db.select().from(ministryProfilesTable).where(and(
+          eq(ministryProfilesTable.id, attempt.profileId!), eq(ministryProfilesTable.churchId, church.id),
+        )).limit(1);
+        if (!existing) throw new IntegratedAttemptError(409, "The completed assessment profile is unavailable. Please contact your church.");
+        res.status(200).json(CreateProfileResponse.parse(profileResponse(existing, churchBranding(church))));
+        return;
+      }
+      if (attempt.revision !== integrated.revision) throw new IntegratedAttemptError(409, "The assessment draft changed elsewhere. Reload it before completing; saved answers are unchanged.");
+      const snapshot = attempt.snapshot as IntegratedSnapshot;
+      const error = answersError(attempt.answers, snapshot, true);
+      if (error) throw new IntegratedAttemptError(400, error);
+      if (snapshot.celibacyEligible && parsed.data.basicInformation.familySituation?.startsWith("Married")) {
+        throw new IntegratedAttemptError(400, "Celibacy eligibility conflicts with your family situation. Resume your draft without changing eligibility, or start a new assessment with Celibacy excluded.");
+      }
+    } catch (error) {
+      if (error instanceof IntegratedAttemptError) { res.status(error.status).json({ error: error.message }); return; }
+      req.log.error({ churchId: church.id }, "Unable to load integrated assessment for completion");
+      res.status(503).json({ error: "Unable to load your assessment right now. Your saved answers have not been changed. Please retry." });
+      return;
+    }
+  }
+  const frozen = attempt?.snapshot as IntegratedSnapshot | undefined;
   const recommendedProfileType = pathwayForAge(parsed.data.age);
   let profileTypeOverridden = false;
   if (pathwayOverrideRequired(parsed.data.profileType, recommendedProfileType)) {
@@ -151,14 +202,14 @@ router.post("/profiles", async (req, res): Promise<void> => {
     profileTypeOverridden = true;
   }
 
-  const configuration = assessmentConfiguration(church.assessmentConfiguration);
+  const configuration = assessmentConfiguration(frozen?.assessmentConfiguration ?? church.assessmentConfiguration);
   if (!configuration) {
     res.status(400).json({
       error: "This church's assessment configuration is invalid. Please contact the church administrator.",
     });
     return;
   }
-  const customization = ministryCustomization(church.ministryCustomization);
+  const customization = ministryCustomization(frozen?.ministryCustomization ?? church.ministryCustomization);
   if (!customization) {
     res.status(400).json({
       error:
@@ -247,17 +298,17 @@ router.post("/profiles", async (req, res): Promise<void> => {
     !requireGroup(interestsEnabled, parsed.data.interests?.length, "Ministry interests") ||
     !requireGroup(availabilityEnabled, parsed.data.availability?.length, "Availability") ||
     !requireGroup(
-      configuration.sections.apest && hasEnabledSubsections("apest", configuration),
+      !integrated && configuration.sections.apest && hasEnabledSubsections("apest", configuration),
       parsed.data.assessmentSections?.apest,
       "How you minister responses",
     ) ||
     !requireGroup(
-      configuration.sections.naturalStrengths && hasEnabledSubsections("naturalStrengths", configuration),
+      !integrated && configuration.sections.naturalStrengths && hasEnabledSubsections("naturalStrengths", configuration),
       parsed.data.assessmentSections?.naturalStrengths,
       "Natural strengths responses",
     ) ||
     !requireGroup(
-      configuration.sections.personalityStrengths && hasEnabledSubsections("personalityStrengths", configuration),
+      !integrated && configuration.sections.personalityStrengths && hasEnabledSubsections("personalityStrengths", configuration),
       parsed.data.assessmentSections?.personalityStrengths,
       "Personality responses",
     ) ||
@@ -268,6 +319,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
     )
   ) return;
   if (
+    !integrated &&
     configuration.sections.apest &&
     hasEnabledSubsections("apest", configuration)
   ) {
@@ -280,7 +332,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
       return;
     }
   }
-  if (configuration.sections.spiritualGifts) {
+  if (!integrated && configuration.sections.spiritualGifts) {
     const activeGifts = activeSpiritualGifts(church.enabledSpiritualGifts);
     if (!activeGifts) {
       res.status(400).json({
@@ -338,6 +390,24 @@ router.post("/profiles", async (req, res): Promise<void> => {
   let created;
   try {
     created = await db.transaction(async (tx) => {
+      let integratedAssessment = null;
+      if (integrated) {
+        const [locked] = await tx.select().from(integratedAttemptsTable)
+          .where(attemptPredicate(church.id, integrated.attemptId, integrated.token)).for("update").limit(1);
+        assertAttemptAvailable(locked);
+        if (locked.status === "completed") {
+          const [existing] = await tx.select().from(ministryProfilesTable).where(and(
+            eq(ministryProfilesTable.id, locked.profileId!), eq(ministryProfilesTable.churchId, church.id),
+          )).limit(1);
+          if (!existing) throw new IntegratedAttemptError(409, "The completed assessment profile is unavailable.");
+          return existing;
+        }
+        if (locked.revision !== integrated.revision) throw new IntegratedAttemptError(409, "The assessment draft changed elsewhere. Reload it before completing; saved answers are unchanged.");
+        const snapshot = locked.snapshot as IntegratedSnapshot;
+        const error = answersError(locked.answers, snapshot, true);
+        if (error) throw new IntegratedAttemptError(400, error);
+        integratedAssessment = scoreIntegratedAssessment(snapshot, locked.answers as Answers);
+      }
       await assertProfileCapacity(tx, church.id);
       const [profile] = await tx
         .insert(ministryProfilesTable)
@@ -383,10 +453,11 @@ router.post("/profiles", async (req, res): Promise<void> => {
           lifeExperiences: lifeExperiencesEnabled ? parsed.data.lifeExperiences ?? null : null,
           availabilityDetails: availabilityEnabled ? parsed.data.availabilityDetails ?? null : null,
           ministryPreferences: configuration.sections.personalityStrengths && configuration.subsections["personalityStrengths.ministryPreferences"] ? parsed.data.ministryPreferences ?? null : null,
-          apest: filterAssessmentSection("apest", parsed.data.assessmentSections?.apest, configuration),
-          spiritualGifts: filterAssessmentSection("spiritualGifts", parsed.data.assessmentSections?.spiritualGifts, configuration),
-          personalityStrengths: filterAssessmentSection("personalityStrengths", parsed.data.assessmentSections?.personalityStrengths, configuration),
-          naturalStrengths: filterAssessmentSection("naturalStrengths", parsed.data.assessmentSections?.naturalStrengths, configuration),
+          integratedAssessment,
+          apest: integrated ? null : filterAssessmentSection("apest", parsed.data.assessmentSections?.apest, configuration),
+          spiritualGifts: integrated ? null : filterAssessmentSection("spiritualGifts", parsed.data.assessmentSections?.spiritualGifts, configuration),
+          personalityStrengths: integrated ? null : filterAssessmentSection("personalityStrengths", parsed.data.assessmentSections?.personalityStrengths, configuration),
+          naturalStrengths: integrated ? null : filterAssessmentSection("naturalStrengths", parsed.data.assessmentSections?.naturalStrengths, configuration),
           spiritualHealth: filterAssessmentSection("spiritualHealth", parsed.data.assessmentSections?.spiritualHealth, configuration),
           assessmentConfigurationSnapshot: configuration,
           ministryCustomizationSnapshot: customization,
@@ -395,6 +466,12 @@ router.post("/profiles", async (req, res): Promise<void> => {
         .returning();
 
       if (!profile) throw new Error("Unable to create Ministry Profile");
+      if (integrated) {
+        await tx.update(integratedAttemptsTable).set({
+          status: "completed", profileId: profile.id, completedAt: profile.completedAt,
+          updatedAt: new Date(), revision: integrated.revision + 1,
+        }).where(attemptPredicate(church.id, integrated.attemptId, integrated.token));
+      }
       if (parsed.data.inviteToken) {
         const [linkedPerson] = await tx
           .update(ministryPeopleTable)
@@ -417,6 +494,10 @@ router.post("/profiles", async (req, res): Promise<void> => {
       return profile;
     });
   } catch (error) {
+    if (error instanceof IntegratedAttemptError) {
+      res.status(error.status).json({ error: error.message });
+      return;
+    }
     if (error instanceof ProfileLimitReachedError) {
       res.status(403).json({ error: error.message });
       return;
@@ -428,9 +509,22 @@ router.post("/profiles", async (req, res): Promise<void> => {
       res.status(400).json({ error: "This Ministry Profile invitation is invalid or expired." });
       return;
     }
+    if (integrated) {
+      // Database exceptions can contain SQL parameters, including pastoral data.
+      // Log only safe identifiers and preserve the original saved draft.
+      req.log.error({ churchId: church.id }, "Unable to complete integrated assessment");
+      res.status(503).json({ error: "Unable to confirm completion. Your saved assessment is safe; retry this same submission rather than starting over." });
+      return;
+    }
     throw error;
   }
-  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  try {
+    await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  } catch (error) {
+    // Profile and attempt are already committed; never turn a successful save into
+    // a false failure that encourages another submission.
+    req.log.error({ profileId: created.id }, "Unable to update journey after completed profile");
+  }
   res
     .status(201)
     .json(CreateProfileResponse.parse(profileResponse(created, churchBranding(church))));

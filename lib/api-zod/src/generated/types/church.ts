@@ -12,6 +12,7 @@ import type { MinistryCustomization } from './ministryCustomization';
 import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface Church {
+  integratedAssessmentPilotEnabled?: boolean;
   id: number;
   name: string;
   slug: string;

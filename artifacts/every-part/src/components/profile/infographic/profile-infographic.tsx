@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { MinistryProfile } from "@workspace/api-client-react";
 import type { LucideIcon } from "lucide-react";
 import type { getMyMinistrySynthesis } from "../../../lib/my-profile-derivation";
+import { IntegratedAreaResults } from "../integrated-area-results";
 import {
   Check, 
   Flag, 
@@ -85,13 +86,19 @@ export function ProfileInfographic({
     themes,
     patterns,
     environments,
-    season,
+    season: _privateSeason,
     connection,
     prayerQuestions,
     nextStep,
     selectedStrengths,
     personalityLeanings,
   } = synthesis;
+  // The screen's season synthesis can contain volunteered family/transportation
+  // details and availability notes. Do not copy that free text into print.
+  const availabilityEnabled = sectionEnabled("connectionAvailability") && subsectionEnabled("connectionAvailability", "availability");
+  const season = availabilityEnabled
+    ? [profile.servingFrequency, profile.availability.join(", ")].filter(Boolean).join(" · ")
+    : "";
 
   const primaryColor = profile.branding?.primaryColor || "hsl(var(--primary))";
   const accentColor = profile.branding?.accentColor || "hsl(var(--accent))";
@@ -138,7 +145,7 @@ export function ProfileInfographic({
     .map(([key]) => healthLabels[key]);
 
   return (
-    <div className="profile-infographic w-full max-w-5xl mx-auto rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-xl print:rounded-none print:shadow-none print:border-none relative font-sans text-slate-800" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
+    <div className="profile-infographic w-full max-w-5xl mx-auto rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-xl print:rounded-none print:shadow-none print:border-none print:overflow-visible relative font-sans text-slate-800" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
       {/* HEADER */}
       <div 
         className="px-6 py-8 md:px-8 md:py-10 relative overflow-hidden"
@@ -175,17 +182,18 @@ export function ProfileInfographic({
 
       {/* MAIN GRID */}
       <div className="p-5 md:p-8 bg-slate-50/50">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 print:grid-cols-2 print:gap-4 print:text-sm">
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 print:gap-4 print:text-sm ${synthesis.integrated ? "print:block print:space-y-4" : "print:grid-cols-2"}`}>
           
           {/* BLOCK 1: APEST */}
           {sectionEnabled("apest") && (
           <InfographicBlock 
             number="1" 
             title="HOW YOU TEND TO MINISTER" 
+            allowSplit={Boolean(synthesis.integrated)}
             color={primaryColor}
-            isEmpty={!apestResult}
+            isEmpty={!synthesis.integrated && !apestResult}
           >
-            {apestResult && (
+            {synthesis.integrated ? <IntegratedAreaResults results={synthesis.integrated} category="APEST" compact /> : apestResult && (
               <div className="flex flex-col h-full">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-3 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: primaryColor, color: primaryForeground }}>
@@ -217,9 +225,11 @@ export function ProfileInfographic({
           <InfographicBlock 
             number="2" 
             title="HOW GOD HAS EQUIPPED YOU" 
+            allowSplit={Boolean(synthesis.integrated)}
             color={primaryColor}
-            isEmpty={topGifts.length === 0}
+            isEmpty={!synthesis.integrated && topGifts.length === 0}
           >
+            {synthesis.integrated ? <IntegratedAreaResults results={synthesis.integrated} category="Gift" compact /> : (
             <div className="flex flex-col h-full">
               <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
                 Spiritual gifts
@@ -235,6 +245,7 @@ export function ProfileInfographic({
                 ))}
               </div>
             </div>
+            )}
           </InfographicBlock>
           )}
 
@@ -243,9 +254,11 @@ export function ProfileInfographic({
           <InfographicBlock 
             number="3" 
             title="WHAT YOU ARE NATURALLY GOOD AT" 
+            allowSplit={Boolean(synthesis.integrated)}
             color={accentColor}
-            isEmpty={selectedStrengths.length === 0}
+            isEmpty={!synthesis.integrated && selectedStrengths.length === 0}
           >
+            {synthesis.integrated ? <IntegratedAreaResults results={synthesis.integrated} category="Strength" compact /> : (
             <div className="flex flex-col h-full">
               <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
                 Strengths
@@ -261,6 +274,7 @@ export function ProfileInfographic({
                 What tends to come naturally — a starting point for conversation, not a placement.
               </p>
             </div>
+            )}
           </InfographicBlock>
           )}
 
@@ -269,9 +283,11 @@ export function ProfileInfographic({
           <InfographicBlock 
             number="4" 
             title="HOW YOU TEND TO OPERATE" 
+            allowSplit={Boolean(synthesis.integrated)}
             color={primaryColor}
-            isEmpty={personalityLeanings.length === 0}
+            isEmpty={!synthesis.integrated && personalityLeanings.length === 0}
           >
+            {synthesis.integrated ? <IntegratedAreaResults results={synthesis.integrated} category="Personality" compact /> : (
             <div className="flex flex-col h-full">
               <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-3 border-b border-slate-100 pb-1.5">
                 Personality
@@ -288,6 +304,7 @@ export function ProfileInfographic({
                 Flexible tendencies, not a type or a limit on calling.
               </p>
             </div>
+            )}
           </InfographicBlock>
           )}
 
@@ -335,12 +352,14 @@ export function ProfileInfographic({
             </div>
           </InfographicBlock>
 
-          {/* SERVING PATTERN (synthesis of the four areas) */}
+          {/* SERVING PATTERN (personality with supporting strengths) */}
+          {(!synthesis.integrated || sectionEnabled("personalityStrengths")) && (
           <InfographicBlock 
             number="7" 
             title="YOUR SERVING PATTERN" 
             color={accentColor}
             isEmpty={!ministryTendency}
+            emptyMessage={synthesis.integrated ? "Not enough information yet" : undefined}
           >
             {ministryTendency && (
               <div className="flex flex-col h-full">
@@ -361,7 +380,7 @@ export function ProfileInfographic({
                   {tendencies[ministryTendency.key]?.explanation}
                 </p>
                 <p className="text-[10px] text-slate-500 italic mb-4">
-                  A summary of how the four areas above tend to come together in practice — not a fixed identity or a ministry assignment.
+                  Calculated from personality spectra, with natural strengths as supporting evidence. APEST and spiritual gifts are not inputs. Not a fixed identity or ministry assignment.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-3 mt-auto">
@@ -395,8 +414,10 @@ export function ProfileInfographic({
               </div>
             )}
           </InfographicBlock>
+          )}
 
           {/* BLOCK 8: SPIRITUAL HEALTH */}
+          {sectionEnabled("spiritualHealth") && (
           <InfographicBlock 
             number="8" 
             title="SPIRITUAL HEALTH" 
@@ -454,8 +475,10 @@ export function ProfileInfographic({
                </div>
             </div>
           </InfographicBlock>
+          )}
 
           {/* BLOCK 7: CONNECTION & SEASON */}
+          {sectionEnabled("connectionAvailability") && (
           <InfographicBlock 
             number="9" 
             title="CONNECTION & SEASON" 
@@ -481,8 +504,10 @@ export function ProfileInfographic({
               )}
             </div>
           </InfographicBlock>
+          )}
 
           {/* BLOCK 8: ENVIRONMENTS */}
+          {sectionEnabled("passionsInterests") && subsectionEnabled("passionsInterests", "ministryInterests") && (
           <InfographicBlock 
             number="10" 
             title="MINISTRY INTERESTS YOU NAMED" 
@@ -508,6 +533,7 @@ export function ProfileInfographic({
               </div>
             </div>
           </InfographicBlock>
+          )}
 
           {/* BLOCK 9: NEXT STEP */}
           <InfographicBlock 
@@ -563,16 +589,20 @@ function InfographicBlock({
   title, 
   color, 
   children,
-  isEmpty 
+  isEmpty,
+  emptyMessage,
+  allowSplit,
 }: { 
   number: string; 
   title: string; 
   color: string; 
   children: ReactNode;
   isEmpty?: boolean;
+  emptyMessage?: string;
+  allowSplit?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/60 hover:shadow-md transition-shadow relative overflow-hidden group flex flex-col h-full print:break-inside-avoid">
+    <div className={`bg-white rounded-2xl p-6 shadow-sm border border-slate-200/60 hover:shadow-md transition-shadow relative overflow-hidden group flex flex-col h-full print:break-inside-avoid ${allowSplit ? "print:block print:overflow-visible" : ""}`} style={allowSplit ? { breakInside: "auto", pageBreakInside: "auto" } : undefined}>
       <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: color }} />
       <div className="flex items-center gap-3 mb-5">
         <div 
@@ -586,7 +616,7 @@ function InfographicBlock({
       <div className="flex-grow flex flex-col">
         {isEmpty ? (
           <div className="text-sm text-slate-400 italic flex-grow flex items-center justify-center text-center">
-            Information not available in this profile.
+            {emptyMessage ?? "Information not available in this profile."}
           </div>
         ) : children}
       </div>

@@ -1,5 +1,6 @@
 import type { MinistryProfile } from "@workspace/api-client-react";
-import { derivedPersonality, numericResponses, rankedApproaches, MINISTRY_APPROACHES, MINISTRY_TAGS, STRENGTH_APPROACHES } from "../pages/profile-detail";
+import { derivedPersonality, numericResponses, rankedApproaches, MINISTRY_APPROACHES, MINISTRY_TAGS, STRENGTH_APPROACHES, PERSONALITY_DIMENSIONS } from "../pages/profile-detail";
+import { integratedResults, integratedPersonality } from "./integrated-results";
 
 type SectionEnabled = (section: string) => boolean;
 type SubsectionEnabled = (section: string, subsection: string) => boolean;
@@ -177,8 +178,9 @@ export function getMyMinistrySynthesis(
   sectionEnabled: SectionEnabled,
   subsectionEnabled: SubsectionEnabled,
 ) {
+  const integrated = integratedResults(profile, sectionEnabled, subsectionEnabled);
   // 1. APEST
-  const apestData = sectionEnabled("apest") ? asRecord(profile.assessmentSections.apest) : {};
+  const apestData = !integrated && sectionEnabled("apest") ? asRecord(profile.assessmentSections.apest) : {};
   let apestPrimary = typeof apestData.primary === "string" ? apestData.primary : "";
   let apestSecondary = typeof apestData.secondary === "string" ? apestData.secondary : "";
   const apestSubsectionByValue: Record<string, string> = {
@@ -219,8 +221,8 @@ export function getMyMinistrySynthesis(
     const label = legacyLabels[value] || MINISTRY_TAGS[value] || value;
     return supportedOrientations.has(label) ? label : "";
   };
-  const primaryLabel = getApestLabel(apestPrimary);
-  const secondaryLabel = getApestLabel(apestSecondary);
+  const primaryLabel = integrated ? integrated.signals("APEST")[0]?.construct ?? "" : getApestLabel(apestPrimary);
+  const secondaryLabel = integrated ? integrated.signals("APEST")[1]?.construct ?? "" : getApestLabel(apestSecondary);
 
   const apestResult = primaryLabel ? {
     label: primaryLabel,
@@ -231,7 +233,7 @@ export function getMyMinistrySynthesis(
   const personalityData = sectionEnabled("personalityStrengths")
     ? asRecord(profile.assessmentSections.personalityStrengths)
     : {};
-  const dimensions = derivedPersonality(
+  const dimensions = integrated ? integratedPersonality(integrated, PERSONALITY_DIMENSIONS) : derivedPersonality(
     numericResponses(personalityData.responses),
     key => subsectionEnabled("personalityStrengths", key),
   );
@@ -257,6 +259,7 @@ export function getMyMinistrySynthesis(
       key => subsectionEnabled("naturalStrengths", key),
     ).slice(0, 5).map(r => r.label);
   }
+  if (integrated) selectedStrengths = integrated.signals("Strength").map(result => result.construct);
 
   const getDim = (label: string) => dimensions.find(d => d.label === label);
   const action = getDim("Action Style");
@@ -271,7 +274,7 @@ export function getMyMinistrySynthesis(
   const spiritualGiftsData = sectionEnabled("spiritualGifts")
     ? asRecord(profile.assessmentSections.spiritualGifts)
     : {};
-  const topGifts = Array.isArray(spiritualGiftsData.topGifts)
+  const topGifts = integrated ? integrated.signals("Gift").map(result => result.construct) : Array.isArray(spiritualGiftsData.topGifts)
     ? spiritualGiftsData.topGifts.filter((gift): gift is string => typeof gift === "string").slice(0, 3)
     : [];
 
@@ -422,6 +425,7 @@ export function getMyMinistrySynthesis(
   };
 
   return {
+    integrated,
     apestResult,
     ministryTendency: primaryTendencyKey ? {
       key: primaryTendencyKey,

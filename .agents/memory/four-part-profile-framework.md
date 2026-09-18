@@ -40,8 +40,14 @@ The owner approved retaining 21 neutral Personality items (three per spectrum) a
 
 **How to apply:** Report primary and secondary opportunities separately. The requested minimum is three meaningful distinct indicators, not an automatically imposed three-primary-only rule; classify any stricter gate as a separate proposal.
 
-The owner provisionally approved optional experience/discernment treatment for Healing, Miracles, Tongues, and Interpretation of Tongues, without ordinary automated scores inferred from general behavior. Prophecy is not automatically included in that classification.
+The owner provisionally approved optional experience/discernment treatment for Healing, Miracles, Tongues, and Interpretation of Tongues, without ordinary automated scores inferred from general behavior. Prophecy was separately reviewed rather than automatically included in that classification.
 
 **Why:** Prophecy may have ordinary and extraordinary meanings depending on the approved definition; generic truth-telling, humility, or openness cannot resolve that distinction.
 
-**How to apply:** Review the authoritative definition before proposing Prophecy treatment; retain classification changes as proposals until approved. Keep context prompts unscored. Final integrated items may have no more than four scoring links.
+**How to apply:** Review the authoritative definition before proposing further classification changes. Keep context prompts unscored. Final integrated items may have no more than four scoring links.
+
+The owner approved implementation after the final content review on 2026-09-18. Preserve the adult-only pilot and the reviewed taxonomy; the final design uses optional unscored Prophecy prompts and conversation-only Discernment of Spirits rather than inventing ordinary behavioral evidence for either. This implementation approval is not psychometric validation.
+
+**Why:** The final editorial review could support an exploratory pilot, not claims of validated constructs, calling, or ministry placement. An assessment's overlapping answers remain correlated evidence, even when displayed in separate result areas.
+
+**How to apply:** Keep all sufficiently evidenced construct results available, including ties; do not force top-N results or silently rescore historical profiles. Explain insufficient evidence plainly. Keep the four result areas separate and do not infer Personality from ministry behavior.

@@ -5,6 +5,7 @@ import { teamSuggestionInternals } from "./team-suggestions.ts";
 
 function profile(overrides: Partial<MinistryProfile> = {}): MinistryProfile {
   return {
+    integratedAssessment: null,
     id: 1,
     churchId: 1,
     teamId: null,
@@ -148,4 +149,19 @@ test("hostile model prose is ignored because only known signal keys are accepted
 
   assert.deepEqual(parsed, [{ signalKeys: ["interest:hospitality"] }]);
   assert.doesNotMatch(JSON.stringify(parsed), /Ignore safeguards|hostile model text/);
+});
+
+test("team suggestions fail closed for unsupported integrated bank, scoring and envelope versions", () => {
+  const versions = { version: "integrated-assessment-v1", bankVersion: "adult-integrated-83-v1", scoringVersion: "independent-weighted-mean-v1" };
+  const fixture = profile({ interests: [], passions: [] });
+  assert.ok(teamSuggestionInternals.toSafeProfile(fixture).signals.length > 0, "legacy baseline has assessment signals");
+  for (const key of ["version", "bankVersion", "scoringVersion"] as const) {
+    const safe = teamSuggestionInternals.toSafeProfile({
+      ...fixture, integratedAssessment: {
+        ...versions, [key]: "unknown",
+        constructs: [{ category: "Gift", construct: "Hospitality", mean: 5, answeredCount: 3, eligible: true, evidence: "sufficient" }],
+      },
+    });
+    assert.deepEqual(safe.signals, [], key);
+  }
 });

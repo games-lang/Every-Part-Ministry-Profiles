@@ -1,4 +1,5 @@
 import type { MinistryProfile } from "@workspace/db";
+import { integratedSignals } from "./integrated-assessment.ts";
 import {
   DEFAULT_MINISTRY_INTERESTS,
   DEFAULT_PASSIONS,
@@ -161,6 +162,7 @@ function rankedLabels(
 }
 
 function toSafeProfile(profile: MinistryProfile): SafeProfile {
+  const integrated = integratedSignals(profile.integratedAssessment);
   const strengths = objectRecord(profile.naturalStrengths);
   const ministry = objectRecord(profile.apest);
   const storedStrengths = strings(strengths.selected).slice(0, 5);
@@ -178,19 +180,19 @@ function toSafeProfile(profile: MinistryProfile): SafeProfile {
     },
     {
       source: "strength",
-      labels: storedStrengths.length
+      labels: integrated ? integrated.strengths.filter(label => CANONICAL_STRENGTHS.has(label)) : storedStrengths.length
         ? storedStrengths.filter((label) => CANONICAL_STRENGTHS.has(label))
         : rankedLabels(profile.naturalStrengths, STRENGTHS, 5),
     },
     {
       source: "gift",
-      labels: topSpiritualGifts(profile.spiritualGifts).filter((label) =>
+      labels: (integrated ? integrated.spiritualGifts : topSpiritualGifts(profile.spiritualGifts)).filter((label) =>
         CANONICAL_GIFTS.has(label),
       ),
     },
     {
       source: "ministry tendency",
-      labels: storedMinistryTendencies.length
+      labels: integrated ? integrated.ministryTendencies.filter(label => CANONICAL_TENDENCIES.has(label)) : storedMinistryTendencies.length
         ? storedMinistryTendencies.filter((label) =>
             CANONICAL_TENDENCIES.has(label),
           )
