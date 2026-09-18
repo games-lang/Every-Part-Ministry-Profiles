@@ -4,7 +4,7 @@ generated = []
 [[outputs]]
 id = "geB6jZtchXKJD09-7VU4d"
 uri = "file://reports/integrated-assessment-design.html"
-type = "text"
+type = "html"
 title = "Adult Integrated Assessment — Design Report"
 description = "Proposed rounds, full question mapping, configuration rules, scoring boundaries, save/resume design, snapshot requirements, and pilot risks."
 logical_id = "cb31e17b-afb1-4cce-b92c-e03384277808"
@@ -32,7 +32,7 @@ content_type = "text/csv"
 [[outputs]]
 id = "zgFo0uzdB1ZEVxHpdYhQH"
 uri = "file://reports/short-integrated-content-design.html"
-type = "text"
+type = "html"
 title = "Shorter Assessment — Content Design Report"
 description = "Complete proposed 64-question core, optional 15-question module, mapping rationales, coverage tables, and explicit evidence gaps. Review draft—not ready for implementation."
 logical_id = "08c72524-c097-46f4-ba12-4f1511631ebf"
@@ -60,7 +60,7 @@ content_type = "application/octet-stream"
 [[outputs]]
 id = "qxBN8546WU1OJKAYRBp1W"
 uri = "file://reports/revised-integrated-content-design.html"
-type = "text"
+type = "html"
 title = "Revised Assessment — Coverage & Content Report"
 description = "Complete revised bank, change log, primary/secondary coverage, four high-mapping item reviews, cultural concerns, and classification proposals requiring approval."
 logical_id = "e513b1db-7bdf-4ded-b34a-210098148cfe"
@@ -83,4 +83,32 @@ size = 60468
 mtime_ms = 1789585724821
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/b499a308-1e38-4ca1-a02b-2d22c0c1f2af/128de50a-a27f-4166-a288-72430637f356"
 storage_version_token = "1789585778385972"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "d_sBJ4KtmHsuzSxoHmz88"
+uri = "file://reports/final-integrated-content-review.html"
+type = "html"
+title = "Final Integrated Assessment — Content Review"
+description = "Complete bank, redundancy decisions, full coverage tables, four-mapping audits, score-inflation findings, and Prophecy/Discernment recommendations. Report only; implementation awaits approval."
+logical_id = "36c6c3d0-c22b-4d0f-b1d9-a62ad098d233"
+content_hash = "sha256:cd61446e836fd028fa4c7f1bedbdefc51bb404ddfe6114fa180bc713b6224a4a"
+size = 571702
+mtime_ms = 1789748969130
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/36c6c3d0-c22b-4d0f-b1d9-a62ad098d233/55312ee9-061d-481c-9592-1b0c9c787137"
+storage_version_token = "1789749046644651"
+content_type = "text/html"
+
+[[outputs]]
+id = "9WxPcOu5ByDfep4C1w_Wr"
+uri = "file://reports/final-integrated-question-bank.json"
+type = "unspecified"
+title = "Final Proposed Question Bank & Scoring Map"
+description = "83 core questions, explicit weighted mappings, stable mixed order, optional-module rules, exact changes, and validation results."
+logical_id = "49b81773-3984-4266-9c5e-8bcf2b17af23"
+content_hash = "sha256:ac2f9295ee77abca27e7645bbdf8b561c8edd7c6925168d830db75c7969fb8d1"
+size = 816574
+mtime_ms = 1789748969126
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:7258c080-b22e-4271-bfc4-1f2b1af43cde/49b81773-3984-4266-9c5e-8bcf2b17af23/6e4083b4-b9bb-4014-ab09-6a5123af8a7e"
+storage_version_token = "1789749047166708"
 content_type = "application/octet-stream"

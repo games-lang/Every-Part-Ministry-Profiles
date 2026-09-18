@@ -1,0 +1,1209 @@
+{
+  "status": "Structural assertions passed; substantive approval and field validation still required",
+  "checks": [
+    {
+      "name": "Baseline cardinalities are 83 core / 15 optional / 5,26,18,7 taxonomy",
+      "status": "PASS"
+    },
+    {
+      "name": "Final core/optional IDs unique and disjoint; stable order complete",
+      "status": "PASS"
+    },
+    {
+      "name": "All maps valid numeric weights, distinct category/construct keys, max four; explicit rationale",
+      "status": "PASS"
+    },
+    {
+      "name": "APEST at least 5.5 each and spread at most 0.5",
+      "status": "PASS"
+    },
+    {
+      "name": "20 proposed ordinary gift candidates and all 18 strengths have >=3 distinct IDs (editorial relevance still provisional)",
+      "status": "PASS"
+    },
+    {
+      "name": "All 21 Personality semantic fields exactly preserved and independently mapped",
+      "status": "PASS"
+    },
+    {
+      "name": "Mixed presentation order retained exactly; not category-block scoring order",
+      "status": "PASS"
+    },
+    {
+      "name": "Every final item audited; every behavior has eight quality checks; every four-map item has four explicit reviews",
+      "status": "PASS"
+    },
+    {
+      "name": "No added maps or weight promotions; six explicit removals and no item removals",
+      "status": "PASS"
+    },
+    {
+      "name": "All optional prompts unscored; special four 12 and separately gated Prophecy three",
+      "status": "PASS"
+    },
+    {
+      "name": "Toggle semantics simulated for every gift: remove map only; hide zero-use items",
+      "status": "PASS"
+    },
+    {
+      "name": "All eight count scenarios independently recomputed",
+      "status": "PASS"
+    },
+    {
+      "name": "Source quotations match inspected source; source taxonomy exactly present",
+      "status": "PASS"
+    },
+    {
+      "name": "HTML core/optional inventories and scenario counts agree exactly with JSON",
+      "status": "PASS"
+    },
+    {
+      "name": "Both baseline files remain byte-for-byte unchanged",
+      "status": "PASS"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "reports/final-integrated-question-bank.json",
+      "sha256": "ac2f9295ee77abca27e7645bbdf8b561c8edd7c6925168d830db75c7969fb8d1",
+      "bytes": 816574
+    },
+    {
+      "path": "reports/final-integrated-content-review.html",
+      "sha256": "cd61446e836fd028fa4c7f1bedbdefc51bb404ddfe6114fa180bc713b6224a4a",
+      "bytes": 571702
+    }
+  ],
+  "counts": {
+    "core": 83,
+    "behavior": 62,
+    "personality": 21,
+    "optionalSpecialFour": 12,
+    "optionalProphecyConditional": 3,
+    "maxOptional": 15,
+    "finalFourMapItems": 16,
+    "finalMapCount": 186
+  },
+  "diff": {
+    "added": [],
+    "removed": [],
+    "replaced": [
+      "EP-I-36"
+    ],
+    "rewritten": [
+      "EP-I-01",
+      "EP-I-02",
+      "EP-I-03",
+      "EP-I-05",
+      "EP-I-06",
+      "EP-I-07",
+      "EP-I-08",
+      "EP-I-09",
+      "EP-I-10",
+      "EP-I-11",
+      "EP-I-12",
+      "EP-I-13",
+      "EP-I-14",
+      "EP-I-17",
+      "EP-I-18",
+      "EP-I-19",
+      "EP-I-21",
+      "EP-I-22",
+      "EP-I-23",
+      "EP-I-24",
+      "EP-I-25",
+      "EP-I-27",
+      "EP-I-28",
+      "EP-I-29",
+      "EP-I-32",
+      "EP-I-33",
+      "EP-I-34",
+      "EP-I-35",
+      "EP-I-37",
+      "EP-I-38",
+      "EP-I-39",
+      "EP-I-40",
+      "EP-I-41",
+      "EP-I-42",
+      "EP-I-44",
+      "EP-I-45",
+      "EP-I-46",
+      "EP-I-47",
+      "EP-I-48",
+      "EP-I-50",
+      "EP-I-51",
+      "EP-I-52",
+      "EP-I-53",
+      "EP-I-54",
+      "EP-I-57",
+      "EP-I-58A",
+      "EP-I-59A",
+      "EP-I-61A",
+      "EP-I-62A"
+    ],
+    "mappingChanged": [
+      "EP-I-08",
+      "EP-I-10",
+      "EP-I-32",
+      "EP-I-35",
+      "EP-I-36",
+      "EP-I-58A"
+    ],
+    "mapsRemoved": 6,
+    "weightPromotions": 0
+  },
+  "coverage": [
+    {
+      "category": "APEST",
+      "construct": "Apostle",
+      "primary": 6,
+      "secondary": 0,
+      "distinct": 6,
+      "weighted": 6,
+      "primaryIds": [
+        "EP-I-01",
+        "EP-I-02",
+        "EP-I-05",
+        "EP-I-44",
+        "EP-I-45",
+        "EP-I-46"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "APEST",
+      "construct": "Prophet",
+      "primary": 6,
+      "secondary": 0,
+      "distinct": 6,
+      "weighted": 6,
+      "primaryIds": [
+        "EP-I-07",
+        "EP-I-08",
+        "EP-I-11",
+        "EP-I-12",
+        "EP-I-13",
+        "EP-I-14"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "APEST",
+      "construct": "Evangelist",
+      "primary": 6,
+      "secondary": 0,
+      "distinct": 6,
+      "weighted": 6,
+      "primaryIds": [
+        "EP-I-15",
+        "EP-I-16",
+        "EP-I-17",
+        "EP-I-47",
+        "EP-I-48",
+        "EP-I-49"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "APEST",
+      "construct": "Shepherd",
+      "primary": 6,
+      "secondary": 0,
+      "distinct": 6,
+      "weighted": 6,
+      "primaryIds": [
+        "EP-I-21",
+        "EP-I-22",
+        "EP-I-23",
+        "EP-I-50",
+        "EP-I-51",
+        "EP-I-52"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "APEST",
+      "construct": "Teacher",
+      "primary": 5,
+      "secondary": 1,
+      "distinct": 6,
+      "weighted": 5.5,
+      "primaryIds": [
+        "EP-I-28",
+        "EP-I-29",
+        "EP-I-30",
+        "EP-I-31",
+        "EP-I-53"
+      ],
+      "secondaryIds": [
+        "EP-I-32"
+      ],
+      "flags": [
+        "exact weighted floor"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Administration",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-04",
+        "EP-I-46"
+      ],
+      "secondaryIds": [
+        "EP-I-02"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Apostleship",
+      "primary": 4,
+      "secondary": 0,
+      "distinct": 4,
+      "weighted": 4,
+      "primaryIds": [
+        "EP-I-01",
+        "EP-I-02",
+        "EP-I-44",
+        "EP-I-45"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Discernment of Spirits",
+      "primary": 0,
+      "secondary": 0,
+      "distinct": 0,
+      "weighted": 0,
+      "primaryIds": [],
+      "secondaryIds": [],
+      "flags": [
+        "zero; classification decision pending"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Evangelism",
+      "primary": 6,
+      "secondary": 0,
+      "distinct": 6,
+      "weighted": 6,
+      "primaryIds": [
+        "EP-I-15",
+        "EP-I-16",
+        "EP-I-17",
+        "EP-I-47",
+        "EP-I-48",
+        "EP-I-49"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "unusually high: >5 opportunities (editorial review flag, not threshold)"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Exhortation / Encouragement",
+      "primary": 2,
+      "secondary": 2,
+      "distinct": 4,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-20",
+        "EP-I-26"
+      ],
+      "secondaryIds": [
+        "EP-I-51",
+        "EP-I-61A"
+      ],
+      "flags": [
+        "equal primary/secondary counts"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Faith",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-27",
+        "EP-I-61A"
+      ],
+      "secondaryIds": [
+        "EP-I-25"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Giving",
+      "primary": 2,
+      "secondary": 2,
+      "distinct": 4,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-43",
+        "EP-I-62A"
+      ],
+      "secondaryIds": [
+        "EP-I-40",
+        "EP-I-41"
+      ],
+      "flags": [
+        "equal primary/secondary counts"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Healing",
+      "primary": 0,
+      "secondary": 0,
+      "distinct": 0,
+      "weighted": 0,
+      "primaryIds": [],
+      "secondaryIds": [],
+      "flags": [
+        "zero; special experience unscored"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Helps / Service",
+      "primary": 1,
+      "secondary": 3,
+      "distinct": 4,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-57"
+      ],
+      "secondaryIds": [
+        "EP-I-24",
+        "EP-I-34",
+        "EP-I-36"
+      ],
+      "flags": [
+        "secondary-heavy: S>P"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Hospitality",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-55",
+        "EP-I-56"
+      ],
+      "secondaryIds": [
+        "EP-I-19"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Interpretation of Tongues",
+      "primary": 0,
+      "secondary": 0,
+      "distinct": 0,
+      "weighted": 0,
+      "primaryIds": [],
+      "secondaryIds": [],
+      "flags": [
+        "zero; special experience unscored"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Knowledge",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-29",
+        "EP-I-32"
+      ],
+      "secondaryIds": [
+        "EP-I-28"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Leadership",
+      "primary": 1,
+      "secondary": 2,
+      "distinct": 3,
+      "weighted": 2,
+      "primaryIds": [
+        "EP-I-05"
+      ],
+      "secondaryIds": [
+        "EP-I-01",
+        "EP-I-44"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score",
+        "secondary-heavy: S>P"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Mercy",
+      "primary": 1,
+      "secondary": 2,
+      "distinct": 3,
+      "weighted": 2,
+      "primaryIds": [
+        "EP-I-24"
+      ],
+      "secondaryIds": [
+        "EP-I-21",
+        "EP-I-23"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score",
+        "secondary-heavy: S>P"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Miracles",
+      "primary": 0,
+      "secondary": 0,
+      "distinct": 0,
+      "weighted": 0,
+      "primaryIds": [],
+      "secondaryIds": [],
+      "flags": [
+        "zero; special experience unscored"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Pastoring / Shepherding",
+      "primary": 6,
+      "secondary": 0,
+      "distinct": 6,
+      "weighted": 6,
+      "primaryIds": [
+        "EP-I-21",
+        "EP-I-22",
+        "EP-I-23",
+        "EP-I-50",
+        "EP-I-51",
+        "EP-I-52"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "unusually high: >5 opportunities (editorial review flag, not threshold)"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Prophecy",
+      "primary": 0,
+      "secondary": 0,
+      "distinct": 0,
+      "weighted": 0,
+      "primaryIds": [],
+      "secondaryIds": [],
+      "flags": [
+        "zero; classification decision pending"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Teaching",
+      "primary": 4,
+      "secondary": 1,
+      "distinct": 5,
+      "weighted": 4.5,
+      "primaryIds": [
+        "EP-I-28",
+        "EP-I-30",
+        "EP-I-31",
+        "EP-I-53"
+      ],
+      "secondaryIds": [
+        "EP-I-29"
+      ],
+      "flags": []
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Tongues",
+      "primary": 0,
+      "secondary": 0,
+      "distinct": 0,
+      "weighted": 0,
+      "primaryIds": [],
+      "secondaryIds": [],
+      "flags": [
+        "zero; special experience unscored"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Wisdom",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-09",
+        "EP-I-14",
+        "EP-I-33"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Craftsmanship",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-34",
+        "EP-I-36"
+      ],
+      "secondaryIds": [
+        "EP-I-58A"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Intercession",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-25",
+        "EP-I-54"
+      ],
+      "secondaryIds": [
+        "EP-I-27"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Missionary / Cross-Cultural Ministry",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-03",
+        "EP-I-18",
+        "EP-I-19"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Music / Worship",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-35",
+        "EP-I-58A",
+        "EP-I-59A"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Celibacy",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-37",
+        "EP-I-38",
+        "EP-I-39"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score",
+        "conditional; conceptual scope/calling safeguard"
+      ]
+    },
+    {
+      "category": "Spiritual Gift",
+      "construct": "Voluntary Poverty",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-40",
+        "EP-I-41",
+        "EP-I-42"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Relational connection",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-03",
+        "EP-I-15"
+      ],
+      "secondaryIds": [
+        "EP-I-56"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Encouragement",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-20",
+        "EP-I-26",
+        "EP-I-51"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Teaching and explaining",
+      "primary": 5,
+      "secondary": 0,
+      "distinct": 5,
+      "weighted": 5,
+      "primaryIds": [
+        "EP-I-28",
+        "EP-I-29",
+        "EP-I-30",
+        "EP-I-31",
+        "EP-I-53"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "Strength",
+      "construct": "Listening",
+      "primary": 2,
+      "secondary": 2,
+      "distinct": 4,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-09",
+        "EP-I-47"
+      ],
+      "secondaryIds": [
+        "EP-I-17",
+        "EP-I-31"
+      ],
+      "flags": [
+        "equal primary/secondary counts"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Leadership and initiative",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-01",
+        "EP-I-05",
+        "EP-I-44"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Organizing",
+      "primary": 3,
+      "secondary": 1,
+      "distinct": 4,
+      "weighted": 3.5,
+      "primaryIds": [
+        "EP-I-02",
+        "EP-I-04",
+        "EP-I-46"
+      ],
+      "secondaryIds": [
+        "EP-I-62A"
+      ],
+      "flags": []
+    },
+    {
+      "category": "Strength",
+      "construct": "Creative expression",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-35",
+        "EP-I-59A"
+      ],
+      "secondaryIds": [
+        "EP-I-34"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Problem-solving",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-45",
+        "EP-I-60A"
+      ],
+      "secondaryIds": [
+        "EP-I-06"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Practical hands-on work",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-34",
+        "EP-I-57"
+      ],
+      "secondaryIds": [
+        "EP-I-36"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Hospitality",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-19",
+        "EP-I-55",
+        "EP-I-56"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Compassion and care",
+      "primary": 2,
+      "secondary": 1,
+      "distinct": 3,
+      "weighted": 2.5,
+      "primaryIds": [
+        "EP-I-23",
+        "EP-I-24"
+      ],
+      "secondaryIds": [
+        "EP-I-50"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Communication and storytelling",
+      "primary": 3,
+      "secondary": 1,
+      "distinct": 4,
+      "weighted": 3.5,
+      "primaryIds": [
+        "EP-I-16",
+        "EP-I-32",
+        "EP-I-49"
+      ],
+      "secondaryIds": [
+        "EP-I-30"
+      ],
+      "flags": []
+    },
+    {
+      "category": "Strength",
+      "construct": "Discernment",
+      "primary": 4,
+      "secondary": 1,
+      "distinct": 5,
+      "weighted": 4.5,
+      "primaryIds": [
+        "EP-I-07",
+        "EP-I-11",
+        "EP-I-14",
+        "EP-I-33"
+      ],
+      "secondaryIds": [
+        "EP-I-09"
+      ],
+      "flags": []
+    },
+    {
+      "category": "Strength",
+      "construct": "Follow-through",
+      "primary": 2,
+      "secondary": 2,
+      "distinct": 4,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-21",
+        "EP-I-50"
+      ],
+      "secondaryIds": [
+        "EP-I-52",
+        "EP-I-57"
+      ],
+      "flags": [
+        "equal primary/secondary counts"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Adaptability",
+      "primary": 1,
+      "secondary": 2,
+      "distinct": 3,
+      "weighted": 2,
+      "primaryIds": [
+        "EP-I-18"
+      ],
+      "secondaryIds": [
+        "EP-I-03",
+        "EP-I-19"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score",
+        "secondary-heavy: S>P"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Mentoring and development",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-22",
+        "EP-I-48",
+        "EP-I-52"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Strategic thinking",
+      "primary": 1,
+      "secondary": 2,
+      "distinct": 3,
+      "weighted": 2,
+      "primaryIds": [
+        "EP-I-06"
+      ],
+      "secondaryIds": [
+        "EP-I-45",
+        "EP-I-46"
+      ],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score",
+        "secondary-heavy: S>P"
+      ]
+    },
+    {
+      "category": "Strength",
+      "construct": "Advocacy and justice",
+      "primary": 4,
+      "secondary": 0,
+      "distinct": 4,
+      "weighted": 4,
+      "primaryIds": [
+        "EP-I-08",
+        "EP-I-10",
+        "EP-I-12",
+        "EP-I-13"
+      ],
+      "secondaryIds": [],
+      "flags": []
+    },
+    {
+      "category": "Personality",
+      "construct": "Social Energy",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-58",
+        "EP-I-59",
+        "EP-I-60"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Personality",
+      "construct": "Decision Lens",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-61",
+        "EP-I-62",
+        "EP-I-63"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Personality",
+      "construct": "Planning Style",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-64",
+        "EP-I-65",
+        "EP-I-66"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Personality",
+      "construct": "Focus Style",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-67",
+        "EP-I-68",
+        "EP-I-69"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Personality",
+      "construct": "Action Style",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-70",
+        "EP-I-71",
+        "EP-I-72"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Personality",
+      "construct": "Pace Preference",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-73",
+        "EP-I-74",
+        "EP-I-75"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    },
+    {
+      "category": "Personality",
+      "construct": "Work Style",
+      "primary": 3,
+      "secondary": 0,
+      "distinct": 3,
+      "weighted": 3,
+      "primaryIds": [
+        "EP-I-76",
+        "EP-I-77",
+        "EP-I-78"
+      ],
+      "secondaryIds": [],
+      "flags": [
+        "exact distinct minimum; any one N/A blocks a score"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "all-enabled-C-eligible",
+      "core": 83,
+      "optional": 15,
+      "total": 98,
+      "condition": "All other categories and ordinary gifts on; Celibacy opted-in eligible; special module opted in and all four on; Prophecy C separately approved and enabled."
+    },
+    {
+      "id": "all-enabled-C-ineligible",
+      "core": 80,
+      "optional": 15,
+      "total": 95,
+      "condition": "Same, but Celibacy off/ineligible/declined; 3 slots conditionally resolved N/A, not displayed."
+    },
+    {
+      "id": "four-only-eligible",
+      "core": 83,
+      "optional": 12,
+      "total": 95,
+      "condition": "All ordinary gifts including eligible Celibacy on; all four special gifts on and module opted in; Prophecy unresolved, C not approved, or Prophecy off."
+    },
+    {
+      "id": "four-only-ineligible",
+      "core": 80,
+      "optional": 12,
+      "total": 92,
+      "condition": "Same with Celibacy off/ineligible/declined."
+    },
+    {
+      "id": "special-disabled-C-on-eligible",
+      "core": 83,
+      "optional": 3,
+      "total": 86,
+      "condition": "Exactly the four special gifts off; Prophecy C separately approved, enabled, and opted in; eligible Celibacy on."
+    },
+    {
+      "id": "special-disabled-C-on-ineligible",
+      "core": 80,
+      "optional": 3,
+      "total": 83,
+      "condition": "Same with Celibacy off/ineligible/declined."
+    },
+    {
+      "id": "all-optional-off-eligible",
+      "core": 83,
+      "optional": 0,
+      "total": 83,
+      "condition": "Four special gifts and Prophecy appendix off (or whole optional module declined); eligible Celibacy on."
+    },
+    {
+      "id": "all-optional-off-ineligible",
+      "core": 80,
+      "optional": 0,
+      "total": 80,
+      "condition": "Same with Celibacy off/ineligible/declined."
+    }
+  ],
+  "conceptualBlockers": [
+    "No participant dataset received. No empirical testing, factor/reliability study, translation validation or live verification performed.",
+    "All scored candidates meet structural floors after editorial repair; three relevant self-report indicators are not proof of reliability, construct validity, calling, or gift possession.",
+    "Secondary-heavy Leadership and Mercy Gifts, Adaptability and Strategic thinking Strengths retain only one primary each. Helps / Service is 1P/3S. Mean scores must not hide this.",
+    "Celibacy's three revised contexts and Voluntary Poverty's three related facets remain conceptually fragile and opportunity-sensitive; they cannot establish a lifelong vocation or rank holiness. Do not auto-reclassify; seek scope approval and cognitive review before score publication.",
+    "Faith's unusual-confidence definition is difficult to distinguish from ordinary faithful coping; God-specific rewrites remove pure optimism but do not empirically establish unusual confidence.",
+    "Prophet remains corrective biblical/ethical ministry, not automatic Prophecy Gift. Wisdom is contextual spiritual application; Strength Discernment is practical evaluation, never Discernment of Spirits.",
+    "Some scripture, music, celibacy and cross-cultural items necessarily require relevant experience. Ordinary-life answerability means no formal ministry role, not that every adult should have the opportunity.",
+    "Independent personality scoring is preserved, not statistical independence. Existing poles have conceptual overlap and translation issues (especially Decision Lens, Pace Preference, Work Style). No silent wording edits.",
+    "Shared questions can co-elevate related categories even with valid maps. Weights normalize opportunities but cannot correct social desirability or provide independent confirmation.",
+    "Actual source derives fixed-size summaries in several consumers; proposal must not be fed into those consumers without separately approved adapters. No application change is authorized here."
+  ],
+  "baselineHashes": [
+    {
+      "path": "reports/revised-integrated-question-bank.json",
+      "sha256": "ea31a68df5a617bd7501c5b9e149e48432e63b37e90ca5ec61a19ed8dd48e088"
+    },
+    {
+      "path": "reports/revised-integrated-content-design.html",
+      "sha256": "0259ed7a1a7437fa9dc9da034f7d12b65788198755e33d0d6e5264475007990c"
+    }
+  ]
+}

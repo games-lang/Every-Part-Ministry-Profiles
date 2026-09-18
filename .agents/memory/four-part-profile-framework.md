@@ -39,3 +39,9 @@ The owner approved retaining 21 neutral Personality items (three per spectrum) a
 **Why:** Construct coverage takes priority over an arbitrary question count.
 
 **How to apply:** Report primary and secondary opportunities separately. The requested minimum is three meaningful distinct indicators, not an automatically imposed three-primary-only rule; classify any stricter gate as a separate proposal.
+
+The owner provisionally approved optional experience/discernment treatment for Healing, Miracles, Tongues, and Interpretation of Tongues, without ordinary automated scores inferred from general behavior. Prophecy is not automatically included in that classification.
+
+**Why:** Prophecy may have ordinary and extraordinary meanings depending on the approved definition; generic truth-telling, humility, or openness cannot resolve that distinction.
+
+**How to apply:** Review the authoritative definition before proposing Prophecy treatment; retain classification changes as proposals until approved. Keep context prompts unscored. Final integrated items may have no more than four scoring links.

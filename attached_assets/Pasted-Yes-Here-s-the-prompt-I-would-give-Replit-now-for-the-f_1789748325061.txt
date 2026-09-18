@@ -1,0 +1,635 @@
+Yes. Here’s the prompt I would give Replit now for the **final refinement pass before implementation**:
+
+```text
+# EVERY PART — FINAL REFINEMENT OF THE INTEGRATED ASSESSMENT
+
+The revised integrated-assessment report is moving in the right direction.
+
+Do NOT implement yet.
+
+I approve the overall direction:
+
+- One blended adult assessment
+- Four distinct result categories:
+  1. How You Tend to Minister — APEST
+  2. How God Has Equipped You — Spiritual Gifts
+  3. What You Are Naturally Good At — Strengths
+  4. How You Tend to Operate — Personality
+- 21 neutral Personality questions remain separate and independently scored
+- APEST remains balanced
+- Ordinary scored Spiritual Gifts and Strengths require at least 3 meaningful indicators
+- Primary and Secondary mappings remain distinct
+- No question should have more than 4 scoring mappings
+- Church Spiritual Gift ON/OFF controls remain functional
+- Historical profiles remain untouched
+- Youth pathways remain unchanged for now
+- Spiritual Experience & Discernment remains optional and separate
+
+Before implementation, I want one final content-refinement pass.
+
+The goal is:
+
+REDUCE REDUNDANCY WHERE POSSIBLE WITHOUT WEAKENING COVERAGE OR CREATING WEAK MAPPINGS.
+
+==================================================
+TARGET LENGTH
+==================================================
+
+The current proposal is:
+
+83 core questions
++
+15 optional Spiritual Experience & Discernment prompts.
+
+Do not treat 83 as automatically unacceptable.
+
+However, try to reduce the core assessment toward approximately:
+
+72–78 questions
+
+ONLY IF this can be done responsibly.
+
+Do NOT shorten the assessment if doing so would:
+
+- reduce APEST below adequate coverage
+- reduce a scored Spiritual Gift below 3 meaningful indicators
+- reduce a Strength below 3 meaningful indicators
+- reduce Personality below 3 questions per spectrum
+- require weak or artificial cross-mappings
+- create overly broad questions
+- make the assessment less accurate or less useful
+
+If approximately 80 questions is the shortest responsible version, say so clearly.
+
+The goal is NOT an arbitrary question count.
+
+The goal is the shortest trustworthy assessment.
+
+==================================================
+KEEP THE 21 PERSONALITY QUESTIONS
+==================================================
+
+Keep the current 21 Personality questions:
+
+7 spectra × 3 questions each.
+
+Do not reduce these unless there is a specific wording or measurement problem.
+
+Personality must continue to be measured independently.
+
+Do NOT infer Personality from spiritual or ministry behaviors.
+
+Examples:
+
+Prayer does not automatically mean Conscientiousness.
+
+Mercy does not automatically mean Agreeableness.
+
+Leadership does not automatically mean Extraversion.
+
+Speaking publicly does not automatically mean Extraversion.
+
+Tongues does not automatically mean Openness.
+
+Generosity does not automatically determine Personality.
+
+==================================================
+PRESERVE APEST BALANCE
+==================================================
+
+The current APEST coverage is:
+
+Apostle — 6.0
+Prophet — 6.0
+Evangelist — 6.0
+Shepherd — 6.0
+Teacher — 5.5
+
+This balance is good.
+
+Preserve it as closely as possible.
+
+Small differences are acceptable, but no orientation should become substantially easier or harder to score than another.
+
+Do not reduce any APEST orientation below approximately 5.5 weighted evidence unless there is a compelling reason.
+
+==================================================
+REDUNDANCY REVIEW
+==================================================
+
+Review all integrated behavior questions for redundancy.
+
+Identify questions that:
+
+- measure nearly the same behavior
+- provide little unique scoring value
+- use slightly different wording but capture the same evidence
+- overlap heavily in both wording and construct mappings
+
+For every proposed removal or merge, show:
+
+1. Question ID
+2. Current question wording
+3. Constructs it supports
+4. Other questions already supporting those constructs
+5. Coverage after removal
+6. Whether any construct would fall below minimum evidence
+7. Why removal would or would not be safe
+
+Do NOT remove a question merely because it sounds somewhat similar to another.
+
+Only remove it if its unique measurement value is genuinely low.
+
+==================================================
+PREFER REPLACEMENT OVER ADDITION
+==================================================
+
+If a weak or redundant question can be replaced by a stronger question that:
+
+- preserves existing coverage
+- improves clarity
+- improves translation quality
+- closes a coverage weakness
+- reduces ambiguity
+
+prefer replacement rather than adding more questions.
+
+==================================================
+SPIRITUAL GIFT COVERAGE
+==================================================
+
+For ordinary assessment-scored Spiritual Gifts:
+
+require at least 3 meaningful indicators.
+
+Prefer 3–5 when possible.
+
+Do not keep a gift score just because it technically has 3 weak Secondary mappings.
+
+Coverage reports must clearly distinguish:
+
+Primary indicators
+
+Secondary indicators
+
+Weighted evidence.
+
+A gift with:
+
+1 Primary + 2 weak Secondary mappings
+
+should be flagged for review.
+
+Do not pretend all indicators are equally strong.
+
+==================================================
+STRENGTH COVERAGE
+==================================================
+
+Every scored Strength should have at least 3 meaningful indicators.
+
+Prefer 3–5.
+
+Strength questions should represent observable capability.
+
+Do not confuse Strengths with:
+
+- Personality
+- Spiritual Gifts
+- APEST
+- spiritual maturity
+- calling
+
+Flag any Strength whose coverage is mostly Secondary rather than Primary.
+
+==================================================
+PRIMARY AND SECONDARY MAPPINGS
+==================================================
+
+Continue using:
+
+Primary = 1.0
+
+Secondary = 0.5
+
+Do not use Secondary mappings merely to increase coverage numbers.
+
+A Secondary mapping should mean:
+
+"This behavior genuinely supports this construct, but it is not the main thing the question is measuring."
+
+Do not allow a weak association to become a Secondary mapping.
+
+==================================================
+MAXIMUM MAPPINGS PER QUESTION
+==================================================
+
+No question should have more than 4 total scoring mappings.
+
+Prefer fewer when possible.
+
+A question that measures 2–3 constructs clearly is better than one that measures 4 vaguely.
+
+For every question with 4 mappings, specifically review whether all 4 are necessary.
+
+==================================================
+PROPHECY — DO NOT AUTOMATICALLY MOVE IT TO EXPERIENCE-ONLY
+==================================================
+
+Do NOT automatically treat Prophecy the same as Healing, Miracles, Tongues, and Interpretation of Tongues.
+
+First inspect the CURRENT production definition of Prophecy in Every Part.
+
+If Prophecy is defined mainly through observable ministry patterns such as:
+
+- recognizing when teaching or behavior conflicts with Scripture
+- speaking difficult truth courageously
+- calling people toward faithfulness
+- identifying spiritual or moral implications
+- applying biblical truth to current situations
+
+then Prophecy may remain an ordinary assessment-scored Spiritual Gift if there are at least 3 meaningful indicators.
+
+If Prophecy is defined mainly as:
+
+- supernatural revelation
+- foretelling unknown events
+- receiving specific divine information unavailable through ordinary means
+
+then those aspects should be handled through Spiritual Experience & Discernment.
+
+If the production definition includes BOTH ordinary prophetic ministry and extraordinary prophetic experience, present a recommendation before changing taxonomy.
+
+Possible options:
+
+A. Keep one carefully defined Prophecy gift
+
+B. Separate ordinary prophetic ministry from extraordinary prophetic experience
+
+C. Treat Prophecy primarily as conversation-led discernment
+
+Do NOT change the production taxonomy without approval.
+
+==================================================
+DISCERNMENT OF SPIRITS
+==================================================
+
+Treat Discernment of Spirits carefully.
+
+Do not confuse it with:
+
+- general wisdom
+- critical thinking
+- theological knowledge
+- emotional awareness
+- good judgment
+
+If the production definition is specifically spiritual discernment, only score it if the assessment has enough appropriate evidence.
+
+Otherwise recommend:
+
+Conversation / Community Discernment
+
+rather than a misleading automated score.
+
+Do not make the classification change yet.
+
+Show the recommendation first.
+
+==================================================
+HEALING, MIRACLES, TONGUES, INTERPRETATION
+==================================================
+
+Approve the following provisional treatment:
+
+Healing
+→ Optional Spiritual Experience & Discernment
+
+Miracles
+→ Optional Spiritual Experience & Discernment
+
+Tongues
+→ Optional Spiritual Experience & Discernment
+
+Interpretation of Tongues
+→ Optional Spiritual Experience & Discernment
+
+Do NOT publish an ordinary automated score for these based on general ministry behaviors.
+
+Use actual experience-based prompts where appropriate.
+
+Keep:
+
+"Not sure / I have not experienced this / this is not part of my church tradition"
+
+as an unscored response.
+
+Context questions about humility, accountability, openness, or willingness to seek guidance are useful for conversation but must NOT count as proof of a gift.
+
+==================================================
+CHECK FOR SCORE INFLATION
+==================================================
+
+Early testing showed one participant receiving many relatively high Spiritual Gift and Strength scores.
+
+Review the question bank for possible score inflation.
+
+Do NOT artificially lower scores.
+
+Instead investigate whether:
+
+- too many items describe universally desirable Christian behavior
+- 4 or 5 feels like the "good Christian" answer
+- wording is too broad
+- similar constructs share too many of the same questions
+- Secondary mappings are too generous
+- questions fail to distinguish one construct from another
+
+For example:
+
+If someone answers highly because they are generally faithful, kind, organized, or active, that should not automatically create high scores across many unrelated gifts.
+
+Revise only where the measurement problem is real.
+
+==================================================
+QUESTION DISCRIMINATION
+==================================================
+
+For each question, ask:
+
+"Could someone answer this strongly for a reason unrelated to the construct we are trying to measure?"
+
+If yes, determine whether:
+
+- wording should be more specific
+- mapping should be removed
+- question should be replaced
+
+The assessment should distinguish:
+
+Leadership from Administration
+
+Teaching from Knowledge
+
+Mercy from Shepherding
+
+Evangelism from general friendliness
+
+Wisdom from Discernment
+
+Service from Helps
+
+Hospitality from general kindness
+
+Apostle from general initiative
+
+Evangelist from general social confidence
+
+Shepherd from general agreeableness
+
+Teacher from general intelligence
+
+Prophet from general assertiveness
+
+Do not make construct distinctions artificially sharp when they naturally overlap, but avoid questions so broad that everything scores high together.
+
+==================================================
+CULTURAL AND MULTILINGUAL REVIEW
+==================================================
+
+Review every question for cultural bias and translation difficulty.
+
+Every Part is intended for multilingual and multicultural churches.
+
+Avoid questions that assume:
+
+- American leadership culture
+- direct verbal communication
+- comfort challenging authority
+- high educational access
+- financial privilege
+- formal ministry experience
+- extroverted behavior
+- Western individualism
+
+Use plain, concrete language.
+
+Avoid:
+
+idioms
+double negatives
+subtle English wordplay
+culture-specific metaphors
+church jargon that may translate poorly
+
+==================================================
+RESULT DISTINCTIVENESS
+==================================================
+
+The assessment should allow people to have many real gifts and strengths.
+
+Do not force a fixed number of "top" gifts.
+
+However, results should still help distinguish:
+
+STRONGEST RECURRING PATTERNS
+
+from
+
+SECONDARY OR DEVELOPING PATTERNS.
+
+Review whether the current scoring model produces meaningful separation.
+
+Do not change score thresholds purely to create dramatic separation.
+
+First fix question quality and mapping quality.
+
+==================================================
+MINIMUM EVIDENCE RULE
+==================================================
+
+Do NOT weaken the minimum-evidence threshold.
+
+If a construct does not have enough meaningful evidence:
+
+display:
+
+"Not enough information yet."
+
+This is better than publishing a weak result.
+
+==================================================
+CONVERSATION-ONLY AREAS
+==================================================
+
+If a construct cannot responsibly be measured with at least 3 meaningful indicators without making the assessment repetitive or excessively long:
+
+flag it.
+
+Recommend one of:
+
+A. Assessment-scored
+
+B. Optional Experience & Discernment
+
+C. Conversation / Community Discernment Only
+
+Explain why.
+
+Do not automatically reclassify it without approval.
+
+==================================================
+QUESTION QUALITY CHECK
+==================================================
+
+For every newly revised question, verify:
+
+1. It measures one clear behavior.
+
+2. It can be answered from ordinary life, not only church ministry.
+
+3. One answer does not obviously sound more spiritual or morally superior.
+
+4. It translates cleanly.
+
+5. It meaningfully distinguishes the intended construct.
+
+6. It is not redundant with another item.
+
+7. Every mapping is directly justified.
+
+8. It does not accidentally measure social desirability more than the intended construct.
+
+==================================================
+DO NOT CHANGE THESE AREAS
+==================================================
+
+Do NOT redesign:
+
+What Moves Your Heart
+
+What Your Story Has Prepared You For
+
+Your Current Season
+
+Spiritual Health
+
+Interests
+
+Availability
+
+Experience
+
+Languages
+
+Family information
+
+Conversation
+
+Serving Pattern calculation
+
+Youth assessments
+
+Historical assessments.
+
+Only refine the adult integrated assessment question bank and mappings.
+
+==================================================
+YOUR SERVING PATTERN
+==================================================
+
+Keep Your Serving Pattern as a synthesis feature.
+
+Do NOT add new body-metaphor questions.
+
+Do NOT claim Serving Pattern mathematically uses all four assessment areas unless the algorithm is intentionally changed later.
+
+Preserve its actual current calculation.
+
+==================================================
+FINAL CONTENT REPORT
+==================================================
+
+Do NOT implement yet.
+
+Return one final content report containing:
+
+1. Final proposed core question count
+
+2. Final optional Spiritual Experience question count
+
+3. Final estimated completion time
+
+4. Questions proposed for removal
+
+5. Questions proposed for replacement
+
+6. Questions rewritten
+
+7. Questions whose mappings changed
+
+8. Full final scoring map
+
+9. APEST coverage:
+   - Primary count
+   - Secondary count
+   - weighted coverage
+
+10. Spiritual Gift coverage:
+   - Primary count
+   - Secondary count
+   - weighted coverage
+
+11. Strength coverage:
+   - Primary count
+   - Secondary count
+   - weighted coverage
+
+12. Personality coverage for all 7 spectra
+
+13. Any constructs exactly at minimum evidence
+
+14. Any constructs with unusually high coverage
+
+15. Any Secondary-heavy constructs
+
+16. Review of every question with 4 mappings
+
+17. Score-inflation findings
+
+18. Cultural / translation concerns
+
+19. Final recommendation for Prophecy
+
+20. Final recommendation for Discernment of Spirits
+
+21. Confirmation that Healing, Miracles, Tongues, and Interpretation remain experience/discernment based
+
+22. Expected question count when all optional gifts are enabled
+
+23. Expected question count when special Spiritual Experience gifts are disabled
+
+24. Confirmation that gift ON/OFF settings still work
+
+25. Confirmation that historical profiles remain unchanged
+
+26. Confirmation that youth pathways remain unchanged
+
+27. Confirmation that Personality remains independently scored
+
+28. Any remaining concerns before implementation
+
+==================================================
+DO NOT IMPLEMENT YET
+==================================================
+
+This is the final content-design review.
+
+Do not modify the live assessment, database, or participant flow yet.
+
+Wait for approval after returning the final report.
+```
+
+This is the version I’d send now. It gives Replit permission to **tighten the 83-question bank**, but not at the expense of the stronger coverage it finally achieved.
+
+The biggest thing I’d want to see in the next report is whether it can get you into roughly the **mid-to-upper 70s** by removing genuine redundancy. If it comes back and says something like, “79 is the shortest version that preserves all of this responsibly,” I would be comfortable moving forward with a pilot rather than continuing to trim just for the sake of a smaller number.
