@@ -55,7 +55,7 @@ import { profileSubmissionError } from "@/lib/profile-submission-error";
 import { ProfileParts } from "@/components/profile-parts";
 import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
 import { useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
-import { IntegratedConflict, IntegratedReflections, INTEGRATED_ROUND_SIZE, isOptionalReflection } from "@/components/integrated-reflections";
+import { IntegratedConflict, IntegratedReflections, isOptionalReflection } from "@/components/integrated-reflections";
 
 function hexToHsl(hex: string) {
   const value = hex.replace("#", "");
@@ -1650,9 +1650,12 @@ export default function Assessment() {
   const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft || (!legacyChosen && !!church?.integratedAssessmentPilotEnabled);
   const coreQuestions = integratedAttempt?.questions.filter(q => !isOptionalReflection(q)) ?? [];
   const optionalQuestions = integratedAttempt?.questions.filter(isOptionalReflection) ?? [];
-  const roundCount = Math.max(1, Math.ceil(coreQuestions.length / INTEGRATED_ROUND_SIZE));
-  const currentRound = Math.min(integratedRound, roundCount - 1);
-  const roundQuestions = coreQuestions.slice(currentRound * INTEGRATED_ROUND_SIZE, (currentRound + 1) * INTEGRATED_ROUND_SIZE);
+  const roundCount = Math.max(1, coreQuestions.length);
+  const currentRound = Math.min(
+    integratedQuestionIndex,
+    Math.max(0, coreQuestions.length - 1),
+  );
+  const roundQuestions = coreQuestions.slice(currentRound, currentRound + 1);
 
   const legacyAssessmentSections = ["apest", "spiritualGifts", "naturalStrengths", "personalityStrengths"] as const;
 
@@ -2096,7 +2099,7 @@ export default function Assessment() {
       const firstUnansweredIndex = roundQuestions.findIndex(q => !integratedAnswers[q.id]);
       if (firstUnansweredIndex >= 0) {
         setReflectionValidationError(
-          `Choose a response, N/A, or Skip for each reflection in this round. Question ${currentRound * INTEGRATED_ROUND_SIZE + firstUnansweredIndex + 1} still needs a choice.`,
+          `Choose a response, N/A, or Skip before continuing. Question ${currentRound + 1} still needs a choice.`,
         );
         requestAnimationFrame(() =>
           document.getElementById(`integrated-question-${roundQuestions[firstUnansweredIndex].id}`)?.scrollIntoView({ behavior: "smooth", block: "center" })
@@ -2182,6 +2185,7 @@ export default function Assessment() {
     if (!validateStep()) return;
     if (currentStep === "integratedPilot" && currentRound < roundCount - 1) {
       setIntegratedRound(currentRound + 1);
+      setIntegratedQuestionIndex(currentRound + 1);
       setReflectionValidationError("");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -2199,7 +2203,8 @@ export default function Assessment() {
     const missing = coreQuestions.findIndex(q => !integratedAnswers[q.id]);
     if (integratedAttempt && missing >= 0) {
       setStepIndex(stepKeys.indexOf("integratedPilot"));
-      setIntegratedRound(Math.floor(missing / INTEGRATED_ROUND_SIZE));
+      setIntegratedRound(missing);
+      setIntegratedQuestionIndex(missing);
       setReflectionValidationError("Choose a response, N/A, or Skip for each core reflection before submitting.");
       return;
     }
@@ -2963,7 +2968,7 @@ export default function Assessment() {
                         <div className="space-y-8">
                           <div className="sticky top-0 z-10 flex justify-between items-center bg-card/95 backdrop-blur p-4 rounded-xl border shadow-sm">
                             <p className="text-sm font-medium">
-                              Round {currentRound + 1} of {roundCount} · {coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of {coreQuestions.length} reflections answered
+                              Question {currentRound + 1} of {roundCount} · {coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} answered
                             </p>
                               <Button type="button" variant="outline" size="sm" onClick={async () => {
                                 try {
@@ -2978,7 +2983,7 @@ export default function Assessment() {
                           </div>
                           {reflectionValidationError && <p role="alert" className="text-destructive">{reflectionValidationError}</p>}
                           <IntegratedReflections attempt={integratedAttempt} questions={roundQuestions} answers={integratedAnswers}
-                            offset={currentRound * INTEGRATED_ROUND_SIZE} onAnswer={(id, value) => {
+                            offset={currentRound} onAnswer={(id, value) => {
                               integrated.setAnswer(id, value);
                               setIntegratedQuestionIndex(coreQuestions.findIndex(q => q.id === id));
                               setReflectionValidationError("");
@@ -3902,6 +3907,7 @@ export default function Assessment() {
                   onClick={() => {
                     if (currentStep === "integratedPilot" && currentRound > 0) {
                       setIntegratedRound(currentRound - 1);
+                      setIntegratedQuestionIndex(currentRound - 1);
                       setReflectionValidationError("");
                       window.scrollTo({ top: 0, behavior: "smooth" });
                       return;
@@ -3930,7 +3936,7 @@ export default function Assessment() {
                   </Button>
                 ) : (
                   <Button type="button" onClick={next} disabled={currentStep === "integratedPilot" && !integratedAttempt}>
-                    {currentStep === "integratedPilot" && currentRound < roundCount - 1 ? "Next round" : "Continue"} <ArrowRight className="w-4 h-4 ml-2" />
+                    {currentStep === "integratedPilot" && currentRound < roundCount - 1 ? "Next question" : "Continue"} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 )}
               </div>
