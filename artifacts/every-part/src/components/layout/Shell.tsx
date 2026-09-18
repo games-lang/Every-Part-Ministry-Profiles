@@ -15,7 +15,7 @@ const navItems = [
   { href: "/teams", label: "Teams", icon: UsersRound },
   { href: "/leadership-profile", label: "My Leadership", icon: Compass },
   { href: "/church-setup", label: "Church Setup", icon: Settings },
-  { href: "/billing", label: "Billing", icon: CreditCard },
+  { href: "/billing", label: "Plan & usage", icon: CreditCard },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {

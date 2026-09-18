@@ -427,44 +427,6 @@ paths:
                 $ref: "#/components/schemas/BillingSubscription"
         "401":
           description: Unauthorized
-  /billing/checkout:
-    post:
-      operationId: createBillingCheckout
-      tags: [billing]
-      summary: Create a Stripe Checkout session for a church plan
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BillingCheckoutInput"
-      responses:
-        "200":
-          description: Stripe Checkout URL
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BillingCheckoutResponse"
-        "400":
-          description: Invalid plan or unavailable price
-        "401":
-          description: Unauthorized
-  /billing/portal:
-    post:
-      operationId: createBillingPortal
-      tags: [billing]
-      summary: Create a Stripe customer portal session
-      responses:
-        "200":
-          description: Stripe customer portal URL
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BillingPortalResponse"
-        "400":
-          description: No Stripe customer exists
-        "401":
-          description: Unauthorized
   /church:
     get:
       operationId: getMyChurch
@@ -2050,23 +2012,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BillingPlan"
-    BillingCheckoutInput:
-      type: object
-      required: [plan]
-      properties:
-        plan:
-          type: string
-          enum: [growing, complete, network, unlimited]
-    BillingCheckoutResponse:
-      type: object
-      required: [url]
-      properties:
-        url: { type: string, format: uri }
-    BillingPortalResponse:
-      type: object
-      required: [url]
-      properties:
-        url: { type: string, format: uri }
     BillingSubscription:
       type: object
       required: [plan, status, hasPaidAccess, currentPeriodEnd, profileLimit, profilesUsed, profilesRemaining, aiCreditLimit, aiCreditsUsed, aiCreditsRemaining, aiCreditPeriodEnd]

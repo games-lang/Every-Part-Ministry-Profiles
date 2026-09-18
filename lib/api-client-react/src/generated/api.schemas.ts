@@ -579,28 +579,6 @@ export interface BillingPlanList {
   plans: BillingPlan[];
 }
 
-export type BillingCheckoutInputPlan = typeof BillingCheckoutInputPlan[keyof typeof BillingCheckoutInputPlan];
-
-
-export const BillingCheckoutInputPlan = {
-  growing: 'growing',
-  complete: 'complete',
-  network: 'network',
-  unlimited: 'unlimited',
-} as const;
-
-export interface BillingCheckoutInput {
-  plan: BillingCheckoutInputPlan;
-}
-
-export interface BillingCheckoutResponse {
-  url: string;
-}
-
-export interface BillingPortalResponse {
-  url: string;
-}
-
 export type BillingSubscriptionPlan = typeof BillingSubscriptionPlan[keyof typeof BillingSubscriptionPlan];
 
 

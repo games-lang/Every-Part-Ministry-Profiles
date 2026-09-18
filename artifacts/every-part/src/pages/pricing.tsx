@@ -124,7 +124,7 @@ const faqs = [
   {
     question: "Can we change plans later?",
     answer:
-      "Billing management will be available through Stripe after Every Part opens for sale.",
+      "Plan management will be available after Every Part opens for sale.",
   },
   {
     question: "How do we think about matching?",

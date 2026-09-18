@@ -1,6 +1,5 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { ensureManagedWebhook } from "./stripeClient";
 
 const rawPort = process.env["PORT"];
 
@@ -15,17 +14,6 @@ const port = Number(rawPort);
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
-
-async function initStripe() {
-  const domain = process.env.REPLIT_DOMAINS?.split(",")[0];
-  if (domain) {
-    await ensureManagedWebhook(
-      `https://${domain}/api/stripe/webhook`,
-    );
-  }
-}
-
-await initStripe();
 
 app.listen(port, (err) => {
   if (err) {

@@ -3,8 +3,8 @@ name: Billing launch availability
 description: How EveryPart presents planned pricing before paid subscriptions open
 ---
 
-EveryPart may show planned plan names, limits, and prices publicly while remaining explicitly not currently for sale. Paid checkout must stay closed in both the interface and the server until launch approval.
+EveryPart may show planned plan names, limits, and prices publicly while remaining explicitly not currently for sale. Paid checkout must stay closed in both the interface and the server until launch approval. The active payment-provider integration was removed on 2026-09-18 and is intentionally deferred.
 
-**Why:** The Stripe connection and plan catalog can exist in test mode before EveryPart is ready to accept customers, so displaying prices must not imply that payment is available.
+**Why:** Publishing was blocked by live payment-account setup before EveryPart was ready to accept customers. Planned pricing and internal plan limits are still useful without payment processing.
 
-**How to apply:** Keep public pricing copy marked as coming soon and render plan actions as unavailable. Gate the checkout endpoint closed by default; only enable it through the deliberate billing launch configuration. 
+**How to apply:** Keep public pricing copy marked as coming soon and render plan actions as unavailable. Preserve plan-limit and usage behavior independently of payments. Reintroduce a payment provider only through a deliberate billing-launch project, with production account setup and checkout verification.

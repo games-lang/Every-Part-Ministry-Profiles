@@ -215,14 +215,7 @@ function SignInPage() {
 }
 
 function SignUpPage() {
-  const requestedPlan = new URLSearchParams(window.location.search).get("plan");
-  const fallbackRedirectUrl =
-    requestedPlan === "growing" ||
-    requestedPlan === "complete" ||
-    requestedPlan === "network" ||
-    requestedPlan === "unlimited"
-      ? `${basePath}/billing?plan=${requestedPlan}`
-      : `${basePath}/dashboard`;
+  const fallbackRedirectUrl = `${basePath}/dashboard`;
 
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 relative overflow-hidden">

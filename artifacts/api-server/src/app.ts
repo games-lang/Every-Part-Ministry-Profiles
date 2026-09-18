@@ -4,7 +4,6 @@ import pinoHttp from "pino-http";
 import { clerkMiddleware } from "@clerk/express";
 import { publishableKeyFromHost } from "@clerk/shared/keys";
 import router from "./routes";
-import { WebhookHandlers } from "./webhookHandlers";
 import { logger } from "./lib/logger";
 import {
   CLERK_PROXY_PATH,
@@ -42,27 +41,6 @@ const app: Express = express();
 
   
           
-
-app.post(
-  "/api/stripe/webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const signature = req.headers["stripe-signature"];
-    if (!signature) {
-      res.status(400).json({ error: "Missing stripe-signature" });
-      return;
-    }
-
-    try {
-      const sig = Array.isArray(signature) ? signature[0] : signature;
-      await WebhookHandlers.processWebhook(req.body as Buffer);
-      res.status(200).json({ received: true });
-    } catch (error) {
-      console.error("Stripe webhook processing failed", error);
-      res.status(400).json({ error: "Webhook processing error" });
-    }
-  },
-);
 
 app.use(
   pinoHttp({

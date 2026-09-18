@@ -730,26 +730,6 @@ export const GetBillingSubscriptionResponse = zod.object({
 
 
 /**
- * @summary Create a Stripe Checkout session for a church plan
- */
-export const CreateBillingCheckoutBody = zod.object({
-  "plan": zod.enum(['growing', 'complete', 'network', 'unlimited'])
-})
-
-export const CreateBillingCheckoutResponse = zod.object({
-  "url": zod.url()
-})
-
-
-/**
- * @summary Create a Stripe customer portal session
- */
-export const CreateBillingPortalResponse = zod.object({
-  "url": zod.url()
-})
-
-
-/**
  * @summary Get the signed-in administrator's church
  */
 export const getMyChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
