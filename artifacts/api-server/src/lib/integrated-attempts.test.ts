@@ -12,6 +12,7 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
   const { defaultAssessmentConfiguration } = await import("./assessment-configuration.ts");
   const { defaultMinistryCustomization } = await import("./ministry-customization.ts");
   const { hashToken, formStateError, publicAttempt } = await import("./integrated-attempts");
+  const { assertProfileCapacity, getProfileUsage, profileLimitForPlan } = await import("./profile-limits");
   const { default: attemptRouter } = await import("../routes/integrated-attempts");
   const { default: profilesRouter } = await import("../routes/profiles");
   const { default: journeysRouter } = await import("../routes/journeys");
@@ -109,18 +110,19 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
     assert.equal((await call(profilesRouter, "post", "/profiles", { body: { ...profileBody, age: 17, integratedAttempt: credentials } })).statusCode, 400);
     assert.equal((await call(profilesRouter, "post", "/profiles", { body: { ...profileBody, birthdate: "2015-01-01", integratedAttempt: credentials } })).statusCode, 400);
     assert.equal((await call(profilesRouter, "post", "/profiles", { body: { ...profileBody, integratedAttempt: { ...credentials, revision: 0 } } })).statusCode, 409);
-    // Exact cap must be checked at completion, not frozen at start.
+    // Planned Starter capacity must not prevent any early-access submission.
     await db.insert(ministryProfilesTable).values(Array.from({ length: 5 }, () => ({
       churchId: church.id, firstName: "Cap", lastName: "Fixture", email: "cap@example.invalid",
       passions: [], interests: [], availability: [],
     })));
-    const capped = await call(profilesRouter, "post", "/profiles", { body: { ...profileBody, integratedAttempt: credentials } });
-    assert.equal(capped.statusCode, 403);
-    const [stillDraft] = await db.select().from(integratedAttemptsTable).where(eq(integratedAttemptsTable.id, attemptId));
-    assert.equal(stillDraft.status, "draft");
-    assert.equal(stillDraft.revision, 1);
-    assert.deepEqual(stillDraft.answers, answers);
-    await db.update(churchesTable).set({ billingPlan: "unlimited" }).where(eq(churchesTable.id, church.id));
+    assert.equal(profileLimitForPlan("starter"), 5, "future Starter plan remains unchanged");
+    for (const plan of ["starter", "growing", "complete", "network", "unlimited", "unknown"]) {
+      const usage = await getProfileUsage(church.id, plan);
+      assert.equal(usage.profilesUsed, 5);
+      assert.equal(usage.profileLimit, null, `${plan} has no current profile cap`);
+      assert.equal(usage.profilesRemaining, null);
+    }
+    await db.transaction(async tx => assertProfileCapacity(tx, church.id));
     const completed = await Promise.all([1, 2].map(() => call(profilesRouter, "post", "/profiles", {
       body: {
         ...profileBody, integratedAttempt: credentials,
@@ -150,7 +152,7 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
     assert.equal(completed[0].body.integratedAssessment.constructs.some((c: any) => c.construct === "Forged"), false);
     assert.equal(completed[0].body.assessmentConfiguration.sections.aboutYou, false);
     const [usage] = await db.select({ count: count() }).from(ministryProfilesTable).where(eq(ministryProfilesTable.churchId, church.id));
-    assert.equal(usage.count, 6, "concurrent completion consumes exactly one profile slot");
+    assert.equal(usage.count, 6, "concurrent completion creates exactly one profile over the planned Starter cap");
     const retry = await call(profilesRouter, "post", "/profiles", { body: { ...profileBody, integratedAttempt: credentials } });
     assert.equal(retry.statusCode, 200);
     assert.equal(retry.body.id, createdProfileId);

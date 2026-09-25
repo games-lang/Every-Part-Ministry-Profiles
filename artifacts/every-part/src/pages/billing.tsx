@@ -79,8 +79,10 @@ export default function BillingPage() {
       </div>
 
       <div className="rounded-2xl border border-secondary/40 bg-secondary/10 p-4 text-sm text-foreground">
-        No payment account is required during early access. We will provide
-        clear notice before paid subscriptions become available.
+        Every church can create unlimited Ministry Profiles during early access.
+        The plan capacities below are for the future; AI credit limits still
+        apply. No payment account is required, and we will provide clear notice
+        before paid subscriptions become available.
       </div>
 
       <Card className="border-primary/20 bg-primary/[.035] shadow-sm">
@@ -107,7 +109,7 @@ export default function BillingPage() {
                 <div className="mt-2 space-y-1 text-sm text-muted-foreground">
                   <p>
                     {subscription.profileLimit === null
-                      ? `${subscription.profilesUsed} profiles used · unlimited`
+                      ? `${subscription.profilesUsed} profiles used · unlimited during early access`
                       : `${subscription.profilesUsed} of ${subscription.profileLimit} profiles used${
                           subscription.profilesRemaining === 0
                             ? " · limit reached"
@@ -149,7 +151,7 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Up to {planDetails.starter.profileLimit} profiles and{" "}
+              Planned: up to {planDetails.starter.profileLimit} profiles and{" "}
               {planDetails.starter.aiCreditLimit} AI credits per month.
             </p>
           </CardContent>

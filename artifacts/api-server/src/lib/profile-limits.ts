@@ -13,6 +13,9 @@ export const PROFILE_LIMITS = {
   unlimited: null,
 } as const;
 
+// Planned plan capacities remain visible, but do not restrict early-access churches.
+const PROFILE_LIMITS_ACTIVE = false;
+
 export type ProfilePlan = keyof typeof PROFILE_LIMITS;
 type DbTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -42,6 +45,8 @@ export async function assertProfileCapacity(
   tx: DbTransaction,
   churchId: number,
 ) {
+  if (!PROFILE_LIMITS_ACTIVE) return;
+
   const [church] = await tx
     .select({
       billingPlan: churchesTable.billingPlan,
@@ -71,7 +76,7 @@ export async function getProfileUsage(churchId: number, plan: string) {
     .select({ profilesUsed: count() })
     .from(ministryProfilesTable)
     .where(eq(ministryProfilesTable.churchId, churchId));
-  const profileLimit = profileLimitForPlan(plan);
+  const profileLimit = PROFILE_LIMITS_ACTIVE ? profileLimitForPlan(plan) : null;
   const profilesUsed = usage?.profilesUsed ?? 0;
   return {
     profileLimit,

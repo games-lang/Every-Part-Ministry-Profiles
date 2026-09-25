@@ -114,12 +114,12 @@ const faqs = [
   {
     question: "What does Start Free include?",
     answer:
-      "Starter is the planned free option, with up to 5 Ministry Profiles and no card requirement. Every Part is not currently for sale.",
+      "Starter is the planned free option, with up to 5 Ministry Profiles after plan limits begin. During early access, every church can create unlimited profiles. Every Part is not currently for sale.",
   },
   {
     question: "What does an active profile mean?",
     answer:
-      "Each completed adult or youth Ministry Profile counts toward the church’s plan limit. Unlimited removes that profile cap, and existing profiles remain available if a church reaches a finite limit or moves to a smaller plan.",
+      "Each completed adult or youth Ministry Profile is a saved ministry record. No church has a profile cap during early access. The plan capacities shown here are planned for a future launch, and existing profiles will remain available if limits are introduced later.",
   },
   {
     question: "Can we change plans later?",
@@ -289,6 +289,9 @@ export default function PricingPage() {
                   <p className="mt-2 max-w-3xl text-sm leading-7 text-foreground/80" data-testid="text-preview-pricing-notice">
                      These prices are for planning and conversation only. Every Part is coming soon, and churches cannot purchase a plan yet.
                   </p>
+                   <p className="mt-2 max-w-3xl text-sm leading-7 text-foreground/80">
+                     During early access, every church can create unlimited Ministry Profiles. The profile counts shown below are planned future limits; current AI credit limits still apply.
+                   </p>
                 </div>
               </aside>
             </Reveal>
