@@ -2874,38 +2874,35 @@ export default function Assessment() {
                   )}
                   {currentStep === "skillsExperience" && (
                     <>
-                      <Heading description="This isn't a résumé or an audition. Share what helps others understand what you bring. Every field is optional.">
-                        What You Bring
+                      <Heading description="These questions help leaders get to know you beyond your assessment answers. There are no right answers, and every question is optional.">
+                        Your Skills and Experiences
                       </Heading>
                       <div className="space-y-5">
                         <TextField
                           form={form}
                           name="occupation"
-                          label="Work, study, or current life context"
-                          description="Share what you're doing these days, or what your current season of life has given you."
+                          label="What does your week usually include?"
+                          description="Work, school, caregiving, volunteering, retirement, or something else."
                         />
                         <TextField
                           form={form}
                           name="skills.education"
-                          label="Training or certifications you'd like to share"
-                          description="Include anything relevant from school, work, ministry, hobbies, or other learning."
+                          label="What skills, training, or experience would you like to share?"
+                          description="These can come from work, school, church, hobbies, or everyday life."
                         />
                         <TextField
                           form={form}
                           name="skills.uniqueSkills"
-                          label="What kinds of things do you enjoy doing with or for other people?"
-                          description="Think broadly: welcoming, listening, teaching, organizing, creating, caring, solving problems, working with your hands, or simply being present with people."
+                          label="What kinds of things do you enjoy doing?"
+                          description="For example: listening, welcoming people, organizing, teaching, creating, practical hands-on work, or caring for others. It’s okay if you’re still figuring that out."
                           multiline
                         />
                       </div>
-                      <Heading description="Optional. Share only what feels relevant, and nothing private that you do not want to explain.">
-                        Experiences That Have Shaped You
-                      </Heading>
                       <TextField
                         form={form}
                         name="lifeNotes"
-                        label="Is there anything you would like church leaders to understand about your experience?"
-                        description="You do not need to share anything private or explain anything you are not comfortable sharing."
+                        label="Is there anything else you’d like church leaders to know about you?"
+                        description="Share only what feels comfortable. You can leave this blank."
                         multiline
                       />
                     </>
