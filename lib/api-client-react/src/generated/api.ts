@@ -23,6 +23,7 @@ import type {
   AdminChurchDetail,
   AdminChurchList,
   AdminChurchUpdateInput,
+  AdultIntegratedJourneyReview,
   AppAdminAccess,
   AppFeedback,
   AppFeedbackInput,
@@ -4048,6 +4049,88 @@ export function useGetPublicJourney<TData = Awaited<ReturnType<typeof getPublicJ
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetPublicJourneyQueryOptions(token,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetAdultIntegratedJourneyReviewUrl = (token: string,
+    profileId: number,) => {
+
+
+
+
+  return `/api/journeys/${token}/profiles/${profileId}/answer-review`
+}
+
+/**
+ * @summary Get a participant's sanitized review of an adult integrated assessment
+ */
+export const getAdultIntegratedJourneyReview = async (token: string,
+    profileId: number, options?: Parameters<typeof customFetch>[1]): Promise<AdultIntegratedJourneyReview> => {
+
+  return customFetch<AdultIntegratedJourneyReview>(getGetAdultIntegratedJourneyReviewUrl(token,profileId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdultIntegratedJourneyReviewQueryKey = (token: string,
+    profileId: number,) => {
+    return [
+    `/api/journeys/${token}/profiles/${profileId}/answer-review`
+    ] as const;
+    }
+
+
+export const getGetAdultIntegratedJourneyReviewQueryOptions = <TData = Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>, TError = ErrorType<void>>(token: string,
+    profileId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdultIntegratedJourneyReviewQueryKey(token,profileId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>> = ({ signal }) => getAdultIntegratedJourneyReview(token,profileId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined && profileId !== null && profileId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdultIntegratedJourneyReviewQueryResult = NonNullable<Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>>
+export type GetAdultIntegratedJourneyReviewQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get a participant's sanitized review of an adult integrated assessment
+ */
+
+export function useGetAdultIntegratedJourneyReview<TData = Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>, TError = ErrorType<void>>(
+ token: string,
+    profileId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdultIntegratedJourneyReview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdultIntegratedJourneyReviewQueryOptions(token,profileId,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

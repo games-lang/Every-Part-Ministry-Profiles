@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import {
   getCompareJourneyProfilesQueryKey,
+  getGetAdultIntegratedJourneyReviewQueryKey,
   getGetProfileJourneyQueryKey,
   getGetPublicJourneyQueryKey,
   useCompareJourneyProfiles,
   useCreateJourneyEntry,
+  useGetAdultIntegratedJourneyReview,
   useGetProfileJourney,
   useGetPublicJourney,
   useUpdateJourneyEntry,
@@ -18,6 +20,7 @@ import {
   ArrowRight,
   CalendarDays,
   Check,
+  ChevronDown,
   Compass,
   HeartHandshake,
   History,
@@ -36,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
 
 const profileLabels: Record<string, string> = {
@@ -129,17 +133,107 @@ function PatternPanel({ journey }: { journey: JourneyResponse }) {
   );
 }
 
-function ProfilePath({ journey, leader }: { journey: JourneyResponse; leader: boolean }) {
+function ParticipantAnswerReview({ token, profileId }: { token: string; profileId: number }) {
+  const [open, setOpen] = useState(false);
+  const review = useGetAdultIntegratedJourneyReview(token, profileId, {
+    query: {
+      enabled: open,
+      queryKey: getGetAdultIntegratedJourneyReviewQueryKey(token, profileId),
+    },
+  });
+  const panelId = `answer-review-${profileId}`;
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="mt-3 border-t border-border/60 pt-3">
+      <CollapsibleTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-auto min-h-10 w-full justify-between whitespace-normal px-2 text-left"
+          aria-controls={panelId}
+        >
+          <span>
+            <span className="block font-medium">Review your submitted answers</span>
+            <span className="block text-xs font-normal text-muted-foreground">Read-only review of this adult assessment</span>
+          </span>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden="true" />
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent id={panelId} className="pt-3">
+        {review.isLoading || review.isFetching ? (
+          <div className="flex items-center gap-2 rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground" role="status">
+            <Loader2 className="h-4 w-4 animate-spin" />Loading your answer review…
+          </div>
+        ) : review.error ? (
+          <div className="rounded-xl border border-destructive/20 bg-destructive/[.04] p-4">
+            <p className="text-sm text-destructive" role="alert">We could not load this answer review.</p>
+            <Button type="button" variant="outline" size="sm" className="mt-3" onClick={() => void review.refetch()}>Try again</Button>
+          </div>
+        ) : review.data ? (
+          <div className="space-y-5" aria-label="Submitted assessment answers">
+            <section className="space-y-3">
+              <h3 className="font-serif text-lg">A few themes in your responses</h3>
+              {review.data.patterns.length ? (
+                <div className="space-y-3">
+                  {review.data.patterns.map((pattern) => (
+                    <article key={pattern.theme} className="rounded-xl border border-primary/15 bg-primary/[.035] p-4">
+                      <h4 className="font-medium">{pattern.theme}</h4>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">{pattern.description}</p>
+                      <blockquote className="mt-3 border-l-2 border-primary/25 pl-3 text-sm leading-6">
+                        <p>“{pattern.statement}”</p>
+                        <footer className="mt-1 font-medium text-primary">{pattern.responseLabel}</footer>
+                      </blockquote>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="rounded-xl bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
+                  No recurring response themes stood out here. Every answer can still be a helpful starting point for reflection.
+                </p>
+              )}
+            </section>
+            {review.data.sections.length ? review.data.sections.map((section) => (
+              <section key={section.label} className="space-y-3">
+                <h3 className="font-serif text-lg">{section.label}</h3>
+                <dl className="space-y-3">
+                  {section.questions.map((item, index) => (
+                    <div key={`${section.label}-${index}`} className="rounded-xl border border-border/60 bg-background/70 p-4">
+                      <dt className="text-sm leading-6">{item.prompt}</dt>
+                      <dd className="mt-2 text-sm font-medium text-primary">{item.response}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            )) : (
+              <p className="rounded-xl bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
+                There are no saved answers available to review for this chapter.
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="rounded-xl bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
+            There are no saved answers available to review for this chapter.
+          </p>
+        )}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+function ProfilePath({ journey, leader, publicView }: { journey: JourneyResponse; leader: boolean; publicView: boolean }) {
   return (
     <Card className="border-border/70 shadow-sm">
       <CardHeader className="p-6 pb-3"><div className="flex items-center gap-3"><History className="h-5 w-5 text-primary" /><div><CardTitle className="text-xl">Profile chapters</CardTitle><CardDescription>The snapshots that make this story visible over time.</CardDescription></div></div></CardHeader>
       <CardContent className="space-y-3 p-6 pt-3">
         {journey.profiles.length === 0 ? <div className="rounded-2xl border border-dashed border-primary/20 bg-primary/[.025] p-7 text-center"><Compass className="mx-auto mb-3 h-7 w-7 text-primary/70" /><p className="font-medium">No completed chapters yet</p><p className="mt-1 text-sm text-muted-foreground">A completed profile will become the first page in this journey.</p></div> : journey.profiles.map((profile, index) => (
-          <div key={profile.id} className="relative flex gap-4 rounded-2xl border border-border/70 bg-card p-4">
-            <div className="flex shrink-0 flex-col items-center"><div className={`grid h-9 w-9 place-items-center rounded-full ${index === journey.profiles.length - 1 ? "bg-secondary text-secondary-foreground" : "bg-primary/10 text-primary"}`}><Check className="h-4 w-4" /></div>{index < journey.profiles.length - 1 && <div className="mt-2 h-full w-px bg-border" />}</div>
-            <div className="min-w-0 flex-1 pb-1"><div className="flex flex-wrap items-center gap-2"><p className="font-medium">{profile.profileLabel}</p><Badge variant="outline" className="capitalize">{profileLabels[profile.profileType] || profile.profileType}</Badge>{profile.age !== null && <span className="text-xs text-muted-foreground">Age {profile.age}</span>}</div><p className="mt-1 text-xs text-muted-foreground">Completed {formatDate(profile.completedAt)}</p>{profile.themes.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{profile.themes.map((theme) => <Badge key={theme} variant="secondary" className="bg-muted text-muted-foreground">{theme}</Badge>)}</div>}</div>
-            {leader && <Link href={`/profiles/${profile.id}`} className="self-start text-muted-foreground transition-colors hover:text-primary" aria-label={`Open ${profile.profileLabel} profile`}><ArrowRight className="h-4 w-4" /></Link>}
-          </div>
+          <article key={profile.id} className="relative rounded-2xl border border-border/70 bg-card p-4">
+            <div className="flex gap-4">
+              <div className="flex shrink-0 flex-col items-center"><div className={`grid h-9 w-9 place-items-center rounded-full ${index === journey.profiles.length - 1 ? "bg-secondary text-secondary-foreground" : "bg-primary/10 text-primary"}`}><Check className="h-4 w-4" /></div>{index < journey.profiles.length - 1 && <div className="mt-2 h-full w-px bg-border" />}</div>
+              <div className="min-w-0 flex-1 pb-1"><div className="flex flex-wrap items-center gap-2"><p className="font-medium">{profile.profileLabel}</p><Badge variant="outline" className="capitalize">{profileLabels[profile.profileType] || profile.profileType}</Badge>{profile.age !== null && <span className="text-xs text-muted-foreground">Age {profile.age}</span>}</div><p className="mt-1 text-xs text-muted-foreground">Completed {formatDate(profile.completedAt)}</p>{profile.themes.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{profile.themes.map((theme) => <Badge key={theme} variant="secondary" className="bg-muted text-muted-foreground">{theme}</Badge>)}</div>}</div>
+              {leader && <Link href={`/profiles/${profile.id}`} className="self-start text-muted-foreground transition-colors hover:text-primary" aria-label={`Open ${profile.profileLabel} profile`}><ArrowRight className="h-4 w-4" /></Link>}
+            </div>
+            {publicView && journey.currentProfile?.profileType === "adult" && profile.profileType === "adult" && <ParticipantAnswerReview token={journey.journeyToken} profileId={profile.id} />}
+          </article>
         ))}
       </CardContent>
     </Card>
@@ -214,7 +308,7 @@ function JourneyContent({ journey, publicView, leader }: { journey: JourneyRespo
           : "pathway-theme-adult";
   const addEntry = (entry: JourneyEntry) => { setEntries((current) => [entry, ...current]); void queryClient.invalidateQueries({ predicate: (query) => String(query.queryKey[0]).includes("/journey") }); };
   const updateEntry = (entry: JourneyEntry) => setEntries((current) => current.map((item) => item.id === entry.id ? entry : item));
-  return <div className={`pathway-theme ${pathwayTheme} journey-page min-h-[100dvh]`}><main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-7 sm:px-6 sm:py-10"><div className="flex items-center justify-between"><Link href={publicView ? "/" : "/profiles"} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"><ArrowLeft className="h-4 w-4" />{publicView ? "Every Part" : "Profiles"}</Link>{publicView && <span className="text-xs text-muted-foreground">Private link</span>}</div><Intro journey={{ ...journey, entries }} publicView={publicView} /><SnapshotSummary journey={journey} /><div className="grid gap-6 lg:grid-cols-[1.16fr_.84fr]"><div className="space-y-6"><PatternPanel journey={journey} /><Timeline entries={entries} leader={leader} onReflectionSaved={updateEntry} /></div><div className="space-y-6"><ProfilePath journey={journey} leader={leader} />{leader && <AddEntry token={journey.journeyToken} onCreated={addEntry} />}{leader && <ComparePanel journey={journey} />}</div></div><footer className="border-t border-border/60 pt-5 text-center text-xs leading-5 text-muted-foreground">A trusted companion for ministry conversations. Notice patterns gently; leave room for growth, context, and grace.</footer></main></div>;
+  return <div className={`pathway-theme ${pathwayTheme} journey-page min-h-[100dvh]`}><main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-7 sm:px-6 sm:py-10"><div className="flex items-center justify-between"><Link href={publicView ? "/" : "/profiles"} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"><ArrowLeft className="h-4 w-4" />{publicView ? "Every Part" : "Profiles"}</Link>{publicView && <span className="text-xs text-muted-foreground">Private link</span>}</div><Intro journey={{ ...journey, entries }} publicView={publicView} /><SnapshotSummary journey={journey} /><div className="grid gap-6 lg:grid-cols-[1.16fr_.84fr]"><div className="space-y-6"><PatternPanel journey={journey} /><Timeline entries={entries} leader={leader} onReflectionSaved={updateEntry} /></div><div className="space-y-6"><ProfilePath journey={journey} leader={leader} publicView={publicView} />{leader && <AddEntry token={journey.journeyToken} onCreated={addEntry} />}{leader && <ComparePanel journey={journey} />}</div></div><footer className="border-t border-border/60 pt-5 text-center text-xs leading-5 text-muted-foreground">A trusted companion for ministry conversations. Notice patterns gently; leave room for growth, context, and grace.</footer></main></div>;
 }
 
 export function PublicJourneyPage({ params }: { params: { token?: string } }) {

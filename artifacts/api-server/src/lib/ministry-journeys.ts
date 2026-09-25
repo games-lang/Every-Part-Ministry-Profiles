@@ -233,6 +233,113 @@ export function publicJourneyProfile(profile: MinistryProfile) {
   };
 }
 
+/**
+ * Deliberately project only the participant-readable prompts and selected answers.
+ * The profile summary remains redacted; this projection is only served by the
+ * token- and profile-scoped participant endpoint.
+ */
+export function adultIntegratedAnswerReview(profile: MinistryProfile) {
+  if (profile.profileType !== "adult") return null;
+  const envelope = record(profile.integratedAssessment);
+  if (envelope.version !== "integrated-assessment-v1") return null;
+  const snapshot = record(envelope.snapshot);
+  const questions = Array.isArray(snapshot.questions) ? snapshot.questions : [];
+  const answers = record(envelope.answers);
+  const responseModels = record(snapshot.responseModels);
+  const reflections: { prompt: string; response: string }[] = [];
+  const optionalExperiences: { prompt: string; response: string }[] = [];
+  const supportedPatterns = new Map<string, {
+    theme: string;
+    responses: { questionId: string; prompt: string; responseLabel: string }[];
+  }>();
+
+  for (const rawQuestion of questions) {
+    const question = record(rawQuestion);
+    if (typeof question.text !== "string" || typeof question.id !== "string") continue;
+    const answer = answers[question.id];
+    if (answer === undefined) continue;
+    let response: string | null = null;
+    if (answer === "na") {
+      response = "N/A — Not sure / I have not had the opportunity";
+    } else if (answer === "skip") {
+      response = "Skipped";
+    } else if (typeof answer === "number" && Number.isInteger(answer) && answer >= 1 && answer <= 5) {
+      const isLegacySocialEnergyQuestion = question.id === "EP-I-58";
+      const poles = isLegacySocialEnergyQuestion
+        ? ["Quiet time by myself", "Time with other people"]
+        : Array.isArray(question.poles) ? question.poles : null;
+      if (poles && typeof poles[0] === "string" && typeof poles[1] === "string") {
+        response = answer === 1
+          ? `Definitely: ${poles[0]}`
+          : answer === 2
+            ? `Usually: ${poles[0]}`
+            : answer === 3
+              ? "Both equally / it depends"
+              : answer === 4
+                ? `Usually: ${poles[1]}`
+                : `Definitely: ${poles[1]}`;
+      } else {
+        const model = record(responseModels[question.responseModel as string]);
+        const anchors = Array.isArray(model.anchors) ? model.anchors : [];
+        const anchor = anchors[answer - 1];
+        if (typeof anchor === "string") response = anchor;
+      }
+    }
+    if (!response) continue;
+    const isOptional = question.responseModel === "specialExperienceLikert";
+    const prompt = question.id === "EP-I-58"
+      ? "After a busy week, which usually helps you recover your energy?"
+      : question.text;
+    (isOptional ? optionalExperiences : reflections).push({ prompt, response });
+
+    // Only core, numeric, high-rated reflection Likert answers contribute to
+    // participant-facing patterns. Optional experiences and bipolar questions
+    // remain visible in the answer review but never inform these themes.
+    if (
+      question.responseModel === "reflectionLikert" &&
+      typeof answer === "number" && (answer === 4 || answer === 5) &&
+      typeof response === "string" && Array.isArray(question.maps)
+    ) {
+      for (const rawMap of question.maps) {
+        const map = record(rawMap);
+        if (typeof map.construct !== "string") continue;
+        const existing = supportedPatterns.get(map.construct) ?? {
+          theme: map.construct,
+          responses: [],
+        };
+        if (!existing.responses.some((item) => item.questionId === question.id)) {
+          existing.responses.push({
+            questionId: question.id,
+            prompt: question.text,
+            responseLabel: response,
+          });
+        }
+        supportedPatterns.set(map.construct, existing);
+      }
+    }
+  }
+
+  return {
+    sections: [
+      ...(reflections.length ? [{ label: "Reflections", questions: reflections }] : []),
+      ...(optionalExperiences.length ? [{ label: "Optional experiences", questions: optionalExperiences }] : []),
+    ],
+    patterns: Array.from(supportedPatterns.values())
+      .filter((pattern) => pattern.responses.length >= 2)
+      .sort((left, right) =>
+        right.responses.length - left.responses.length ||
+        (left.theme < right.theme ? -1 : left.theme > right.theme ? 1 : 0),
+      )
+      .slice(0, 3)
+      .map((pattern) => ({
+        theme: pattern.theme,
+        description: "A couple of reflections you rated highly connect with this theme.",
+        statement: pattern.responses[0].prompt,
+        responseLabel: pattern.responses[0].responseLabel,
+      })),
+  };
+}
+
 export function publicJourneyResponse(
   journey: MinistryJourney,
   profiles: MinistryProfile[],

@@ -4,6 +4,7 @@ import type { Attempt, DraftConflict } from "@/hooks/use-integrated-attempt";
 
 export const INTEGRATED_ROUND_SIZE = 8;
 export const isOptionalReflection = (question: IntegratedQuestionView) => question.responseModel === "specialExperienceLikert";
+const NA_LABEL = "N/A — Not sure / I have not had the opportunity";
 
 export function IntegratedReflections({ attempt, questions, answers, offset = 0, onAnswer }: {
   attempt: Attempt;
@@ -16,6 +17,7 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
   return <div className="space-y-10">
     {questions.map((question, index) => {
       const model = models[question.responseModel];
+      const questionLabelId = `integrated-question-title-${question.id}`;
       const isLegacySocialEnergyQuestion = question.id === "EP-I-58";
       const questionText = isLegacySocialEnergyQuestion
         ? "After a busy week, which usually helps you recover your energy?"
@@ -33,14 +35,14 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
         return `Definitely: ${poles[1]}`;
       };
       return <fieldset id={`integrated-question-${question.id}`} key={question.id} className="space-y-4">
-        <legend className="text-lg font-serif leading-relaxed">{offset + index + 1}. {questionText}</legend>
+        <legend id={questionLabelId} className="text-lg font-serif leading-relaxed">{offset + index + 1}. {questionText}</legend>
         {model?.instructions && <p className="text-sm text-muted-foreground">{model.instructions}</p>}
-        <div className="flex flex-wrap gap-2" role="group" aria-label={`Responses to reflection ${offset + index + 1}`}>
+        <div className="flex flex-wrap gap-2" role="group" aria-labelledby={questionLabelId}>
           {([1, 2, 3, 4, 5, "na", "skip"] as const).map((value) => {
             const label = value === "skip"
               ? "Skip"
               : value === "na"
-                ? question.responseModel === "personalityBipolar" ? "N/A — Not sure" : model?.na ?? "N/A"
+                ? NA_LABEL
                 : responseLabel(value);
             return <Button key={value} type="button" variant={answers[question.id] === value ? "default" : "outline"}
               className="h-auto min-h-11 whitespace-normal text-left" aria-pressed={answers[question.id] === value}

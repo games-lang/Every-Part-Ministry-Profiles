@@ -6,6 +6,8 @@ import {
   CreateJourneyEntryBody,
   CreateJourneyEntryParams,
   CreateJourneyEntryResponse,
+  GetAdultIntegratedJourneyReviewParams,
+  GetAdultIntegratedJourneyReviewResponse,
   GetProfileJourneyParams,
   GetProfileJourneyResponse,
   GetPublicJourneyParams,
@@ -23,6 +25,7 @@ import {
 import { getOrCreateChurch } from "../lib/churches";
 import { requireUserId } from "../lib/auth";
 import {
+  adultIntegratedAnswerReview,
   compareProfiles,
   ensureJourneyForProfile,
   journeyEntries,
@@ -51,6 +54,42 @@ router.get("/journeys/:token", async (req, res): Promise<void> => {
   ]);
   res.json(GetPublicJourneyResponse.parse(publicJourneyResponse(journey, profiles, entries)));
 });
+
+router.get(
+  "/journeys/:token/profiles/:profileId/answer-review",
+  async (req, res): Promise<void> => {
+    const parsed = GetAdultIntegratedJourneyReviewParams.safeParse(req.params);
+    if (!parsed.success) {
+      res.status(404).json({ error: "Journey profile not found" });
+      return;
+    }
+    const journey = await journeyForAccessToken(parsed.data.token);
+    if (!journey) {
+      res.status(404).json({ error: "Journey profile not found" });
+      return;
+    }
+    const [profile] = await db
+      .select()
+      .from(ministryProfilesTable)
+      .where(
+        and(
+          eq(ministryProfilesTable.id, parsed.data.profileId),
+          eq(ministryProfilesTable.journeyId, journey.id),
+        ),
+      )
+      .limit(1);
+    if (!profile) {
+      res.status(404).json({ error: "Journey profile not found" });
+      return;
+    }
+    const review = adultIntegratedAnswerReview(profile);
+    if (!review) {
+      res.status(404).json({ error: "Adult integrated profile review not found" });
+      return;
+    }
+    res.json(GetAdultIntegratedJourneyReviewResponse.parse(review));
+  },
+);
 
 router.get("/profiles/:id/journey", async (req, res): Promise<void> => {
   const userId = requireUserId(req, res);

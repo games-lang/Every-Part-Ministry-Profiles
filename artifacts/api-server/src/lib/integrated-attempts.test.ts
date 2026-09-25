@@ -14,6 +14,7 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
   const { hashToken, formStateError, publicAttempt } = await import("./integrated-attempts");
   const { default: attemptRouter } = await import("../routes/integrated-attempts");
   const { default: profilesRouter } = await import("../routes/profiles");
+  const { default: journeysRouter } = await import("../routes/journeys");
   const suffix = randomUUID();
   const slug = `integrated-contract-${suffix}`;
   const now = Date.now();
@@ -130,6 +131,20 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
     for (const response of completed) assert.ok([200, 201].includes(response.statusCode), JSON.stringify(response.body));
     assert.equal(completed[0].body.id, completed[1].body.id);
     createdProfileId = completed[0].body.id;
+    const reviewPath = "/journeys/:token/profiles/:profileId/answer-review";
+    const review = await call(journeysRouter, "get", reviewPath, {
+      params: { token: completed[0].body.journeyToken, profileId: String(createdProfileId) },
+    });
+    assert.equal(review.statusCode, 200, JSON.stringify(review.body));
+    assert.equal(review.body.sections[0].label, "Reflections");
+    assert.ok(review.body.patterns.length <= 3);
+    assert.equal(JSON.stringify(review.body).includes('"maps"'), false);
+    assert.equal((await call(journeysRouter, "get", reviewPath, {
+      params: { token: randomUUID(), profileId: String(createdProfileId) },
+    })).statusCode, 404);
+    assert.equal((await call(journeysRouter, "get", reviewPath, {
+      params: { token: completed[0].body.journeyToken, profileId: "0" },
+    })).statusCode, 404);
     assert.equal(completed[0].body.assessmentSections.apest, null);
     assert.equal(completed[0].body.integratedAssessment.version, "integrated-assessment-v1");
     assert.equal(completed[0].body.integratedAssessment.constructs.some((c: any) => c.construct === "Forged"), false);

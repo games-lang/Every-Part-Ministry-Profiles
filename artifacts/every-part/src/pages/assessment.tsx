@@ -13,6 +13,7 @@ import * as z from "zod";
 import {
   useGetPublicChurch,
   getGetPublicChurchQueryKey,
+  useGetAdultIntegratedJourneyReview,
   useCreateProfile,
   useGetPublicPersonInvite,
   type AssessmentConfiguration,
@@ -31,7 +32,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -56,6 +56,7 @@ import { ProfileParts } from "@/components/profile-parts";
 import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
 import { useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
 import { IntegratedConflict, IntegratedReflections, isOptionalReflection } from "@/components/integrated-reflections";
+import { resolveIntegratedResumeStep } from "@/lib/integrated-step-progress";
 
 function hexToHsl(hex: string) {
   const value = hex.replace("#", "");
@@ -1054,6 +1055,7 @@ type PublicAssessmentConfiguration = AssessmentConfiguration;
 type AssessmentRenderContext = {
   configuration: PublicAssessmentConfiguration;
   step: string;
+  integrated: boolean;
 };
 const AssessmentConfigurationContext = createContext<
   AssessmentRenderContext | undefined
@@ -1118,7 +1120,10 @@ function fieldIsEnabled(
     );
   if (name.startsWith("preferences."))
     return (
-      (context?.step === "personalityStrengths" || context?.step === "integratedPreferences") &&
+      (context?.step === "personalityStrengths" ||
+        context?.step === "integratedPreferences" ||
+        (context?.integrated && context.step === "connectionAvailability")) &&
+      !(name === "preferences.rhythm" && context?.integrated && context.step === "connectionAvailability") &&
       enabled("personalityStrengths.ministryPreferences")
     );
   if (name.startsWith("spiritualHealth."))
@@ -1318,7 +1323,7 @@ function SelectField({
                 <SelectValue placeholder="Select an option" />
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
+            <SelectContent className="assessment-select-content">
               {options.map((option) => (
                 <SelectItem key={option} value={option}>
                   {option}
@@ -1337,11 +1342,13 @@ function MultiSelect({
   name,
   options,
   limit,
+  label,
 }: {
   form: FormProps["form"];
   name: "passions" | "interests" | "lifeSelected" | "availability";
   options: readonly string[];
   limit?: number;
+  label?: string;
 }) {
   const context = useContext(AssessmentConfigurationContext);
   if (!fieldIsEnabled(name, context)) return null;
@@ -1351,7 +1358,8 @@ function MultiSelect({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <div className="grid sm:grid-cols-2 gap-2">
+          {label && <p id={`multi-select-${name}-label`} className="text-sm font-medium">{label}</p>}
+          <div className="grid sm:grid-cols-2 gap-2" role={label ? "group" : undefined} aria-labelledby={label ? `multi-select-${name}-label` : undefined}>
             {options.map((option) => {
               const selected = field.value.includes(option);
               const disabled =
@@ -1398,10 +1406,10 @@ function Heading({
     ? (context?.configuration.subsections[configKey] ?? true)
     : title === "About You"
       ? context?.step === "aboutYou"
-      : title === "What You Bring" || title === "Skills & Experience"
+    : title === "Your Skills and Experiences" || title === "What You Bring" || title === "Skills & Experience"
         ? context?.step === "skillsExperience" &&
-          (context.configuration.subsections["aboutYou.skillsExperience"] ??
-            true)
+          ((context.configuration.subsections["aboutYou.skillsExperience"] ?? true) ||
+            (context.configuration.subsections["aboutYou.lifeExperiences"] ?? true))
         : title === "Experiences That Have Shaped You" ||
             title === "Life Experiences"
           ? context?.step === "skillsExperience" &&
@@ -1436,6 +1444,51 @@ function Heading({
       )}
     </div>
   ) : null;
+}
+function PreferenceFields({ form, consolidated = false, fallback = false }: FormProps & { consolidated?: boolean; fallback?: boolean }) {
+  const options = [
+    ["setting", "Working style", "With people", "Behind the scenes"],
+    ["role", "Role preference", "Leading", "Supporting"],
+    ["routine", "Environment", "Predictable routines", "Changing environments"],
+    ["team", "Team setting", "Alone", "Small team", "Large group"],
+    ["work", "Ministry expression", "Relational", "Practical service", "Teaching", "Administration", "Creative work", "Outreach"],
+    ["rhythm", "Role rhythm", "Weekly in one role", "Occasionally in several roles"],
+  ] as const;
+  return <>
+    <Heading description="Optional preferences help begin a thoughtful conversation, not determine placement.">
+      {consolidated ? "Other ministry preferences" : fallback ? "Availability & Serving Rhythm" : "Ministry Preferences & Environment"}
+    </Heading>
+    <div className="grid gap-5 md:grid-cols-2">
+      {options.filter(([name]) => !consolidated || name !== "rhythm").map(([name, label, ...choices]) => (
+        <SelectField key={name} form={form} name={`preferences.${name}`} label={label} options={choices} />
+      ))}
+    </div>
+  </>;
+}
+function CompletedIntegratedPatterns({ token, profileId }: { token: string; profileId: number }) {
+  const review = useGetAdultIntegratedJourneyReview(token, profileId);
+  return <section className="space-y-3 rounded-xl border border-primary/20 bg-primary/[.04] p-5 text-left" aria-labelledby="response-patterns-title">
+    <h2 id="response-patterns-title" className="font-serif text-2xl">What stood out in your responses</h2>
+    <p className="text-sm leading-6 text-muted-foreground">
+      This is a starting point, not a verdict — these themes are meant to spark a conversation with your ministry leader, not to define you.
+    </p>
+    {review.isLoading && <p role="status" className="text-sm text-muted-foreground">Looking at your submitted reflections…</p>}
+    {review.error && <div role="alert" className="space-y-2">
+      <p className="text-sm text-destructive">Your response summary could not load right now. Your profile was still submitted successfully.</p>
+      <Button type="button" size="sm" variant="outline" onClick={() => void review.refetch()}>Try again</Button>
+    </div>}
+    {review.data && (review.data.patterns.length
+      ? <div className="space-y-3">{review.data.patterns.map((pattern) => (
+          <article key={pattern.theme} className="space-y-1 rounded-lg border bg-card p-4">
+            <h3 className="font-semibold">{pattern.theme}</h3>
+            <p className="text-sm text-muted-foreground">{pattern.description}</p>
+            <blockquote className="border-l-2 border-primary/40 pl-3 text-sm leading-6">
+              “{pattern.statement}” <span className="text-muted-foreground">You chose: {pattern.responseLabel}.</span>
+            </blockquote>
+          </article>
+        ))}</div>
+      : <p className="text-sm text-muted-foreground">There are not enough strongly rated reflections to highlight a theme yet. Your responses are still part of your full profile and can guide a conversation with your ministry leader.</p>)}
+  </section>;
 }
 function PersonalityResultsView({
   results,
@@ -1537,6 +1590,7 @@ export default function Assessment() {
   const [submittedJourneyToken, setSubmittedJourneyToken] = useState<
     string | null
   >(null);
+  const [submittedIntegratedProfileId, setSubmittedIntegratedProfileId] = useState<number | null>(null);
   const [profilePhotoPath, setProfilePhotoPath] = useState<string | null>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
 
@@ -1551,6 +1605,7 @@ export default function Assessment() {
   const [integratedRound, setIntegratedRound] = useState(0);
   const [integratedQuestionIndex, setIntegratedQuestionIndex] = useState(0);
   const resumeQuestion = useRef<number | null>(null);
+  const resumeStep = useRef<{ index: number; key?: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const restoring = useRef(false);
   const integrated = useIntegratedAttempt(church?.id, (saved: DraftForm) => {
@@ -1561,7 +1616,11 @@ export default function Assessment() {
       (restored as any)[key] = { ...defaultValues[key], ...(saved[key] as object ?? {}) };
     }
     form.reset(restored);
-    setStepIndex(typeof saved._stepIndex === "number" ? Math.max(0, saved._stepIndex) : 0);
+    resumeStep.current = {
+      index: typeof saved._stepIndex === "number" ? Math.max(0, saved._stepIndex) : 0,
+      key: typeof saved.currentStep === "string" ? saved.currentStep : undefined,
+    };
+    setStepIndex(0);
     setIntegratedRound(typeof saved.round === "number" ? Math.max(0, saved.round) : 0);
     const questionIndex = typeof saved.questionIndex === "number" ? Math.max(0, saved.questionIndex) : 0;
     setIntegratedQuestionIndex(questionIndex);
@@ -1579,6 +1638,7 @@ export default function Assessment() {
   draftActions.current = integrated;
   const captureProgress = () => ({
     ...form.getValues(), _stepIndex: progressRef.current.stepIndex,
+    currentStep: stepKeys[progressRef.current.stepIndex] ?? "aboutYou",
     round: progressRef.current.integratedRound, questionIndex: progressRef.current.integratedQuestionIndex,
     profilePhotoPath: progressRef.current.profilePhotoPath,
   });
@@ -1648,8 +1708,11 @@ export default function Assessment() {
   );
 
   const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft || (!legacyChosen && !!church?.integratedAssessmentPilotEnabled);
+  const integratedPreferencesEnabled = integratedPilotEnabled && sectionEnabled("personalityStrengths") && subsectionEnabled("personalityStrengths.ministryPreferences");
+  const integratedAvailabilityStep = integratedPilotEnabled && sectionEnabled("connectionAvailability") && hasEnabledSubsections("connectionAvailability");
   const coreQuestions = integratedAttempt?.questions.filter(q => !isOptionalReflection(q)) ?? [];
   const optionalQuestions = integratedAttempt?.questions.filter(isOptionalReflection) ?? [];
+  const firstBipolarIndex = coreQuestions.findIndex(q => q.responseModel === "personalityBipolar");
   const roundCount = Math.max(1, coreQuestions.length);
   const currentRound = Math.min(
     integratedQuestionIndex,
@@ -1685,11 +1748,19 @@ export default function Assessment() {
           ? activeSpiritualGifts.length > 0
           : hasEnabledSubsections(section)),
     ),
-    ...(integratedPilotEnabled && sectionEnabled("personalityStrengths") && subsectionEnabled("personalityStrengths.ministryPreferences") ? ["integratedPreferences"] : []),
+    ...(integratedPreferencesEnabled && !integratedAvailabilityStep ? ["integratedPreferences"] : []),
     ...(integratedPilotEnabled && optionalQuestions.length ? ["integratedOptional"] : []),
     ...(integratedPilotEnabled ? ["integratedReview"] : []),
   ];
   const currentStep = stepKeys[stepIndex] ?? "aboutYou";
+  useEffect(() => {
+    if (integrated.loading || !integratedAttempt || !resumeStep.current) return;
+    const restoredIndex = resolveIntegratedResumeStep(
+      resumeStep.current, stepKeys, integratedAvailabilityStep && integratedPreferencesEnabled,
+    );
+    resumeStep.current = null;
+    setStepIndex(restoredIndex);
+  }, [integrated.loading, integratedAttempt, integratedAvailabilityStep, integratedPreferencesEnabled, stepKeys.join("|")]);
   useEffect(() => {
     if (church && !integrated.loading && started && !submissionStarted.current) {
       setStepIndex(index => Math.min(Math.max(0, index), stepKeys.length - 1));
@@ -1710,9 +1781,9 @@ export default function Assessment() {
     naturalStrengths: "Strengths",
     personalityStrengths: "How you operate",
     spiritualHealth: "Spiritual health",
-    connectionAvailability: "Connection",
+    connectionAvailability: integratedPilotEnabled ? "Availability & Serving Rhythm" : "Connection",
     integratedPilot: "Reflections",
-    integratedPreferences: "Preferences",
+    integratedPreferences: "Availability & Serving Rhythm",
     integratedOptional: "Optional experiences",
     integratedReview: "Review",
   };
@@ -2076,7 +2147,7 @@ export default function Assessment() {
           required.push("servingFrequency");
         if (!form.getValues("availability").length)
           required.push("availability");
-        if (!form.getValues("availabilityDetails.responsibility"))
+        if (!integratedPilotEnabled && !form.getValues("availabilityDetails.responsibility"))
           required.push("availabilityDetails.responsibility");
       }
     }
@@ -2463,6 +2534,7 @@ export default function Assessment() {
       { data: payload },
       {
         onSuccess: (result) => {
+          setSubmittedIntegratedProfileId(finalAttempt ? result.id : null);
           integrated.clear();
           try { localStorage.setItem("every-part-journey-token", result.journeyToken); } catch { /* The on-screen journey link remains available. */ }
           setSubmittedJourneyToken(result.journeyToken);
@@ -2527,7 +2599,7 @@ export default function Assessment() {
     return (
       <div
         style={assessmentStyle}
-        className={`pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-screen grid place-items-center bg-muted/20 p-4`}
+        className={`assessment-flow pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-screen grid place-items-center bg-muted/20 p-4`}
       >
         <Card className="max-w-xl text-center">
           <CardContent className="p-10 space-y-6">
@@ -2561,6 +2633,9 @@ export default function Assessment() {
               opportunity to pray, reflect, and learn a little more about how
               God may be inviting you to serve.
             </p>
+            {integratedPilotEnabled && <p className="text-sm leading-6 text-muted-foreground">
+              When you finish, you'll see a gentle summary of what came through in your responses — patterns, not a verdict. The fullest picture emerges in a conversation with your ministry leader.
+            </p>}
             {integrated.completed && <p role="status" className="rounded-lg bg-muted p-3 text-sm">This draft has already been submitted and is no longer open for editing. Use your private journey link to view your profile, or contact your church if you need that link.</p>}
             {(integrated.error || integrated.storageError) && <p role="alert" className="text-sm text-destructive">{integrated.error || integrated.storageError}</p>}
             {integrated.hasDraft && <p className="text-sm">A private adult draft is saved in this browser. Resume with its original questions and church settings.</p>}
@@ -2600,12 +2675,12 @@ export default function Assessment() {
     return (
       <div
         style={assessmentStyle}
-        className={`pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] grid place-items-center bg-muted/20 p-4`}
+        className={`assessment-flow pathway-theme ${integratedPilotEnabled || submittedIntegratedProfileId !== null ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] grid place-items-center bg-muted/20 p-4`}
       >
         <Card
           role="status"
           aria-live="polite"
-          className="w-full max-w-lg border-primary/25 text-center shadow-xl"
+          className="w-full max-w-2xl border-primary/25 text-center shadow-xl"
         >
           <CardContent className="space-y-6 p-8 md:p-12">
             {churchLogo && (
@@ -2630,6 +2705,8 @@ export default function Assessment() {
                 completed profile has been securely shared with {church.name}.
               </p>
             </div>
+            {submittedIntegratedProfileId !== null && (submittedJourneyToken || createProfile.data?.journeyToken) &&
+              <CompletedIntegratedPatterns token={(submittedJourneyToken ?? createProfile.data?.journeyToken)!} profileId={submittedIntegratedProfileId} />}
             {(submittedJourneyToken || createProfile.data?.journeyToken) && (
               <Button asChild size="lg" className="w-full">
                 <Link
@@ -2651,7 +2728,7 @@ export default function Assessment() {
   return (
     <div
       style={assessmentStyle}
-      className={`pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] bg-muted/20`}
+      className={`assessment-flow pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] bg-muted/20`}
     >
       <header className="sticky top-0 z-10 border-b border-border/80 bg-background/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4">
@@ -2679,7 +2756,7 @@ export default function Assessment() {
       </header>
       <main className="mx-auto max-w-3xl p-4 md:p-10">
         <AssessmentConfigurationContext.Provider
-          value={{ configuration: configuration!, step: currentStep }}
+          value={{ configuration: configuration!, step: currentStep, integrated: integratedPilotEnabled }}
         >
           <Form {...form}>
             <form onSubmit={(event) => event.preventDefault()}>
@@ -2969,6 +3046,11 @@ export default function Assessment() {
                             </p>
                           </div>
                           {reflectionValidationError && <p role="alert" className="text-destructive">{reflectionValidationError}</p>}
+                          {currentRound === firstBipolarIndex && <section aria-label="A few quick preferences" className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+                            <p className="text-sm leading-6">
+                              <strong>A few quick preferences</strong> — For the next set, pick the side that feels more like you. There are no right answers, and these simply add texture to your profile.
+                            </p>
+                          </section>}
                           <IntegratedReflections attempt={integratedAttempt} questions={roundQuestions} answers={integratedAnswers}
                             offset={currentRound} onAnswer={(id, value) => {
                               integrated.setAnswer(id, value);
@@ -2980,7 +3062,7 @@ export default function Assessment() {
                     </>
                   )}
                   {currentStep === "integratedOptional" && integratedAttempt && <>
-                    <Heading description="These reflections are optional and unscored. They are conversation starters, not proof of a gift. Leave any or all unanswered, or choose Skip.">
+                    <Heading description="These reflections are optional and unscored. They are conversation starters, not proof of a gift. Let them spark honest reflection — there is no score attached.">
                       Optional experiences
                     </Heading>
                     <IntegratedReflections attempt={integratedAttempt} questions={optionalQuestions} answers={integratedAnswers} onAnswer={integrated.setAnswer} />
@@ -3528,68 +3610,8 @@ export default function Assessment() {
                       )}
                     </>
                   )}
-                  {(currentStep === "personalityStrengths" || currentStep === "integratedPreferences") && (
-                    <>
-                      <Heading description="Optional preferences help begin a thoughtful conversation, not determine placement.">
-                        Ministry Preferences & Environment
-                      </Heading>
-                      <div className="grid md:grid-cols-2 gap-5">
-                        {(
-                          [
-                            [
-                              "setting",
-                              "Working style",
-                              "With people",
-                              "Behind the scenes",
-                            ],
-                            [
-                              "role",
-                              "Role preference",
-                              "Leading",
-                              "Supporting",
-                            ],
-                            [
-                              "routine",
-                              "Environment",
-                              "Predictable routines",
-                              "Changing environments",
-                            ],
-                            [
-                              "team",
-                              "Team setting",
-                              "Alone",
-                              "Small team",
-                              "Large group",
-                            ],
-                            [
-                              "work",
-                              "Ministry expression",
-                              "Relational",
-                              "Practical service",
-                              "Teaching",
-                              "Administration",
-                              "Creative work",
-                              "Outreach",
-                            ],
-                            [
-                              "rhythm",
-                              "Role rhythm",
-                              "Weekly in one role",
-                              "Occasionally in several roles",
-                            ],
-                          ] as const
-                        ).map(([name, label, ...options]) => (
-                          <SelectField
-                            key={name}
-                            form={form}
-                            name={`preferences.${name}`}
-                            label={label}
-                            options={options}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
+                  {(currentStep === "personalityStrengths" || currentStep === "integratedPreferences") &&
+                    <PreferenceFields form={form} fallback={currentStep === "integratedPreferences"} />}
                   {currentStep === "spiritualHealth" && (
                     <>
                       <Heading description="Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing.">
@@ -3640,6 +3662,9 @@ export default function Assessment() {
                   )}
                   {currentStep === "connectionAvailability" && (
                     <>
+                      {integratedPilotEnabled && <Heading description="Share what your current commitments allow, and what kind of serving feels realistic.">
+                        Availability & Serving Rhythm
+                      </Heading>}
                       <Heading description="Tell us how you experience church life and where you are currently connected or serving.">
                         How you are connected
                       </Heading>
@@ -3760,7 +3785,7 @@ export default function Assessment() {
                         <SelectField
                           form={form}
                           name="servingFrequency"
-                          label="Serving frequency"
+                          label={integratedPilotEnabled ? "Preferred serving frequency" : "Serving frequency"}
                           options={[
                             "Weekly",
                             "Every other week",
@@ -3804,11 +3829,12 @@ export default function Assessment() {
                         form={form}
                         name="availability"
                         options={OPTIONS.availability}
+                        label={integratedPilotEnabled ? "Availability windows" : undefined}
                       />
                       <SelectField
                         form={form}
                         name="availabilityDetails.commitment"
-                        label="Serving rhythm"
+                        label={integratedPilotEnabled ? "Preferred serving rhythm" : "Serving rhythm"}
                         options={[
                           "Ongoing role",
                           "Occasional roles",
@@ -3818,7 +3844,9 @@ export default function Assessment() {
                       <TextField
                         form={form}
                         name="availabilityDetails.responsibility"
-                        label="What serving responsibility feels realistic right now?"
+                        label={integratedPilotEnabled
+                          ? "Is there anything about this season of life that affects what serving responsibility feels realistic? (optional)"
+                          : "What serving responsibility feels realistic right now?"}
                         multiline
                       />
                       <SelectField
@@ -3845,12 +3873,12 @@ export default function Assessment() {
                           "Let's talk",
                         ]}
                       />
-                      <SelectField
+                      {!integratedPilotEnabled && <SelectField
                         form={form}
                         name="availabilityDetails.currentlyServing"
                         label="Are you currently serving on a team here?"
                         options={["Yes", "No", "Not sure"]}
-                      />
+                      />}
                       <SelectField
                         form={form}
                         name="availabilityDetails.alreadyAsked"
@@ -3875,6 +3903,19 @@ export default function Assessment() {
                         label="How does that load feel?"
                         options={["Fine", "Stretched", "Overloaded"]}
                       />
+                      {integratedPilotEnabled && form.getValues("availabilityDetails.currentlyServing") && (
+                        <p className="text-sm text-muted-foreground">
+                          Earlier saved answer about currently serving: {form.getValues("availabilityDetails.currentlyServing")}
+                        </p>
+                      )}
+                      {integratedPilotEnabled && integratedPreferencesEnabled && <>
+                        <PreferenceFields form={form} consolidated />
+                        {form.getValues("preferences.rhythm") && (
+                          <p className="text-sm text-muted-foreground">
+                            Earlier saved role-rhythm preference: {form.getValues("preferences.rhythm")}
+                          </p>
+                        )}
+                      </>}
                     </>
                   )}
                   {submitError && (

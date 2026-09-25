@@ -1357,6 +1357,29 @@ export interface JourneyProfileSummary {
   themes: string[];
 }
 
+export interface AdultIntegratedJourneyReviewQuestion {
+  prompt: string;
+  response: string;
+}
+
+export interface AdultIntegratedJourneyReviewSection {
+  label: string;
+  questions: AdultIntegratedJourneyReviewQuestion[];
+}
+
+export interface AdultIntegratedJourneyReviewPattern {
+  theme: string;
+  description: string;
+  statement: string;
+  responseLabel: string;
+}
+
+export interface AdultIntegratedJourneyReview {
+  sections: AdultIntegratedJourneyReviewSection[];
+  /** @maxItems 3 */
+  patterns: AdultIntegratedJourneyReviewPattern[];
+}
+
 export type JourneyEntryEntryType = typeof JourneyEntryEntryType[keyof typeof JourneyEntryEntryType];
 
 

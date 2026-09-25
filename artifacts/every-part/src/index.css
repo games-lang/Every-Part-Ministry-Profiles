@@ -782,3 +782,13 @@
   .journey-card { transition: none; }
   .skip-link { transition: none; }
 }
+
+/* Make keyboard location unmistakable throughout the adult assessment. */
+.assessment-flow :where(button, a, input, textarea, select, [role="combobox"], [tabindex]):focus-visible {
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 3px;
+}
+.assessment-select-content [role="option"][data-highlighted] {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: -2px;
+}

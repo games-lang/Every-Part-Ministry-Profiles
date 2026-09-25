@@ -1083,6 +1083,29 @@ paths:
                 $ref: "#/components/schemas/JourneyResponse"
         "404":
           description: Journey not found
+  /journeys/{token}/profiles/{profileId}/answer-review:
+    get:
+      operationId: getAdultIntegratedJourneyReview
+      tags: [journeys]
+      summary: Get a participant's sanitized review of an adult integrated assessment
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: profileId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Sanitized participant answer review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdultIntegratedJourneyReview"
+        "404":
+          description: Journey, matching adult profile, or review not found
   /journeys/{token}/entries:
     post:
       operationId: createJourneyEntry
@@ -2596,6 +2619,43 @@ components:
           type: array
           maxItems: 5
           items: { type: string }
+    AdultIntegratedJourneyReviewQuestion:
+      type: object
+      additionalProperties: false
+      required: [prompt, response]
+      properties:
+        prompt: { type: string }
+        response: { type: string }
+    AdultIntegratedJourneyReviewSection:
+      type: object
+      additionalProperties: false
+      required: [label, questions]
+      properties:
+        label: { type: string }
+        questions:
+          type: array
+          items: { $ref: "#/components/schemas/AdultIntegratedJourneyReviewQuestion" }
+    AdultIntegratedJourneyReviewPattern:
+      type: object
+      additionalProperties: false
+      required: [theme, description, statement, responseLabel]
+      properties:
+        theme: { type: string }
+        description: { type: string }
+        statement: { type: string }
+        responseLabel: { type: string }
+    AdultIntegratedJourneyReview:
+      type: object
+      additionalProperties: false
+      required: [sections, patterns]
+      properties:
+        sections:
+          type: array
+          items: { $ref: "#/components/schemas/AdultIntegratedJourneyReviewSection" }
+        patterns:
+          type: array
+          maxItems: 3
+          items: { $ref: "#/components/schemas/AdultIntegratedJourneyReviewPattern" }
     JourneyEntry:
       type: object
       required: [id, entryType, occurredAt, title, description, ministryArea, author, reflection, createdAt, updatedAt]

@@ -34,7 +34,7 @@
         "Usually the second choice",
         "Definitely the second choice"
       ],
-      "na": "N/A — Not sure"
+      "na": "N/A — Not sure / I have not had the opportunity"
     },
     "specialExperienceLikert": {
       "values": [
@@ -51,7 +51,7 @@
         "Often like me",
         "Very much like me"
       ],
-      "na": "Not sure / I have not experienced this / this is not part of my church tradition",
+      "na": "N/A — Not sure / I have not had the opportunity",
       "scoring": "All optional responses unscored, including numeric choices; context is never proof. Frequency/fit choices are conversation aids, not gift evidence thresholds."
     }
   },

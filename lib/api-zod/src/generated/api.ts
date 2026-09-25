@@ -2888,6 +2888,35 @@ export const GetPublicJourneyResponse = zod.object({
 
 
 /**
+ * @summary Get a participant's sanitized review of an adult integrated assessment
+ */
+export const GetAdultIntegratedJourneyReviewParams = zod.object({
+  "token": zod.uuid(),
+  "profileId": zod.coerce.number().int()
+})
+
+export const getAdultIntegratedJourneyReviewResponsePatternsMax = 3;
+
+
+
+export const GetAdultIntegratedJourneyReviewResponse = zod.object({
+  "sections": zod.array(zod.object({
+  "label": zod.string(),
+  "questions": zod.array(zod.object({
+  "prompt": zod.string(),
+  "response": zod.string()
+}))
+})),
+  "patterns": zod.array(zod.object({
+  "theme": zod.string(),
+  "description": zod.string(),
+  "statement": zod.string(),
+  "responseLabel": zod.string()
+})).max(getAdultIntegratedJourneyReviewResponsePatternsMax)
+})
+
+
+/**
  * @summary Add a milestone or annual check-in to a church journey
  */
 export const CreateJourneyEntryParams = zod.object({

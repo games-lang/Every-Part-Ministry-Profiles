@@ -44,6 +44,9 @@ test("reflection renderer uses exact server text, anchors and poles, without con
   assert.match(html, /Not at all like me/);
   assert.match(html, /Definitely: Reflective/);
   assert.match(html, /Usually: Interactive/);
+  assert.match(html, /role="group" aria-labelledby="integrated-question-title-two"/);
+  assert.match(html, /id="integrated-question-title-two"[^>]*>2\. The approved bipolar reflection\./);
+  assert.match(html, /N\/A — Not sure \/ I have not had the opportunity/);
   assert.doesNotMatch(html, /left pole/);
   assert.doesNotMatch(html, /1 — Reflective/);
   assert.doesNotMatch(html, /5 — Interactive/);
@@ -67,8 +70,21 @@ test("a frozen social-energy draft renders the corrected question and concrete c
   assert.match(html, /After a busy week, which usually helps you recover your energy\?/);
   assert.match(html, /Definitely: Quiet time by myself/);
   assert.match(html, /Usually: Time with other people/);
-  assert.match(html, /N\/A — Not sure/);
-  assert.doesNotMatch(html, /Reflective|Interactive|I have not had the opportunity/);
+  assert.match(html, /N\/A — Not sure \/ I have not had the opportunity/);
+  assert.doesNotMatch(html, /Reflective|Interactive/);
+});
+
+test("the final optional reflection has an untruncated accessible question and standardized N/A", () => {
+  const longPrompt = "I can share what I experienced in my own words and seek wise guidance when something is unclear.";
+  const html = renderToStaticMarkup(React.createElement(exported.IntegratedReflections, {
+    attempt,
+    questions: [{ id: "last-question", text: longPrompt, responseModel: "specialExperienceLikert" }],
+    answers: { "last-question": "na" }, onAnswer() {},
+  }));
+  assert.match(html, /id="integrated-question-title-last-question"[^>]*>1\. I can share what I experienced in my own words and seek wise guidance when something is unclear\./);
+  assert.match(html, /role="group" aria-labelledby="integrated-question-title-last-question"/);
+  assert.match(html, /N\/A — Not sure \/ I have not had the opportunity/);
+  assert.match(html, /aria-pressed="true"/);
 });
 
 test("optional questions are distinguishable without gift metadata; a core round renders at most eight", () => {

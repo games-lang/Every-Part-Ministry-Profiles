@@ -16,7 +16,7 @@ const makeSnapshot = (overrides: Partial<Parameters<typeof createIntegratedSnaps
 const allAnswers = (value: 1 | 2 | 3 | 4 | 5 = 5): Answers =>
   Object.fromEntries(makeSnapshot().questions.map(q => [q.id, value]));
 
-test("runtime bank exactly preserves approved 83 core, 15 optional, wording, order, weights and bipolar polarity", () => {
+test("runtime bank preserves approved order, mappings and scoring with the corrected social-energy wording", () => {
   const source = JSON.parse(readFileSync(new URL("../../../../reports/final-integrated-question-bank.json", import.meta.url), "utf8"));
   assert.equal(INTEGRATED_BANK.coreQuestions.length, 83);
   assert.equal(INTEGRATED_BANK.optionalQuestions.length, 15);
@@ -24,12 +24,16 @@ test("runtime bank exactly preserves approved 83 core, 15 optional, wording, ord
   assert.deepEqual(INTEGRATED_BANK.optionalQuestions.map(q => q.id), source.stableOptionalPresentationOrder);
   for (const question of INTEGRATED_BANK.coreQuestions) {
     const approved = source.coreQuestions.find((q: { id: string }) => q.id === question.id);
-    assert.equal(question.text, approved.text);
+    assert.equal(question.text, question.id === "EP-I-58"
+      ? "After a busy week, which usually helps you recover your energy?"
+      : approved.text);
     assert.equal(question.responseModel, approved.responseModel);
     assert.deepEqual(question.maps, approved.maps.map(([category, construct, weight]: [string, string, number]) => ({
       category: category === "Spiritual Gift" ? "Gift" : category, construct, weight,
     })));
-    if ("poles" in question) assert.deepEqual(question.poles, approved.poles);
+    if ("poles" in question) assert.deepEqual(question.poles, question.id === "EP-I-58"
+      ? ["Quiet time by myself", "Time with other people"]
+      : approved.poles);
   }
   for (const question of INTEGRATED_BANK.optionalQuestions) {
     const approved = source.optionalSpecialExperienceModule.items.find((q: { id: string }) => q.id === question.id);
