@@ -2,20 +2,17 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import {
   ArrowRight,
-  ArrowUpRight,
   Check,
   ChevronDown,
   CircleHelp,
   Cross,
   Infinity as InfinityIcon,
-  Menu,
   Network,
   Sparkles,
   UsersRound,
-  X,
 } from "lucide-react";
-import { Brand } from "@/components/brand";
 import { PuzzleCluster } from "@/components/puzzle-cluster";
+import { PublicLayout } from "@/components/public-layout";
 import { useGetBillingPlans } from "@workspace/api-client-react";
 
 const plans = [
@@ -112,7 +109,7 @@ const faqs = [
       "Not yet. Every Part is coming soon and is not currently for sale. These prices are shared so churches can see the planned options before launch.",
   },
   {
-    question: "What does Start Free include?",
+    question: "What does Starter include?",
     answer:
       "Starter is the planned free option, with up to 5 Ministry Profiles after plan limits begin. During early access, every church can create unlimited profiles. Every Part is not currently for sale.",
   },
@@ -174,81 +171,14 @@ function Reveal({
 }
 
 export default function PricingPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const { data: billingPlans } = useGetBillingPlans();
 
-  useEffect(() => {
-    document.title = "Pricing | Every Part";
-    const description =
-      "Choose a monthly Every Part plan for your church.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
-
   return (
-    <div className="ep-landing min-h-[100dvh] overflow-x-hidden">
-      <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Link
-            href="/"
-            className="landing-focus rounded-xl"
-            aria-label="Every Part home"
-            data-testid="link-pricing-home"
-          >
-            <Brand />
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm font-medium lg:flex" aria-label="Main navigation">
-            <Link href="/#how-it-works" className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-pricing-how-it-works">
-              How It Works
-            </Link>
-            <Link href="/#ministry-profile" className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-pricing-ministry-profile">
-              Ministry Profile
-            </Link>
-            <Link href="/#for-churches" className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-pricing-for-churches">
-              For Churches
-            </Link>
-            <Link href="/sign-in" className="landing-focus landing-link rounded-md px-1 py-2" data-testid="link-pricing-login">
-              Login
-            </Link>
-            <Link
-              href="/sign-up"
-              className="landing-focus ml-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent"
-              data-testid="link-pricing-header-start"
-            >
-              Learn about Every Part <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </nav>
-          <button
-            type="button"
-            className="landing-focus inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border lg:hidden"
-            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            data-testid="button-pricing-menu"
-          >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-        {menuOpen && (
-          <nav className="landing-menu border-t border-border bg-background px-5 py-4 lg:hidden" aria-label="Mobile navigation">
-            <div className="mx-auto flex max-w-7xl flex-col gap-1">
-              <Link href="/#how-it-works" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-how-it-works">How It Works</Link>
-              <Link href="/#ministry-profile" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-ministry-profile">Ministry Profile</Link>
-              <Link href="/#for-churches" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-for-churches">For Churches</Link>
-              <Link href="/sign-in" onClick={() => setMenuOpen(false)} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-pricing-mobile-login">Login</Link>
-              <Link href="/#for-churches" onClick={() => setMenuOpen(false)} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground" data-testid="link-pricing-mobile-start">Learn about Every Part <ArrowRight className="h-4 w-4" /></Link>
-            </div>
-          </nav>
-        )}
-      </header>
-
-      <main>
+    <PublicLayout
+      title="Pricing | Every Part"
+      description="Choose a monthly Every Part plan for your church."
+    >
         <section className="relative overflow-hidden bg-primary px-5 pb-20 pt-16 text-primary-foreground sm:px-8 sm:pb-28 sm:pt-24">
           <div className="pointer-events-none absolute -right-20 -top-28 h-96 w-96 rounded-full border-[40px] border-secondary/25" aria-hidden="true" />
           <div className="pointer-events-none absolute bottom-[-10rem] left-[38%] h-80 w-80 rounded-full border-[28px] border-[hsl(var(--landing-cyan)/.18)]" aria-hidden="true" />
@@ -353,14 +283,14 @@ export default function PricingPage() {
                          <span className="font-serif text-5xl font-semibold tracking-[-.07em]" data-testid={`text-plan-price-${plan.id}`}>{displayPrice}</span>
                         <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>{plan.cadence}</span>
                       </div>
-                      <div className={`mt-5 rounded-2xl p-4 ${featured || dark ? "bg-white/10" : "bg-muted/70"}`}>
+                       <div className={`mt-5 min-w-0 rounded-2xl p-4 ${featured || dark ? "bg-white/10" : "bg-muted/70"}`}>
                         <p className={`text-[10px] font-bold uppercase tracking-[.14em] ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>Includes up to</p>
-                        <div className="mt-1 flex items-baseline gap-2">
-                          <span className="font-serif text-4xl font-semibold tracking-[-.06em]" data-testid={`text-plan-limit-${plan.id}`}>{plan.profileLimit}</span>
-                          <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.limitLabel}</span>
+                         <div className="mt-1 flex min-w-0 flex-wrap items-baseline gap-x-2">
+                           <span className={`min-w-0 font-serif text-4xl font-semibold tracking-[-.06em] ${plan.id === "unlimited" ? "break-all lg:text-3xl" : ""}`} data-testid={`text-plan-limit-${plan.id}`}>{plan.profileLimit}</span>
+                           <span className={`min-w-0 text-xs ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.limitLabel}</span>
                         </div>
                       </div>
-                       <p className={`mt-3 text-sm font-semibold ${featured || dark ? "text-secondary" : "text-primary"}`}>
+                        <p className={`mt-3 text-sm font-semibold ${dark ? "text-primary" : featured ? "text-secondary" : "text-primary"}`}>
                          {plan.aiCredits}
                        </p>
                       <p className={`mt-4 min-h-[48px] text-sm leading-6 ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.description}</p>
@@ -465,28 +395,13 @@ export default function PricingPage() {
             <Reveal className="pricing-cta-copy">
               <div>
                  <p className="text-lg leading-8 text-[hsl(var(--landing-light-text))]">Every Part is coming soon. We are sharing the plan conversation now so churches can see what is ahead.</p>
-                 <Link href="/#for-churches" className="landing-focus mt-8 inline-flex items-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90" data-testid="link-pricing-final-start">
+                  <Link href="/for-churches" className="landing-focus mt-8 inline-flex items-center gap-3 rounded-full bg-secondary px-6 py-3.5 font-semibold text-secondary-foreground transition hover:-translate-y-0.5 hover:bg-secondary/90" data-testid="link-pricing-final-start">
                    Learn more <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </Reveal>
           </div>
         </section>
-      </main>
-
-      <footer className="border-t border-border px-5 py-10 sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="landing-focus w-fit rounded-xl" data-testid="link-pricing-footer-home"><Brand /></Link>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
-            <Link href="/#how-it-works" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-how-it-works">How It Works</Link>
-            <Link href="/sign-in" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-login">Login</Link>
-            <a href="mailto:hello@everypart.org" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-contact">Contact</a>
-             <Link href="/privacy" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-privacy">Privacy Policy</Link>
-             <Link href="/terms" className="landing-focus rounded-md hover:text-foreground" data-testid="link-pricing-footer-terms">Terms of Service</Link>
-          </div>
-          <p className="text-xs text-muted-foreground">A thoughtful beginning for meaningful ministry.</p>
-        </div>
-      </footer>
-    </div>
+    </PublicLayout>
   );
 }

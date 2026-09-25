@@ -172,7 +172,7 @@ export function ProfileInfographic({
           <div className="flex gap-4 items-center shrink-0">
             {profile.branding?.logoUrl && (
               <div className="h-16 w-16 bg-white p-2 rounded-xl flex items-center justify-center">
-                <img src={profile.branding.logoUrl} alt={`${profile.branding.name} logo`} className="max-h-full max-w-full object-contain" />
+                <img src={profile.branding.logoUrl} alt="Church logo" className="max-h-full max-w-full object-contain" />
               </div>
             )}
           </div>

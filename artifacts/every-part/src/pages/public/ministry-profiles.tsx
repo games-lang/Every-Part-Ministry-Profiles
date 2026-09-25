@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, HeartHandshake, Check } from "lucide-react";
+import { Link } from "wouter";
+import { ArrowRight, ChevronLeft, ChevronRight, HeartHandshake, Check } from "lucide-react";
 import { PublicLayout, Reveal, Eyebrow, ScriptureCallout } from "@/components/public-layout";
 import { dimensions, sampleProfileDetails } from "@/data/public-content";
 
@@ -89,7 +90,7 @@ export default function MinistryProfiles() {
           <div id="sample-profile" className="mt-24 scroll-mt-24">
             <Reveal>
               <div className="mb-8 max-w-3xl">
-                <p className="text-xs font-bold uppercase tracking-[.18em] text-accent">Four fictional sample profiles</p>
+                <p className="text-xs font-bold tracking-[.08em] text-accent">Four fictional sample profiles</p>
                 <h3 className="mt-3 font-serif text-3xl tracking-[-.045em] sm:text-4xl">See how each pathway starts a different conversation.</h3>
                 <p className="mt-4 text-sm leading-7 text-muted-foreground">
                   These examples show the kind of reflection each profile can surface. They offer possibilities and questions—not labels or a verdict about anyone’s calling.
@@ -109,7 +110,7 @@ export default function MinistryProfiles() {
               }}
             >
               <div className="sample-profile-carousel__controls">
-                <p className="text-xs font-bold uppercase tracking-[.14em] text-muted-foreground">Scroll through the profiles</p>
+                <p className="text-xs font-bold tracking-[.08em] text-muted-foreground">Scroll through the profiles</p>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -149,7 +150,7 @@ export default function MinistryProfiles() {
                           <span className="sample-profile-card__avatar" aria-hidden="true">{profile.initials}</span>
                         )}
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/70">Fictional example · {profile.pathway} · {profile.age}</p>
+                          <p className="text-xs font-bold tracking-[.04em] text-white/70">Fictional example · {profile.pathway} · {profile.age}</p>
                           <h4 className="mt-1 font-serif text-2xl tracking-[-.04em] text-white">{profile.name}’s profile</h4>
                         </div>
                       </div>
@@ -166,7 +167,7 @@ export default function MinistryProfiles() {
                       <div className="mt-7 grid gap-5 sm:grid-cols-2">
                         {profile.fields.map((field) => (
                           <div key={field.label}>
-                            <p className="text-[10px] font-bold uppercase tracking-[.13em] text-muted-foreground">{field.label}</p>
+                            <p className="text-xs font-bold tracking-[.04em] text-muted-foreground">{field.label}</p>
                             {"values" in field ? (
                               <div className="mt-2 flex flex-wrap gap-1.5">
                                 {field.values?.map((item) => <span key={item} className="sample-profile-card__tag">{item}</span>)}
@@ -186,7 +187,7 @@ export default function MinistryProfiles() {
                         ))}
                       </div>
                       <div className="mt-7 border-t border-border pt-6">
-                        <p className="text-[10px] font-bold uppercase tracking-[.13em] text-muted-foreground">Possible ministry environments</p>
+                        <p className="text-xs font-bold tracking-[.04em] text-muted-foreground">Possible ministry environments</p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {profile.environments.map((item) => <span key={item} className="sample-profile-card__environment">{item}</span>)}
                         </div>
@@ -199,6 +200,20 @@ export default function MinistryProfiles() {
               </div>
             </div>
           </div>
+          <Reveal className="mt-12">
+            <div className="rounded-[2rem] bg-secondary px-7 py-12 text-center text-secondary-foreground sm:px-12 sm:py-14">
+              <p className="text-xs font-bold uppercase tracking-[.2em]">Begin with a conversation</p>
+              <h2 className="mx-auto mt-4 max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-5xl">
+                Help people discover and grow into their part.
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-secondary-foreground/80">
+                Give your church a thoughtful place to begin with Every Part.
+              </p>
+              <Link href="/sign-up" className="landing-focus mt-8 inline-flex items-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">
+                Try Every Part <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </PublicLayout>

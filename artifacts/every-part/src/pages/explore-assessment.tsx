@@ -615,7 +615,7 @@ export default function ExploreAssessment({
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {church?.logoUrl ? (
-              <img src={church.logoUrl} alt={church.name} className="h-8 object-contain" />
+              <img src={church.logoUrl} alt="Church logo" className="h-8 object-contain" />
             ) : (
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Compass className="w-4 h-4 text-primary" />

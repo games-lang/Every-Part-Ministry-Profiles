@@ -1,3 +1,5 @@
+import { Link } from "wouter";
+import { ArrowRight } from "lucide-react";
 import { PublicLayout, Reveal, Eyebrow, ScriptureCallout } from "@/components/public-layout";
 import { problemCards, pathway } from "@/data/public-content";
 
@@ -91,6 +93,22 @@ export default function HowItWorks() {
             />
           </Reveal>
         </div>
+      </section>
+      <section className="px-5 pb-24 sm:px-8 sm:pb-32">
+        <Reveal>
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-secondary px-7 py-14 text-center text-secondary-foreground sm:px-14 sm:py-16">
+            <p className="text-xs font-bold uppercase tracking-[.2em]">Take the next step</p>
+            <h2 className="mx-auto mt-4 max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-5xl">
+              Make room for every person to find their part.
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-secondary-foreground/80">
+              Begin a thoughtful ministry conversation with Every Part.
+            </p>
+            <Link href="/sign-up" className="landing-focus mt-8 inline-flex items-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">
+              Try Every Part <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </Reveal>
       </section>
     </PublicLayout>
   );

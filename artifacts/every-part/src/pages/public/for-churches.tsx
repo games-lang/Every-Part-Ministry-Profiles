@@ -66,9 +66,6 @@ export default function ForChurches() {
           <Reveal>
             <Eyebrow light>Trust &amp; privacy</Eyebrow>
              <h2 className="mt-6 max-w-2xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-6xl">Your People Matter. Their Information Does Too.</h2>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-[hsl(var(--landing-light-text))]">
-               Every Part uses church-controlled access and permission-based leader access to support responsible handling of member information. Profiles are designed to protect sensitive profile information and give leaders secure accounts for the ministry conversations their church chooses to have.
-            </p>
              <p className="mt-6 max-w-xl border-l-2 border-secondary pl-5 text-base leading-7 text-[hsl(var(--landing-light-text))]">
                Every Part is designed to assist ministry leaders—not replace prayer, pastoral relationships, or the work of the Holy Spirit.
              </p>
@@ -81,7 +78,7 @@ export default function ForChurches() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-[1.5rem] border border-white/15 bg-white/[.06] p-7">
                 <LockKeyhole className="h-6 w-6 text-secondary" />
-                <h3 className="mt-16 font-serif text-2xl tracking-[-.04em]">A thoughtful place for a story.</h3>
+                <h3 className="mt-16 font-serif text-2xl tracking-[-.04em]">Protecting each person’s story.</h3>
                  <p className="mt-4 text-sm leading-6 text-[hsl(var(--landing-light-text))]">Church-controlled access, permission-based leader access, and protection of sensitive profile information keep the focus on people.</p>
               </div>
               <div className="rounded-[1.5rem] border border-white/15 bg-white/[.06] p-7 sm:translate-y-8">

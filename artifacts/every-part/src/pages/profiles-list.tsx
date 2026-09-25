@@ -472,8 +472,10 @@ export default function ProfilesList() {
                       ? "No finished profiles match that search"
                       : "No finished profiles yet"
                     : searchTerm
-                      ? "No profiles match that search"
-                      : "No profiles yet"
+                      ? "No completed profiles match that search"
+                      : pendingPeople.length > 0
+                        ? "No completed profiles yet"
+                        : "No profiles yet"
                 }
                 description={
                   directoryFilter === "completed"
@@ -481,8 +483,12 @@ export default function ProfilesList() {
                       ? "Try a name, email, or skill with a little more room."
                       : "Completed Ministry Profiles will appear here once people finish their reflection."
                     : searchTerm
-                      ? "Try a name, email, or skill with a little more room."
-                      : "Share your church profile link to invite the first person into a thoughtful reflection."
+                      ? pendingPeople.length > 0
+                        ? "People who still need a profile are listed above. Try a name, email, or skill to find completed profiles."
+                        : "Try a name, email, or skill with a little more room."
+                      : pendingPeople.length > 0
+                        ? "People who still need a profile are listed above. Completed Ministry Profiles will appear here once people finish their reflection."
+                        : "Share your church profile link to invite the first person into a thoughtful reflection."
                 }
                actionLabel={searchTerm ? "Clear search" : undefined}
                onAction={searchTerm ? () => setSearchTerm("") : undefined}

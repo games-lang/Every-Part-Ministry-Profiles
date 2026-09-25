@@ -132,7 +132,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
       <div className="w-full max-w-md space-y-8 landing-reveal is-visible">
         <div className="text-center space-y-4">
           {church.logoUrl ? (
-            <img src={church.logoUrl} alt={church.name} className="h-16 mx-auto object-contain" />
+            <img src={church.logoUrl} alt="Church logo" className="h-16 mx-auto object-contain" />
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
               <User className="w-8 h-8 text-primary" />

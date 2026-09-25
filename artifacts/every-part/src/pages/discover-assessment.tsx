@@ -468,7 +468,7 @@ export default function DiscoverAssessment({
             Back
           </button>
           {church.logoUrl ? (
-            <img src={church.logoUrl} alt={church.name} className="h-8 object-contain" />
+            <img src={church.logoUrl} alt="Church logo" className="h-8 object-contain" />
           ) : (
             <span className="font-serif font-medium">{church.name}</span>
           )}

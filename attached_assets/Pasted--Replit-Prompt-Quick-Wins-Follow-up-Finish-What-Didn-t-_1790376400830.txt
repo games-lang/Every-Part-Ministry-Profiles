@@ -1,0 +1,35 @@
+# Replit Prompt — Quick Wins Follow-up: Finish What Didn't Ship (paste into Replit)
+
+## Context
+A QA pass verified the earlier quick-win prompts. These items are CONFIRMED SHIPPED — do not touch them: pricing-card "Coming soon" link removal, "$10/month" spacing, and the sign-in beta banner truncation fix. Everything below is confirmed still broken. Fix all of it, then self-verify each item in the running app and report pass/fail per item.
+
+## Public site
+
+1. **Pricing page nav/footer**: unify with the site-wide navigation ("How It Works, Ministry Profiles, PartFinder, For Churches, Why Every Part, Pricing, Leader sign in, Try Every Part") and site-wide footer. Remove the orphan "Contact" footer link or point it at a real destination.
+2. **Pricing FAQ**: rename "What does Start Free include?" to "What does Starter include?" everywhere it appears.
+3. **Unlimited card overflow**: "Unlimited" and "Ministry Profiles" clip past the right edge of the "INCLUDES UP TO" box at desktop width. Fix so nothing overflows.
+4. **Contrast**: "1,000 AI credits each month" in yellow on teal (Network and Unlimited cards) is washed out. Raise to WCAG AA (4.5:1) while staying close to brand.
+5. **Dead anchor**: the pricing page's final "Learn more" CTA links to `/#for-churches`, but the homepage has no such anchor — it lands at the top of the page. Add the matching section id or repoint the link to the real For Churches destination.
+6. **Sign-in page**: remove the entire "EVERYPART CEO / Looking for the private EveryPart CEO inbox?" card (links to /app-admin — must not be public). Change the heading "Sign in to Every Part Ministry Profiles" to "Sign in to Every Part."
+7. **About Early Access**: fix "helping shape the Every Part" → "helping shape Every Part" and "help improve the Every Part" → "help improve Every Part." Point "Share feedback" at a real feedback destination (the new inline feedback form on the sign-in page may be the right target — confirm with owner if unsure); do not leave it at /sign-in.
+8. **Homepage CTA**: "Preview a Ministry Profile" links to an intake page, not a preview. Relabel to "Try a sample assessment" (preferred) or repoint to the Ministry Profiles sample cards.
+9. **Page-level CTAs**: add a clear primary CTA section before the footer on How It Works, Ministry Profiles, and PartFinder (reuse the existing early-access CTA/destination).
+10. **PartFinder**: merge or clearly differentiate the two near-duplicate sections "FOR PASTORS / Prepare for the conversations that matter" and "FOR PASTORS AND MINISTRY LEADERS / Move from a ministry need to a formation conversation."
+11. **For Churches**: remove the duplicated trust/privacy paragraph (the "TRUST & PRIVACY" paragraph and the condensed duplicate card right after it — keep one). Replace the vague card heading "A thoughtful place for a story." with a concrete heading like "Stories from churches using Every Part."
+12. **Ministry Profiles**: standardize in-card section labels/kickers to sentence case ("WHAT GROWN-UPS NOTICE" → "What grown-ups notice", "IN CONVERSATION" → "In conversation", etc.). Add a CTA below the sample-cards grid (same early-access CTA/destination as elsewhere).
+
+## Dashboard
+
+13. **Pastor admins refresh**: after saving a name/email change in Church Setup, the Pastor admins list must immediately show the new values (no hard refresh). It currently keeps showing the stale values.
+14. **Profiles empty state**: when people exist but none have completed profiles, don't show "No profiles yet" contradicting the "Needs a profile" person card. Use "No completed profiles yet" or hide the empty-state panel when person cards exist.
+15. **Feedback widget copy**: "Email for a reply(optional)" → "Email for a reply (optional)"; options "Pastor dashboard" → "Dashboard", "Ministry matching" → "PartFinder"; avatar fallback alt text "'s logo" → "Church logo".
+16. **Concatenated labels**: Church Setup still exposes "8sectionsenabled" and "Current code:Not set" — fix to "8 sections enabled" and "Current code: Not set", and search for similar concatenation patterns.
+
+## Assessment intro
+17. The assessment intro page still sets no time expectation. Add the estimated completion time to the intro ("Ready when you are" screen).
+
+## Do not change
+Scoring logic, Leader View behavior, saved data shapes, or the assessment question flow.
+
+## Done when
+Every numbered item above is verified in the running app (not just the code) and you report pass/fail per item with what you checked.

@@ -722,6 +722,22 @@ export default function ChurchSetup() {
             description: "Your settings have been saved successfully.",
           });
           queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+          queryClient.setQueryData(
+            getListChurchAdminsQueryKey(),
+            (current: ChurchAdmin[] | undefined) =>
+              current?.map((admin) =>
+                admin.role === "owner"
+                  ? {
+                      ...admin,
+                      name: updatedChurch.adminName,
+                      email: updatedChurch.adminEmail,
+                    }
+                  : admin,
+              ),
+          );
+          void queryClient.invalidateQueries({
+            queryKey: getListChurchAdminsQueryKey(),
+          });
         },
         onError: () => {
           toast({
@@ -1091,7 +1107,11 @@ export default function ChurchSetup() {
         </p>
         <div className="mt-5 flex flex-wrap gap-2 text-sm text-muted-foreground" aria-label="Assessment summary">
           <span className="church-setup-summary-pill">
-            {enabledSectionCount} {enabledSectionCount === 1 ? "section" : "sections"} enabled
+            {enabledSectionCount}
+            {" "}
+            {enabledSectionCount === 1 ? "section" : "sections"}
+            {" "}
+            enabled
           </span>
           <span className="church-setup-summary-pill">{enabledGiftCount} spiritual gifts included</span>
           <span className="church-setup-summary-pill">
@@ -1215,7 +1235,10 @@ export default function ChurchSetup() {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Current code: <span className="font-mono font-semibold tracking-[0.2em]">{church?.discoverHallwayCode || "Not set"}</span>.
+            Current code:
+            {" "}
+            <span className="font-mono font-semibold tracking-[0.2em]">{church?.discoverHallwayCode || "Not set"}</span>.
+            {" "}
             Generating and saving a new code immediately replaces the old one.
           </p>
         </CardContent>
@@ -1540,7 +1563,11 @@ export default function ChurchSetup() {
           {editingYouthProfile && youthProfiles?.[editingYouthProfile] && (
             <Card id="youth-profile-editor" className="church-setup-section-card border-primary/30 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-xl font-serif">{editingYouthProfile[0].toUpperCase() + editingYouthProfile.slice(1)} profile editor</CardTitle>
+                <CardTitle className="text-xl font-serif">
+                  {editingYouthProfile[0].toUpperCase() + editingYouthProfile.slice(1)}
+                  {" "}
+                  profile editor
+                </CardTitle>
                 <CardDescription>These edits apply to future submissions only. Answer keys and guardian consent remain unchanged.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -1868,7 +1895,11 @@ export default function ChurchSetup() {
                               <FormItem>
                                 <div className="flex items-baseline justify-between gap-4">
                                   <FormLabel>Included spiritual gifts</FormLabel>
-                                  <span className="text-sm text-muted-foreground">{field.value.length} enabled</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {field.value.length}
+                                    {" "}
+                                    enabled
+                                  </span>
                                 </div>
                                 <FormDescription>
                                   Select at least 3 gifts. Members will answer the

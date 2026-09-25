@@ -86,11 +86,10 @@ export function AppFeedbackForm({ sourcePage, className = "" }: AppFeedbackFormP
           >
             <option value="other">Something else</option>
             <option value="ministry-profile">Ministry Profile</option>
-            <option value="pastor-dashboard">Pastor dashboard</option>
+            <option value="pastor-dashboard">Dashboard</option>
             <option value="part-finder">PartFinder</option>
             <option value="church-setup">Church setup</option>
             <option value="member-experience">Member experience</option>
-            <option value="ministry-matching">Ministry matching</option>
             <option value="privacy-permissions">Privacy or permissions</option>
             <option value="confusing-ux">Something was confusing</option>
             <option value="bug">A technical problem</option>
@@ -99,7 +98,8 @@ export function AppFeedbackForm({ sourcePage, className = "" }: AppFeedbackFormP
         </div>
         <div>
           <label htmlFor={`${sourcePage}-feedback-email`} className="text-sm font-medium text-foreground">
-            Email for a reply <span className="font-normal text-muted-foreground">(optional)</span>
+            Email for a reply{" "}
+            <span className="font-normal text-muted-foreground">(optional)</span>
           </label>
           <input
             id={`${sourcePage}-feedback-email`}

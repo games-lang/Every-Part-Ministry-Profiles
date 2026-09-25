@@ -57,6 +57,7 @@ import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
 import { useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
 import { IntegratedConflict, IntegratedReflections, isOptionalReflection } from "@/components/integrated-reflections";
 import { resolveIntegratedResumeStep } from "@/lib/integrated-step-progress";
+import { estimateAssessmentTime } from "@/lib/assessment-time-estimate";
 
 function hexToHsl(hex: string) {
   const value = hex.replace("#", "");
@@ -1672,6 +1673,13 @@ export default function Assessment() {
   const configuration = integratedAttempt?.snapshot.assessmentConfiguration ?? church?.assessmentConfiguration;
   const customization = integratedAttempt?.snapshot.ministryCustomization ?? church?.ministryCustomization;
   const enabledGifts = integratedAttempt?.snapshot.enabledSpiritualGifts ?? church?.enabledSpiritualGifts;
+  const assessmentEstimate =
+    configuration && enabledGifts
+      ? estimateAssessmentTime(
+          configuration,
+          enabledGifts,
+        )
+      : null;
   const spiritualGiftsLabel =
     customization?.spiritualGiftsLabel ?? "Spiritual Gifts";
   const ministryInterestsLabel =
@@ -2606,7 +2614,7 @@ export default function Assessment() {
             {churchLogo ? (
               <img
                 src={churchLogo}
-                alt={`${church.name} logo`}
+                alt="Church logo"
                 className="mx-auto max-h-24 max-w-[240px] object-contain"
               />
             ) : (
@@ -2621,6 +2629,7 @@ export default function Assessment() {
               <p className="mb-2 text-sm font-medium text-primary">
                 {church.name}
               </p>
+              <p className="mt-4 text-sm font-medium text-primary">Ready when you are</p>
               <h1 className="font-serif text-4xl">Your Ministry Profile</h1>
             </div>
             <p className="text-muted-foreground">
@@ -2633,6 +2642,17 @@ export default function Assessment() {
               opportunity to pray, reflect, and learn a little more about how
               God may be inviting you to serve.
             </p>
+            {assessmentEstimate && (
+              <p
+                className="rounded-lg bg-primary/5 px-4 py-3 text-sm text-muted-foreground"
+                data-testid="text-assessment-estimated-time"
+              >
+                Estimated completion time:{" "}
+                <span className="font-medium text-foreground">
+                  about {assessmentEstimate.minimum}–{assessmentEstimate.maximum} minutes
+                </span>
+              </p>
+            )}
             {integratedPilotEnabled && <p className="text-sm leading-6 text-muted-foreground">
               When you finish, you'll see a gentle summary of what came through in your responses — patterns, not a verdict. The fullest picture emerges in a conversation with your ministry leader.
             </p>}
@@ -2686,7 +2706,7 @@ export default function Assessment() {
             {churchLogo && (
               <img
                 src={churchLogo}
-                alt={`${church.name} logo`}
+                alt="Church logo"
                 className="mx-auto max-h-20 max-w-[220px] object-contain"
               />
             )}

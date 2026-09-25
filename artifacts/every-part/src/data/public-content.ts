@@ -83,19 +83,19 @@ export const leaderBenefits = [
 
 export const partfinderBenefits = [
   {
-    eyebrow: "For pastors",
-    title: "Prepare for the conversations that matter.",
+    eyebrow: "Church-wide patterns",
+    title: "See where gifts and capacity are emerging.",
     description:
-      "PartFinder helps pastors see patterns across adult Ministry Profiles, think through a ministry need, and enter a conversation with better questions.",
+      "PartFinder helps pastors step back from individual profiles to notice shared strengths, availability, and people who may be ready for a follow-up conversation.",
     points: [
       "Explore church-wide serving patterns",
       "Notice people worth following up with",
-      "Prepare thoughtful leadership conversations",
+      "Prepare thoughtful conversations with people and teams",
     ],
   },
   {
-    eyebrow: "For pastors and ministry leaders",
-    title: "Move from a ministry need to a formation conversation.",
+    eyebrow: "A specific ministry need",
+    title: "Explore a need with relevant profile signals.",
     description:
       "Describe the kind of growth or ministry need you are discerning and PartFinder surfaces relevant, verified profile signals so you know where to begin.",
     points: [

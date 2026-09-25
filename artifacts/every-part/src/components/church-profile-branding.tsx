@@ -26,7 +26,7 @@ export function ChurchProfileBranding({
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-white p-2">
             <img
               src={branding.logoUrl}
-              alt={`${branding.name} logo`}
+              alt="Church logo"
               className="max-h-full max-w-full object-contain"
             />
           </div>

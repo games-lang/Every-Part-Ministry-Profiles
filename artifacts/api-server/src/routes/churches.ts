@@ -119,15 +119,32 @@ router.patch("/church", async (req, res): Promise<void> => {
     }
   }
   const { onboardingCompleted, ...churchUpdate } = parsed.data;
-  const [updated] = await db
-    .update(churchesTable)
-    .set({
-      ...churchUpdate,
-      ...(customization ? { ministryCustomization: customization } : {}),
-      ...(onboardingCompleted ? { onboardingCompletedAt: new Date() } : {}),
-    })
-    .where(eq(churchesTable.id, church.id))
-    .returning();
+  const [updated] = await db.transaction(async (tx) => {
+    const [savedChurch] = await tx
+      .update(churchesTable)
+      .set({
+        ...churchUpdate,
+        ...(customization ? { ministryCustomization: customization } : {}),
+        ...(onboardingCompleted ? { onboardingCompletedAt: new Date() } : {}),
+      })
+      .where(eq(churchesTable.id, church.id))
+      .returning();
+    if (savedChurch && (parsed.data.adminName !== undefined || parsed.data.adminEmail !== undefined)) {
+      await tx
+        .update(churchAdminsTable)
+        .set({
+          name: savedChurch.adminName,
+          email: savedChurch.adminEmail,
+        })
+        .where(
+          and(
+            eq(churchAdminsTable.churchId, church.id),
+            eq(churchAdminsTable.role, "owner"),
+          ),
+        );
+    }
+    return [savedChurch];
+  });
 
   if (!updated) {
     res.status(404).json({ error: "Church not found" });

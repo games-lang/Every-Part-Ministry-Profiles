@@ -231,7 +231,7 @@ export default function Home() {
             <p className="relative mx-auto mt-4 max-w-xl font-serif text-2xl leading-tight sm:text-3xl">Help every part of the Body find its place.</p>
             <div className="relative mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <Link href="/sign-up" className="landing-focus inline-flex items-center justify-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
-              <Link href="/profile/riverstone-community" className="landing-focus inline-flex items-center justify-center rounded-full border border-secondary-foreground/30 px-7 py-4 font-semibold transition hover:bg-secondary-foreground/10">Preview a Ministry Profile</Link>
+              <Link href="/profile/riverstone-community" className="landing-focus inline-flex items-center justify-center rounded-full border border-secondary-foreground/30 px-7 py-4 font-semibold transition hover:bg-secondary-foreground/10">Try a sample assessment</Link>
             </div>
             <p className="relative mt-6 text-xs font-semibold uppercase tracking-[.14em] text-secondary-foreground/65">
               Free to start · paid plans from $10/mo

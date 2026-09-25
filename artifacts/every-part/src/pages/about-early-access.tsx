@@ -38,8 +38,8 @@ export default function AboutEarlyAccess() {
           </h1>
           <p className="mt-5 text-lg leading-8 text-muted-foreground">
             Every Part Early Access gives a small group of churches the
-            opportunity to begin using Every Part today while helping shape the
-             Every Part for churches everywhere.
+            opportunity to begin using Every Part today while helping shape
+            Every Part for churches everywhere.
           </p>
         </div>
 
@@ -77,8 +77,8 @@ export default function AboutEarlyAccess() {
             <CardContent className="leading-7 text-muted-foreground">
               Early Access does not mean private church or member information
               is publicly exposed or casually used for experimentation.
-              Feedback and aggregate usage patterns may help improve the
-               Every Part, while privacy remains a priority.
+              Feedback and aggregate usage patterns may help improve
+              Every Part, while privacy remains a priority.
             </CardContent>
           </Card>
           <Card className="border-border/70 shadow-sm">
@@ -98,7 +98,7 @@ export default function AboutEarlyAccess() {
                 ))}
               </ul>
               <Button asChild variant="outline" className="mt-5 rounded-full">
-                <Link href="/sign-in">Share feedback</Link>
+                <Link href="/sign-in#feedback">Share feedback</Link>
               </Button>
             </CardContent>
           </Card>

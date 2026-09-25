@@ -549,8 +549,7 @@
   color: hsl(var(--sample-accent));
   font-size: .65rem;
   font-weight: 700;
-  letter-spacing: .16em;
-  text-transform: uppercase;
+  letter-spacing: .04em;
 }
 .sample-profile-card__tag {
   border-radius: 999px;
