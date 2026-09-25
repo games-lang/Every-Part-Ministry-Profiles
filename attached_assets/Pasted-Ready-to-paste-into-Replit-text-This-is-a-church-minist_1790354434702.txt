@@ -1,0 +1,153 @@
+Ready to paste into Replit:
+
+```text
+This is a church ministry-profile SaaS. The new integrated-format assessment is the public-facing flow where participants answer reflection questions. Keep the experience warm and pastoral, never clinical or definitive: results are always a starting point for a ministry conversation, never a verdict.
+
+Update the participant-facing assessment UI and copy as follows. First inspect the existing components, response model, theme mappings, routing, and tests so the changes fit the current architecture. Do not change scoring logic, scoring weights, saved-result calculations, data interpretation used by leaders, or any leader-view behavior. Do not redesign unrelated screens. Preserve existing responses and backward compatibility wherever possible.
+
+1. Completion page: add a response-pattern summary
+
+Add a new section below the existing completion content.
+
+Use this heading verbatim:
+“What stood out in your responses”
+
+Use this subtext verbatim:
+“This is a starting point, not a verdict — these themes are meant to spark a conversation with your ministry leader, not to define you.”
+
+Build the summary only from the participant’s own submitted reflection responses:
+- Consider the highest-rated reflection items on the existing 5-point scale.
+- Exclude skipped items and N/A responses.
+- Group qualifying items using the product’s existing theme labels and mappings; do not invent new theme labels or alter scoring.
+- Show the top 2–3 clusters that have supporting responses. If fewer than two clusters have meaningful supporting data, show only the supported clusters rather than filling space with guesses.
+- For each cluster, show the existing theme name, a one-line plain-language description, and one representative statement the participant rated highly.
+- Format the example naturally, such as: “You rated ‘I naturally notice when someone is hurting…’ as very much like me.” Use the participant’s actual selected response wording where available rather than implying a stronger rating.
+- If there is not enough usable response data, show a warm empty state that invites discussion with a ministry leader; do not infer themes.
+
+Do not show numeric scores, rankings, percentile-style language, personality-type codes, or gift labels presented as pronouncements.
+
+Acceptance criteria:
+- The section appears on the participant completion page without replacing the existing completion content.
+- It uses only that participant’s submitted, non-skipped, non-N/A reflection responses and existing theme mappings.
+- It renders 2–3 supported clusters when available, with one real high-rated example per cluster.
+- Ties are handled deterministically and do not produce unstable ordering between page loads.
+- No leader-facing output or existing scoring result changes.
+- The layout works on mobile and desktop and handles long theme names and statements without clipping.
+
+2. Intro page: set expectations
+
+Add this sentence near the existing intro description, verbatim:
+“When you finish, you'll see a gentle summary of what came through in your responses — patterns, not a verdict. The fullest picture emerges in a conversation with your ministry leader.”
+
+Acceptance criteria:
+- The sentence appears before the participant starts the assessment.
+- It uses the exact punctuation and wording above.
+- It is visually secondary to the main heading but remains readable and accessible.
+
+3. Merge Steps 6 and 7
+
+The current Connection step (about 20 fields) and Preferences step (6 dropdowns) overlap around serving frequency, rhythm, and availability. Merge them into one participant-facing step titled exactly:
+“Availability & Serving Rhythm”
+
+Keep one consolidated set of fields covering:
+- Current number of serving roles.
+- How that current load feels.
+- Preferred serving frequency.
+- Preferred serving rhythm.
+- Availability windows.
+- One optional season-of-life note.
+
+Remove duplicated versions of those fields and keep all other non-overlapping content and behavior. Reuse existing response keys when possible so previously saved in-progress assessments and existing downstream leader data remain compatible. If two legacy fields map to one new field, preserve a safe read path for existing saved values and avoid destructive migration.
+
+Acceptance criteria:
+- Participants encounter one “Availability & Serving Rhythm” step instead of separate Connection and Preferences steps.
+- Each concept above is asked once, not twice.
+- Existing non-overlapping fields are retained.
+- Progress indicators, step counts, back/next navigation, validation, autosave, resume behavior, and submission still work.
+- Previously saved in-progress responses load without crashing or silently discarding recoverable answers.
+- Leader-view behavior and scoring remain unchanged.
+
+4. Personality transition
+
+Immediately before the first forced-choice personality pair, insert this section header and explanatory copy verbatim:
+“A few quick preferences — For the next set, pick the side that feels more like you. There are no right answers, and these simply add texture to your profile.”
+
+Treat it as explanatory text, not as a question or scored response.
+
+Acceptance criteria:
+- It appears exactly once, directly before the first forced-choice item.
+- It is announced in a sensible reading order by screen readers.
+- It does not affect question numbering, required-state logic, progress calculation, response storage, or scoring.
+
+5. Copy fixes
+
+Replace the optional-experiences intro with this exact complete text:
+“These reflections are optional and unscored. They are conversation starters, not proof of a gift. Let them spark honest reflection — there is no score attached.”
+
+Replace the spiritual-health subheading with this exact complete text:
+“Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing.”
+
+Standardize the N/A option label everywhere to:
+“N/A — Not sure / I have not had the opportunity”
+
+Acceptance criteria:
+- No copy is truncated mid-word at any viewport size.
+- The exact replacement strings appear everywhere relevant, including the final question’s N/A option.
+- The standardized label does not change the underlying stored value or scoring/exclusion behavior.
+
+6. Accessibility
+
+Fix the following participant-facing accessibility issues:
+
+(a) Accessible question names
+- Several reflection questions have aria-labels truncated mid-word; for example, question 64’s accessible name ends with “…that fit the questio” even though the visible text is complete.
+- Set every question’s accessible name to its full visible question text.
+- Prefer semantic labeling with visible text referenced by aria-labelledby where practical, rather than duplicating strings that can drift.
+
+(b) Keyboard focus
+- Add a clear, visible focus ring on the intro page and throughout the assessment for keyboard navigation.
+- Do not remove focus outlines unless replaced with an equally visible :focus-visible treatment.
+- Ensure adequate contrast and that the ring is not clipped by overflow containers.
+
+(c) Custom comboboxes
+- Verify and fix the custom combobox dropdowns used in the spiritual-health, connection, and preferences portions so they are fully keyboard-operable.
+- Arrow keys move through options, Enter selects, and Escape closes.
+- Tab moves focus logically without trapping the user.
+- Expose appropriate combobox/listbox roles, expanded state, active descendant or equivalent semantics, labels, and selected state.
+
+Acceptance criteria:
+- Every reflection question’s computed accessible name matches its full visible text.
+- All interactive controls have a visible keyboard focus indicator.
+- All relevant comboboxes can be opened, navigated, selected, and closed without a mouse.
+- No keyboard trap is introduced.
+- Add or update automated accessibility/component tests where the current test stack supports them.
+
+7. Results/journey page: make the profile chapter reviewable
+
+The profile chapter card on the participant journey/results page is currently not clickable. Make it clearly interactive and expandable so participants can review the answers they submitted.
+
+Requirements:
+- Use a semantic button or disclosure control with an accessible name and accurate expanded/collapsed state.
+- In the expanded area, present submitted answers in the original assessment order, grouped under their existing section names.
+- Show the question/prompt and the participant’s submitted answer in readable language.
+- Clearly identify skipped or N/A responses without treating them as negative results.
+- This is read-only review; do not add editing unless an existing supported edit flow already exists.
+- Do not expose internal scoring fields, weights, debug data, hidden IDs, leader-only notes, or personality codes.
+
+Acceptance criteria:
+- Mouse, touch, Enter, and Space can expand/collapse the card.
+- State is announced correctly to assistive technology.
+- Submitted answers render accurately, including skipped and N/A states.
+- Long answers and mobile layouts do not overflow or clip.
+- Existing journey/results behavior outside this disclosure is unchanged.
+
+8. Regression checks
+
+Before finishing:
+- Run the existing lint, type-check, unit, component, and end-to-end checks available in the repository.
+- Add focused tests for the completion summary filtering/grouping, exact copy, merged-step navigation, full accessible names, keyboard combobox behavior, and expandable profile chapter.
+- Manually verify a complete assessment with normal answers, N/A answers, skipped optional items, tied high-rated themes, and an in-progress legacy response.
+- Confirm no scoring output or leader-view snapshot changes unless a test fixture must be updated solely because participant-facing copy or step presentation changed.
+
+After implementing, summarize what changed and flag anything you were unsure about rather than guessing.
+```
