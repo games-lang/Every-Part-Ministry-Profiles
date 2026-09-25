@@ -18,10 +18,12 @@ import partFinderLeadershipProfileRouter from "./partfinder-leadership-profile";
 import earlyAccessRouter from "./early-access";
 import billingRouter from "./billing";
 import adminChurchesRouter from "./admin-churches";
+import churchRemovalRouter from "./church-removal";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(churchRemovalRouter);
 router.use(churchesRouter);
 router.use(dashboardRouter);
 router.use(profilesRouter);

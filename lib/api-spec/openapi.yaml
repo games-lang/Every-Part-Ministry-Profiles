@@ -460,6 +460,38 @@ paths:
                 $ref: "#/components/schemas/Church"
         "401":
           description: Unauthorized
+  /church/deletion-access:
+    get:
+      operationId: getChurchDeletionAccess
+      tags: [churches]
+      summary: Get whether the signed-in church member can permanently remove people
+      responses:
+        "200":
+          description: Permanent-removal capability
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChurchDeletionAccess"
+        "401":
+          description: Unauthorized
+  /church/removal-audit:
+    get:
+      operationId: listChurchRemovalAudit
+      tags: [churches]
+      summary: List permanent-removal audit entries for the church owner
+      responses:
+        "200":
+          description: Permanent-removal audit entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChurchRemovalAuditEntry"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Church owner access required
   /church/admins:
     get:
       operationId: listChurchAdmins
@@ -1001,6 +1033,29 @@ paths:
           description: Unauthorized
         "404":
           description: Person not found
+  /people/{id}:
+    delete:
+      operationId: removeChurchPerson
+      tags: [people]
+      summary: Permanently remove a church person and any linked completed profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "204":
+          description: Person and any linked profile permanently removed
+        "400":
+          description: Invalid person identifier
+        "401":
+          description: Unauthorized
+        "403":
+          description: Church owner, admin, or pastor access required
+        "404":
+          description: Person not found
+        "503":
+          description: Profile photo cleanup failed; no database records were removed
   /people/invites/{token}:
     get:
       operationId: getPublicPersonInvite
@@ -1362,6 +1417,28 @@ paths:
           description: Unauthorized
         "404":
           description: Profile not found
+    delete:
+      operationId: removeChurchProfile
+      tags: [profiles]
+      summary: Permanently remove a completed church profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "204":
+          description: Profile and related private data permanently removed
+        "400":
+          description: Invalid profile identifier
+        "401":
+          description: Unauthorized
+        "403":
+          description: Church owner, admin, or pastor access required
+        "404":
+          description: Profile not found
+        "503":
+          description: Profile photo cleanup failed; no database records were removed
   /profiles/{id}/pastor-note:
     get:
       operationId: getPastorNote
@@ -2171,6 +2248,23 @@ components:
       required: [canOverrideYouthPathway]
       properties:
         canOverrideYouthPathway: { type: boolean }
+    ChurchDeletionAccess:
+      type: object
+      additionalProperties: false
+      required: [canRemove, isOwner]
+      properties:
+        canRemove: { type: boolean }
+        isOwner: { type: boolean }
+    ChurchRemovalAuditEntry:
+      type: object
+      additionalProperties: false
+      required: [id, subjectName, actorName, removedAt, kind]
+      properties:
+        id: { type: integer }
+        subjectName: { type: string }
+        actorName: { type: string }
+        removedAt: { type: string, format: date-time }
+        kind: { type: string, enum: [profile, person] }
     DiscoverAccessInput:
       type: object
       additionalProperties: false

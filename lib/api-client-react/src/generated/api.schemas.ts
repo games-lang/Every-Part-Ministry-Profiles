@@ -967,6 +967,27 @@ export interface ChurchAdminAccess {
   canOverrideYouthPathway: boolean;
 }
 
+export interface ChurchDeletionAccess {
+  canRemove: boolean;
+  isOwner: boolean;
+}
+
+export type ChurchRemovalAuditEntryKind = typeof ChurchRemovalAuditEntryKind[keyof typeof ChurchRemovalAuditEntryKind];
+
+
+export const ChurchRemovalAuditEntryKind = {
+  profile: 'profile',
+  person: 'person',
+} as const;
+
+export interface ChurchRemovalAuditEntry {
+  id: number;
+  subjectName: string;
+  actorName: string;
+  removedAt: string;
+  kind: ChurchRemovalAuditEntryKind;
+}
+
 export interface DiscoverAccessInput {
   /**
      * @minLength 6

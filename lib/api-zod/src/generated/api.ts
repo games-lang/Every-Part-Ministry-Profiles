@@ -1314,6 +1314,28 @@ export const UpdateMyChurchResponse = zod.object({
 
 
 /**
+ * @summary Get whether the signed-in church member can permanently remove people
+ */
+export const GetChurchDeletionAccessResponse = zod.object({
+  "canRemove": zod.boolean(),
+  "isOwner": zod.boolean()
+})
+
+
+/**
+ * @summary List permanent-removal audit entries for the church owner
+ */
+export const ListChurchRemovalAuditResponseItem = zod.object({
+  "id": zod.int(),
+  "subjectName": zod.string(),
+  "actorName": zod.string(),
+  "removedAt": zod.coerce.date(),
+  "kind": zod.enum(['profile', 'person'])
+})
+export const ListChurchRemovalAuditResponse = zod.array(ListChurchRemovalAuditResponseItem)
+
+
+/**
  * @summary List pastors with access to the signed-in church
  */
 export const ListChurchAdminsResponseItem = zod.object({
@@ -2738,6 +2760,19 @@ export const CreatePersonInviteResponse = zod.object({
 
 
 /**
+ * @summary Permanently remove a church person and any linked completed profile
+ */
+
+
+
+export const RemoveChurchPersonParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const RemoveChurchPersonResponse = zod.void()
+
+
+/**
  * @summary Validate a private Ministry Profile invitation
  */
 export const GetPublicPersonInviteParams = zod.object({
@@ -3915,6 +3950,19 @@ export const GetProfileResponse = zod.object({
 }),
   "youth": zod.record(zod.string(), zod.unknown()).nullable()
 }))
+
+
+/**
+ * @summary Permanently remove a completed church profile
+ */
+
+
+
+export const RemoveChurchProfileParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const RemoveChurchProfileResponse = zod.void()
 
 
 /**

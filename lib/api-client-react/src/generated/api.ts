@@ -37,6 +37,8 @@ import type {
   ChurchAdmin,
   ChurchAdminAccess,
   ChurchAdminAddInput,
+  ChurchDeletionAccess,
+  ChurchRemovalAuditEntry,
   ChurchUpdate,
   DashboardSummary,
   DevelopProfileInput,
@@ -1866,6 +1868,160 @@ export const useUpdateMyChurch = <TError = ErrorType<void>,
       > => {
       return useMutation(getUpdateMyChurchMutationOptions(options));
     }
+
+export const getGetChurchDeletionAccessUrl = () => {
+
+
+
+
+  return `/api/church/deletion-access`
+}
+
+/**
+ * @summary Get whether the signed-in church member can permanently remove people
+ */
+export const getChurchDeletionAccess = async ( options?: Parameters<typeof customFetch>[1]): Promise<ChurchDeletionAccess> => {
+
+  return customFetch<ChurchDeletionAccess>(getGetChurchDeletionAccessUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetChurchDeletionAccessQueryKey = () => {
+    return [
+    `/api/church/deletion-access`
+    ] as const;
+    }
+
+
+export const getGetChurchDeletionAccessQueryOptions = <TData = Awaited<ReturnType<typeof getChurchDeletionAccess>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChurchDeletionAccess>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChurchDeletionAccessQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChurchDeletionAccess>>> = ({ signal }) => getChurchDeletionAccess({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChurchDeletionAccess>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetChurchDeletionAccessQueryResult = NonNullable<Awaited<ReturnType<typeof getChurchDeletionAccess>>>
+export type GetChurchDeletionAccessQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get whether the signed-in church member can permanently remove people
+ */
+
+export function useGetChurchDeletionAccess<TData = Awaited<ReturnType<typeof getChurchDeletionAccess>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChurchDeletionAccess>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetChurchDeletionAccessQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListChurchRemovalAuditUrl = () => {
+
+
+
+
+  return `/api/church/removal-audit`
+}
+
+/**
+ * @summary List permanent-removal audit entries for the church owner
+ */
+export const listChurchRemovalAudit = async ( options?: Parameters<typeof customFetch>[1]): Promise<ChurchRemovalAuditEntry[]> => {
+
+  return customFetch<ChurchRemovalAuditEntry[]>(getListChurchRemovalAuditUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListChurchRemovalAuditQueryKey = () => {
+    return [
+    `/api/church/removal-audit`
+    ] as const;
+    }
+
+
+export const getListChurchRemovalAuditQueryOptions = <TData = Awaited<ReturnType<typeof listChurchRemovalAudit>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listChurchRemovalAudit>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListChurchRemovalAuditQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listChurchRemovalAudit>>> = ({ signal }) => listChurchRemovalAudit({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listChurchRemovalAudit>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListChurchRemovalAuditQueryResult = NonNullable<Awaited<ReturnType<typeof listChurchRemovalAudit>>>
+export type ListChurchRemovalAuditQueryError = ErrorType<void>
+
+
+/**
+ * @summary List permanent-removal audit entries for the church owner
+ */
+
+export function useListChurchRemovalAudit<TData = Awaited<ReturnType<typeof listChurchRemovalAudit>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listChurchRemovalAudit>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListChurchRemovalAuditQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getListChurchAdminsUrl = () => {
 
@@ -3753,6 +3909,80 @@ export const useCreatePersonInvite = <TError = ErrorType<void>,
       return useMutation(getCreatePersonInviteMutationOptions(options));
     }
 
+export const getRemoveChurchPersonUrl = (id: number,) => {
+
+
+
+
+  return `/api/people/${id}`
+}
+
+/**
+ * @summary Permanently remove a church person and any linked completed profile
+ */
+export const removeChurchPerson = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getRemoveChurchPersonUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveChurchPersonMutationKey = () => ['removeChurchPerson'] as const;
+
+export const getRemoveChurchPersonMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeChurchPerson>>, TError,RemoveChurchPersonMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeChurchPerson>>, TError,RemoveChurchPersonMutationVariables, TContext> => {
+
+const mutationKey = getRemoveChurchPersonMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeChurchPerson>>, RemoveChurchPersonMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  removeChurchPerson(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveChurchPersonMutationResult = NonNullable<Awaited<ReturnType<typeof removeChurchPerson>>>
+
+    export type RemoveChurchPersonMutationError = ErrorType<void>
+    export type RemoveChurchPersonMutationVariables = {id: number}
+
+    /**
+ * @summary Permanently remove a church person and any linked completed profile
+ */
+export const useRemoveChurchPerson = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeChurchPerson>>, TError,RemoveChurchPersonMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof removeChurchPerson>>,
+        TError,
+        RemoveChurchPersonMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveChurchPersonMutationOptions(options));
+    }
+
 export const getGetPublicPersonInviteUrl = (token: string,) => {
 
 
@@ -5019,6 +5249,80 @@ export function useGetProfile<TData = Awaited<ReturnType<typeof getProfile>>, TE
 
 
 
+
+export const getRemoveChurchProfileUrl = (id: number,) => {
+
+
+
+
+  return `/api/profiles/${id}`
+}
+
+/**
+ * @summary Permanently remove a completed church profile
+ */
+export const removeChurchProfile = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getRemoveChurchProfileUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveChurchProfileMutationKey = () => ['removeChurchProfile'] as const;
+
+export const getRemoveChurchProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeChurchProfile>>, TError,RemoveChurchProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeChurchProfile>>, TError,RemoveChurchProfileMutationVariables, TContext> => {
+
+const mutationKey = getRemoveChurchProfileMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeChurchProfile>>, RemoveChurchProfileMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  removeChurchProfile(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveChurchProfileMutationResult = NonNullable<Awaited<ReturnType<typeof removeChurchProfile>>>
+
+    export type RemoveChurchProfileMutationError = ErrorType<void>
+    export type RemoveChurchProfileMutationVariables = {id: number}
+
+    /**
+ * @summary Permanently remove a completed church profile
+ */
+export const useRemoveChurchProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeChurchProfile>>, TError,RemoveChurchProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof removeChurchProfile>>,
+        TError,
+        RemoveChurchProfileMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveChurchProfileMutationOptions(options));
+    }
 
 export const getGetPastorNoteUrl = (id: number,) => {
 

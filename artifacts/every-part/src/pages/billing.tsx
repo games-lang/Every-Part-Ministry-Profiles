@@ -178,7 +178,7 @@ export default function BillingPage() {
                     )}
                   </div>
                   <CardDescription>{details.description}</CardDescription>
-                  <p className="pt-3 font-serif text-4xl font-semibold">
+                  <div className="pt-3 font-serif text-4xl font-semibold">
                     {plansLoading ? (
                       <Skeleton className="inline-block h-10 w-20 align-middle" />
                     ) : plan ? (
@@ -190,7 +190,7 @@ export default function BillingPage() {
                       {" "}
                       / month
                     </span>
-                  </p>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">

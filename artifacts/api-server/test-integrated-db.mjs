@@ -13,6 +13,7 @@ try {
   const manifest = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
   const external = Object.keys(manifest.dependencies).filter(name => !name.startsWith("@workspace/"));
   const output = join(directory, "integrated-attempts.test.cjs");
+  const removalOutput = join(directory, "church-removal-db.test.cjs");
   // Bundle workspace TS imports (which use bundler-style extension resolution)
   // while retaining normal Node package resolution for runtime dependencies.
   await build({
@@ -21,7 +22,13 @@ try {
     bundle: true, platform: "node", format: "cjs",
     external: [...external, "pg-native"], outfile: output,
   });
-  const result = spawnSync(process.execPath, ["--test", output], {
+  await build({
+    absWorkingDir: root,
+    entryPoints: ["src/lib/church-removal-db.test.ts"],
+    bundle: true, platform: "node", format: "cjs",
+    external: [...external, "pg-native"], outfile: removalOutput,
+  });
+  const result = spawnSync(process.execPath, ["--test", output, removalOutput], {
     cwd: root, stdio: "inherit", env: { ...process.env, RUN_INTEGRATED_DB_TESTS: "1" },
   });
   if (result.error) throw result.error;

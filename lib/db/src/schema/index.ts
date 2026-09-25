@@ -30,3 +30,4 @@ export * from "./partfinder-leadership-profiles";
 export * from "./early-access";
 export * from "./pastor-notes";
 export * from "./integrated-attempts";
+export * from "./church-removal-audit";

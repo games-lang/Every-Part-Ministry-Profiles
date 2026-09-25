@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useListProfiles, useFindVolunteerMatches, useListTeams, useListPeople, type MinistryPerson } from "@workspace/api-client-react";
+import { useListProfiles, useFindVolunteerMatches, useListTeams, useListPeople, useGetChurchDeletionAccess, type MinistryPerson } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { EmptyState } from "@/components/empty-state";
 import { PeoplePanel } from "@/components/people-panel";
 import { ProfileAvatar } from "@/components/profile-photo-uploader";
+import { ChurchRemovalMenu } from "@/components/church-removal-menu";
 
 const AVAILABILITY_OPTIONS = [
   "Sunday mornings",
@@ -118,7 +119,15 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
   );
 }
 
-function PendingPeopleSection({ people }: { people: MinistryPerson[] }) {
+function PendingPeopleSection({
+  people,
+  canRemove,
+  focusFallbackRef,
+}: {
+  people: MinistryPerson[];
+  canRemove: boolean;
+  focusFallbackRef: React.RefObject<HTMLElement | null>;
+}) {
   if (people.length === 0) return null;
 
   return (
@@ -186,9 +195,17 @@ function PendingPeopleSection({ people }: { people: MinistryPerson[] }) {
                       : `Invite expires ${new Date(person.inviteExpiresAt).toLocaleDateString()}.`}
                   </p>
                 </div>
-                <Button variant="outline" size="sm" className="shrink-0" asChild>
-                  <Link href="/profiles?view=people">View invite</Link>
-                </Button>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/profiles?view=people">View invite</Link>
+                  </Button>
+                  {canRemove && (
+                    <ChurchRemovalMenu
+                      target={{ kind: "person", id: person.id, name: `${person.firstName} ${person.lastName}` }}
+                      focusFallbackRef={focusFallbackRef}
+                    />
+                  )}
+                </div>
               </CardContent>
             </Card>
           );
@@ -200,6 +217,9 @@ function PendingPeopleSection({ people }: { people: MinistryPerson[] }) {
 
 export default function ProfilesList() {
   const [location] = useLocation();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const { data: deletionAccess } = useGetChurchDeletionAccess();
+  const canRemove = deletionAccess?.canRemove === true;
   const [activeTab, setActiveTab] = useState<"directory" | "people" | "match">(() => {
     const query = location.split("?")[1] ?? "";
     const view = new URLSearchParams(query).get("view");
@@ -294,6 +314,7 @@ export default function ProfilesList() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
+                ref={searchInputRef}
                 placeholder="Search by name, email, or skills..."
                 className="pl-9 bg-card border-border/60"
                 value={searchTerm}
@@ -336,7 +357,11 @@ export default function ProfilesList() {
               </Card>
             </div>
           ) : showPendingPeople ? (
-            <PendingPeopleSection people={pendingPeople} />
+            <PendingPeopleSection
+              people={pendingPeople}
+              canRemove={canRemove}
+              focusFallbackRef={searchInputRef}
+            />
           ) : null}
 
           {showCompletedProfiles && profilesError ? (
@@ -428,6 +453,12 @@ export default function ProfilesList() {
                          <Link href={`/profiles/${profile.id}`}>View Profile</Link>
                        </Button>
                      </div>
+                      {canRemove && (
+                        <ChurchRemovalMenu
+                          target={{ kind: "profile", id: profile.id, name: profile.memberName }}
+                          focusFallbackRef={searchInputRef}
+                        />
+                      )}
                    </div>
                 </Card>
               ))}

@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChurchRemovalHistory } from "@/components/church-removal-history";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, BookOpenCheck, ChevronDown, Clock3, Copy, ExternalLink, Eye, ImagePlus, Loader2, Palette, RefreshCw, Trash2, Upload, UserPlus, UsersRound } from "lucide-react";
 import {
@@ -1302,6 +1303,8 @@ export default function ChurchSetup() {
           )}
         </CardContent>
       </Card>
+
+      <ChurchRemovalHistory />
 
       </div>
 
