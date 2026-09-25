@@ -2967,16 +2967,6 @@ export default function Assessment() {
                             <p className="text-sm font-medium">
                               Question {currentRound + 1} of {roundCount} · {coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} answered
                             </p>
-                              <Button type="button" variant="outline" size="sm" onClick={async () => {
-                                try {
-                                  await navigator.clipboard.writeText(window.location.href);
-                                  toast({ title: "Page link copied", description: "Resume in this same browser and device. The link does not contain your private draft credentials." });
-                                } catch {
-                                  toast({ title: "Could not copy link", description: "Bookmark this page in this browser to return to your draft.", variant: "destructive" });
-                                }
-                              }}>
-                                Copy page link
-                              </Button>
                           </div>
                           {reflectionValidationError && <p role="alert" className="text-destructive">{reflectionValidationError}</p>}
                           <IntegratedReflections attempt={integratedAttempt} questions={roundQuestions} answers={integratedAnswers}
