@@ -5,13 +5,17 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { BillingPlanFeatureFlags } from './billingPlanFeatureFlags';
 import type { BillingPlanKey } from './billingPlanKey';
 
 export interface BillingPlan {
   key: BillingPlanKey;
   name: string;
   description: string;
+  /** @minimum 0 */
   monthlyPrice: number;
+  /** @minimum 0 */
+  annualPrice: number;
   /**
      * @minimum 1
      * @nullable
@@ -19,5 +23,7 @@ export interface BillingPlan {
   profileLimit: number | null;
   /** @minimum 1 */
   aiCreditLimit: number;
-  priceId: string;
+  featureFlags: BillingPlanFeatureFlags;
+  /** @nullable */
+  priceId: string | null;
 }

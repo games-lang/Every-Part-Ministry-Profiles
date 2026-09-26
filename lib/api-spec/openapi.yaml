@@ -2102,17 +2102,28 @@ components:
         foundingChurch: { type: boolean }
     BillingPlan:
       type: object
-      required: [key, name, description, monthlyPrice, profileLimit, aiCreditLimit, priceId]
+      required: [key, name, description, monthlyPrice, annualPrice, profileLimit, aiCreditLimit, featureFlags, priceId]
       properties:
         key:
           type: string
-          enum: [growing, complete, network, unlimited]
+          enum: [starter, growing, complete, network, unlimited]
         name: { type: string }
         description: { type: string }
-        monthlyPrice: { type: integer }
+        monthlyPrice: { type: integer, minimum: 0 }
+        annualPrice: { type: integer, minimum: 0 }
         profileLimit: { type: ["integer", "null"], minimum: 1 }
         aiCreditLimit: { type: integer, minimum: 1 }
-        priceId: { type: string }
+        featureFlags:
+          type: object
+          required: [churchSetup, ministryProfiles, searchAndFiltering, teamConversations, profileHistory, leaderAccess]
+          properties:
+            churchSetup: { type: boolean }
+            ministryProfiles: { type: boolean }
+            searchAndFiltering: { type: boolean }
+            teamConversations: { type: boolean }
+            profileHistory: { type: boolean }
+            leaderAccess: { type: boolean }
+        priceId: { type: ["string", "null"] }
     BillingPlanList:
       type: object
       required: [plans]

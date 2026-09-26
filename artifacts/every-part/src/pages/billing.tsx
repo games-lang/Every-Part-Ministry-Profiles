@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { CreditCard, ShieldCheck } from "lucide-react";
 import {
@@ -15,35 +16,6 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const planDetails = {
-  starter: {
-    name: "Starter",
-    description: "A low-pressure place to begin with your church.",
-    price: "$0",
-    profileLimit: 5,
-    aiCreditLimit: 20,
-  },
-  growing: {
-    name: "Growing",
-    description: "For a small team beginning a shared ministry conversation.",
-  },
-  complete: {
-    name: "Complete",
-    description:
-      "For churches ready for a fuller rhythm of discovery and connection.",
-  },
-  network: {
-    name: "Network",
-    description:
-      "For churches and ministry networks growing across multiple contexts.",
-  },
-  unlimited: {
-    name: "Unlimited",
-    description:
-      "For churches that want room for every person, without a profile cap.",
-  },
-} as const;
-
 function formatPrice(amount: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -53,6 +25,7 @@ function formatPrice(amount: number) {
 }
 
 export default function BillingPage() {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const { data: plans, isLoading: plansLoading } = useGetBillingPlans();
   const { data: subscription, isLoading: subscriptionLoading } =
     useGetBillingSubscription();
@@ -100,7 +73,7 @@ export default function BillingPage() {
               ) : (
                 <div className="mt-1 flex flex-wrap items-center gap-2">
                   <h2 className="font-serif text-2xl font-semibold">
-                    {planDetails[currentPlan].name}
+                    {plans?.plans.find((plan) => plan.key === currentPlan)?.name ?? "Plan unavailable"}
                   </h2>
                   <Badge variant="outline">Early access</Badge>
                 </div>
@@ -130,88 +103,38 @@ export default function BillingPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <Card
-          className={`min-w-0 break-words ${currentPlan === "starter" ? "border-primary shadow-sm" : ""}`}
-        >
-          <CardHeader>
-            <CardTitle>{planDetails.starter.name}</CardTitle>
-            <CardDescription>
-              {planDetails.starter.description}
-            </CardDescription>
-            <p className="pt-3 font-serif text-4xl font-semibold">
-              {planDetails.starter.price}
-              <span className="font-sans text-sm font-normal text-muted-foreground">
-                {" "}
-                / month
-              </span>
-            </p>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              {`Planned: up to ${planDetails.starter.profileLimit} profiles and ${planDetails.starter.aiCreditLimit} AI credits per month.`}
-            </p>
-          </CardContent>
-        </Card>
+      <div className="flex flex-wrap items-center gap-2" aria-label="Planned billing interval">
+        <Button variant={billingCycle === "monthly" ? "default" : "outline"} aria-pressed={billingCycle === "monthly"} onClick={() => setBillingCycle("monthly")}>Monthly</Button>
+        <Button variant={billingCycle === "annual" ? "default" : "outline"} aria-pressed={billingCycle === "annual"} onClick={() => setBillingCycle("annual")}>Annual · two months free</Button>
+      </div>
 
-        {(["growing", "complete", "network", "unlimited"] as const).map(
-          (key) => {
-            const plan = plans?.plans.find((candidate) => candidate.key === key);
-            const details = planDetails[key];
-            return (
-              <Card
-                key={key}
-                className={`min-w-0 break-words ${
-                  currentPlan === key
-                    ? "border-primary shadow-md"
-                    : "border-border/70"
-                }`}
-              >
-                <CardHeader>
-                  <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
-                    <CardTitle>{details.name}</CardTitle>
-                    {key === "complete" && (
-                      <Badge>Most churches begin here</Badge>
-                    )}
-                  </div>
-                  <CardDescription>{details.description}</CardDescription>
-                  <div className="pt-3 font-serif text-4xl font-semibold">
-                    {plansLoading ? (
-                      <Skeleton className="inline-block h-10 w-20 align-middle" />
-                    ) : plan ? (
-                      formatPrice(plan.monthlyPrice)
-                    ) : (
-                      "Planned"
-                    )}
-                    <span className="font-sans text-sm font-normal text-muted-foreground">
-                      {" "}
-                      / month
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ShieldCheck className="h-4 w-4 text-accent" />
-                    Planned for a future launch
-                  </div>
-                  <p className="mt-3 text-sm font-medium">
-                    {plan?.profileLimit === null
-                      ? "Unlimited profiles"
-                      : plan
-                        ? `Up to ${plan.profileLimit} profiles`
-                        : "Profile capacity to be confirmed"}
-                  </p>
-                  <p className="mt-1 text-sm font-medium">
-                    {`${plan?.aiCreditLimit ?? "Planned"} AI credits per month`}
-                  </p>
-                  <Button className="mt-6 w-full" variant="outline" disabled>
-                    Coming later
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          },
-        )}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {plans?.plans.map((plan) => (
+          <Card key={plan.key} className={`min-w-0 break-words ${currentPlan === plan.key ? "border-primary shadow-sm" : "border-border/70"}`}>
+            <CardHeader>
+              <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
+                <CardTitle>{plan.name}</CardTitle>
+                {plan.key === "complete" && <Badge>Most churches begin here</Badge>}
+              </div>
+              <CardDescription>{plan.description}</CardDescription>
+              <p className="pt-3 font-serif text-4xl font-semibold">
+                {formatPrice(billingCycle === "annual" ? plan.annualPrice : plan.monthlyPrice)}
+                <span className="font-sans text-sm font-normal text-muted-foreground"> / {billingCycle === "annual" ? "year" : "month"}</span>
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <ShieldCheck className="h-4 w-4 text-accent" />
+                Planned for a future launch
+              </div>
+              <p className="mt-3 text-sm font-medium">{plan.profileLimit === null ? "Unlimited profiles" : `Up to ${plan.profileLimit} profiles`}</p>
+              <p className="mt-1 text-sm font-medium">{plan.aiCreditLimit.toLocaleString()} AI credits per month</p>
+              <Button className="mt-6 w-full" variant="outline" disabled>Coming later</Button>
+            </CardContent>
+          </Card>
+        ))}
+        {plansLoading && <Skeleton className="col-span-full h-72" />}
+        {!plans && !plansLoading && <p role="alert" className="col-span-full text-sm text-destructive">Plan pricing is temporarily unavailable. Please try again later.</p>}
       </div>
     </div>
   );

@@ -16,8 +16,8 @@
 - [PartFinder leadership personalization](partfinder-leadership-personalization.md) — pastor coaching context is per-user, visible, editable, pausable, and never learned invisibly.
 - [Early Access boundaries](early-access-boundaries.md) — acknowledgements are per church user; owner insights stay aggregate and never expose church or member records.
 - [Stripe connector proxy](stripe-connector-proxy.md) — API-key Stripe connections may require the Replit connector proxy instead of an exposed secret key.
-- [Billing launch availability](billing-launch-availability.md) — keep planned pricing public, but default paid checkout closed until EveryPart is ready to sell.
-- [Profile plan limits](profile-plan-limits.md) — early access has no profile cap for any church; planned limits remain future-only, without changing billing or AI credits.
+- [Billing launch availability](billing-launch-availability.md) — Stripe test checkout is for expressly enrolled test churches only; live payments remain closed.
+- [Profile plan limits](profile-plan-limits.md) — ordinary early-access churches stay unlimited; only test churches may gate admin visibility, never submissions.
 - [AI plan credits](ai-plan-credits.md) — authenticated church AI actions share monthly plan credits; public guide remains separately rate-limited.
 - [CEO church console boundaries](ceo-church-console-boundaries.md) — platform-owner church management stays aggregate-only, with safe church fields editable and billing read-only.
 - [Vite Radix hot reload](vite-radix-hot-reload.md) — newly imported Radix primitives can transiently trigger invalid-hook errors during HMR; verify again after one full web workflow restart.

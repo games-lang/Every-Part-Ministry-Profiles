@@ -10,6 +10,7 @@ export type BillingPlanKey = typeof BillingPlanKey[keyof typeof BillingPlanKey];
 
 
 export const BillingPlanKey = {
+  starter: 'starter',
   growing: 'growing',
   complete: 'complete',
   network: 'network',

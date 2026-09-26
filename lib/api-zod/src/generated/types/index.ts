@@ -48,6 +48,7 @@ export * from './basicInformation';
 export * from './basicInformationInput';
 export * from './basicInformationLanguages';
 export * from './billingPlan';
+export * from './billingPlanFeatureFlags';
 export * from './billingPlanKey';
 export * from './billingPlanList';
 export * from './billingSubscription';

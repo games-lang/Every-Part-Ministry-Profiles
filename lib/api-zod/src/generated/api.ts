@@ -703,19 +703,32 @@ export const UpdateAdminChurchResponse = zod.object({
 /**
  * @summary List the active Every Part subscription plans
  */
+export const getBillingPlansResponsePlansItemMonthlyPriceMin = 0;
+
+export const getBillingPlansResponsePlansItemAnnualPriceMin = 0;
+
 
 
 
 
 export const GetBillingPlansResponse = zod.object({
   "plans": zod.array(zod.object({
-  "key": zod.enum(['growing', 'complete', 'network', 'unlimited']),
+  "key": zod.enum(['starter', 'growing', 'complete', 'network', 'unlimited']),
   "name": zod.string(),
   "description": zod.string(),
-  "monthlyPrice": zod.int(),
+  "monthlyPrice": zod.int().min(getBillingPlansResponsePlansItemMonthlyPriceMin),
+  "annualPrice": zod.int().min(getBillingPlansResponsePlansItemAnnualPriceMin),
   "profileLimit": zod.int().min(1).nullable(),
   "aiCreditLimit": zod.int().min(1),
-  "priceId": zod.string()
+  "featureFlags": zod.object({
+  "churchSetup": zod.boolean(),
+  "ministryProfiles": zod.boolean(),
+  "searchAndFiltering": zod.boolean(),
+  "teamConversations": zod.boolean(),
+  "profileHistory": zod.boolean(),
+  "leaderAccess": zod.boolean()
+}),
+  "priceId": zod.string().nullable()
 }))
 })
 

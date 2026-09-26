@@ -15,92 +15,22 @@ import { PuzzleCluster } from "@/components/puzzle-cluster";
 import { PublicLayout } from "@/components/public-layout";
 import { useGetBillingPlans } from "@workspace/api-client-react";
 
-const plans = [
-  {
-    id: "starter",
-    name: "Starter",
-    eyebrow: "Begin gently",
-    profileLimit: "5",
-    limitLabel: "Ministry Profiles",
-    aiCredits: "20 AI credits each month",
-    price: "$0",
-    cadence: "per month",
-    description: "A simple place to begin exploring Every Part with your church.",
-    icon: Cross,
-    tone: "light",
-    valueNote: "Coming soon · not currently for sale",
-    action: "Coming soon",
-  },
-  {
-    id: "growing",
-    name: "Growing",
-    eyebrow: "Start small",
-    profileLimit: "50",
-    limitLabel: "Ministry Profiles",
-    aiCredits: "150 AI credits each month",
-    price: "$10",
-    cadence: "per month",
-    description: "For a small team beginning a shared ministry conversation.",
-    icon: Sparkles,
-    tone: "light",
-    valueNote: "Coming soon · not currently for sale",
-    action: "Coming soon",
-  },
-  {
-    id: "complete",
-    name: "Complete",
-    eyebrow: "See the whole church",
-    profileLimit: "100",
-    limitLabel: "Ministry Profiles",
-    aiCredits: "400 AI credits each month",
-    price: "$20",
-    cadence: "per month",
-    description: "For churches ready to build a fuller rhythm of discovery, connection, and development.",
-    icon: Network,
-    tone: "featured",
-    valueNote: "Coming soon · not currently for sale",
-    action: "Coming soon",
-  },
-  {
-    id: "network",
-    name: "Network",
-    eyebrow: "Grow across churches",
-    profileLimit: "250",
-    limitLabel: "Ministry Profiles",
-    aiCredits: "1,000 AI credits each month",
-    price: "$30",
-    cadence: "per month",
-    description: "For multi-campus churches, networks, and denominations shaping ministry together.",
-    icon: UsersRound,
-    tone: "dark",
-    valueNote: "Coming soon · not currently for sale",
-    action: "Coming soon",
-  },
-  {
-    id: "unlimited",
-    name: "Unlimited",
-    eyebrow: "Make room for everyone",
-    profileLimit: "Unlimited",
-    limitLabel: "Ministry Profiles",
-    aiCredits: "1,000 AI credits each month",
-    price: "$50",
-    cadence: "per month",
-    description: "For churches ready to welcome every person into the conversation.",
-    icon: InfinityIcon,
-    tone: "dark",
-    valueNote: "Coming soon · not currently for sale",
-    action: "Coming soon",
-  },
-];
+const planPresentation = {
+  starter: { eyebrow: "Begin gently", icon: Cross, tone: "light" },
+  growing: { eyebrow: "Start small", icon: Sparkles, tone: "light" },
+  complete: { eyebrow: "See the whole church", icon: Network, tone: "featured" },
+  network: { eyebrow: "Grow across churches", icon: UsersRound, tone: "dark" },
+  unlimited: { eyebrow: "Make room for everyone", icon: InfinityIcon, tone: "dark" },
+} as const;
 
 const includedBenefits = [
-  ["Church setup", "Shape your church, teams, and places to serve."],
-  ["Ministry Profiles", "Give people a thoughtful starting point for conversation."],
-  ["Search and filtering", "Find a place to begin exploring together."],
-  ["Team conversations", "Give leaders a shared starting point."],
-  ["Profile history", "Return to the conversation as seasons change."],
-  ["Leader access", "Invite the people who help your church discern."],
-];
+  ["churchSetup", "Church setup", "Shape your church, teams, and places to serve."],
+  ["ministryProfiles", "Ministry Profiles", "Give people a thoughtful starting point for conversation."],
+  ["searchAndFiltering", "Search and filtering", "Find a place to begin exploring together."],
+  ["teamConversations", "Team conversations", "Give leaders a shared starting point."],
+  ["profileHistory", "Profile history", "Return to the conversation as seasons change."],
+  ["leaderAccess", "Leader access", "Invite the people who help your church discern."],
+] as const;
 
 const faqs = [
   {
@@ -172,6 +102,7 @@ function Reveal({
 
 export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const { data: billingPlans } = useGetBillingPlans();
 
   return (
@@ -226,7 +157,7 @@ export default function PricingPage() {
               </aside>
             </Reveal>
 
-            <div className="mt-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+             <div className="mt-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <Reveal className="pricing-plans-heading">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-[.2em] text-accent">Choose your starting place</p>
@@ -240,20 +171,20 @@ export default function PricingPage() {
               </p>
             </div>
 
+             <div className="mt-8 flex flex-wrap items-center gap-2" aria-label="Planned billing interval">
+               <button type="button" aria-pressed={billingCycle === "monthly"} onClick={() => setBillingCycle("monthly")} className={`rounded-full px-4 py-2 text-sm font-semibold ${billingCycle === "monthly" ? "bg-primary text-primary-foreground" : "border border-border bg-card"}`}>Monthly</button>
+               <button type="button" aria-pressed={billingCycle === "annual"} onClick={() => setBillingCycle("annual")} className={`rounded-full px-4 py-2 text-sm font-semibold ${billingCycle === "annual" ? "bg-primary text-primary-foreground" : "border border-border bg-card"}`}>Annual · two months free</button>
+             </div>
+
              <div className="mt-10 grid gap-4 lg:grid-cols-5 lg:items-start">
-               {plans.map((plan, index) => {
-                const Icon = plan.icon;
-                 const livePlan = billingPlans?.plans.find((item) => item.key === plan.id);
-                 const displayPrice =
-                   plan.id === "starter"
-                     ? "$0"
-                     : livePlan
-                       ? `$${Math.round(livePlan.monthlyPrice / 100)}`
-                       : plan.price;
-                const featured = plan.tone === "featured";
-                const dark = plan.tone === "dark";
+                {billingPlans?.plans.map((plan, index) => {
+                 const presentation = planPresentation[plan.key];
+                 const Icon = presentation.icon;
+                 const displayPrice = `$${(billingCycle === "annual" ? plan.annualPrice : plan.monthlyPrice) / 100}`;
+                 const featured = presentation.tone === "featured";
+                 const dark = presentation.tone === "dark";
                 return (
-                  <Reveal key={plan.id} className={`pricing-card-reveal-${index}`}>
+                   <Reveal key={plan.key} className={`pricing-card-reveal-${index}`}>
                     <article
                       className={`relative flex h-full min-h-[460px] flex-col rounded-[1.75rem] border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_hsl(var(--foreground)/.12)] sm:p-7 ${
                         featured
@@ -262,7 +193,7 @@ export default function PricingPage() {
                             ? "border-accent bg-accent text-accent-foreground"
                             : "border-border bg-card"
                       }`}
-                      data-testid={`card-plan-${plan.id}`}
+                       data-testid={`card-plan-${plan.key}`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${featured ? "bg-white/10 text-secondary" : dark ? "bg-white/10 text-secondary" : "bg-muted text-primary"}`}>
@@ -276,38 +207,39 @@ export default function PricingPage() {
                       </div>
                       {featured && <PuzzleCluster size="sm" className="pointer-events-none absolute bottom-5 right-5 opacity-10" />}
                       <p className={`mt-5 text-[10px] font-bold uppercase tracking-[.16em] ${featured || dark ? "text-[hsl(var(--landing-cyan))]" : "text-muted-foreground"}`}>
-                        {featured ? "Most churches begin here" : plan.eyebrow}
+                         {featured ? "Most churches begin here" : presentation.eyebrow}
                       </p>
-                      <h3 className="mt-6 font-serif text-3xl font-semibold tracking-[-.055em]" data-testid={`text-plan-name-${plan.id}`}>{plan.name}</h3>
+                       <h3 className="mt-6 font-serif text-3xl font-semibold tracking-[-.055em]" data-testid={`text-plan-name-${plan.key}`}>{plan.name}</h3>
                       <div className="mt-6 flex items-baseline gap-2">
-                         <span className="font-serif text-5xl font-semibold tracking-[-.07em]" data-testid={`text-plan-price-${plan.id}`}>{displayPrice}</span>
-                        <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>{plan.cadence}</span>
+                          <span className="font-serif text-5xl font-semibold tracking-[-.07em]" data-testid={`text-plan-price-${plan.key}`}>{displayPrice}</span>
+                         <span className={`text-xs ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>per {billingCycle === "annual" ? "year" : "month"}</span>
                       </div>
                        <div className={`mt-5 min-w-0 rounded-2xl p-4 ${featured || dark ? "bg-white/10" : "bg-muted/70"}`}>
                         <p className={`text-[10px] font-bold uppercase tracking-[.14em] ${featured || dark ? "text-[hsl(var(--landing-slate))]" : "text-muted-foreground"}`}>Includes up to</p>
                          <div className="mt-1 flex min-w-0 flex-wrap items-baseline gap-x-2">
-                           <span className={`min-w-0 font-serif text-4xl font-semibold tracking-[-.06em] ${plan.id === "unlimited" ? "break-all lg:text-3xl" : ""}`} data-testid={`text-plan-limit-${plan.id}`}>{plan.profileLimit}</span>
-                           <span className={`min-w-0 text-xs ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.limitLabel}</span>
+                            <span className={`min-w-0 font-serif text-4xl font-semibold tracking-[-.06em] ${plan.key === "unlimited" ? "break-all lg:text-3xl" : ""}`} data-testid={`text-plan-limit-${plan.key}`}>{plan.profileLimit ?? "Unlimited"}</span>
+                            <span className={`min-w-0 text-xs ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>Ministry Profiles</span>
                         </div>
                       </div>
                         <p className={`mt-3 text-sm font-semibold ${dark ? "text-primary" : featured ? "text-secondary" : "text-primary"}`}>
-                         {plan.aiCredits}
+                          {plan.aiCreditLimit.toLocaleString()} AI credits each month
                        </p>
                       <p className={`mt-4 min-h-[48px] text-sm leading-6 ${featured || dark ? "text-[hsl(var(--landing-light-text))]" : "text-muted-foreground"}`}>{plan.description}</p>
-                      <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.id}`}>{plan.valueNote}</p>
+                       <p className={`mt-3 text-xs font-semibold ${featured || dark ? "text-secondary" : "text-accent"}`} data-testid={`text-plan-value-${plan.key}`}>Coming soon · not currently for sale</p>
                       <div className="mt-auto pt-8">
                          <span
                            className={`inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-semibold opacity-75 ${featured ? "bg-secondary text-secondary-foreground" : dark ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground"}`}
                            aria-disabled="true"
-                           data-testid={`link-plan-action-${plan.id}`}
+                            data-testid={`link-plan-action-${plan.key}`}
                          >
-                          {plan.action} <ArrowRight className="h-4 w-4" />
+                           Coming soon <ArrowRight className="h-4 w-4" />
                          </span>
                       </div>
                     </article>
                   </Reveal>
                 );
-              })}
+               })}
+               {!billingPlans && <p role="status" className="col-span-full text-sm text-muted-foreground">Plan pricing is temporarily unavailable. Please try again later.</p>}
             </div>
                 <p className="mt-6 text-center text-xs leading-5 text-muted-foreground" data-testid="text-pricing-footnote">
                  Planned pricing only. Checkout and paid subscriptions will open when Every Part launches.
@@ -334,7 +266,7 @@ export default function PricingPage() {
 
              <Reveal className="pricing-included-reveal">
                <div className="mt-14 grid gap-px overflow-hidden rounded-[1.75rem] border border-border bg-border sm:grid-cols-2 lg:grid-cols-3" data-testid="grid-plan-inclusions">
-                 {includedBenefits.map(([feature, note], index) => (
+                  {includedBenefits.filter(([key]) => billingPlans?.plans.every((plan) => plan.featureFlags[key])).map(([, feature, note], index) => (
                    <div key={feature} className="bg-card p-7 sm:p-8" data-testid={`card-inclusion-${index}`}>
                      <Check className="h-5 w-5 text-secondary" aria-hidden="true" />
                      <h3 className="mt-6 font-serif text-2xl font-semibold tracking-[-.04em]" data-testid={`text-inclusion-feature-${index}`}>{feature}</h3>

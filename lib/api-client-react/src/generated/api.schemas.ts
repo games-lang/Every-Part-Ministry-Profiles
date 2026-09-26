@@ -554,17 +554,30 @@ export type BillingPlanKey = typeof BillingPlanKey[keyof typeof BillingPlanKey];
 
 
 export const BillingPlanKey = {
+  starter: 'starter',
   growing: 'growing',
   complete: 'complete',
   network: 'network',
   unlimited: 'unlimited',
 } as const;
 
+export type BillingPlanFeatureFlags = {
+  churchSetup: boolean;
+  ministryProfiles: boolean;
+  searchAndFiltering: boolean;
+  teamConversations: boolean;
+  profileHistory: boolean;
+  leaderAccess: boolean;
+};
+
 export interface BillingPlan {
   key: BillingPlanKey;
   name: string;
   description: string;
+  /** @minimum 0 */
   monthlyPrice: number;
+  /** @minimum 0 */
+  annualPrice: number;
   /**
      * @minimum 1
      * @nullable
@@ -572,7 +585,9 @@ export interface BillingPlan {
   profileLimit: number | null;
   /** @minimum 1 */
   aiCreditLimit: number;
-  priceId: string;
+  featureFlags: BillingPlanFeatureFlags;
+  /** @nullable */
+  priceId: string | null;
 }
 
 export interface BillingPlanList {
