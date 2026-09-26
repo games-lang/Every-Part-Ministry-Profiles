@@ -3,8 +3,8 @@ type ModuleMap = Record<string, () => Promise<Record<string, unknown>>>;
 export const modules: ModuleMap = {
   "./components/mockups/church-setup/Cleaner.tsx": () => import("../components/mockups/church-setup/Cleaner.tsx"),
   "./components/mockups/church-setup/Current.tsx": () => import("../components/mockups/church-setup/Current.tsx"),
-  "./components/mockups/every-part-pricing/Current.tsx": () => import("../components/mockups/every-part-pricing/Current.tsx"),
-  "./components/mockups/every-part-pricing/Improved.tsx": () => import("../components/mockups/every-part-pricing/Improved.tsx"),
   "./components/mockups/every-part-landing/CoolContemporary.tsx": () => import("../components/mockups/every-part-landing/CoolContemporary.tsx"),
-  "./components/mockups/every-part-landing/Current.tsx": () => import("../components/mockups/every-part-landing/Current.tsx")
+  "./components/mockups/every-part-landing/Current.tsx": () => import("../components/mockups/every-part-landing/Current.tsx"),
+  "./components/mockups/every-part-pricing/Current.tsx": () => import("../components/mockups/every-part-pricing/Current.tsx"),
+  "./components/mockups/every-part-pricing/Improved.tsx": () => import("../components/mockups/every-part-pricing/Improved.tsx")
 };
