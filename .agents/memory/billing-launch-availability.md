@@ -3,8 +3,8 @@ name: Billing launch availability
 description: How EveryPart presents planned pricing before paid subscriptions open
 ---
 
-EveryPart may show planned plan names, limits, and prices publicly while remaining explicitly not currently for sale. Paid checkout must stay closed in both the interface and the server until launch approval. The active payment-provider integration was removed on 2026-09-18 and is intentionally deferred.
+EveryPart may show plan names, limits, and prices publicly, but live checkout must stay closed until separate launch approval. The owner approved Stripe test-mode billing for explicitly designated test churches only, with no live keys or real charges.
 
-**Why:** Publishing was blocked by live payment-account setup before EveryPart was ready to accept customers. Planned pricing and internal plan limits are still useful without payment processing.
+**Why:** Publishing was blocked by live payment-account setup before EveryPart was ready to accept customers. The owner wants to test a complete billing lifecycle without exposing existing early-access churches to payment or access changes.
 
-**How to apply:** Keep public pricing copy marked as coming soon and render plan actions as unavailable. Preserve plan-limit and usage behavior independently of payments. Reintroduce a payment provider only through a deliberate billing-launch project, with production account setup and checkout verification.
+**How to apply:** Keep public pricing clear that real subscriptions are not yet available. Allow test-mode checkout only for expressly enrolled test churches, retain normal early-access access for all others, and do not activate live payments without a separate approval.
