@@ -1,0 +1,55 @@
+# Replit Prompt — Payments, Plans & Invoices (paste into Replit)
+
+## Context
+Every Part is a church ministry-profile SaaS. The billing page currently says "not currently processing payments." Wire up real payments so churches can subscribe, manage their plan, and get invoices. Do not touch the assessment flow, scoring logic, Leader View behavior, or saved data shapes in this task.
+
+## Provider
+Default to **Stripe** in **test mode**, structured so the provider is swappable. Use test keys only. Do NOT activate live payments or enter live keys — the owner approves that separately.
+
+## What to build
+
+### 1. Plans (configurable, not hardcoded)
+- Make plans data-driven (e.g. a plans config/table): name, monthly/annual price, profile limit, AI credits per month, feature flags.
+- The public pricing page and the Plan & Usage page must render from this same config so they cannot drift.
+- Final monthly prices (USD): Starter $0, Growing $10, Complete $20, Network $30, Unlimited $50.
+- Annual billing: offer alongside monthly at roughly two months free (Growing $100/yr, Complete $200/yr, Network $300/yr, Unlimited $500/yr). Starter stays $0.
+- Keep the existing profile limits, AI credit allotments, and feature flags from the current plan config — only prices change.
+
+### 2. Checkout
+- From Plan & Usage, "Upgrade"/"Choose plan" starts a Stripe Checkout session (monthly or annual toggle).
+- On success, return to Plan & Usage showing the active plan. Handle cancelled checkout gracefully (back to Plan & Usage, no partial state).
+
+### 3. Subscription management
+- Church admin can: upgrade, downgrade, switch monthly/annual, and cancel — all from Plan & Usage.
+- Prorate upgrades/downgrades via Stripe (proration_behavior: create_prorations).
+- Cancellation = cancel at period end. State clearly: "Your plan stays active until [date]." After expiry, fall to the free/Starter tier.
+- Past-due: show a clear banner in the dashboard ("Payment failed — update payment method") with a link to fix it; do not silently lock anyone out on day one.
+
+### 4. Usage limits & over-limit behavior (important — owner's explicit rule)
+- Enforce per-plan limits (profiles, AI credits) **server-side**, never trust client-side plan state.
+- **Over-limit rule: participants can ALWAYS submit the assessment, even when the church is over its profile limit.** Never block submission for the church's billing status.
+- Instead, when over limit, gate the *admin* side: Profiles list, Leader View, PartFinder, and Explore Growth show an upgrade nudge ("You've used X of Y profiles — upgrade to see new results") and hide the over-limit results until the plan is upgraded or the limit raised.
+- AI credits: meter PartFinder/guidance usage per church per month; when credits run out, show a friendly "monthly AI credits used" state, never a hard error mid-flow.
+
+### 5. Invoices & receipts
+- Every payment produces an invoice/receipt, viewable and downloadable (PDF) from Plan & Usage > Billing history.
+- Billing history lists date, amount, plan, status, and invoice link. Use Stripe-hosted invoices.
+
+### 6. Webhooks (idempotent)
+- Handle: checkout.session.completed, customer.subscription.created/updated/deleted, invoice.payment_succeeded, invoice.payment_failed.
+- Verify webhook signatures. Handlers must be idempotent (safe to receive twice).
+- Reconcile subscription status on admin login (in case a webhook was missed).
+
+### 7. Test mode
+- Everything above must work end-to-end with Stripe test cards (4242...).
+- Show a visible "TEST MODE — no real charges" banner on Plan & Usage while test keys are active.
+
+## Acceptance criteria
+- A test church can check out, upgrade, downgrade, and cancel entirely with test cards; Plan & Usage always reflects the true Stripe state after refresh.
+- An over-limit church: test participant submission succeeds; admin results views show the upgrade nudge and hide new results.
+- Webhook signature verification is on; duplicate webhook deliveries cause no double-processing.
+- No live keys anywhere; no real charges possible in this build.
+- Server-side enforcement: a direct API call cannot bypass plan limits.
+
+## Done when
+Walk through the full lifecycle on a test church (subscribe → use → hit profile limit → submit over limit → upgrade → cancel) with zero console errors, and summarize what changed plus anything you were unsure about.
