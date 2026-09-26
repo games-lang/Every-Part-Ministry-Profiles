@@ -1,0 +1,51 @@
+# Replit Prompt — Dashboard Fixes, Round 2 (paste into Replit)
+
+## Context
+A QA pass on the live site on 2026-09-25 (after the site redeployed mid-session) verified the current state below. Items marked PASSING are confirmed fixed on the live site — do not regress them. Fix only the FAILING items, redeploy, and verify every one in the running app at https://everypart.church (not just in the code). Report pass/fail per item with what you checked.
+
+**Already passing on the live site (do not break):** Pastor admins list refreshes after save; Profiles empty state reads "No completed profiles yet" with coherent copy; feedback "What is this about?" offers "Dashboard" and "PartFinder"; gold focus outlines on dashboard and public pages; comboboxes fully keyboard-operable; no "ADMIN OVERRIDE" on the sample profile route.
+
+Do not touch the assessment question flow, scoring logic, Leader View behavior, or any saved data shapes.
+
+## 1. FAIL — Onboarding never asks for the leader's name or contact email
+**File:** `artifacts/every-part/src/pages/church-onboarding.tsx`, plus the server-side church-creation path (`artifacts/api-server`, `lib/db` — search for where the defaults are seeded)
+**Observed:** A brand-new account walks a 3-step onboarding (Welcome/church name → Tradition → Gift starting point). It never asks for the leader's name or contact email, so there is no email validation to test. The new church is then seeded with fake defaults: Administrator Name = "Church Administrator", Contact Email = "admin@example.com", and the dashboard greets "Welcome back, Church Administrator". The profile slug is a generic `your-church-xxxxxxxxxx`, not derived from the church name.
+**Fix:**
+- Add leader name and contact email fields to onboarding with real validation (required, valid email format, clear inline errors).
+- Use the entered name/email as the church's administrator name and contact email — never seed "Church Administrator" / "admin@example.com".
+- Derive the profile slug from the church name (slugified, with a short random suffix only on collision), e.g. "TEST Church" → `test-church-xxxx`.
+
+## 2. FAIL — Teams "Add person" dialog with zero completed profiles
+**File:** `artifacts/every-part/src/pages/teams.tsx` (~line 500)
+**Observed:** With zero completed profiles, the dialog says "All completed adult profiles are already assigned to this team." — which is false and confusing.
+**Fix:** When no completed profiles exist, show "No completed adult profiles yet" (keep the current message only when profiles exist and are genuinely all assigned).
+
+## 3. FAIL — Explore Growth shows the full form with zero profile data
+**File:** `artifacts/every-part/src/pages/profiles-list.tsx` (Explore Growth tab, ~lines 517–619)
+**Observed:** With zero completed profiles, the tab renders the full explorer form ("Explore a Growth Opportunity", "Describe a ministry need...", "Explore Growth Signals").
+**Fix:** When there isn't enough profile data, show the empty state instead: "There's not enough profile data yet for guidance — once a few profiles are completed, suggestions will appear here."
+
+## 4. FAIL — "Link ready forTESTPerson" (missing space)
+**File:** `artifacts/every-part/src/components/people-panel.tsx` (~line 725)
+**Observed:** The invite confirmation renders "Link ready forTESTPerson" — no space between "for" and the name.
+**Fix:** Guarantee the space (compose as a single string or explicit `{" "}`).
+
+## 5. FAIL — Feedback widget label spacing and avatar alt text
+**File:** `artifacts/every-part/src/components/app-feedback-form.tsx` (~line 101)
+**Observed:**
+- The visible label reads "Email for a reply(optional)" — no space before "(optional)".
+- When the church has no name, the widget avatar alt text is "'s logo" instead of "Church logo".
+**Fix:** Make the space in "Email for a reply (optional)" explicit and unambiguous; fall back to "Church logo" when the name is empty.
+
+## 6. FAIL — Concatenated accessible names (expanded list)
+**Observed in the live app's accessibility tree:** "8sectionsenabled", "Current code:Not set", "1member" / "0members", "1personadded" / "0peopleadded", "©2026Every Part".
+**Notes:** The page *visually* renders spaces — the bug is that the accessibility tree exposes the concatenated form. Adjacent JSX expressions with only JSX whitespace between them are unreliable here.
+**Fix:** Compose each of these as a single JavaScript string (e.g. `` `${count} ${word}` ``) instead of adjacent JSX expressions, so the accessible name can never collapse. Known locations:
+- `artifacts/every-part/src/pages/church-setup.tsx` — assessment-summary pill (~line 1108), "Current code:" paragraph (~line 1237)
+- `artifacts/every-part/src/pages/teams.tsx` (~line 617)
+- `artifacts/every-part/src/components/people-panel.tsx` (~line 745)
+- The footer copyright ("©2026Every Part") — find it and fix it there too
+- Then audit the whole frontend for the same pattern (a value directly abutting a word with only JSX whitespace between) and fix every occurrence.
+
+## Done when
+Every numbered item above is verified fixed in the running app at https://everypart.church — check both the visual rendering AND the accessibility tree — and you report pass/fail per item with what you checked.
