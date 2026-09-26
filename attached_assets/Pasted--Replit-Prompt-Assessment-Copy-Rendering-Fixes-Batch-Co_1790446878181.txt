@@ -1,0 +1,58 @@
+# Replit Prompt — Assessment Copy & Rendering Fixes (Batch)
+
+## Context
+Every Part's integrated adult assessment now runs end-to-end: member completion screen, member journey page, and the admin results page (`/profiles/[id]`) all render. Scoring and narrative quality are good — **do not touch scoring logic, question content, or the results computation.** This batch fixes user-visible string-rendering bugs and copy issues found in QA. All of these are visible to real church members and leaders, so they are launch blockers.
+
+## What to fix
+
+### 1. Missing spaces in interpolated strings (member completion screen)
+- Currently renders: `Thank you,TEST5.` → should be `Thank you, TEST5.`
+- Currently renders: `Your completed profile has been securely shared withTEST5 Church.` → should be `...shared with TEST5 Church.`
+- Audit every user-facing interpolated string on the completion screen and journey page for the same missing-space pattern.
+
+### 2. Missing spaces in interpolated strings (admin results page)
+- Currently renders: `6distinct answereditemsof 6 available` (under each APEST 5-fold score) → should be `6 distinct answered items of 6 available`.
+- Currently renders: `Your scoreswere close to ,` → should be `Your scores were close to [pattern name],` (see #3 — the pattern name is also blank).
+- Audit every user-facing interpolated string on the results page for the same pattern.
+
+### 3. Blank serving-pattern name in "Putting It Together" narrative (admin results page, Section 8 "Where These Things Come Together")
+- Currently renders: `Your scores were close to , suggesting you may draw on both approaches...` — the compared-to serving-pattern name is empty.
+- Fix: populate the correct pattern name. If the member's scores aren't actually close to a second pattern, rewrite the sentence to not reference a comparison.
+
+### 4. Duplicate theme evidence on the member completion screen
+- The Prophet and Discernment theme cards both quote the SAME answered reflection (`I notice when a group's actions conflict with the Christian commitments it says it follows`).
+- Each theme card must cite distinct reflections the member actually rated highly.
+- The card lead-in claims `A couple of reflections you rated highly connect with this theme` but only ONE reflection is shown per theme — either show two distinct reflections per theme or correct the lead-in copy to match what's shown.
+
+### 5. Step sidebar labels (assessment flow)
+- The per-step percentages (`About you: 0%`, `Skills & experience: 5%`, `Your reflection: 43%`) are ambiguous — it's unclear what the % measures. Either label them clearly (e.g. "profile completeness") or remove them.
+- The `Availability & Servin...` step label is truncated even at desktop width — fix the truncation.
+
+### 6. "Your Current Season" capacity text (admin results page)
+- Currently renders jammed answers like `...Weekday evenings, Flexible/varies, Yes; Maybe / discuss` — yes/maybe answers to different questions are concatenated with semicolons and unreadable.
+- Fix: render each availability question with a clear label and its answer (e.g. "Special events: Yes", "Retreats: Maybe / discuss").
+
+### 7. Member journey page copy
+- On a member's FIRST completion it greets `Welcome back, TEST5 Tester.` → first completion should say `Welcome,` (reserve "Welcome back" for return visits).
+- The `Keep noticing` card reads `There is no required next step` — this is a vague call-to-action. Sharpen it into something actionable (e.g. suggest sharing the profile with a ministry leader or exploring recommended ministries).
+
+### 8. Duplicate section heading (admin results page)
+- Two sections are both headed `How You Tend to Minister` (once for the body-part result, once for the APEST 5-fold). Give them distinct headings.
+
+### 9. Missing success toast after person/profile removal (People page)
+- Removing a person via the Actions → Remove person flow shows NO success toast (the row just vanishes), while the add-person flow does show one (`Person added / Their private profile link is ready to share.`). Add a matching success toast on removal (e.g. `Person removed / {name} was permanently removed.`), consistent with the add flow.
+
+## Investigate and report (do not build yet)
+- **Completion email:** submitting a completed profile currently triggers NO email to the member, even though the profile carries the member's email address. Check the codebase: is a member completion email intended? If the sending code exists but is broken, fix it. If member email infrastructure is not built yet, do NOT build a full email system in this batch — report what's intended vs. what's implemented so we can scope it as its own batch.
+
+## Do NOT change
+- Scoring logic, question bank content, theme/gift/strength computations, or the "The Conversation" question generation — all verified good.
+- The member vs. admin visibility split (members see theme cards + passions on their journey page; admins see full scores) — confirmed as intended, leave as is.
+- The jokey pre-existing TEST5 draft answers on the test profile (e.g. "extreme ironing and kazoo solos") — that's our test data, not a bug.
+
+## Done when
+- Every string in #1–#3 renders with correct spacing and no blank variables, on both the member completion screen and the admin results page.
+- Each theme card cites distinct highly-rated reflections, and the lead-in copy matches the number shown.
+- Step labels are unambiguous and untruncated; "Your Current Season" reads as labeled answers; journey greeting/CTA are fixed; section headings are unique.
+- The completion-email investigation is reported (intended vs. implemented).
+- Existing tests still pass; no scoring or question-content changes.
