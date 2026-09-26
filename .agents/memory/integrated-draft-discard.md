@@ -7,4 +7,4 @@ Treat an explicit discard as a two-sided operation: revoke the token-authenticat
 
 **Why:** Clearing only the browser token leaves an orphaned server draft; clearing only the server token leaves a pre-start backup that restores on reload. An in-flight draft also pins its original integrated format, so the landing must refresh the church's current setting when that draft is discarded.
 
-**How to apply:** Keep draft resume bound to its frozen snapshot. After confirmed discard, refresh church configuration before offering a new start, including when another page saved a classic/integrated toggle while the draft was open.
+**How to apply:** Keep draft resume bound to its frozen snapshot. After confirmed discard, refresh church configuration before offering a new start, including when another page saved a classic/integrated toggle while the draft was open. A landing without a draft must use the current church format, not a previous flow choice; once Begin starts a new integrated flow, its new pre-start backup is intentional and distinct from the discarded draft.

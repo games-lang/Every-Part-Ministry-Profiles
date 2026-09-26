@@ -1574,6 +1574,7 @@ export default function Assessment() {
     error: churchError,
     refetch: refetchChurch,
   } = useGetPublicChurch(slug, {
+    request: { cache: "no-store" },
     query: {
       enabled: Boolean(slug),
       queryKey: getGetPublicChurchQueryKey(slug),
@@ -1726,7 +1727,8 @@ export default function Assessment() {
   );
 
   const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft ||
-    (flowAtStart === "integrated" || (flowAtStart !== "classic" && !legacyChosen && church?.integratedAssessmentPilotEnabled !== false));
+    (started && flowAtStart === "integrated") ||
+    (started && flowAtStart === "classic" ? false : !legacyChosen && church?.integratedAssessmentPilotEnabled !== false);
   const assessmentEstimate = configuration && enabledGifts
     ? estimateAssessmentTime(
         configuration,
@@ -1787,18 +1789,21 @@ export default function Assessment() {
   };
   const discardDraft = async (chooseClassic = false) => {
     setCheckingFormat(true);
+    setFormatError("");
     try {
       if (!await integrated.discard()) return;
       clearPrestart();
+      // A completed discard must not revive an older pre-start backup while
+      // the hook and form state settle in the same browser session.
+      prestartRestoredFor.current = church?.id ?? null;
       form.reset(defaultValues);
       setProfilePhotoPath(null);
       setIntegratedRound(0);
       setStepIndex(0);
       setLegacyChosen(chooseClassic);
       setFlowAtStart(chooseClassic ? "classic" : null);
-      if (chooseClassic) {
-        setStarted(true);
-      } else {
+      setStarted(chooseClassic);
+      if (!chooseClassic) {
         // The old draft kept its frozen format; a new start must use the
         // church's setting as saved now, not the setting cached for that draft.
         const fresh = await refetchChurch();
