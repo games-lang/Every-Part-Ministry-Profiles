@@ -39,7 +39,9 @@ export function IntegratedAreaResults({ results, category, compact = false }: {
                 )}
               </div>
             )}
-            <p className="mt-1 text-muted-foreground">{entry.answeredCount} distinct answered {entry.answeredCount === 1 ? "item" : "items"}{entry.availableCount !== null ? ` of ${entry.availableCount} available` : ""}{entry.mean === null ? " · at least 3 required" : ""}</p>
+            <p className="mt-1 text-muted-foreground">
+              {`${entry.answeredCount} distinct answered ${entry.answeredCount === 1 ? "item" : "items"}${entry.availableCount !== null ? ` of ${entry.availableCount} available` : ""}${entry.mean === null ? " · at least 3 required" : ""}`}
+            </p>
           </div>
         ))}
       </div>
@@ -48,7 +50,7 @@ export function IntegratedAreaResults({ results, category, compact = false }: {
           <h4 className="font-medium">For conversation and discernment only</h4>
           <p className="mt-1 text-muted-foreground">These areas are unscored. Inclusion is not evidence of a spiritual gift. Optional responses and personal notes are not reproduced here.</p>
           <ul className="mt-2 space-y-1">
-            {results.conversations.map(name => <li key={name}>{name} — pastoral conversation, no automated score</li>)}
+            {results.conversations.map(name => <li key={name}>{`${name} — pastoral conversation, no automated score`}</li>)}
           </ul>
         </section>
       )}

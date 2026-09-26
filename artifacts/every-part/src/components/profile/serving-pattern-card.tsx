@@ -27,7 +27,7 @@ export function ServingPatternCard({
   if (!definition) return null;
   const isParticipant = perspective === "participant";
   const Icon = definition.icon;
-  const secondary = tendency.secondaryKey ? tendencies[tendency.secondaryKey] : null;
+  const secondaryName = tendency.secondaryKey ? tendencies[tendency.secondaryKey]?.name?.trim() : null;
 
   return (
     <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
@@ -46,9 +46,11 @@ export function ServingPatternCard({
       <p className="text-sm text-muted-foreground mb-6">
         {`This pattern is calculated from personality spectra, with natural strengths as supporting evidence. Ministry orientation and spiritual gifts are not inputs to this calculation. It describes how ${isParticipant ? "you" : "they"} may tend to show up in practice, not a separate framework area or a placement.`}
       </p>
-      {secondary && (
+      {secondaryName && (
         <div className="mb-6 rounded-xl bg-accent/5 border border-accent/10 p-4 text-sm text-foreground/80">
-          {isParticipant ? "Your scores" : "Their responses"} were close to <strong className="font-medium text-accent-foreground">{secondary.name}</strong>, suggesting {isParticipant ? "you" : "they"} may draw on both approaches depending on the people and situation.
+          {`${isParticipant ? "Your scores" : "Their responses"} were close to `}
+          <strong className="font-medium text-accent-foreground">{secondaryName}</strong>
+          {`, suggesting ${isParticipant ? "you" : "they"} may draw on both approaches depending on the people and situation.`}
         </div>
       )}
       <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-border/40">

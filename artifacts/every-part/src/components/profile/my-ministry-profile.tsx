@@ -127,14 +127,14 @@ export function MyMinistryProfile({
         ) : apestResult && (
         <PortraitChapter number={1} title="How You Tend to Minister" icon={ApestIcon}>
           <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
-            <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Ministry Orientation (APEST) · Like the {APEST_BODY_PARTS[apestResult.label]?.part}</div>
+            <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">{`Ministry Orientation (APEST) · Like the ${APEST_BODY_PARTS[apestResult.label]?.part}`}</div>
             <h3 className="text-2xl font-serif font-medium mb-3">{apestResult.label}</h3>
             <p className="text-muted-foreground leading-relaxed text-lg">
               {APEST_BODY_PARTS[apestResult.label]?.description}
             </p>
             {apestResult.secondary && (
               <div className="mt-6 pt-5 border-t border-border/40">
-                <h4 className="text-sm font-medium mb-1 text-foreground">Secondary Orientation: {apestResult.secondary}</h4>
+                <h4 className="text-sm font-medium mb-1 text-foreground">{`Secondary Orientation: ${apestResult.secondary}`}</h4>
                 <p className="text-sm text-muted-foreground">{APEST_BODY_PARTS[apestResult.secondary]?.description}</p>
               </div>
             )}

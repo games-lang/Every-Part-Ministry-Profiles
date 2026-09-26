@@ -1484,7 +1484,8 @@ function CompletedIntegratedPatterns({ token, profileId }: { token: string; prof
             <h3 className="font-semibold">{pattern.theme}</h3>
             <p className="text-sm text-muted-foreground">{pattern.description}</p>
             <blockquote className="border-l-2 border-primary/40 pl-3 text-sm leading-6">
-              “{pattern.statement}” <span className="text-muted-foreground">You chose: {pattern.responseLabel}.</span>
+              {`“${pattern.statement}” `}
+              <span className="text-muted-foreground">{`You chose: ${pattern.responseLabel}.`}</span>
             </blockquote>
           </article>
         ))}</div>
@@ -1875,9 +1876,9 @@ export default function Assessment() {
     naturalStrengths: "Strengths",
     personalityStrengths: "How you operate",
     spiritualHealth: "Spiritual health",
-    connectionAvailability: integratedPilotEnabled ? "Availability & Serving Rhythm" : "Connection",
+    connectionAvailability: integratedPilotEnabled ? "Availability" : "Connection",
     integratedPilot: "Reflections",
-    integratedPreferences: "Availability & Serving Rhythm",
+    integratedPreferences: "Availability",
     integratedOptional: "Optional experiences",
     integratedReview: "Review",
   };
@@ -2827,8 +2828,7 @@ export default function Assessment() {
                 Your Ministry Profile went through
               </h1>
               <p className="leading-7 text-muted-foreground">
-                Thank you, {form.getValues("basicInformation.firstName")}. Your
-                completed profile has been securely shared with {church.name}.
+                {`Thank you, ${form.getValues("basicInformation.firstName")}. Your completed profile has been securely shared with ${church.name}.`}
               </p>
             </div>
             {submittedIntegratedProfileId !== null && (submittedJourneyToken || createProfile.data?.journeyToken) &&
@@ -2876,7 +2876,7 @@ export default function Assessment() {
           <ProfileParts
             parts={stepKeys.map((key) => ({ label: progressLabels[key] ?? key }))}
             current={stepIndex + 1}
-            label="Your reflection"
+            label="Assessment progress"
           />
         </div>
       </header>

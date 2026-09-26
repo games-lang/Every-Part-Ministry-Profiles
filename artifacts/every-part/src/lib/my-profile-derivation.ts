@@ -345,12 +345,10 @@ export function getMyMinistrySynthesis(
     sectionEnabled("connectionAvailability") &&
     subsectionEnabled("connectionAvailability", "availability");
   if (availabilityEnabled && profile.servingFrequency) {
-    seasonParts.push(
-      `a preferred serving rhythm of ${profile.servingFrequency.toLowerCase()}`,
-    );
+    seasonParts.push(`Serving rhythm: ${profile.servingFrequency}`);
   }
   if (availabilityEnabled && profile.availability.length) {
-    seasonParts.push(`availability on ${profile.availability.join(", ")}`);
+    seasonParts.push(`Availability windows: ${profile.availability.join(", ")}`);
   }
   const aboutYouEnabled = sectionEnabled("aboutYou");
   const familySituation = aboutYouEnabled && subsectionEnabled("aboutYou", "familySituation")
@@ -362,12 +360,29 @@ export function getMyMinistrySynthesis(
   const availabilityDetails = availabilityEnabled
     ? asRecord(profile.availabilityDetails)
     : {};
-  const availabilityNotes = Object.values(availabilityDetails).map(asText).filter(Boolean).slice(0, 2);
-  if (familySituation) seasonParts.push(`a family context described as ${familySituation}`);
-  if (transportation) seasonParts.push(`transportation noted as ${transportation}`);
-  if (availabilityNotes.length) seasonParts.push(availabilityNotes.join("; "));
+  const availabilityLabels = [
+    ["seasonal", "Seasonal availability"],
+    ["specialEvents", "Special events"],
+    ["retreats", "Retreats"],
+    ["missionTrips", "Mission trips"],
+    ["projects", "Short-term projects"],
+    ["commitment", "Preferred serving rhythm"],
+    ["responsibility", "Realistic responsibility"],
+    ["durationTheyWillTry", "Trial duration"],
+    ["capacityThisSeason", "Capacity this season"],
+    ["currentlyServing", "Currently serving"],
+    ["alreadyAsked", "Asked to serve"],
+    ["servingLoadCount", "Current serving roles"],
+    ["servingLoadFeel", "How the serving load feels"],
+  ] as const;
+  if (familySituation) seasonParts.push(`Family situation: ${familySituation}`);
+  if (transportation) seasonParts.push(`Transportation: ${transportation}`);
+  for (const [key, label] of availabilityLabels) {
+    const answer = asText(availabilityDetails[key]);
+    if (answer) seasonParts.push(`${label}: ${answer}`);
+  }
   const season = seasonParts.length
-    ? `Your profile reflects ${seasonParts.join(", ")}. These details are context for discernment, not measures of commitment.`
+    ? `Current season details — ${seasonParts.join("; ")}. These details are context for discernment, not measures of commitment.`
     : "";
 
   // 8. CONNECTION

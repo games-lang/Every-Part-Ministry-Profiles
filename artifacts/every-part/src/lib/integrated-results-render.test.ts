@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { Hand } from "lucide-react";
 import { IntegratedAreaResults } from "../components/profile/integrated-area-results";
+import { ServingPatternCard } from "../components/profile/serving-pattern-card";
 import { ProfileInfographic } from "../components/profile/infographic/profile-infographic";
 import { integratedResults } from "./integrated-results";
 
@@ -48,6 +50,29 @@ test("shared area rendering shows insufficient evidence explicitly and never dis
   assert.match(html, /Not enough information yet/);
   assert.match(html, /Reflective/);
   assert.doesNotMatch(html, /0\.00 \/ 5|50%/);
+});
+
+test("integrated count and serving-pattern comparison render with spaces and a real name", () => {
+  const countHtml = renderToStaticMarkup(createElement(IntegratedAreaResults, { results, category: "APEST" }));
+  assert.match(countHtml, /1 distinct answered item/);
+  assert.doesNotMatch(countHtml, /1distinct|answereditem/);
+
+  const tendencies = Object.fromEntries([
+    ["Hands", "The Doer"],
+    ["Ears", "The Listener"],
+  ].map(([key, name]) => [key, {
+    name, description: "", explanation: "", strengths: [], blindSpots: [], icon: Hand,
+  }]));
+  const props = { tendency: { key: "Hands", secondaryKey: "Ears" }, tendencies, perspective: "participant" as const };
+  const text = renderToStaticMarkup(createElement(ServingPatternCard, props)).replace(/<[^>]*>/g, "");
+  assert.match(text, /Your Serving Pattern/);
+  assert.match(text, /Your scores were close to The Listener, suggesting you may draw on both approaches/);
+  assert.doesNotMatch(text, /How You Tend to Minister/);
+
+  const missingName = renderToStaticMarkup(createElement(ServingPatternCard, {
+    ...props, tendency: { key: "Hands", secondaryKey: "Unknown" },
+  }));
+  assert.doesNotMatch(missingName, /were close to/);
 });
 
 test("actual print tree retains all four named areas and every eligible gift, without private answers", () => {

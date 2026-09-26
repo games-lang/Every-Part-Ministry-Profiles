@@ -319,24 +319,40 @@ export function adultIntegratedAnswerReview(profile: MinistryProfile) {
     }
   }
 
+  const usedStatements = new Set<string>();
+  const patterns: {
+    theme: string;
+    description: string;
+    statement: string;
+    responseLabel: string;
+  }[] = [];
+  const supported = Array.from(supportedPatterns.values())
+    .filter((pattern) => pattern.responses.length >= 2)
+    .sort((left, right) =>
+      right.responses.length - left.responses.length ||
+      (left.theme < right.theme ? -1 : left.theme > right.theme ? 1 : 0),
+    );
+  for (const pattern of supported) {
+    const evidence = pattern.responses.find(
+      (response) => !usedStatements.has(response.prompt.trim().toLowerCase()),
+    );
+    if (!evidence) continue;
+    usedStatements.add(evidence.prompt.trim().toLowerCase());
+    patterns.push({
+      theme: pattern.theme,
+      description: "A reflection you rated highly connects with this theme.",
+      statement: evidence.prompt,
+      responseLabel: evidence.responseLabel,
+    });
+    if (patterns.length === 3) break;
+  }
+
   return {
     sections: [
       ...(reflections.length ? [{ label: "Reflections", questions: reflections }] : []),
       ...(optionalExperiences.length ? [{ label: "Optional experiences", questions: optionalExperiences }] : []),
     ],
-    patterns: Array.from(supportedPatterns.values())
-      .filter((pattern) => pattern.responses.length >= 2)
-      .sort((left, right) =>
-        right.responses.length - left.responses.length ||
-        (left.theme < right.theme ? -1 : left.theme > right.theme ? 1 : 0),
-      )
-      .slice(0, 3)
-      .map((pattern) => ({
-        theme: pattern.theme,
-        description: "A couple of reflections you rated highly connect with this theme.",
-        statement: pattern.responses[0].prompt,
-        responseLabel: pattern.responses[0].responseLabel,
-      })),
+    patterns,
   };
 }
 

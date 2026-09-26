@@ -129,7 +129,7 @@ test("participant answer review is sanitized and preserves the original particip
     ],
     patterns: [{
       theme: "Listening",
-      description: "A couple of reflections you rated highly connect with this theme.",
+      description: "A reflection you rated highly connects with this theme.",
       statement: "First actual statement",
       responseLabel: "very much",
     }],
@@ -207,6 +207,31 @@ test("answer review patterns require distinct supported core ratings and break t
     { theme: "Alpha", statement: "A first", responseLabel: "4 exact" },
     { theme: "Beta", statement: "B first", responseLabel: "4 exact" },
   ]);
+});
+
+test("completion cards never reuse the same high-rated reflection across themes", () => {
+  const profile = {
+    ...adultProfile(18, "2025-05-01", [], []),
+    integratedAssessment: {
+      version: "integrated-assessment-v1",
+      answers: { shared: 5, prophet: 4, discernment: 5 },
+      snapshot: {
+        questions: [
+          { id: "shared", text: "Shared reflection", responseModel: "reflectionLikert", maps: [{ construct: "Prophet" }, { construct: "Discernment" }] },
+          { id: "prophet", text: "Prophet reflection", responseModel: "reflectionLikert", maps: [{ construct: "Prophet" }] },
+          { id: "discernment", text: "Discernment reflection", responseModel: "reflectionLikert", maps: [{ construct: "Discernment" }] },
+        ],
+        responseModels: { reflectionLikert: { anchors: ["1", "2", "3", "4", "5"] } },
+      },
+    },
+  } as unknown as MinistryProfile;
+
+  const patterns = adultIntegratedAnswerReview(profile)?.patterns ?? [];
+  assert.deepEqual(patterns.map(({ theme, statement, description }) => ({ theme, statement, description })), [
+    { theme: "Discernment", statement: "Shared reflection", description: "A reflection you rated highly connects with this theme." },
+    { theme: "Prophet", statement: "Prophet reflection", description: "A reflection you rated highly connects with this theme." },
+  ]);
+  assert.equal(new Set(patterns.map(({ statement }) => statement)).size, patterns.length);
 });
 
 test("answer review is unavailable for youth and non-integrated profiles", () => {

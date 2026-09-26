@@ -90,6 +90,7 @@ function JourneyError({ onRetry, publicView = false }: { onRetry: () => void; pu
 function Intro({ journey, publicView }: { journey: JourneyResponse; publicView: boolean }) {
   const current = journey.currentProfile;
   const name = journey.profiles.find((profile) => profile.profileType === current?.profileType)?.memberName;
+  const greeting = journey.profiles.length > 1 ? "Welcome back" : "Welcome";
   return (
     <header className="journey-rise overflow-hidden rounded-[1.75rem] border border-primary/15 bg-card shadow-lg">
       <div className="h-2 bg-gradient-to-r from-primary via-chart-3 to-secondary" />
@@ -98,7 +99,7 @@ function Intro({ journey, publicView }: { journey: JourneyResponse; publicView: 
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[.19em] text-primary"><HeartHandshake className="h-4 w-4" />A ministry story in motion</div>
-            <h1 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">{publicView ? `Welcome back${name ? `, ${name}` : ""}.` : name ? `${name}'s journey` : "Ministry journey"}</h1>
+            <h1 className="font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl">{publicView ? `${greeting}${name ? `, ${name}` : ""}.` : name ? `${name}'s journey` : "Ministry journey"}</h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">A private record of growing gifts, meaningful moments, and the conversations that help a person serve with joy.</p>
           </div>
           <Badge variant="outline" className="w-fit gap-2 border-secondary/30 bg-secondary/5 px-3 py-1.5 text-secondary"><span className="h-2 w-2 rounded-full bg-secondary" />Private companion view</Badge>
@@ -113,7 +114,7 @@ function SnapshotSummary({ journey }: { journey: JourneyResponse }) {
   return (
     <section className="journey-rise journey-rise-delay grid gap-4 sm:grid-cols-3">
       <Card className="journey-card border-primary/15 bg-primary/[.04]"><CardContent className="p-5"><div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground"><Target className="h-4 w-4" /></div><p className="text-xs font-semibold uppercase tracking-[.14em] text-muted-foreground">Current profile</p><p className="mt-1 font-serif text-2xl">{current?.profileLabel || "Not yet selected"}</p><p className="mt-1 text-sm text-muted-foreground">{current ? `Completed ${formatDate(current.completedAt)}` : "Your story is just beginning"}</p></CardContent></Card>
-      <Card className="journey-card border-secondary/20 bg-secondary/[.05]"><CardContent className="p-5"><div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-secondary-foreground"><ArrowRight className="h-4 w-4" /></div><p className="text-xs font-semibold uppercase tracking-[.14em] text-muted-foreground">Next chapter</p><p className="mt-1 font-serif text-2xl">{journey.nextProfileType ? profileLabels[journey.nextProfileType] : "Keep noticing"}</p><p className="mt-1 text-sm text-muted-foreground">{journey.nextProfileType ? "A possible next profile to explore" : "There is no required next step"}</p></CardContent></Card>
+      <Card className="journey-card border-secondary/20 bg-secondary/[.05]"><CardContent className="p-5"><div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-secondary-foreground"><ArrowRight className="h-4 w-4" /></div><p className="text-xs font-semibold uppercase tracking-[.14em] text-muted-foreground">Next chapter</p><p className="mt-1 font-serif text-2xl">{journey.nextProfileType ? profileLabels[journey.nextProfileType] : "Keep noticing"}</p><p className="mt-1 text-sm text-muted-foreground">{journey.nextProfileType ? "A possible next profile to explore" : "Share your profile with a ministry leader and talk about an area of service that interests you."}</p></CardContent></Card>
       <Card className="journey-card border-chart-3/20 bg-chart-3/[.06]"><CardContent className="p-5"><div className="mb-5 flex h-9 w-9 items-center justify-center rounded-xl bg-chart-3 text-primary-foreground"><CalendarDays className="h-4 w-4" /></div><p className="text-xs font-semibold uppercase tracking-[.14em] text-muted-foreground">Recommended check-in</p><p className="mt-1 font-serif text-2xl">{formatDate(journey.nextCheckInDate)}</p><p className="mt-1 text-sm text-muted-foreground">A gentle invitation, not a deadline</p></CardContent></Card>
     </section>
   );
@@ -180,7 +181,7 @@ function ParticipantAnswerReview({ token, profileId }: { token: string; profileI
                       <h4 className="font-medium">{pattern.theme}</h4>
                       <p className="mt-1 text-xs leading-5 text-muted-foreground">{pattern.description}</p>
                       <blockquote className="mt-3 border-l-2 border-primary/25 pl-3 text-sm leading-6">
-                        <p>“{pattern.statement}”</p>
+                        <p>{`“${pattern.statement}”`}</p>
                         <footer className="mt-1 font-medium text-primary">{pattern.responseLabel}</footer>
                       </blockquote>
                     </article>
@@ -229,7 +230,7 @@ function ProfilePath({ journey, leader, publicView }: { journey: JourneyResponse
           <article key={profile.id} className="relative rounded-2xl border border-border/70 bg-card p-4">
             <div className="flex gap-4">
               <div className="flex shrink-0 flex-col items-center"><div className={`grid h-9 w-9 place-items-center rounded-full ${index === journey.profiles.length - 1 ? "bg-secondary text-secondary-foreground" : "bg-primary/10 text-primary"}`}><Check className="h-4 w-4" /></div>{index < journey.profiles.length - 1 && <div className="mt-2 h-full w-px bg-border" />}</div>
-              <div className="min-w-0 flex-1 pb-1"><div className="flex flex-wrap items-center gap-2"><p className="font-medium">{profile.profileLabel}</p><Badge variant="outline" className="capitalize">{profileLabels[profile.profileType] || profile.profileType}</Badge>{profile.age !== null && <span className="text-xs text-muted-foreground">Age {profile.age}</span>}</div><p className="mt-1 text-xs text-muted-foreground">Completed {formatDate(profile.completedAt)}</p>{profile.themes.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{profile.themes.map((theme) => <Badge key={theme} variant="secondary" className="bg-muted text-muted-foreground">{theme}</Badge>)}</div>}</div>
+              <div className="min-w-0 flex-1 pb-1"><div className="flex flex-wrap items-center gap-2"><p className="font-medium">{profile.profileLabel}</p><Badge variant="outline" className="capitalize">{profileLabels[profile.profileType] || profile.profileType}</Badge>{profile.age !== null && <span className="text-xs text-muted-foreground">{`Age ${profile.age}`}</span>}</div><p className="mt-1 text-xs text-muted-foreground">{`Completed ${formatDate(profile.completedAt)}`}</p>{profile.themes.length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{profile.themes.map((theme) => <Badge key={theme} variant="secondary" className="bg-muted text-muted-foreground">{theme}</Badge>)}</div>}</div>
               {leader && <Link href={`/profiles/${profile.id}`} className="self-start text-muted-foreground transition-colors hover:text-primary" aria-label={`Open ${profile.profileLabel} profile`}><ArrowRight className="h-4 w-4" /></Link>}
             </div>
             {publicView && journey.currentProfile?.profileType === "adult" && profile.profileType === "adult" && <ParticipantAnswerReview token={journey.journeyToken} profileId={profile.id} />}
@@ -262,7 +263,7 @@ function TimelineEntry({ entry, leader, onSaved }: { entry: JourneyEntry; leader
     <article className={`rounded-2xl border p-5 ${isCheckIn ? "border-primary/15 bg-primary/[.025]" : "border-secondary/20 bg-secondary/[.025]"}`}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div className="flex items-center gap-2"><Badge className={isCheckIn ? "bg-primary/10 text-primary hover:bg-primary/10" : "bg-secondary/15 text-secondary hover:bg-secondary/15"}>{isCheckIn ? "Check-in" : "Milestone"}</Badge><span className="text-xs text-muted-foreground">{formatDateTime(entry.occurredAt)}</span></div>{entry.ministryArea && <span className="text-xs font-medium text-muted-foreground">{entry.ministryArea}</span>}</div>
       <h3 className="mt-4 font-serif text-2xl">{entry.title}</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground/80">{entry.description}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/50 pt-3 text-xs text-muted-foreground"><span>Added by {entry.author}</span>{entry.updatedAt !== entry.createdAt && <span>Updated {formatDateTime(entry.updatedAt)}</span>}</div>
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/50 pt-3 text-xs text-muted-foreground"><span>{`Added by ${entry.author}`}</span>{entry.updatedAt !== entry.createdAt && <span>{`Updated ${formatDateTime(entry.updatedAt)}`}</span>}</div>
       {(entry.reflection || leader) && <div className="mt-4 rounded-xl border border-border/60 bg-background/70 p-4">{leader && editing ? <div className="space-y-3"><Label htmlFor={`reflection-${entry.id}`}>Future reflection</Label><Textarea id={`reflection-${entry.id}`} value={reflection} onChange={(event) => setReflection(event.target.value)} maxLength={2000} placeholder="What would be helpful to remember when you revisit this moment?" /><div className="flex justify-end gap-2"><Button size="sm" variant="ghost" onClick={() => { setReflection(entry.reflection ?? ""); setEditing(false); }}>Cancel</Button><Button size="sm" onClick={save} disabled={update.isPending}>{update.isPending && <Loader2 className="h-4 w-4 animate-spin" />}Save reflection</Button></div></div> : <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.14em] text-muted-foreground">Reflection</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6">{entry.reflection || "No future reflection added yet."}</p></div>{leader && <Button size="sm" variant="outline" onClick={() => setEditing(true)}>{entry.reflection ? "Edit" : "Add reflection"}</Button>}</div>}</div>}
     </article>
   );

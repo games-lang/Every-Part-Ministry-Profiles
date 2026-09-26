@@ -22,16 +22,16 @@ export function ProfileParts({
   const completed = current !== undefined
     ? Math.max(0, Math.min(parts.length, current - 1))
     : progressCount;
-  const percentage = parts.length ? Math.round((progressCount / parts.length) * 100) : 0;
+  const percentage = parts.length ? Math.round((completed / parts.length) * 100) : 0;
 
   return (
-    <div className={`profile-parts ${className}`} role="group" aria-label={`${label}: ${percentage}%`}>
+    <div className={`profile-parts ${className}`} role="group" aria-label={`${label}: ${percentage}% of steps complete`}>
       <div className="mb-3 flex items-center justify-between gap-4">
         <span className="text-xs font-semibold uppercase tracking-[.14em] text-muted-foreground">
           {label}
         </span>
         <span className="text-sm font-semibold text-foreground">
-          {percentage}% <span className="font-normal text-muted-foreground">complete</span>
+          {percentage}% <span className="font-normal text-muted-foreground">of steps complete</span>
         </span>
       </div>
       <div className="flex gap-1.5" role="list" aria-label={`${completed} of ${parts.length} parts complete`}>
@@ -56,7 +56,7 @@ export function ProfileParts({
               >
                 {isComplete && <Check className="hidden h-2.5 w-2.5 text-accent-foreground sm:block" aria-hidden="true" />}
               </div>
-              <span className={`mt-2 block truncate text-[10px] font-medium ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
+              <span className={`mt-2 block break-words text-center text-[10px] font-medium leading-3 ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                 {part.label}
               </span>
             </div>

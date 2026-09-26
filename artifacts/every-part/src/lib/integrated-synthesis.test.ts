@@ -61,6 +61,24 @@ test("integrated insufficient evidence cannot resurrect conflicting legacy score
   assert.deepEqual(result.personalityLeanings, []);
 });
 
+test("current season shows each availability answer with its own label", () => {
+  const profile = {
+    ...base,
+    availability: ["Weekday evenings"],
+    availabilityDetails: {
+      seasonal: "Flexible/varies",
+      specialEvents: "Yes",
+      retreats: "Maybe / discuss",
+    },
+  } as unknown as Profile;
+  const season = getMyMinistrySynthesis(profile, yes, yes).season;
+  assert.match(season, /Availability windows: Weekday evenings/);
+  assert.match(season, /Seasonal availability: Flexible\/varies/);
+  assert.match(season, /Special events: Yes/);
+  assert.match(season, /Retreats: Maybe \/ discuss/);
+  assert.doesNotMatch(season, /Yes; Maybe \/ discuss/);
+});
+
 test("legacy summaries remain unchanged before and after consuming integrated history", () => {
   const profile = structuredClone(base) as unknown as Profile;
   const before = getMyMinistrySynthesis(profile, yes, yes);

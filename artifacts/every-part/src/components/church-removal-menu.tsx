@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 type RemovalTarget =
   | { kind: "profile"; id: number; name: string }
@@ -98,6 +99,10 @@ export function ChurchRemovalMenu({
           } finally {
             removedRef.current = true;
             setOpen(false);
+            toast({
+              title: target.kind === "person" ? "Person removed" : "Profile removed",
+              description: `${target.name} was permanently removed.`,
+            });
             onRemoved?.();
             if (removedProfileId != null) {
               queryClient.removeQueries({ queryKey: getGetProfileQueryKey(removedProfileId) });
