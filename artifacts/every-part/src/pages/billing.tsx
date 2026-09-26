@@ -130,11 +130,9 @@ export default function BillingPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <Card
-          className={
-            currentPlan === "starter" ? "border-primary shadow-sm" : ""
-          }
+          className={`min-w-0 break-words ${currentPlan === "starter" ? "border-primary shadow-sm" : ""}`}
         >
           <CardHeader>
             <CardTitle>{planDetails.starter.name}</CardTitle>
@@ -163,14 +161,14 @@ export default function BillingPage() {
             return (
               <Card
                 key={key}
-                className={
+                className={`min-w-0 break-words ${
                   currentPlan === key
                     ? "border-primary shadow-md"
                     : "border-border/70"
-                }
+                }`}
               >
                 <CardHeader>
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
                     <CardTitle>{details.name}</CardTitle>
                     {key === "complete" && (
                       <Badge>Most churches begin here</Badge>

@@ -617,7 +617,7 @@ export default function ChurchSetup() {
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [adminEmailDraft, setAdminEmailDraft] = useState("");
   const [discoverCodeDraft, setDiscoverCodeDraft] = useState("");
-  const [pilotEnabled, setPilotEnabled] = useState(false);
+  const [classicAdultAssessment, setClassicAdultAssessment] = useState(false);
   const [pilotSaveError, setPilotSaveError] = useState("");
   const [spiritualGiftsExpanded, setSpiritualGiftsExpanded] = useState(false);
   const [assessmentSectionsExpanded, setAssessmentSectionsExpanded] = useState<Record<string, boolean>>({});
@@ -654,7 +654,7 @@ export default function ChurchSetup() {
     if (church && initializedForId.current !== church.id) {
       initializedForId.current = church.id;
 
-      setPilotEnabled(church.integratedAssessmentPilotEnabled ?? false);
+      setClassicAdultAssessment(church.integratedAssessmentPilotEnabled === false);
 
       const mergedSections = { ...DEFAULT_SECTIONS, ...(church.assessmentConfiguration?.sections || {}) };
       const mergedSubsections = { ...DEFAULT_SUBSECTIONS, ...(church.assessmentConfiguration?.subsections || {}) };
@@ -806,20 +806,22 @@ export default function ChurchSetup() {
   const saveIntegratedPilot = () => {
     setPilotSaveError("");
     updateIntegratedPilot.mutate(
-      { data: { integratedAssessmentPilotEnabled: pilotEnabled } },
+      { data: { integratedAssessmentPilotEnabled: !classicAdultAssessment } },
       {
         onSuccess: (updatedChurch) => {
           queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
-          setPilotEnabled(updatedChurch.integratedAssessmentPilotEnabled ?? false);
+          setClassicAdultAssessment(updatedChurch.integratedAssessmentPilotEnabled === false);
           toast({
-            title: "Adult pilot settings saved",
-            description: updatedChurch.integratedAssessmentPilotEnabled ? "Adults may now start the integrated pilot. Standard assessments remain available." : "New pilot starts are disabled. Existing drafts can still resume and finish.",
+            title: "Adult assessment setting saved",
+            description: updatedChurch.integratedAssessmentPilotEnabled === false
+              ? "New adult assessments use the classic format. Existing integrated drafts can still resume and finish."
+              : "New adult assessments use the integrated format. Existing drafts can still resume and finish.",
           });
         },
         onError: () => {
-          setPilotSaveError("The pilot setting was not saved. Your selection is still shown; retry to apply it.");
+          setPilotSaveError("The adult assessment setting was not saved. Your selection is still shown; retry to apply it.");
           toast({
-            title: "Could not save pilot settings",
+            title: "Could not save adult assessment setting",
             description: "Please try again.",
             variant: "destructive",
           });
@@ -1598,22 +1600,22 @@ export default function ChurchSetup() {
 
           <Card id="integrated-pilot-editor" className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-xl font-serif">Adult Integrated Pilot</CardTitle>
+              <CardTitle className="text-xl font-serif">Adult assessment format</CardTitle>
               <CardDescription>
-                Offer adults an integrated reflection in short mixed rounds. Standard adult assessments remain available. Youth pathways are unchanged.
+                The integrated reflection is the default for adults. You can choose the classic adult assessment for new starts. Youth pathways are unchanged.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-primary/20 bg-primary/5 p-4">
                 <div className="space-y-1">
-                  <Label htmlFor="adult-integrated-pilot" className="text-sm font-medium">Enable integrated assessment pilot</Label>
-                  <p className="text-xs text-muted-foreground">Only new starts use this setting. Turning it off never changes an existing draft’s questions or prevents completion.</p>
+                  <Label htmlFor="adult-integrated-pilot" className="text-sm font-medium">Use the classic adult assessment instead</Label>
+                  <p className="text-xs text-muted-foreground">Only new starts use this setting. Changing formats never changes an existing integrated draft’s questions or prevents completion.</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Switch
                     id="adult-integrated-pilot"
-                    checked={pilotEnabled}
-                    onCheckedChange={setPilotEnabled}
+                    checked={classicAdultAssessment}
+                    onCheckedChange={setClassicAdultAssessment}
                     disabled={updateIntegratedPilot.isPending}
                   />
                   <Button
@@ -1621,10 +1623,10 @@ export default function ChurchSetup() {
                     variant="outline"
                     size="sm"
                     onClick={saveIntegratedPilot}
-                    disabled={updateIntegratedPilot.isPending || pilotEnabled === (church?.integratedAssessmentPilotEnabled ?? false)}
+                    disabled={updateIntegratedPilot.isPending || classicAdultAssessment === (church?.integratedAssessmentPilotEnabled === false)}
                   >
                     {updateIntegratedPilot.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Save Pilot Setting
+                    Save assessment setting
                   </Button>
                 </div>
               </div>

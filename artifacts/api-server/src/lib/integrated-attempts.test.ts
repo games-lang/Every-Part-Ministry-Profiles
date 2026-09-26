@@ -30,8 +30,9 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
   const [church] = await db.insert(churchesTable).values({
     name: "Isolated integrated contract test", slug, adminName: "Test", adminEmail: "test@example.invalid",
     assessmentConfiguration: configuration, ministryCustomization: defaultMinistryCustomization(),
-    integratedAssessmentPilotEnabled: true, billingPlan: "starter",
+    billingPlan: "starter",
   }).returning();
+  assert.equal(church.integratedAssessmentPilotEnabled, true, "new churches start with integrated assessments");
 
   async function call(router: unknown, method: string, path: string, input: {
     params?: Record<string, string>; body?: unknown; token?: string;

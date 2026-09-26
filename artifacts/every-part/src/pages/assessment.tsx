@@ -1600,6 +1600,7 @@ export default function Assessment() {
   const initializedGiftConfig = useRef<string | null>(null);
   const form = useForm<Values>({ defaultValues });
   const [legacyChosen, setLegacyChosen] = useState(false);
+  const [flowAtStart, setFlowAtStart] = useState<"integrated" | "classic" | null>(null);
   const [adultConfirmed, setAdultConfirmed] = useState(false);
   const [celibacyEligible, setCelibacyEligible] = useState(false);
   const [optionalExperienceOptIn, setOptionalExperienceOptIn] = useState(false);
@@ -1715,7 +1716,8 @@ export default function Assessment() {
       !(isMarried && gift === "Celibacy"),
   );
 
-  const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft || (!legacyChosen && !!church?.integratedAssessmentPilotEnabled);
+  const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft ||
+    (flowAtStart === "integrated" || (flowAtStart !== "classic" && !legacyChosen && church?.integratedAssessmentPilotEnabled !== false));
   const integratedPreferencesEnabled = integratedPilotEnabled && sectionEnabled("personalityStrengths") && subsectionEnabled("personalityStrengths.ministryPreferences");
   const integratedAvailabilityStep = integratedPilotEnabled && sectionEnabled("connectionAvailability") && hasEnabledSubsections("connectionAvailability");
   const coreQuestions = integratedAttempt?.questions.filter(q => !isOptionalReflection(q)) ?? [];
@@ -2662,7 +2664,13 @@ export default function Assessment() {
             <Button
               disabled={integrated.hasDraft && !integratedAttempt}
               onClick={() => {
-                if (!integratedAttempt) { setStepIndex(0); setLegacyChosen(false); }
+                if (!integratedAttempt) {
+                  setStepIndex(0);
+                  if (flowAtStart !== "classic") {
+                    setLegacyChosen(false);
+                    setFlowAtStart(church.integratedAssessmentPilotEnabled === false ? "classic" : "integrated");
+                  }
+                }
                 setStarted(true);
               }}
             >
@@ -2673,16 +2681,16 @@ export default function Assessment() {
               <Button variant="outline" disabled={integratedSaving} onClick={() => {
                 if (!window.confirm("Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted.")) return;
                 integrated.clear(); form.reset(defaultValues); setProfilePhotoPath(null);
-                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(false);
+                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(false); setFlowAtStart(null);
               }}>Discard draft and start fresh</Button>
               <Button variant="ghost" disabled={integratedSaving} onClick={() => {
                 if (!window.confirm("Discard this saved draft and use the standard adult assessment instead? Your draft answers will not transfer.")) return;
                 integrated.clear(); form.reset(defaultValues); setProfilePhotoPath(null);
-                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(true); setStarted(true);
+                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(true); setFlowAtStart("classic"); setStarted(true);
               }}>Use standard assessment instead</Button>
             </div>}
-            {!integrated.hasDraft && church.integratedAssessmentPilotEnabled && <Button variant="ghost" onClick={() => {
-              setLegacyChosen(true); setStepIndex(0); setStarted(true);
+            {!integrated.hasDraft && church.integratedAssessmentPilotEnabled !== false && <Button variant="ghost" onClick={() => {
+              setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0); setStarted(true);
             }}>Use standard assessment instead</Button>}
           </CardContent>
         </Card>
@@ -3055,7 +3063,7 @@ export default function Assessment() {
                             {integrated.starting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Start Reflection"}
                           </Button>
                           {!integrated.hasDraft && <Button type="button" variant="ghost" disabled={integrated.starting} onClick={() => {
-                            setLegacyChosen(true); setStepIndex(0);
+                            setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0);
                           }}>Use the standard adult assessment instead</Button>}
                         </div>
                       ) : (

@@ -43,11 +43,11 @@ router.post("/churches/:churchId/integrated-attempts", async (req, res) => {
       // Serialize starts for a source and church, including across API processes.
       await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${sourceHash}))`);
       const [church] = await tx.select().from(churchesTable).where(eq(churchesTable.id, churchId)).for("update").limit(1);
-      if (!church || !church.integratedAssessmentPilotEnabled) throw new IntegratedAttemptError(404, "The adult integrated pilot is not available for new assessments.");
+      if (!church || church.integratedAssessmentPilotEnabled === false) throw new IntegratedAttemptError(404, "The integrated adult assessment is not available for new assessments at this church.");
       const [sourceUsage] = await tx.select({ total: count() }).from(integratedAttemptsTable).where(and(eq(integratedAttemptsTable.sourceHash, sourceHash), gt(integratedAttemptsTable.createdAt, new Date(Date.now() - 3600_000))));
       const [churchUsage] = await tx.select({ total: count() }).from(integratedAttemptsTable).where(and(eq(integratedAttemptsTable.churchId, churchId), eq(integratedAttemptsTable.status, "draft"), gt(integratedAttemptsTable.expiresAt, new Date())));
       // Church participants often share a public network (or a deployment proxy).
-      // Permit a realistic group pilot while bounding persistent draft creation.
+      // Permit realistic group starts while bounding persistent draft creation.
       if (sourceUsage.total >= 100 || churchUsage.total >= 1000) throw new IntegratedAttemptError(429, "Too many assessment drafts. Please try again later or contact your church.");
       const configuration = assessmentConfiguration(church.assessmentConfiguration);
       const customization = ministryCustomization(church.ministryCustomization);

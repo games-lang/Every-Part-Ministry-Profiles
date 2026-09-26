@@ -9,7 +9,7 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Start a frozen anonymous adult pilot assessment
+ * @summary Start a frozen anonymous integrated adult assessment
  */
 
 
@@ -732,7 +732,7 @@ export const GetBillingSubscriptionResponse = zod.object({
 /**
  * @summary Get the signed-in administrator's church
  */
-export const getMyChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
+export const getMyChurchResponseIntegratedAssessmentPilotEnabledDefault = true;
 export const getMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
@@ -1119,7 +1119,7 @@ export const UpdateMyChurchBody = zod.object({
   "onboardingCompleted": zod.boolean().optional()
 })
 
-export const updateMyChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
+export const updateMyChurchResponseIntegratedAssessmentPilotEnabledDefault = true;
 export const updateMyChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const updateMyChurchResponseDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');
@@ -1381,7 +1381,7 @@ export const GetPublicChurchParams = zod.object({
   "slug": zod.coerce.string()
 })
 
-export const getPublicChurchResponseIntegratedAssessmentPilotEnabledDefault = false;
+export const getPublicChurchResponseIntegratedAssessmentPilotEnabledDefault = true;
 export const getPublicChurchResponsePrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getPublicChurchResponseEnabledSpiritualGiftsMin = 3;
@@ -1684,7 +1684,7 @@ export const RequestProfilePhotoUploadUrlResponse = zod.object({
 /**
  * @summary Get dashboard totals and recent profile activity
  */
-export const getDashboardSummaryResponseChurchIntegratedAssessmentPilotEnabledDefault = false;
+export const getDashboardSummaryResponseChurchIntegratedAssessmentPilotEnabledDefault = true;
 export const getDashboardSummaryResponseChurchPrimaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDashboardSummaryResponseChurchAccentColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
 export const getDashboardSummaryResponseChurchDiscoverHallwayCodeRegExp = new RegExp('^[A-HJ-NP-Z2-9]{6}$');

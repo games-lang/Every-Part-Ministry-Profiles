@@ -31,7 +31,7 @@ paths:
     post:
       operationId: startIntegratedAttempt
       tags: [profiles]
-      summary: Start a frozen anonymous adult pilot assessment
+      summary: Start a frozen anonymous integrated adult assessment
       parameters:
         - { name: churchId, in: path, required: true, schema: { type: integer, minimum: 1 } }
       requestBody:
@@ -46,7 +46,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/IntegratedAttemptView" }
         "400": { description: Adult confirmation or church configuration invalid }
-        "404": { description: Pilot not enabled }
+        "404": { description: Integrated assessment disabled for new starts }
         "429": { description: Too many drafts }
   /churches/{churchId}/integrated-attempts/{attemptId}:
     parameters:
@@ -2137,7 +2137,7 @@ components:
       type: object
       required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd, discoverHallwayCode]
       properties:
-        integratedAssessmentPilotEnabled: { type: boolean, default: false }
+        integratedAssessmentPilotEnabled: { type: boolean, default: true }
         id: { type: integer }
         name: { type: string }
         slug: { type: string }
@@ -2286,7 +2286,7 @@ components:
       required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, discoverAccessAvailable]
       properties:
         id: { type: integer }
-        integratedAssessmentPilotEnabled: { type: boolean, default: false }
+        integratedAssessmentPilotEnabled: { type: boolean, default: true }
         name: { type: string }
         slug: { type: string }
         logoUrl: { type: ["string", "null"] }

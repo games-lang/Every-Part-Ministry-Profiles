@@ -146,7 +146,7 @@ export function scoreIntegratedAssessment(snapshot: IntegratedSnapshot, answers:
     conversationOnlyGifts: snapshot.assessmentConfiguration.sections.spiritualGifts && snapshot.enabledSpiritualGifts.includes("Discernment of Spirits")
       ? ["Discernment of Spirits"] : [],
     limitations: [
-      "Adult pilot reflection, not a validated psychometric assessment, calling, placement, or proof of a spiritual gift.",
+      "Adult reflection, not a validated psychometric assessment, calling, placement, or proof of a spiritual gift.",
       "Categories are scored independently; shared answers are correlated evidence, not independent confirmations.",
       "At least three distinct numeric responses are needed for a meaningful construct result. N/A and skips are excluded.",
       "Optional spiritual experiences and Discernment of Spirits belong in pastoral conversation, never automated inference.",

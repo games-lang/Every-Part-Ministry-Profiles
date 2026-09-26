@@ -484,7 +484,7 @@ function AdultProfileView({
       {integrated && (
         <p className="mt-6 text-sm text-muted-foreground" data-testid="integrated-result-version">
           {integrated.valid
-            ? "Adult integrated pilot · Results use the question bank and church settings saved with this assessment. This is a reflection for conversation, not a validated assessment or an assignment."
+            ? "Integrated adult assessment · Results use the question bank and church settings saved with this assessment. This is a reflection for conversation, not a validated assessment or an assignment."
             : "This integrated result version is not supported. No legacy results have been substituted."}
         </p>
       )}

@@ -1,0 +1,39 @@
+# Replit Prompt — Integrated assessment becomes the default + 2 small fixes (paste into Replit)
+
+## Context
+The integrated adult assessment (currently behind a per-church "pilot" opt-in) is now the main adult assessment. Flip the default. This is pre-launch: only test churches exist, but do not break their data or strand in-flight assessment drafts.
+
+Do not touch scoring logic, Leader View behavior, or any saved data shapes.
+
+## 1. Make the integrated assessment the default for adult assessments
+**Relevant code:** `artifacts/every-part/src/pages/assessment.tsx` (~line 1718, `integratedPilotEnabled`), `artifacts/every-part/src/pages/church-setup.tsx` (pilot toggle card ~lines 1599–1631, `saveIntegratedPilot` ~line 806)
+
+**Changes:**
+- New churches get the integrated adult assessment by default — no opt-in needed.
+- Church Setup: replace the opt-IN ("Enable integrated assessment pilot") with an opt-OUT. The toggle becomes "Use the classic adult assessment instead", unchecked by default. A church that explicitly opts out keeps the classic assessment.
+- Existing churches: a null/unset `integratedAssessmentPilotEnabled` means integrated (the new default). Only an explicit opt-out selects classic.
+- In-flight assessments must never switch mid-flow: an integrated draft resumes in the integrated flow, a classic draft resumes in the classic flow. (This resume behavior already exists — preserve it.)
+- The participant-side choice (`legacyChosen` in assessment.tsx) must keep working correctly under the new default.
+- Do NOT delete the classic assessment code paths — they remain the opt-out.
+
+## 2. Remove "pilot" from all user-facing copy
+The integrated assessment is the product now, not an experiment. Scrub user-facing "pilot" language: the Church Setup card title ("Adult Integrated Pilot"), the toggle label, and the toast messages ("Adult pilot settings saved", "Adults may now start the integrated pilot. Standard assessments remain available.", "New pilot starts are disabled. Existing drafts can still resume and finish."). Internal code/variable names may stay as-is.
+
+## 3. Fix overlapping plan cards on Plan & usage
+**File:** `artifacts/every-part/src/pages/billing.tsx` (~line 133: `grid gap-4 lg:grid-cols-5`)
+**Observed (screenshot):** the five plan cards collide on desktop — the "Complete" card overlaps "Network", with card text running together ("Most churches begin here work", "ready for a" overlapping).
+**Fix:** the grid children are likely refusing to shrink (default `min-width: auto` on grid items). Give the cards `min-w-0` (and `break-words` where needed) so all five sit side by side without overlap at every viewport width. Verify visually at desktop and tablet widths.
+
+## 4. Fix "26gifts selected" accessible-name concatenation
+**File:** `artifacts/every-part/src/pages/church-onboarding.tsx` (~line 221)
+**Observed:** the onboarding Review step exposes "26gifts selected" (no space) in the accessibility tree: `<p className="font-medium">{giftNames.length} gifts selected</p>`.
+**Fix:** compose as a single JavaScript string (`` `${giftNames.length} gifts selected` ``), same pattern as the previous round of fixes.
+
+## Done when
+- A brand-new church's adult assessment starts in the integrated flow with no toggle touched.
+- Opting out in Church Setup switches new adult assessments to the classic flow; opting back in restores integrated.
+- Existing integrated and classic drafts each resume in their original flow.
+- No user-facing "pilot" copy remains.
+- Plan cards no longer overlap at any viewport width.
+- "26gifts selected" reads spaced in the accessibility tree.
+- Report pass/fail per numbered item with what you checked in the running app.

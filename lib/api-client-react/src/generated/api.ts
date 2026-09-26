@@ -137,7 +137,7 @@ export const getStartIntegratedAttemptUrl = (churchId: number,) => {
 }
 
 /**
- * @summary Start a frozen anonymous adult pilot assessment
+ * @summary Start a frozen anonymous integrated adult assessment
  */
 export const startIntegratedAttempt = async (churchId: number,
     integratedAttemptStartInput: IntegratedAttemptStartInput, options?: Parameters<typeof customFetch>[1]): Promise<IntegratedAttemptView> => {
@@ -196,7 +196,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type StartIntegratedAttemptMutationVariables = {churchId: number;data: BodyType<IntegratedAttemptStartInput>}
 
     /**
- * @summary Start a frozen anonymous adult pilot assessment
+ * @summary Start a frozen anonymous integrated adult assessment
  */
 export const useStartIntegratedAttempt = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startIntegratedAttempt>>, TError,StartIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
