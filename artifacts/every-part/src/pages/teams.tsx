@@ -229,8 +229,7 @@ function TeamSuggestionCard({
             <div className="mb-2 flex items-center justify-between gap-3">
               <p className="text-sm font-medium">Profiles to review</p>
               <span className="text-xs text-muted-foreground">
-                {suggestion.candidates.length} possible{" "}
-                {suggestion.candidates.length === 1 ? "connection" : "connections"}
+                {`${suggestion.candidates.length} possible ${suggestion.candidates.length === 1 ? "connection" : "connections"}`}
               </span>
             </div>
             <div className="divide-y rounded-xl border border-border/60 bg-background">
@@ -468,7 +467,7 @@ function TeamMemberPicker({
       </Button>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add someone to {team.name}</DialogTitle>
+          <DialogTitle>{`Add someone to ${team.name}`}</DialogTitle>
           <DialogDescription>
             Choose a completed adult Ministry Profile to add to this pastor-led
             team.
@@ -654,7 +653,7 @@ function TeamCard({
       <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Archive {team.name}?</AlertDialogTitle>
+          <AlertDialogTitle>{`Archive ${team.name}?`}</AlertDialogTitle>
             <AlertDialogDescription>
               The team will leave the active list, but its member assignments
               will be preserved. You can restore it later.

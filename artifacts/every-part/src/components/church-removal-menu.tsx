@@ -135,7 +135,7 @@ export function ChurchRemovalMenu({
           }}
         >
           <DialogHeader>
-            <DialogTitle>Remove {target.name} permanently?</DialogTitle>
+            <DialogTitle>{`Remove ${target.name} permanently?`}</DialogTitle>
             <DialogDescription>
               This action cannot be undone. The following church records will be permanently removed:
             </DialogDescription>

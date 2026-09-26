@@ -1,0 +1,21 @@
+# Replit Prompt — Leftover a11y fixes, Round 3 (paste into Replit)
+
+## Context
+A QA pass on the live site on 2026-09-25 verified everything from Round 2 is now fixed EXCEPT the two items below. Fix them, redeploy, and verify each in the running app at https://everypart.church — check the accessibility tree, not just the visual rendering. Report pass/fail per item with what you checked.
+
+Do not touch the assessment question flow, scoring logic, Leader View behavior, sign-up/onboarding flow, or any saved data shapes.
+
+## 1. FAIL — Account dropdown avatar alt is "'s logo"
+**File:** `artifacts/every-part/src/components/layout/Shell.tsx` (~line 90, Clerk `<UserButton />`)
+**Observed:** The header's user-menu avatar correctly exposes alt "Church logo", but opening the account dropdown reveals an avatar inside the panel whose alt is "'s logo" — the same empty-name bug in a different component.
+**Notes:** This avatar is rendered by Clerk's `UserButton` internals, not by our markup. Find where the "'s logo" string originates (likely Clerk deriving `{name}'s logo` from an empty name) and fix it properly — e.g. via Clerk's `appearance` props/labels, ensuring the underlying name is set, or replacing it with our own avatar element. The dropdown must never expose "'s logo".
+
+## 2. FAIL — Two more concatenated accessible names
+**File:** `artifacts/every-part/src/pages/church-setup.tsx`
+**Observed in the live app's accessibility tree** (visual rendering and DOM HTML show proper spaces — the bug is AX-tree only):
+- "26spiritual gifts included" — line ~1116: `<span className="church-setup-summary-pill">{enabledGiftCount} spiritual gifts included</span>`
+- "40–60min estimated" — line ~1118: `{assessmentEstimate.minimum}–{assessmentEstimate.maximum} min estimated`
+**Fix:** As with the previous round, adjacent JSX expressions/text with only JSX whitespace between them are unreliable in the accessibility tree. Compose each as a single JavaScript string (e.g. `` `${enabledGiftCount} spiritual gifts included` `` and `` `${assessmentEstimate.minimum}–${assessmentEstimate.maximum} min estimated` ``). Then do one final audit of the whole frontend for any remaining value-abutting-word patterns and fix them all.
+
+## Done when
+Both items are verified fixed in the running app at https://everypart.church — confirmed in the accessibility tree — and you report pass/fail per item with what you checked.

@@ -305,13 +305,13 @@ function CsvImportDialog({
           {rows.length > 0 && (
             <div className="space-y-3">
               <div className="flex flex-wrap gap-3 text-sm">
-                <Badge variant="outline">{validRows.length} ready to import</Badge>
-                <Badge variant="outline">{rows.length - validRows.length} rows need attention</Badge>
+                <Badge variant="outline">{`${validRows.length} ready to import`}</Badge>
+                <Badge variant="outline">{`${rows.length - validRows.length} rows need attention`}</Badge>
               </div>
               <div className="max-h-64 overflow-y-auto rounded-lg border">
                 {rows.map((row) => (
                   <div key={row.row} className="flex gap-3 border-b px-3 py-2 text-sm last:border-b-0">
-                    <span className="w-10 shrink-0 text-muted-foreground">Row {row.row}</span>
+                    <span className="w-10 shrink-0 text-muted-foreground">{`Row ${row.row}`}</span>
                     <span className="min-w-0 flex-1 truncate">
                       {`${row.person.firstName || "—"} ${row.person.lastName}`}
                       {row.person.email ? ` · ${row.person.email}` : ""}
@@ -333,7 +333,7 @@ function CsvImportDialog({
             disabled={isPending || validRows.length === 0 || errors.length > 0}
           >
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileSpreadsheet className="mr-2 h-4 w-4" />}
-            Import {validRows.length || ""} people
+            {validRows.length ? `Import ${validRows.length} people` : "Import people"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -699,7 +699,7 @@ export function PeoplePanel() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Latest import</CardTitle>
             <CardDescription>
-              {importSummary.created.length} people created and {importSummary.skipped.length} skipped.
+              {`${importSummary.created.length} ${importSummary.created.length === 1 ? "person" : "people"} created and ${importSummary.skipped.length} ${importSummary.skipped.length === 1 ? "row" : "rows"} skipped.`}
             </CardDescription>
           </CardHeader>
           {importSummary.skipped.length > 0 && (

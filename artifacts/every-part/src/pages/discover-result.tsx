@@ -46,7 +46,7 @@ export default function DiscoverResult({ params }: { params: { token: string } }
             <Sparkles className="w-10 h-10" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-serif font-medium tracking-tight text-foreground">
-            Thank you, {result.childName}!
+            {`Thank you, ${result.childName}!`}
           </h1>
           <p className="text-xl text-muted-foreground max-w-lg mx-auto">
             You did a great job exploring how God made you.

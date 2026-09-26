@@ -28,16 +28,29 @@ export function Shell({ children }: { children: ReactNode }) {
   useEffect(() => {
     const container = accountButtonRef.current;
     if (!container) return;
-    // Clerk owns this image's alt and can emit "'s logo" for an unnamed account.
-    const ensureAvatarAlt = () => {
-      const avatar = container.querySelector("img");
-      if (avatar && (!avatar.alt.trim() || avatar.alt.trim() === "'s logo")) {
-        avatar.alt = "Church logo";
+    // Clerk renders the button here but portals its dropdown elsewhere in the body.
+    // Neither avatar exposes an appearance prop for its generated alt text.
+    const fixAvatarAlt = (image: HTMLImageElement) => {
+      if (
+        (container.contains(image) || image.closest(".cl-userButtonPopoverCard")) &&
+        (!image.alt.trim() || image.alt.trim() === "'s logo")
+      ) {
+        image.alt = "Account avatar";
       }
     };
-    ensureAvatarAlt();
-    const observer = new MutationObserver(ensureAvatarAlt);
-    observer.observe(container, { childList: true, subtree: true, attributes: true, attributeFilter: ["alt"] });
+    const inspect = (node: Node) => {
+      if (node instanceof HTMLImageElement) fixAvatarAlt(node);
+      else if (node instanceof Element) node.querySelectorAll("img").forEach(fixAvatarAlt);
+    };
+    inspect(container);
+    document.querySelectorAll(".cl-userButtonPopoverCard img").forEach(fixAvatarAlt);
+    const observer = new MutationObserver((changes) => {
+      for (const change of changes) {
+        if (change.type === "attributes") inspect(change.target);
+        else change.addedNodes.forEach(inspect);
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["alt"] });
     return () => observer.disconnect();
   }, []);
 

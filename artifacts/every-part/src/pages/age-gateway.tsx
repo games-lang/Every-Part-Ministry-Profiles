@@ -139,7 +139,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
             </div>
           )}
           <h1 className="text-3xl font-serif font-medium tracking-tight text-foreground">
-            {church.name} Ministry Profile
+            {`${church.name} Ministry Profile`}
           </h1>
           <p className="text-muted-foreground leading-relaxed">
             Every Part helps us have warm, careful conversations about how people may enjoy serving.

@@ -34,7 +34,7 @@ export function ServingPatternCard({
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">
-            {isParticipant ? "Your Serving Pattern" : "Their Serving Pattern"} · Like the {tendency.key}
+            {`${isParticipant ? "Your Serving Pattern" : "Their Serving Pattern"} · Like the ${tendency.key}`}
           </div>
           <h3 className="text-2xl font-serif font-medium mb-3">{definition.name}</h3>
         </div>
@@ -44,7 +44,7 @@ export function ServingPatternCard({
         {isParticipant ? definition.explanation : definition.explanation.replace(/\bYou\b/g, "They").replace(/\byou\b/g, "they")}
       </p>
       <p className="text-sm text-muted-foreground mb-6">
-        This pattern is calculated from personality spectra, with natural strengths as supporting evidence. Ministry orientation and spiritual gifts are not inputs to this calculation. It describes how {isParticipant ? "you" : "they"} may tend to show up in practice, not a separate framework area or a placement.
+        {`This pattern is calculated from personality spectra, with natural strengths as supporting evidence. Ministry orientation and spiritual gifts are not inputs to this calculation. It describes how ${isParticipant ? "you" : "they"} may tend to show up in practice, not a separate framework area or a placement.`}
       </p>
       {secondary && (
         <div className="mb-6 rounded-xl bg-accent/5 border border-accent/10 p-4 text-sm text-foreground/80">

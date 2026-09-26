@@ -67,12 +67,12 @@ function CandidateCard({ candidate }: { candidate: Candidate }) {
                  <span className="h-1.5 w-16 overflow-hidden rounded-full bg-muted-foreground/20" role="img" aria-label={`${candidate.score}% alignment`}>
                    <span className="block h-full rounded-full bg-accent" style={{ width: `${candidate.score}%` }} />
                  </span>
-                  <span>{candidate.score}% shared signals</span>
+                  <span>{`${candidate.score}% shared signals`}</span>
                </span>
               {candidate.servingFrequency && (
                 <>
                   <span className="w-1 h-1 rounded-full bg-border" />
-                  <span>Serves {candidate.servingFrequency}</span>
+                   <span>{`Serves ${candidate.servingFrequency}`}</span>
                 </>
               )}
             </div>
@@ -447,7 +447,7 @@ export default function ProfilesList() {
                           ))}
                           {((profile.passions?.length || 0) > 2 || (profile.interests?.length || 0) > 2) && (
                             <Badge variant="outline" className="text-muted-foreground border-dashed font-normal">
-                              +{Math.max(0, (profile.passions?.length || 0) - 2) + Math.max(0, (profile.interests?.length || 0) - 2)} more
+                              {`${Math.max(0, (profile.passions?.length || 0) - 2) + Math.max(0, (profile.interests?.length || 0) - 2)} more`}
                             </Badge>
                           )}
                         </div>

@@ -117,11 +117,11 @@ export default function BillingPage() {
                         }`}
                   </p>
                   <p>
-                    {subscription.aiCreditsUsed} of{" "}
-                    {subscription.aiCreditLimit} AI credits used
-                    {subscription.aiCreditsRemaining === 0
-                      ? " · limit reached"
-                      : ` · ${subscription.aiCreditsRemaining} remaining`}
+                    {`${subscription.aiCreditsUsed} of ${subscription.aiCreditLimit} AI credits used${
+                      subscription.aiCreditsRemaining === 0
+                        ? " · limit reached"
+                        : ` · ${subscription.aiCreditsRemaining} remaining`
+                    }`}
                   </p>
                 </div>
               )}
@@ -151,8 +151,7 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Planned: up to {planDetails.starter.profileLimit} profiles and{" "}
-              {planDetails.starter.aiCreditLimit} AI credits per month.
+              {`Planned: up to ${planDetails.starter.profileLimit} profiles and ${planDetails.starter.aiCreditLimit} AI credits per month.`}
             </p>
           </CardContent>
         </Card>
@@ -205,7 +204,7 @@ export default function BillingPage() {
                         : "Profile capacity to be confirmed"}
                   </p>
                   <p className="mt-1 text-sm font-medium">
-                    {plan?.aiCreditLimit ?? "Planned"} AI credits per month
+                    {`${plan?.aiCreditLimit ?? "Planned"} AI credits per month`}
                   </p>
                   <Button className="mt-6 w-full" variant="outline" disabled>
                     Coming later

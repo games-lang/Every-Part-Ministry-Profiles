@@ -2649,7 +2649,7 @@ export default function Assessment() {
               >
                 Estimated completion time:{" "}
                 <span className="font-medium text-foreground">
-                  about {assessmentEstimate.minimum}–{assessmentEstimate.maximum} minutes
+                  {`about ${assessmentEstimate.minimum}–${assessmentEstimate.maximum} minutes`}
                 </span>
               </p>
             )}
@@ -2763,7 +2763,7 @@ export default function Assessment() {
             <strong className="truncate">{church.name}</strong>
           </div>
           <span className="shrink-0 text-sm font-medium text-muted-foreground" aria-live="polite">
-            Step {stepIndex + 1} of {stepKeys.length}
+            {`Step ${stepIndex + 1} of ${stepKeys.length}`}
           </span>
         </div>
         <div className="mx-auto max-w-3xl px-4 pb-3">
@@ -3062,7 +3062,7 @@ export default function Assessment() {
                         <div className="space-y-8">
                           <div className="sticky top-0 z-10 flex justify-between items-center bg-card/95 backdrop-blur p-4 rounded-xl border shadow-sm">
                             <p className="text-sm font-medium">
-                              Question {currentRound + 1} of {roundCount} · {coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} answered
+                              {`Question ${currentRound + 1} of ${roundCount} · ${coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} answered`}
                             </p>
                           </div>
                           {reflectionValidationError && <p role="alert" className="text-destructive">{reflectionValidationError}</p>}
@@ -3091,7 +3091,7 @@ export default function Assessment() {
                     <Heading description="You can go back to review any part before submitting. Your answers inform a thoughtful conversation, not a fixed label or ministry placement.">
                       Ready to submit your profile?
                     </Heading>
-                    <p className="text-sm">{coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of {coreQuestions.length} core reflections have a response. N/A and skipped answers are not scored. Optional experiences may be left unanswered.</p>
+                    <p className="text-sm">{`${coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of ${coreQuestions.length} core reflections have a response. N/A and skipped answers are not scored. Optional experiences may be left unanswered.`}</p>
                     <p className="text-sm text-muted-foreground">Your draft uses the church settings and question wording saved when you started, even if the church has changed its settings since then.</p>
                   </>}
                   {currentStep === "apest" && (
@@ -3108,8 +3108,7 @@ export default function Assessment() {
                         className="text-sm text-muted-foreground"
                         aria-live="polite"
                       >
-                        {answeredMinistryQuestionCount} of{" "}
-                        {activeMinistryQuestions.length} reflections answered
+                        {`${answeredMinistryQuestionCount} of ${activeMinistryQuestions.length} reflections answered`}
                       </p>
                       {reflectionValidationError && (
                         <p
@@ -3227,8 +3226,7 @@ export default function Assessment() {
                         className="text-sm text-muted-foreground"
                         aria-live="polite"
                       >
-                        {answeredGiftQuestionCount} of{" "}
-                        {spiritualGiftQuestionCount} reflections answered
+                        {`${answeredGiftQuestionCount} of ${spiritualGiftQuestionCount} reflections answered`}
                       </p>
                       {reflectionValidationError && (
                         <p
@@ -3377,8 +3375,7 @@ export default function Assessment() {
                         className="text-sm text-muted-foreground"
                         aria-live="polite"
                       >
-                        {answeredStrengthQuestionCount} of{" "}
-                        {activeStrengthQuestions.length} reflections answered
+                        {`${answeredStrengthQuestionCount} of ${activeStrengthQuestions.length} reflections answered`}
                       </p>
                       {reflectionValidationError && (
                         <p
@@ -3510,8 +3507,7 @@ export default function Assessment() {
                         className="text-sm text-muted-foreground"
                         aria-live="polite"
                       >
-                        {answeredPersonalityQuestionCount} of{" "}
-                        {activePersonalityQuestions.length} reflections answered
+                        {`${answeredPersonalityQuestionCount} of ${activePersonalityQuestions.length} reflections answered`}
                       </p>
                       {reflectionValidationError && (
                         <p

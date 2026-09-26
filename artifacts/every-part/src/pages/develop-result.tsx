@@ -21,7 +21,7 @@ export default function DevelopResult({ params }: { params: { token: string } })
         <div className="text-center">
           <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-secondary/10 text-secondary"><Sparkles className="h-10 w-10" /></div>
           <p className="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">Develop Profile</p>
-          <h1 className="font-serif text-4xl font-medium tracking-tight sm:text-5xl">Keep growing, {result.childName}</h1>
+          <h1 className="font-serif text-4xl font-medium tracking-tight sm:text-5xl">{`Keep growing, ${result.childName}`}</h1>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">You took time to notice what matters to you, how you work with others, and a next step to try.</p>
         </div>
         <Card className="overflow-hidden border-border/60 shadow-xl">

@@ -351,7 +351,7 @@ export default function DevelopAssessment({ params }: { params: { slug: string }
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
           <div className="flex items-center gap-3">{church.logoUrl ? <img src={church.logoUrl} alt="Church logo" className="h-8 object-contain" /> : <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Compass className="h-4 w-4 text-primary" /></div>}<span className="hidden font-serif font-medium sm:inline">Develop Profile</span></div>
-          <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">Step {section} of {totalSections}<div className="h-2 w-20 overflow-hidden rounded-full bg-muted"><div className="h-full bg-primary transition-all" style={{ width: `${section / totalSections * 100}%` }} /></div></div>
+          <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">{`Step ${section} of ${totalSections}`}<div className="h-2 w-20 overflow-hidden rounded-full bg-muted"><div className="h-full bg-primary transition-all" style={{ width: `${section / totalSections * 100}%` }} /></div></div>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 pt-8 sm:pt-12">

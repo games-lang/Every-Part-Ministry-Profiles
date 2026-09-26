@@ -253,8 +253,8 @@ function ChurchDetail({
                 {church.earlyAccessStatus === "early_access" && <Sparkles className="h-3 w-3" />}
                 {church.earlyAccessStatus === "early_access" ? "Early Access" : "Standard"}
               </StatusPill>
-              <StatusPill tone="neutral">{labelize(church.billingPlan)} plan</StatusPill>
-              <span className="text-xs text-muted-foreground">Billing {labelize(church.billingStatus)}</span>
+              <StatusPill tone="neutral">{`${labelize(church.billingPlan)} plan`}</StatusPill>
+              <span className="text-xs text-muted-foreground">{`Billing ${labelize(church.billingStatus)}`}</span>
             </div>
           </div>
         </div>
@@ -323,7 +323,7 @@ function ChurchDetail({
 
       <div className="flex flex-col gap-3 rounded-2xl border border-secondary/35 bg-secondary/10 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div><p className="text-sm font-semibold text-foreground">Billing is read-only here</p><p className="mt-1 text-xs text-muted-foreground">{church.billingCurrentPeriodEnd ? `Current period ends ${formatDate(church.billingCurrentPeriodEnd)}.` : "No current billing period end is recorded."}</p></div>
-        <span className="text-xs font-bold uppercase tracking-[.1em] text-muted-foreground">Plan: {labelize(church.billingPlan)} · Status: {labelize(church.billingStatus)}</span>
+        <span className="text-xs font-bold uppercase tracking-[.1em] text-muted-foreground">{`Plan: ${labelize(church.billingPlan)} · Status: ${labelize(church.billingStatus)}`}</span>
       </div>
     </div>
   );

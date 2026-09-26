@@ -114,8 +114,7 @@ function ShiftEditor({
         <DialogHeader>
           <DialogTitle>{editing ? "Edit schedule shift" : "Schedule a volunteer"}</DialogTitle>
           <DialogDescription>
-            Add a one-time shift for {team.name}. You can leave the volunteer
-            open and assign someone later.
+            {`Add a one-time shift for ${team.name}. You can leave the volunteer open and assign someone later.`}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2 sm:grid-cols-2">

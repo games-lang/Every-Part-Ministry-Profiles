@@ -625,7 +625,7 @@ export default function ExploreAssessment({
           </div>
           
           <div className="flex items-center gap-4 text-sm font-medium">
-            <span className="text-muted-foreground">Step {currentSection} of {totalSections}</span>
+            <span className="text-muted-foreground">{`Step ${currentSection} of ${totalSections}`}</span>
             <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
               <div 
                 className="h-full bg-primary transition-all duration-500 ease-out"

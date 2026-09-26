@@ -1109,9 +1109,9 @@ export default function ChurchSetup() {
           <span className="church-setup-summary-pill">
             {`${enabledSectionCount} ${enabledSectionCount === 1 ? "section" : "sections"} enabled`}
           </span>
-          <span className="church-setup-summary-pill">{enabledGiftCount} spiritual gifts included</span>
+          <span className="church-setup-summary-pill">{`${enabledGiftCount} spiritual gifts included`}</span>
           <span className="church-setup-summary-pill">
-            {assessmentEstimate.minimum}–{assessmentEstimate.maximum} min estimated
+            {`${assessmentEstimate.minimum}–${assessmentEstimate.maximum} min estimated`}
           </span>
         </div>
       </div>
@@ -1647,7 +1647,7 @@ export default function ChurchSetup() {
                 <div className="min-w-0">
                   <p className="font-medium">Expected member completion time</p>
                   <p className="mt-1 font-serif text-2xl text-primary">
-                    About {assessmentEstimate.minimum}–{assessmentEstimate.maximum} minutes
+                    {`About ${assessmentEstimate.minimum}–${assessmentEstimate.maximum} minutes`}
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     This estimate updates as you enable sections, choose reflection depth,
@@ -1655,7 +1655,7 @@ export default function ChurchSetup() {
                     allows extra time for thoughtful responses.
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    {assessmentEstimate.reflectionQuestions} reflection questions included
+                    {`${assessmentEstimate.reflectionQuestions} reflection questions included`}
                   </p>
                 </div>
               </div>

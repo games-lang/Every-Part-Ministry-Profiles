@@ -556,7 +556,7 @@ export default function ProfileDetail() {
        <ChurchProfileBranding branding={profile.branding} className="mb-7" />
      {profile.profileType !== 'adult' && (
         <Badge className="mb-4 bg-secondary/25 text-foreground hover:bg-secondary/30 capitalize">
-         {profile.profileType} Pathway (Age {profile.age})
+         {`${profile.profileType} Pathway (Age ${profile.age})`}
        </Badge>
      )}
      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
