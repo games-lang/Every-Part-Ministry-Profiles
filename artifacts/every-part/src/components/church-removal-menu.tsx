@@ -1,10 +1,13 @@
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  getBillingSubscription,
   getGetBillingSubscriptionQueryKey,
   getGetDashboardSummaryQueryKey,
+  getGetProfileQueryKey,
   getListChurchRemovalAuditQueryKey,
   getListPeopleQueryKey,
+  getListProfilesQueryKey,
   getListTeamsQueryKey,
   useRemoveChurchPerson,
   useRemoveChurchProfile,
@@ -28,7 +31,7 @@ import { Button } from "@/components/ui/button";
 
 type RemovalTarget =
   | { kind: "profile"; id: number; name: string }
-  | { kind: "person"; id: number; name: string };
+  | { kind: "person"; id: number; name: string; profileId?: number | null };
 
 type ChurchRemovalMenuProps = {
   target: RemovalTarget;
@@ -54,17 +57,17 @@ export function ChurchRemovalMenu({
   const removedRef = useRef(false);
   const isPending = removeProfile.isPending || removePerson.isPending;
   const mutationError = target.kind === "profile" ? removeProfile.error : removePerson.error;
+  const removedProfileId = target.kind === "profile" ? target.id : target.profileId;
 
   const invalidateRemovalQueries = async () => {
     await Promise.all([
-      queryClient.invalidateQueries({
-        predicate: (query) => String(query.queryKey[0]).startsWith("/api/profiles"),
-      }),
+      // Refetch directory lists, not the detail page that was just deleted.
+      queryClient.invalidateQueries({ queryKey: getListProfilesQueryKey() }),
       queryClient.invalidateQueries({ queryKey: getListPeopleQueryKey() }),
       queryClient.invalidateQueries({ queryKey: getListChurchRemovalAuditQueryKey() }),
-      queryClient.invalidateQueries({ queryKey: getGetBillingSubscriptionQueryKey() }),
-      queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() }),
-      queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() }),
+      queryClient.invalidateQueries({ queryKey: getGetBillingSubscriptionQueryKey(), refetchType: "all" }),
+      queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey(), refetchType: "all" }),
+      queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey(), refetchType: "all" }),
     ]);
   };
 
@@ -74,10 +77,32 @@ export function ChurchRemovalMenu({
       { id: target.id },
       {
         onSuccess: async () => {
-          await invalidateRemovalQueries();
-          removedRef.current = true;
-          setOpen(false);
-          onRemoved?.();
+          if (removedProfileId != null) {
+            queryClient.setQueryData<Awaited<ReturnType<typeof getBillingSubscription>>>(
+              getGetBillingSubscriptionQueryKey(),
+              (current) => {
+                if (!current) return current;
+                const profilesUsed = Math.max(0, current.profilesUsed - 1);
+                return {
+                  ...current,
+                  profilesUsed,
+                  profilesRemaining: current.profileLimit === null
+                    ? null
+                    : Math.max(0, current.profileLimit - profilesUsed),
+                };
+              },
+            );
+          }
+          try {
+            await invalidateRemovalQueries();
+          } finally {
+            removedRef.current = true;
+            setOpen(false);
+            onRemoved?.();
+            if (removedProfileId != null) {
+              queryClient.removeQueries({ queryKey: getGetProfileQueryKey(removedProfileId) });
+            }
+          }
         },
       },
     );

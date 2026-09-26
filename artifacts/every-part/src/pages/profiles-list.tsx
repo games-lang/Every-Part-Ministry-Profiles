@@ -201,7 +201,7 @@ function PendingPeopleSection({
                   </Button>
                   {canRemove && (
                     <ChurchRemovalMenu
-                      target={{ kind: "person", id: person.id, name: `${person.firstName} ${person.lastName}` }}
+                      target={{ kind: "person", id: person.id, name: `${person.firstName} ${person.lastName}`, profileId: person.profileId }}
                       focusFallbackRef={focusFallbackRef}
                     />
                   )}
