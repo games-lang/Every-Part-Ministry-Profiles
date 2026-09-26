@@ -291,6 +291,82 @@ export function useGetIntegratedAttempt<TData = Awaited<ReturnType<typeof getInt
 
 
 
+export const getDeleteIntegratedAttemptUrl = (churchId: number,
+    attemptId: string,) => {
+
+
+
+
+  return `/api/churches/${churchId}/integrated-attempts/${attemptId}`
+}
+
+/**
+ * @summary Permanently discard an authenticated, unfinished adult assessment draft
+ */
+export const deleteIntegratedAttempt = async (churchId: number,
+    attemptId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteIntegratedAttemptUrl(churchId,attemptId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteIntegratedAttemptMutationKey = () => ['deleteIntegratedAttempt'] as const;
+
+export const getDeleteIntegratedAttemptMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteIntegratedAttempt>>, TError,DeleteIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteIntegratedAttempt>>, TError,DeleteIntegratedAttemptMutationVariables, TContext> => {
+
+const mutationKey = getDeleteIntegratedAttemptMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteIntegratedAttempt>>, DeleteIntegratedAttemptMutationVariables> = (props) => {
+          const {churchId,attemptId} = props ?? {};
+
+          return  deleteIntegratedAttempt(churchId,attemptId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteIntegratedAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof deleteIntegratedAttempt>>>
+
+    export type DeleteIntegratedAttemptMutationError = ErrorType<void>
+    export type DeleteIntegratedAttemptMutationVariables = {churchId: number;attemptId: string}
+
+    /**
+ * @summary Permanently discard an authenticated, unfinished adult assessment draft
+ */
+export const useDeleteIntegratedAttempt = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteIntegratedAttempt>>, TError,DeleteIntegratedAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteIntegratedAttempt>>,
+        TError,
+        DeleteIntegratedAttemptMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteIntegratedAttemptMutationOptions(options));
+    }
+
 export const getSaveIntegratedAttemptUrl = (churchId: number,
     attemptId: string,) => {
 

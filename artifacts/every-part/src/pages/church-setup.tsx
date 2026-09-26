@@ -701,6 +701,7 @@ export default function ChurchSetup() {
       {
         onSuccess: (updatedChurch) => {
           queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+          void queryClient.invalidateQueries({ queryKey: getGetPublicChurchQueryKey(updatedChurch.slug) });
           setClassicAdultAssessment(updatedChurch.integratedAssessmentPilotEnabled === false);
           toast({
             title: "Adult assessment setting saved",

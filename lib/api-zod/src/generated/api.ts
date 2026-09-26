@@ -101,6 +101,27 @@ export const GetIntegratedAttemptResponse = zod.object({
 
 
 /**
+ * @summary Permanently discard an authenticated, unfinished adult assessment draft
+ */
+
+
+
+export const DeleteIntegratedAttemptParams = zod.object({
+  "churchId": zod.coerce.number().int().min(1),
+  "attemptId": zod.uuid()
+})
+
+export const deleteIntegratedAttemptHeaderAuthorizationRegExp = new RegExp('^Bearer [A-Za-z0-9_-]{43}$');
+
+
+export const DeleteIntegratedAttemptHeader = zod.object({
+  "Authorization": zod.string().regex(deleteIntegratedAttemptHeaderAuthorizationRegExp)
+})
+
+export const DeleteIntegratedAttemptResponse = zod.void()
+
+
+/**
  * @summary Atomically save bounded progress at the expected revision
  */
 

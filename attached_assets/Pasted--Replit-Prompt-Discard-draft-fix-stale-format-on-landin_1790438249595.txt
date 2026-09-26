@@ -1,0 +1,26 @@
+# Replit Prompt — Discard-draft fix + stale format on landing page (paste into Replit)
+
+## Context
+Two bugs found in live QA of the draft-persistence work. Both are in `artifacts/every-part/src/pages/assessment.tsx`. Do not touch scoring logic, Leader View behavior, or saved data shapes.
+
+## 1. "Discard draft and start fresh" does not clear the saved draft
+**Observed (live QA):** On the assessment landing page with a saved draft, clicking "Discard draft and start fresh" and confirming does not work — after two clicks and a page reload, the "A private adult draft is saved in this browser / Resume saved profile" prompt is still there and the draft is resurrected.
+
+**Root cause (already diagnosed, verify it):** The pre-start backup lives at `ep_integrated_prestart_${church.id}` (assessment.tsx ~line 1767, `prestartKey`), but `integrated.clear()` in `use-integrated-attempt.ts` only removes the hook's own key `ep_integrated_token_${churchId}`. The discard handler (~line 2730) calls `integrated.clear()` without calling the existing `clearPrestart()` helper — so on the next load, the prestart-restore effect finds the orphaned backup and brings the draft back. (The "Use standard assessment instead" button on the same page correctly calls `clearPrestart()`; the discard handler was missed.)
+
+**Fix:** Make discard remove the prestart backup too — either call `clearPrestart()` in the discard handler or move prestart-key ownership into the hook's `clear()`. After discard, `integrated.hasDraft` must be false immediately so the resume prompt disappears without requiring a reload. Also confirm the server-side attempt (if one was created) is discarded/cancelled, not left orphaned.
+
+**Verify in the running app:** save a draft, click "Discard draft and start fresh," confirm — the resume prompt must disappear immediately; reload the page — no resume prompt, fresh "Begin" state. Report pass/fail.
+
+## 2. Landing page shows stale assessment format after toggling to classic
+**Observed (live QA):** In Church Setup the admin enables "Use the classic adult assessment instead" and saves (toast confirms). The public assessment landing page still shows "New integrated format" with the 28–42 minute estimate, and starting a new assessment begins the integrated flow. A fresh page load eventually shows the correct classic format. The same staleness was seen via the back button (bfcache) in an earlier round.
+
+**Fix:** The format decision (`integratedPilotEnabled`) depends on the church's saved `integratedAssessmentPilotEnabled` setting. The public landing page must not serve a stale cached copy of the church settings — ensure it refetches on mount (and on return via back/forward navigation) so every new start reflects the current saved setting. Do not break the rule that in-flight drafts keep their original format.
+
+**Verify in the running app:** with no draft present, toggle to classic and save → open the public assessment link in a fresh navigation (no manual reload) → landing page shows the classic format and its 40–60 minute estimate, and Begin starts the classic flow. Toggle back to integrated → landing page shows integrated. Then repeat the toggle with a saved draft present and confirm the draft still resumes in its original format. Report pass/fail for each.
+
+## Done when
+- Discard fully clears the draft: no resume prompt immediately and none after reload; no orphaned server attempt.
+- The landing page always reflects the currently saved format setting for new starts, including after back/forward navigation.
+- In-flight drafts still resume in their original format regardless of the toggle.
+- Report pass/fail per numbered item with what you checked in the running app.

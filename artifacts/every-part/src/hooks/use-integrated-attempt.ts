@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  deleteIntegratedAttempt,
   getIntegratedAttempt,
   saveIntegratedAttempt,
   startIntegratedAttempt,
@@ -66,6 +67,7 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
   const [loading, setLoading] = useState(false);
   const [starting, setStarting] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [discarding, setDiscarding] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState("");
   const [storageError, setStorageError] = useState("");
@@ -83,6 +85,7 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
   const flight = useRef<Promise<Attempt | null> | null>(null);
   const loadingRef = useRef(false);
   const startingRef = useRef(false);
+  const discardingRef = useRef(false);
   const needsLoad = useRef(false);
   const flushRef = useRef<() => Promise<Attempt | null>>(async () => null);
 
@@ -111,13 +114,14 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
     flight.current = null;
     loadingRef.current = false;
     startingRef.current = false;
+    discardingRef.current = false;
     needsLoad.current = false;
     if (churchId) {
       try { localStorage.removeItem(storageKey(churchId)); }
       catch { setStorageError("Could not remove the local draft. Clear this site's saved data before using a shared device."); }
     }
     setAttempt(null); setAnswers({}); setHasDraft(false); setConflict(null);
-    setDirty(false); setError(""); setSaving(false); setLoading(false); setStarting(false);
+    setDirty(false); setError(""); setSaving(false); setLoading(false); setStarting(false); setDiscarding(false);
   }, [churchId]);
 
   const apply = useCallback((view: Attempt, progress: Progress, isDirty: boolean) => {
@@ -175,6 +179,7 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
     setAttempt(null); setAnswers({}); setHasDraft(false); setConflict(null); setCompleted(false);
     setDirty(false); setSaving(false); setStarting(false); setStorageError("");
     startingRef.current = false;
+    discardingRef.current = false;
     void load();
     return () => {
       if (timer.current) clearTimeout(timer.current);
@@ -186,7 +191,7 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
   const flush = useCallback(async (): Promise<Attempt | null> => {
     if (timer.current) clearTimeout(timer.current);
     if (flight.current) return flight.current;
-    if (!churchId || loadingRef.current || needsLoad.current || !state.current.attempt || state.current.conflict) return null;
+    if (!churchId || discardingRef.current || loadingRef.current || needsLoad.current || !state.current.attempt || state.current.conflict) return null;
     const epoch = state.current.epoch;
     const run = async () => {
       if (epoch !== state.current.epoch) return null;
@@ -236,7 +241,7 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
 
   const update = useCallback((progress: Partial<Progress>) => {
     const s = state.current;
-    if (loadingRef.current || !s.attempt || s.attempt.status !== "draft") return;
+    if (discardingRef.current || loadingRef.current || !s.attempt || s.attempt.status !== "draft") return;
     const next = { answers: progress.answers ?? s.answers, formState: progress.formState ? draftFormState(progress.formState) : s.formState };
     if (JSON.stringify(next) === JSON.stringify({ answers: s.answers, formState: s.formState })) return;
     Object.assign(s, next, { dirty: true, edit: s.edit + 1 });
@@ -267,6 +272,35 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
     } catch (e) { if (state.current.epoch === epoch) setError(message(e)); }
     finally { if (state.current.epoch === epoch) { startingRef.current = false; setStarting(false); } }
   }, [churchId, starting, hasDraft, apply, persist]);
+
+  const discard = useCallback(async (): Promise<boolean> => {
+    if (!churchId || discardingRef.current) return false;
+    const current = state.current.attempt;
+    if (!current && hasDraft) {
+      setError("The saved draft could not be verified. Retry loading it before discarding.");
+      return false;
+    }
+    discardingRef.current = true;
+    setDiscarding(true); setError("");
+    try {
+      // An in-flight save must settle before deletion. Once discarding begins,
+      // no new save or edit can queue for this attempt.
+      if (flight.current) await flight.current;
+      if (current) {
+        await deleteIntegratedAttempt(churchId, current.attemptId, {
+          headers: { Authorization: `Bearer ${current.token}` },
+        });
+      }
+      clear();
+      return true;
+    } catch (e) {
+      setError(message(e));
+      return false;
+    } finally {
+      discardingRef.current = false;
+      setDiscarding(false);
+    }
+  }, [churchId, hasDraft, clear]);
 
   const resolve = useCallback(async (choice: "local" | "server") => {
     const s = state.current;
@@ -315,8 +349,8 @@ export function useIntegratedAttempt(churchId: number | undefined, onRestore: (s
   }, []);
 
   return {
-    attempt, answers, loading, starting, saving, dirty, error, storageError, conflict, hasDraft, completed,
-    start, flush, load, resolve, clear, refreshConflict,
+    attempt, answers, loading, starting, saving, discarding, dirty, error, storageError, conflict, hasDraft, completed,
+    start, flush, load, resolve, clear, discard, refreshConflict,
     retry: () => needsLoad.current ? load() : flush(),
     updateForm: (formState: DraftForm) => update({ formState }),
     setAnswer: (id: string, value: IntegratedAnswers[string]) => update({ answers: { ...state.current.answers, [id]: value } }),

@@ -81,6 +81,26 @@ router.get("/churches/:churchId/integrated-attempts/:attemptId", async (req, res
   }
 });
 
+router.delete("/churches/:churchId/integrated-attempts/:attemptId", async (req, res) => {
+  const params = paramsSchema.safeParse(req.params);
+  const token = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(req.headers.authorization ?? "")?.[1];
+  if (!params.success || !params.data.attemptId || !token) { res.status(404).json({ error: "Assessment draft not found." }); return; }
+  try {
+    await db.transaction(async tx => {
+      const predicate = attemptPredicate(params.data.churchId, params.data.attemptId!, token);
+      const [attempt] = await tx.select().from(integratedAttemptsTable).where(predicate).for("update").limit(1);
+      if (!attempt) throw new IntegratedAttemptError(404, "Assessment draft not found.");
+      if (attempt.status !== "draft") throw new IntegratedAttemptError(409, "Completed assessments cannot be discarded.");
+      await tx.delete(integratedAttemptsTable).where(predicate);
+    });
+    res.status(204).send();
+  } catch (error) {
+    if (error instanceof IntegratedAttemptError) { res.status(error.status).json({ error: error.message }); return; }
+    req.log.error({ churchId: params.data.churchId }, "Unable to discard integrated assessment");
+    res.status(503).json({ error: "Could not discard the draft on the server. Your saved copy remains here; please retry." });
+  }
+});
+
 router.patch("/churches/:churchId/integrated-attempts/:attemptId", async (req, res) => {
   const params = paramsSchema.safeParse(req.params);
   const token = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(req.headers.authorization ?? "")?.[1];

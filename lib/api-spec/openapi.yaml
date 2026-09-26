@@ -66,6 +66,15 @@ paths:
         "404": { description: Draft not found or unauthorized }
         "410": { description: Draft expired }
         "429": { description: Request rate exceeded }
+    delete:
+      operationId: deleteIntegratedAttempt
+      tags: [profiles]
+      summary: Permanently discard an authenticated, unfinished adult assessment draft
+      responses:
+        "204": { description: Draft deleted }
+        "404": { description: Draft not found or unauthorized }
+        "409": { description: Completed assessments cannot be discarded }
+        "429": { description: Request rate exceeded }
     patch:
       operationId: saveIntegratedAttempt
       tags: [profiles]

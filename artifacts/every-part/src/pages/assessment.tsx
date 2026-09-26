@@ -1569,13 +1569,25 @@ export default function Assessment() {
   const {
     data: church,
     isLoading,
+    isFetching: churchFetching,
     error: churchError,
+    refetch: refetchChurch,
   } = useGetPublicChurch(slug, {
     query: {
       enabled: Boolean(slug),
       queryKey: getGetPublicChurchQueryKey(slug),
+      staleTime: 0,
+      refetchOnMount: "always",
+      refetchOnWindowFocus: true,
     },
   });
+  useEffect(() => {
+    const refreshOnReturn = (event: PageTransitionEvent) => {
+      if (event.persisted) void refetchChurch();
+    };
+    window.addEventListener("pageshow", refreshOnReturn);
+    return () => window.removeEventListener("pageshow", refreshOnReturn);
+  }, [refetchChurch]);
   const createProfile = useCreateProfile();
   const { data: invitedPerson } = useGetPublicPersonInvite(inviteToken ?? "", {
     query: {
@@ -1584,6 +1596,8 @@ export default function Assessment() {
     },
   });
   const [started, setStarted] = useState(false);
+  const [checkingFormat, setCheckingFormat] = useState(false);
+  const [formatError, setFormatError] = useState("");
   const [stepIndex, setStepIndex] = useState(0);
   const [submitError, setSubmitError] = useState("");
   const [reflectionValidationError, setReflectionValidationError] =
@@ -1768,6 +1782,31 @@ export default function Assessment() {
   const clearPrestart = () => {
     if (prestartKey) {
       try { localStorage.removeItem(prestartKey); } catch { /* Private browsing may deny storage. */ }
+    }
+  };
+  const discardDraft = async (chooseClassic = false) => {
+    setCheckingFormat(true);
+    try {
+      if (!await integrated.discard()) return;
+      clearPrestart();
+      form.reset(defaultValues);
+      setProfilePhotoPath(null);
+      setIntegratedRound(0);
+      setStepIndex(0);
+      setLegacyChosen(chooseClassic);
+      setFlowAtStart(chooseClassic ? "classic" : null);
+      if (chooseClassic) {
+        setStarted(true);
+      } else {
+        // The old draft kept its frozen format; a new start must use the
+        // church's setting as saved now, not the setting cached for that draft.
+        const fresh = await refetchChurch();
+        if (!fresh.data || fresh.isError) setFormatError("Unable to check the current assessment format.");
+      }
+    } catch {
+      setFormatError("Unable to check the current assessment format.");
+    } finally {
+      setCheckingFormat(false);
     }
   };
   useEffect(() => {
@@ -2613,13 +2652,14 @@ export default function Assessment() {
       <p>Return to the start to enter your age and use the appropriate profile pathway.</p>
       <Button asChild><Link href={`/profile/${slug}`}>Return to start</Link></Button>
     </CardContent></Card></div>;
-  if (isLoading || integrated.loading)
+  if (isLoading || integrated.loading ||
+    (!started && !integrated.hasDraft && !integratedAttempt && (churchFetching || checkingFormat)))
     return (
       <div className="min-h-screen grid place-items-center">
         <Loader2 className="animate-spin text-primary" />
       </div>
     );
-  if (churchError || !church)
+  if (!church)
     return (
       <div className="min-h-screen grid place-items-center p-4">
         <Card>
@@ -2704,34 +2744,47 @@ export default function Assessment() {
               When you finish, you'll see a gentle summary of what came through in your responses — patterns, not a verdict. The fullest picture emerges in a conversation with your ministry leader.
             </p>}
             {integrated.completed && <p role="status" className="rounded-lg bg-muted p-3 text-sm">This draft has already been submitted and is no longer open for editing. Use your private journey link to view your profile, or contact your church if you need that link.</p>}
+            {!integrated.hasDraft && (churchError || formatError) && <p role="alert" className="text-sm text-destructive">
+              Could not check the church's current assessment format. Please retry before beginning a new profile.
+            </p>}
             {(integrated.error || integrated.storageError) && <p role="alert" className="text-sm text-destructive">{integrated.error || integrated.storageError}</p>}
             {integrated.hasDraft && <p className="text-sm">A private adult draft is saved in this browser. Resume with its original questions and church settings.</p>}
             <Button
-              disabled={integrated.hasDraft && !integratedAttempt}
-              onClick={() => {
+              disabled={integrated.discarding || (!integrated.hasDraft && !!(churchError || formatError)) || (integrated.hasDraft && !integratedAttempt)}
+              onClick={async () => {
                 if (!integratedAttempt) {
-                  setStepIndex(0);
-                  if (flowAtStart !== "classic") {
+                  setCheckingFormat(true); setFormatError("");
+                  try {
+                    const fresh = await refetchChurch();
+                    if (!fresh.data || fresh.isError) {
+                      setFormatError("Unable to check the current assessment format.");
+                      return;
+                    }
                     setLegacyChosen(false);
-                    setFlowAtStart(church.integratedAssessmentPilotEnabled === false ? "classic" : "integrated");
+                    setFlowAtStart(fresh.data.integratedAssessmentPilotEnabled === false ? "classic" : "integrated");
+                  } catch {
+                    setFormatError("Unable to check the current assessment format.");
+                    return;
+                  } finally {
+                    setCheckingFormat(false);
                   }
+                  setStepIndex(0);
                 }
                 setStarted(true);
               }}
             >
               {integratedAttempt ? "Resume saved profile" : "Begin"} <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
+            {!integrated.hasDraft && (churchError || formatError) && <Button variant="outline" onClick={() => { setFormatError(""); void refetchChurch(); }}>Retry checking format</Button>}
             {integrated.hasDraft && !integratedAttempt && <Button variant="outline" onClick={() => void integrated.load()}>Retry loading draft</Button>}
             {integrated.hasDraft && <div className="flex flex-wrap justify-center gap-3">
-              <Button variant="outline" disabled={integratedSaving} onClick={() => {
+              <Button variant="outline" disabled={integratedSaving || integrated.discarding} onClick={async () => {
                 if (!window.confirm("Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted.")) return;
-                integrated.clear(); form.reset(defaultValues); setProfilePhotoPath(null);
-                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(false); setFlowAtStart(null);
+                await discardDraft();
               }}>Discard draft and start fresh</Button>
-              <Button variant="ghost" disabled={integratedSaving} onClick={() => {
+              <Button variant="ghost" disabled={integratedSaving || integrated.discarding} onClick={async () => {
                 if (!window.confirm("Discard this saved draft and use the standard adult assessment instead? Your draft answers will not transfer.")) return;
-                integrated.clear(); form.reset(defaultValues); setProfilePhotoPath(null);
-                setIntegratedRound(0); setStepIndex(0); setLegacyChosen(true); setFlowAtStart("classic"); setStarted(true);
+                await discardDraft(true);
               }}>Use standard assessment instead</Button>
             </div>}
             {!integrated.hasDraft && church.integratedAssessmentPilotEnabled !== false && <Button variant="ghost" onClick={() => {

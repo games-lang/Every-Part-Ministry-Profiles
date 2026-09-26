@@ -39,6 +39,7 @@ function harness(options: { storage?: Map<string, string>; api?: Record<string, 
   const api = {
     startIntegratedAttempt: async () => clone(server),
     getIntegratedAttempt: async () => clone(server),
+    deleteIntegratedAttempt: async () => undefined,
     saveIntegratedAttempt: async (_church: number, _id: string, payload: any) => {
       calls.push(clone(payload));
       server = { ...server, ...clone(payload), revision: payload.revision + 1 };
@@ -160,6 +161,45 @@ test("explicit final flush closes the debounce gap and returns acknowledged cred
   assert.equal(saved.revision, 2);
   assert.equal(h.calls.at(-1).answers.q1, "na");
   assert.equal(h.result.dirty, false);
+});
+
+test("discard waits for server deletion before forgetting the browser backup", async () => {
+  const deleted = deferred<void>();
+  let authorized = false;
+  const h = harness({ api: { deleteIntegratedAttempt: (_church, _id, options) => {
+    authorized = options.headers.Authorization === "Bearer private-device-token";
+    return deleted.promise;
+  } } });
+  await h.start();
+  h.result.setAnswer("q1", 4);
+  const discard = h.result.discard();
+  await h.tick();
+  assert.equal(h.result.discarding, true);
+  assert.equal(h.result.hasDraft, true);
+  assert.equal(h.storage.has("ep_integrated_token_42"), true);
+  deleted.resolve();
+  assert.equal(await discard, true);
+  await h.tick();
+  assert.equal(authorized, true);
+  assert.equal(h.result.hasDraft, false);
+  assert.equal(h.storage.has("ep_integrated_token_42"), false);
+});
+
+test("server discard failure keeps the draft and shows a retryable error", async () => {
+  let fail = true;
+  const h = harness({ api: { deleteIntegratedAttempt: async () => {
+    if (fail) throw new Error("Offline");
+  } } });
+  await h.start();
+  assert.equal(await h.result.discard(), false);
+  await h.tick();
+  assert.equal(h.result.hasDraft, true);
+  assert.equal(h.storage.has("ep_integrated_token_42"), true);
+  assert.match(h.result.error, /Offline/);
+  fail = false;
+  assert.equal(await h.result.discard(), true);
+  await h.tick();
+  assert.equal(h.result.hasDraft, false);
 });
 
 test("anonymous answers and step survive remount before the debounced save", async () => {
