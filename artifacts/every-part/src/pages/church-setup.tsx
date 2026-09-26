@@ -42,6 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { estimateAssessmentTime } from "@/lib/assessment-time-estimate";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChurchRemovalHistory } from "@/components/church-removal-history";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -248,116 +249,6 @@ const MINISTRY_DEPTH_OPTIONS = [
     description: "The most thorough option and the fullest, most precise signal.",
   },
 ] as const;
-const ESTIMATE_SECONDS_PER_REFLECTION = 10;
-
-function estimateAssessmentTime(
-  values: Pick<ChurchFormValues, "enabledSpiritualGifts" | "assessmentConfiguration">,
-) {
-  const { sections, subsections, spiritualGiftQuestionCount, ministryQuestionCount } =
-    values.assessmentConfiguration;
-  const subsectionEnabled = (key: keyof AssessmentConfigurationSubsections) =>
-    subsections[key];
-  let seconds = 60; // Required identity details.
-  let reflectionQuestions = 0;
-
-  if (sections.aboutYou) {
-    if (subsectionEnabled("aboutYou.phone")) seconds += 15;
-    if (subsectionEnabled("aboutYou.preferredContact")) seconds += 10;
-    if (subsectionEnabled("aboutYou.familySituation")) seconds += 10;
-    if (subsectionEnabled("aboutYou.transportation")) seconds += 10;
-    if (subsectionEnabled("aboutYou.languages")) seconds += 30;
-    if (subsectionEnabled("aboutYou.profilePhoto")) seconds += 30;
-    if (subsectionEnabled("aboutYou.skillsExperience")) seconds += 150;
-    if (subsectionEnabled("aboutYou.lifeExperiences")) seconds += 90;
-  }
-
-  if (sections.apest) {
-    const enabledApproaches = [
-      "apest.builder",
-      "apest.insight",
-      "apest.connector",
-      "apest.caregiver",
-      "apest.teacher",
-    ] as const;
-    const count = enabledApproaches.filter((key) => subsectionEnabled(key)).length;
-    reflectionQuestions += count * ministryQuestionCount;
-  }
-
-  if (sections.spiritualGifts) {
-    reflectionQuestions += values.enabledSpiritualGifts.length * spiritualGiftQuestionCount;
-  }
-
-  if (sections.passionsInterests) {
-    if (subsectionEnabled("passionsInterests.passions")) seconds += 60;
-    if (subsectionEnabled("passionsInterests.ministryInterests")) seconds += 60;
-  }
-
-  if (sections.naturalStrengths) {
-    const strengthKeys = [
-      "naturalStrengths.relationalConnection",
-      "naturalStrengths.encouragement",
-      "naturalStrengths.teachingExplaining",
-      "naturalStrengths.listening",
-      "naturalStrengths.leadershipInitiative",
-      "naturalStrengths.organizing",
-      "naturalStrengths.creativeExpression",
-      "naturalStrengths.problemSolving",
-      "naturalStrengths.practicalHandsOn",
-      "naturalStrengths.hospitality",
-      "naturalStrengths.compassionCare",
-      "naturalStrengths.communicationStorytelling",
-      "naturalStrengths.discernment",
-      "naturalStrengths.followThrough",
-      "naturalStrengths.adaptability",
-      "naturalStrengths.mentoringDevelopment",
-      "naturalStrengths.strategicThinking",
-      "naturalStrengths.advocacyJustice",
-    ] as const;
-    reflectionQuestions += strengthKeys.filter((key) => subsectionEnabled(key)).length * 3;
-  }
-
-  if (sections.personalityStrengths) {
-    const personalityKeys = [
-      "personalityStrengths.socialEnergy",
-      "personalityStrengths.decisionLens",
-      "personalityStrengths.planningStyle",
-      "personalityStrengths.focusStyle",
-      "personalityStrengths.actionStyle",
-      "personalityStrengths.pacePreference",
-      "personalityStrengths.workStyle",
-    ] as const;
-    reflectionQuestions += personalityKeys.filter((key) => subsectionEnabled(key)).length * 3;
-    if (subsectionEnabled("personalityStrengths.ministryPreferences")) seconds += 90;
-  }
-
-  if (sections.spiritualHealth) {
-    const spiritualHealthKeys = [
-      "spiritualHealth.prayer",
-      "spiritualHealth.scripture",
-      "spiritualHealth.worship",
-      "spiritualHealth.relationships",
-      "spiritualHealth.community",
-      "spiritualHealth.rest",
-      "spiritualHealth.motivation",
-      "spiritualHealth.wellbeing",
-      "spiritualHealth.connection",
-    ] as const;
-    seconds += spiritualHealthKeys.filter((key) => subsectionEnabled(key)).length * 45;
-  }
-
-  if (sections.connectionAvailability) {
-    if (subsectionEnabled("connectionAvailability.churchConnection")) seconds += 120;
-    if (subsectionEnabled("connectionAvailability.availability")) seconds += 150;
-  }
-
-  seconds += reflectionQuestions * ESTIMATE_SECONDS_PER_REFLECTION;
-  const typicalMinutes = seconds / 60;
-  return {
-    minimum: Math.max(1, Math.round(typicalMinutes * 0.8)),
-    maximum: Math.max(1, Math.ceil(typicalMinutes * 1.2)),
-    reflectionQuestions,
-  };
-}
 const ALLOWED_LOGO_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 const DISCOVER_HALLWAY_CODE_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
@@ -999,10 +890,11 @@ export default function ChurchSetup() {
       .replace(/([A-Z])/g, " $1")
       .replace(/[-_]/g, " ")
       .replace(/^./, (letter) => letter.toUpperCase());
-  const assessmentEstimate = estimateAssessmentTime({
-    enabledSpiritualGifts: form.watch("enabledSpiritualGifts"),
+  const assessmentEstimate = estimateAssessmentTime(
     assessmentConfiguration,
-  });
+    form.watch("enabledSpiritualGifts"),
+    classicAdultAssessment ? "classic" : "integrated",
+  );
   const enabledSectionCount = Object.values(assessmentConfiguration.sections).filter(Boolean).length;
   const enabledGiftCount = form.watch("enabledSpiritualGifts").length;
 
@@ -1652,8 +1544,8 @@ export default function ChurchSetup() {
                     {`About ${assessmentEstimate.minimum}–${assessmentEstimate.maximum} minutes`}
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    This estimate updates as you enable sections, choose reflection depth,
-                    and adjust the gift list. It includes the required identity details and
+                    This estimate updates as you enable sections and adjust the gift list.
+                    Classic assessment reflection depth also affects its estimate. It includes the required identity details and
                     allows extra time for thoughtful responses.
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">

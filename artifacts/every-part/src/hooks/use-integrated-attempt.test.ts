@@ -162,6 +162,23 @@ test("explicit final flush closes the debounce gap and returns acknowledged cred
   assert.equal(h.result.dirty, false);
 });
 
+test("anonymous answers and step survive remount before the debounced save", async () => {
+  const h = harness();
+  await h.start({ basicInformation: { firstName: "Pat" }, _stepIndex: 2, currentStep: "integratedPilot" });
+  h.result.setAnswer("q1", 4);
+  h.result.updateForm({ basicInformation: { firstName: "Pat" }, _stepIndex: 2, currentStep: "integratedPilot", questionIndex: 1 });
+  const backup = JSON.parse(h.storage.get("ep_integrated_token_42")!);
+  assert.equal(backup.dirty, true);
+  // A new hook instance models reloading or returning to the page before
+  // the debounce reaches the server; the same device storage is retained.
+  const returned = harness({ storage: h.storage, api: { getIntegratedAttempt: async () => view(1) } });
+  await returned.tick();
+  assert.equal(returned.result.hasDraft, true);
+  assert.equal(returned.result.answers.q1, 4);
+  assert.equal(returned.restored.at(-1).questionIndex, 1);
+  assert.equal(returned.restored.at(-1).basicInformation.firstName, "Pat");
+});
+
 test("409 preserves local answers and form until explicit local retry at server revision", async () => {
   let conflict = false;
   const calls: any[] = [];

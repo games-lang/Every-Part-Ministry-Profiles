@@ -90,7 +90,7 @@ export default function Dashboard() {
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
               Your saved profiles are still safe. Retry to restore the overview. If
-              the overview is still unavailable, you can open the existing Profiles
+              the overview is still unavailable, you can open the existing People
               list directly.
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -102,7 +102,7 @@ export default function Dashboard() {
                 {isFetching ? "Retrying..." : "Retry"}
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/profiles">Open Profiles</Link>
+                <Link href="/profiles">Open People</Link>
               </Button>
             </div>
           </CardContent>

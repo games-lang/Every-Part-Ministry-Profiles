@@ -272,13 +272,13 @@ export default function ProfilesList() {
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/50 pb-5">
         <div>
-          <h1 className="font-serif text-3xl font-medium tracking-tight">Ministry Profiles</h1>
+          <h1 className="font-serif text-3xl font-medium tracking-tight">People</h1>
           <p className="text-muted-foreground mt-1 text-lg">Review member reflections and notice who may be growing into their part.</p>
         </div>
         <div
           className="flex space-x-1 bg-muted/50 p-1 rounded-lg border border-border/50 self-start sm:self-auto"
           role="tablist"
-          aria-label="Profiles views"
+          aria-label="People views"
         >
           <button
             type="button"
@@ -475,13 +475,13 @@ export default function ProfilesList() {
                 title={
                   directoryFilter === "completed"
                     ? searchTerm
-                      ? "No finished profiles match that search"
-                      : "No finished profiles yet"
+                      ? "No people with completed profiles match that search"
+                      : "No people with completed profiles yet"
                     : searchTerm
-                      ? "No completed profiles match that search"
+                      ? "No people with completed profiles match that search"
                       : pendingPeople.length > 0
-                        ? "No completed profiles yet"
-                        : "No profiles yet"
+                        ? "No people with completed profiles yet"
+                        : "No people yet"
                 }
                 description={
                   directoryFilter === "completed"

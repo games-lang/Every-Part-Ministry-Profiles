@@ -803,7 +803,7 @@ export function PeoplePanel() {
                     </div>
                     <p className="mt-3 text-xs text-muted-foreground">
                       {person.inviteStatus === "completed"
-                        ? "Their completed profile is in the Ministry Profiles directory."
+                        ? "Their completed profile is in the People directory."
                         : `Invite expires ${new Date(person.inviteExpiresAt).toLocaleDateString()}.`}
                     </p>
                   </div>

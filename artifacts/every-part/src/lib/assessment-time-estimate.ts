@@ -1,10 +1,13 @@
 import type { AssessmentConfiguration } from "@workspace/api-client-react";
+import { integratedQuestionCount } from "./integrated-question-count";
 
 const ESTIMATE_SECONDS_PER_REFLECTION = 10;
 
 export function estimateAssessmentTime(
   configuration: AssessmentConfiguration,
   enabledSpiritualGifts: string[],
+  mode: "classic" | "integrated" = "classic",
+  actualIntegratedQuestionCount?: number,
 ) {
   const { sections, subsections, spiritualGiftQuestionCount, ministryQuestionCount } =
     configuration;
@@ -24,7 +27,7 @@ export function estimateAssessmentTime(
     if (subsectionEnabled("aboutYou.lifeExperiences")) seconds += 90;
   }
 
-  if (sections.apest) {
+  if (mode === "classic" && sections.apest) {
     const enabledApproaches = [
       "apest.builder",
       "apest.insight",
@@ -36,7 +39,7 @@ export function estimateAssessmentTime(
     reflectionQuestions += count * ministryQuestionCount;
   }
 
-  if (sections.spiritualGifts) {
+  if (mode === "classic" && sections.spiritualGifts) {
     reflectionQuestions += enabledSpiritualGifts.length * spiritualGiftQuestionCount;
   }
 
@@ -45,7 +48,7 @@ export function estimateAssessmentTime(
     if (subsectionEnabled("passionsInterests.ministryInterests")) seconds += 60;
   }
 
-  if (sections.naturalStrengths) {
+  if (mode === "classic" && sections.naturalStrengths) {
     const strengthKeys = [
       "naturalStrengths.relationalConnection",
       "naturalStrengths.encouragement",
@@ -79,7 +82,7 @@ export function estimateAssessmentTime(
       "personalityStrengths.pacePreference",
       "personalityStrengths.workStyle",
     ] as const;
-    reflectionQuestions += personalityKeys.filter((key) => subsectionEnabled(key)).length * 3;
+    if (mode === "classic") reflectionQuestions += personalityKeys.filter((key) => subsectionEnabled(key)).length * 3;
     if (subsectionEnabled("personalityStrengths.ministryPreferences")) seconds += 90;
   }
 
@@ -103,6 +106,10 @@ export function estimateAssessmentTime(
     if (subsectionEnabled("connectionAvailability.availability")) seconds += 150;
   }
 
+  if (mode === "integrated") {
+    reflectionQuestions = actualIntegratedQuestionCount ??
+      integratedQuestionCount(configuration, enabledSpiritualGifts);
+  }
   seconds += reflectionQuestions * ESTIMATE_SECONDS_PER_REFLECTION;
   const typicalMinutes = seconds / 60;
   return {

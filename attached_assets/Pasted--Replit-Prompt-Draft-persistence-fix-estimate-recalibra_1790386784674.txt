@@ -1,0 +1,42 @@
+# Replit Prompt — Draft persistence fix + estimate recalibration + People rename (paste into Replit)
+
+## Context
+QA on the live site found that an anonymous participant's integrated-assessment draft does not survive a reload or navigation, despite the UI copy promising "Existing integrated drafts can still resume and finish." Also, the time estimate still shows the classic 40–60 minutes for the shorter integrated flow, and the owner wants the "Profiles" section renamed "People."
+
+Do not touch scoring logic, Leader View behavior, or saved data shapes.
+
+## 1. Fix anonymous draft persistence (integrated flow)
+**Relevant code:** `artifacts/every-part/src/hooks/use-integrated-attempt.ts` (already has a localStorage backup via `persist()` plus a debounced server flush), `artifacts/every-part/src/pages/assessment.tsx`
+
+**Observed (live QA):** Start an integrated assessment as an anonymous participant, answer questions (reached step 3 of 7, ~43%), then reload the page, navigate away and return, or use the back button — in the same browser. Every time, the draft was lost: no resume prompt, no automatic restore, no resume link emailed, no drafts UI. The draft appears to live only in in-memory SPA state from the participant's perspective.
+
+**Required behavior:** An anonymous participant who leaves mid-assessment and returns in the same browser must be able to resume where they left off — either a "Resume your assessment" prompt on the assessment landing page or automatic restoration. This must work for both the integrated flow and, if it supports drafts, the classic flow. If the classic flow has no draft support at all, say so explicitly in your report instead of building it.
+
+**Approach:** Reproduce the failure first. Suspects to check: the resume path in `load()` (storage key mismatch, attempt created only after the identity step so early answers are never backed up), the landing page starting a fresh attempt instead of offering resume, or the backup never being written before unload. Fix the root cause, not just the symptom.
+
+**Verify in the running app:** start an integrated assessment, answer questions through at least step 3, reload the page, and confirm the answers are restored. Then do the same with navigate-away-and-return. Report the root cause, the fix, and pass/fail for both.
+
+## 2. Recalibrate the time estimate for the integrated flow
+**Relevant code:** `artifacts/every-part/src/lib/assessment-time-estimate.ts`, used in `artifacts/every-part/src/pages/assessment.tsx` (~line 1677) and `artifacts/every-part/src/pages/church-setup.tsx`
+
+**Observed:** The estimate is computed from the full classic assessment configuration, so the integrated flow (7 steps: About you, Skills & experience, Reflections, Passions, Spiritual health, Availability & Serving Rhythm, Review) still displays "40–60 min estimated." The integrated assessment is substantially shorter and must not carry the classic estimate.
+
+**Fix:** Make the estimate reflect the questions the active flow actually asks. When the integrated flow is active, compute from the integrated flow's real question count, not the full classic configuration. The classic flow keeps its current computation.
+
+**Verify:** with default settings, the integrated flow shows a credibly shorter range than the classic flow's 40–60 minutes, in both the assessment intro and Church Setup. Report both numbers.
+
+## 3. Rename "Profiles" section to "People"
+**Relevant code:** `artifacts/every-part/src/components/layout/Shell.tsx` (nav item `{ href: "/profiles", label: "Profiles", ... }`), the `/profiles` page and its empty states.
+
+**Change:** The admin directory section currently called "Profiles" becomes "People" — nav label, page heading, and empty-state copy (e.g. "No profiles yet" → "No people yet" where it refers to individuals). Rationale: the section lists people (invited, in-progress, completed), not just finished profiles.
+
+**Constraints:**
+- Do NOT change the `/profiles` route or any URLs.
+- Keep "profile" for the assessment result itself (e.g. "Ministry Profile", profile detail pages) — only the directory/section naming changes.
+- Audit for other user-facing "Profiles" references to the directory (toasts, breadcrumbs, back links like the "Profiles" link in `journey.tsx`) and update them consistently.
+
+## Done when
+- Drafts survive reload and navigate-away-and-return in the same browser, for anonymous participants, with a clear resume path. Root cause documented.
+- Integrated flow shows its own shorter time estimate; classic flow unchanged.
+- No user-facing "Profiles" remains for the directory section; routes unchanged; "profile" kept for assessment results.
+- Report pass/fail per numbered item with what you checked in the running app.

@@ -37,3 +37,4 @@
 - [Onboarding validation compatibility](onboarding-validation-compatibility.md) — browser-invalid inputs can throw Zod issues instead of inline form errors; verify the resolver path before replacing explicit handling.
 - [Accessible text boundaries](accessible-text-boundaries.md) — JSX whitespace can disappear from the browser accessibility name; make value-plus-word phrases one string.
 - [Integrated adult default rollout](integrated-default-rollout.md) — old false flags mixed defaults and choices; never repeat the pre-launch bulk flip after opt-outs exist.
+- [Integrated estimate bank alignment](integrated-estimate-bank-alignment.md) — keep the compact client count index aligned with the server bank; estimate only questions active for the selected flow.

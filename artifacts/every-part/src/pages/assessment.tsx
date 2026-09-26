@@ -54,7 +54,7 @@ import { personalitySummarySentence } from "@/lib/personality-prose";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
 import { ProfileParts } from "@/components/profile-parts";
 import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
-import { useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
+import { draftFormState, useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
 import { IntegratedConflict, IntegratedReflections, isOptionalReflection } from "@/components/integrated-reflections";
 import { resolveIntegratedResumeStep } from "@/lib/integrated-step-progress";
 import { estimateAssessmentTime } from "@/lib/assessment-time-estimate";
@@ -1601,6 +1601,7 @@ export default function Assessment() {
   const form = useForm<Values>({ defaultValues });
   const [legacyChosen, setLegacyChosen] = useState(false);
   const [flowAtStart, setFlowAtStart] = useState<"integrated" | "classic" | null>(null);
+  const prestartRestoredFor = useRef<number | null>(null);
   const [adultConfirmed, setAdultConfirmed] = useState(false);
   const [celibacyEligible, setCelibacyEligible] = useState(false);
   const [optionalExperienceOptIn, setOptionalExperienceOptIn] = useState(false);
@@ -1674,13 +1675,6 @@ export default function Assessment() {
   const configuration = integratedAttempt?.snapshot.assessmentConfiguration ?? church?.assessmentConfiguration;
   const customization = integratedAttempt?.snapshot.ministryCustomization ?? church?.ministryCustomization;
   const enabledGifts = integratedAttempt?.snapshot.enabledSpiritualGifts ?? church?.enabledSpiritualGifts;
-  const assessmentEstimate =
-    configuration && enabledGifts
-      ? estimateAssessmentTime(
-          configuration,
-          enabledGifts,
-        )
-      : null;
   const spiritualGiftsLabel =
     customization?.spiritualGiftsLabel ?? "Spiritual Gifts";
   const ministryInterestsLabel =
@@ -1718,6 +1712,14 @@ export default function Assessment() {
 
   const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft ||
     (flowAtStart === "integrated" || (flowAtStart !== "classic" && !legacyChosen && church?.integratedAssessmentPilotEnabled !== false));
+  const assessmentEstimate = configuration && enabledGifts
+    ? estimateAssessmentTime(
+        configuration,
+        enabledGifts,
+        integratedPilotEnabled ? "integrated" : "classic",
+        integratedAttempt?.questions.length,
+      )
+    : null;
   const integratedPreferencesEnabled = integratedPilotEnabled && sectionEnabled("personalityStrengths") && subsectionEnabled("personalityStrengths.ministryPreferences");
   const integratedAvailabilityStep = integratedPilotEnabled && sectionEnabled("connectionAvailability") && hasEnabledSubsections("connectionAvailability");
   const coreQuestions = integratedAttempt?.questions.filter(q => !isOptionalReflection(q)) ?? [];
@@ -1762,6 +1764,49 @@ export default function Assessment() {
     ...(integratedPilotEnabled && optionalQuestions.length ? ["integratedOptional"] : []),
     ...(integratedPilotEnabled ? ["integratedReview"] : []),
   ];
+  const prestartKey = church?.id ? `ep_integrated_prestart_${church.id}` : null;
+  const clearPrestart = () => {
+    if (prestartKey) {
+      try { localStorage.removeItem(prestartKey); } catch { /* Private browsing may deny storage. */ }
+    }
+  };
+  useEffect(() => {
+    if (!church?.id || integrated.loading || prestartRestoredFor.current === church.id) return;
+    prestartRestoredFor.current = church.id;
+    if (integrated.hasDraft || integratedAttempt || integrated.completed) return;
+    try {
+      // The server-backed draft always wins, including while its GET is pending.
+      if (localStorage.getItem(`ep_integrated_token_${church.id}`)) return;
+      const raw = localStorage.getItem(`ep_integrated_prestart_${church.id}`);
+      if (!raw || raw.length > 240_000) return;
+      const saved = draftFormState(JSON.parse(raw) as DraftForm);
+      const index = typeof saved._stepIndex === "number" ? saved._stepIndex : 0;
+      if (!Number.isInteger(index) || index < 0) return;
+      const restored = { ...structuredClone(defaultValues), ...saved } as Values;
+      for (const key of ["basicInformation", "churchConnection", "skills", "churchDetails", "availabilityDetails", "preferences", "spiritualHealth"] as const) {
+        (restored as any)[key] = { ...defaultValues[key], ...(saved[key] as object ?? {}) };
+      }
+      form.reset(restored);
+      setFlowAtStart("integrated");
+      setStepIndex(Math.min(index, stepKeys.length - 1));
+      setStarted(true);
+    } catch { /* A malformed local backup must not prevent a fresh start. */ }
+  }, [church?.id, integrated.loading, integrated.hasDraft, integratedAttempt, integrated.completed, form, stepKeys.length]);
+  useEffect(() => {
+    if (integratedAttempt) clearPrestart();
+  }, [integratedAttempt, prestartKey]);
+  useEffect(() => {
+    if (!prestartKey || !started || !integratedPilotEnabled || integrated.loading || integrated.hasDraft || integratedAttempt) return;
+    const save = () => {
+      try {
+        const raw = JSON.stringify(draftFormState(captureProgress()));
+        if (new TextEncoder().encode(raw).length <= 240_000) localStorage.setItem(prestartKey, raw);
+      } catch { /* The server draft remains available after Start Reflection. */ }
+    };
+    save();
+    const subscription = form.watch(save);
+    return () => subscription.unsubscribe();
+  }, [prestartKey, started, integratedPilotEnabled, integrated.loading, integrated.hasDraft, integratedAttempt, stepIndex, form]);
   const currentStep = stepKeys[stepIndex] ?? "aboutYou";
   useEffect(() => {
     if (integrated.loading || !integratedAttempt || !resumeStep.current) return;
@@ -3063,7 +3108,7 @@ export default function Assessment() {
                             {integrated.starting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Start Reflection"}
                           </Button>
                           {!integrated.hasDraft && <Button type="button" variant="ghost" disabled={integrated.starting} onClick={() => {
-                            setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0);
+                            clearPrestart(); setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0);
                           }}>Use the standard adult assessment instead</Button>}
                         </div>
                       ) : (

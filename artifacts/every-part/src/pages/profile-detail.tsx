@@ -544,7 +544,7 @@ export default function ProfileDetail() {
     flushSync(() => setIsPrinting(true));
     window.print();
   };
- if(error)return <div className="container p-8"><p className="text-destructive">Failed to load profile details.</p><Link href="/profiles">Back to profiles</Link></div>;
+ if(error)return <div className="container p-8"><p className="text-destructive">Failed to load profile details.</p><Link href="/profiles">Back to People</Link></div>;
  if(isLoading||!profile)return <div className="container p-8"><div className="h-48 animate-pulse rounded bg-muted"/></div>;
    const basic=profile.basicInformation; const connection=profile.churchConnection; const skills=profile.skills; const skillDetails = skills.details && typeof skills.details === "object" && !Array.isArray(skills.details) ? skills.details as Record<string, unknown> : null; const hasConversationSkills = Boolean(skillDetails && ("context" in skillDetails || "training" in skillDetails || "enjoys" in skillDetails)); const configuration=profile.assessmentConfiguration;
   const sectionEnabled=(section: keyof typeof configuration.sections)=>configuration.sections[section];

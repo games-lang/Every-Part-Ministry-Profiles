@@ -11,7 +11,7 @@ import { BetaNotice } from "@/components/beta-notice";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/profiles", label: "Profiles", icon: Users },
+  { href: "/profiles", label: "People", icon: Users },
   { href: "/teams", label: "Teams", icon: UsersRound },
   { href: "/leadership-profile", label: "My Leadership", icon: Compass },
   { href: "/church-setup", label: "Church Setup", icon: Settings },
