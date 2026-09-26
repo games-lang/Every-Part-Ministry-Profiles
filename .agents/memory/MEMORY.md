@@ -34,3 +34,4 @@
 - [Private pastor notes](private-pastor-notes.md) — notes are per-author leader records; never mix them into profile, participant, print, youth, AI, or PartFinder payloads.
 - [Four-part profile framework](four-part-profile-framework.md) — results always show APEST, Gifts, Strengths, Personality as four named areas; serving patterns live only in synthesis.
 - [Completed profile portrait](completed-profile-portrait.md) — adult results unfold as one eight-part ministry story; assessments supply evidence but never become stacked result sections.
+- [Onboarding validation compatibility](onboarding-validation-compatibility.md) — browser-invalid inputs can throw Zod issues instead of inline form errors; verify the resolver path before replacing explicit handling.

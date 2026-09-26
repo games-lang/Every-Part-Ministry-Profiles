@@ -497,7 +497,9 @@ function TeamMemberPicker({
             </select>
           ) : (
             <div className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
-              All completed adult profiles are already assigned to this team.
+              {profiles.some((profile) => profile.profileType === "adult")
+                ? "All completed adult profiles are already assigned to this team."
+                : "No completed adult profiles yet"}
             </div>
           )}
           {selectedProfile?.teamId && (
@@ -614,7 +616,7 @@ function TeamCard({
           <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2 text-sm font-medium">
               <Users className="h-4 w-4 text-primary" />
-              {team.memberCount} {team.memberCount === 1 ? "member" : "members"}
+              {`${team.memberCount} ${team.memberCount === 1 ? "member" : "members"}`}
             </div>
             {!team.isArchived && (
               <TeamMemberPicker

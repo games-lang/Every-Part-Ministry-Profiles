@@ -161,7 +161,7 @@ function PendingPeopleSection({
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="font-serif text-xl font-medium">
-                      {person.firstName} {person.lastName}
+                      {`${person.firstName} ${person.lastName}`}
                     </h3>
                     <Badge
                       variant="outline"
@@ -231,6 +231,12 @@ export default function ProfilesList() {
   const [directoryFilter, setDirectoryFilter] = useState<DirectoryFilter>("all");
   const debouncedSearch = useDebounce(searchTerm, 300);
   const { data: profiles, isLoading: isLoadingProfiles, error: profilesError } = useListProfiles({ search: debouncedSearch || undefined });
+  const {
+    data: eligibleProfiles,
+    isLoading: isLoadingEligibleProfiles,
+    error: eligibleProfilesError,
+    refetch: refetchEligibleProfiles,
+  } = useListProfiles();
   const { data: people, isLoading: isLoadingPeople, error: peopleError } = useListPeople();
   const { data: teams } = useListTeams();
   const teamNames = new Map(teams?.map((team) => [team.id, team.name]) ?? []);
@@ -507,6 +513,22 @@ export default function ProfilesList() {
             />
           ) : null}
         </div>
+      ) : isLoadingEligibleProfiles ? (
+        <Skeleton className="h-64 w-full" />
+      ) : eligibleProfilesError ? (
+        <EmptyState
+          icon={AlertCircle}
+          title="Could not load completed profiles"
+          description="Please try again before exploring growth guidance."
+          actionLabel="Try again"
+          onAction={() => void refetchEligibleProfiles()}
+        />
+      ) : !eligibleProfiles?.some((profile) => profile.profileType === "adult") ? (
+        <EmptyState
+          icon={HeartHandshake}
+          title="Growth guidance isn't ready yet"
+          description="There's not enough profile data yet for guidance — once a few profiles are completed, suggestions will appear here."
+        />
       ) : (
         <div className="grid lg:grid-cols-12 gap-8 animate-in fade-in duration-300">
           <div className="lg:col-span-5 space-y-6">
@@ -696,7 +718,7 @@ export default function ProfilesList() {
                 <div className="flex items-center justify-between pt-4 pb-2 border-b border-border/50">
                    <h3 className="font-serif text-2xl font-medium">Profiles Worth Exploring</h3>
                   <Badge variant="outline" className="font-normal text-muted-foreground">
-                     {matchMutation.data.candidates.length} {matchMutation.data.candidates.length === 1 ? 'signal' : 'signals'}
+                     {`${matchMutation.data.candidates.length} ${matchMutation.data.candidates.length === 1 ? "signal" : "signals"}`}
                   </Badge>
                 </div>
 

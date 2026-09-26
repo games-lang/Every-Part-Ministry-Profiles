@@ -1107,11 +1107,7 @@ export default function ChurchSetup() {
         </p>
         <div className="mt-5 flex flex-wrap gap-2 text-sm text-muted-foreground" aria-label="Assessment summary">
           <span className="church-setup-summary-pill">
-            {enabledSectionCount}
-            {" "}
-            {enabledSectionCount === 1 ? "section" : "sections"}
-            {" "}
-            enabled
+            {`${enabledSectionCount} ${enabledSectionCount === 1 ? "section" : "sections"} enabled`}
           </span>
           <span className="church-setup-summary-pill">{enabledGiftCount} spiritual gifts included</span>
           <span className="church-setup-summary-pill">
@@ -1235,11 +1231,7 @@ export default function ChurchSetup() {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Current code:
-            {" "}
-            <span className="font-mono font-semibold tracking-[0.2em]">{church?.discoverHallwayCode || "Not set"}</span>.
-            {" "}
-            Generating and saving a new code immediately replaces the old one.
+            {`Current code: ${church?.discoverHallwayCode || "Not set"}. Generating and saving a new code immediately replaces the old one.`}
           </p>
         </CardContent>
       </Card>

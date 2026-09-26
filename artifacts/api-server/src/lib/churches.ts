@@ -1,3 +1,4 @@
+import { clerkClient } from "@clerk/express";
 import {
   churchAdminsTable,
   churchesTable,
@@ -17,6 +18,17 @@ export { activeSpiritualGifts, validateEnabledSpiritualGifts } from "./spiritual
 function slugFromUserId(userId: string): string {
   const suffix = userId.replace(/[^a-zA-Z0-9]/g, "").slice(-10).toLowerCase();
   return `your-church-${suffix || "home"}`;
+}
+
+export function slugifyChurchName(name: string): string {
+  return name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 56)
+    .replace(/-$/g, "") || "church";
 }
 
 export async function getOrCreateChurch(userId: string) {
@@ -48,6 +60,15 @@ export async function getOrCreateChurch(userId: string) {
     return existing;
   }
 
+  const user = await clerkClient.users.getUser(userId);
+  const accountEmail =
+    user.emailAddresses.find((address) => address.id === user.primaryEmailAddressId)?.emailAddress ??
+    user.emailAddresses[0]?.emailAddress;
+  if (!accountEmail) {
+    throw new Error("An email address is required to create a church.");
+  }
+  const accountName = [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
+
   const [created] = await db.transaction(async (tx) => {
     const [church] = await tx
       .insert(churchesTable)
@@ -55,8 +76,8 @@ export async function getOrCreateChurch(userId: string) {
         ownerUserId: userId,
         name: "Your Church",
         slug: slugFromUserId(userId),
-        adminName: "Church Administrator",
-        adminEmail: "admin@example.com",
+        adminName: accountName,
+        adminEmail: accountEmail.trim().toLowerCase(),
         foundingChurch: true,
       })
       .returning();

@@ -106,7 +106,7 @@ function PolicyFooter({ current }: { current: PolicyKind }) {
   return (
     <footer className="mt-16 border-t border-border/70 py-8">
       <div className="container mx-auto flex flex-col gap-5 px-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} Every Part</p>
+        <p>{`© ${new Date().getFullYear()} Every Part`}</p>
         <nav className="flex flex-wrap items-center gap-x-5 gap-y-3" aria-label="Legal">
           <Link
             href="/privacy"

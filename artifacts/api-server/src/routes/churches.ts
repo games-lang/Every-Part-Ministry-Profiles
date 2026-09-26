@@ -1,7 +1,8 @@
 import { clerkClient } from "@clerk/express";
+import { randomUUID } from "node:crypto";
 import { Router, type IRouter } from "express";
 import { Readable } from "stream";
-import { and, asc, count, eq } from "drizzle-orm";
+import { and, asc, count, eq, ne } from "drizzle-orm";
 import {
   AddChurchAdminBody,
   AddChurchAdminResponse,
@@ -29,6 +30,7 @@ import {
   activeSpiritualGifts,
   churchResponse,
   getOrCreateChurch,
+  slugifyChurchName,
   validateEnabledSpiritualGifts,
 } from "../lib/churches";
 import { assessmentConfiguration } from "../lib/assessment-configuration";
@@ -110,6 +112,18 @@ router.patch("/church", async (req, res): Promise<void> => {
   }
 
   const church = await getOrCreateChurch(userId);
+  if (
+    parsed.data.onboardingCompleted &&
+    !church.onboardingCompletedAt &&
+    (!parsed.data.name?.trim() ||
+      !parsed.data.adminName?.trim() ||
+      !parsed.data.adminEmail?.trim())
+  ) {
+    res.status(400).json({
+      error: "Church name, leader name, and a valid contact email are required to finish setup.",
+    });
+    return;
+  }
   if (parsed.data.logoUrl) {
     try {
       await objectStorage.validateChurchLogo(parsed.data.logoUrl, church.id);
@@ -119,32 +133,62 @@ router.patch("/church", async (req, res): Promise<void> => {
     }
   }
   const { onboardingCompleted, ...churchUpdate } = parsed.data;
-  const [updated] = await db.transaction(async (tx) => {
-    const [savedChurch] = await tx
-      .update(churchesTable)
-      .set({
-        ...churchUpdate,
-        ...(customization ? { ministryCustomization: customization } : {}),
-        ...(onboardingCompleted ? { onboardingCompletedAt: new Date() } : {}),
-      })
-      .where(eq(churchesTable.id, church.id))
-      .returning();
-    if (savedChurch && (parsed.data.adminName !== undefined || parsed.data.adminEmail !== undefined)) {
-      await tx
-        .update(churchAdminsTable)
-        .set({
-          name: savedChurch.adminName,
-          email: savedChurch.adminEmail,
-        })
-        .where(
-          and(
-            eq(churchAdminsTable.churchId, church.id),
-            eq(churchAdminsTable.role, "owner"),
-          ),
-        );
+  const baseSlug =
+    onboardingCompleted && !church.onboardingCompletedAt && parsed.data.name
+      ? slugifyChurchName(parsed.data.name)
+      : null;
+  let updated: typeof churchesTable.$inferSelect | undefined;
+  for (let attempt = 0; attempt < (baseSlug ? 5 : 1); attempt++) {
+    try {
+      [updated] = await db.transaction(async (tx) => {
+        let slug: string | undefined;
+        if (baseSlug) {
+          slug = attempt === 0 ? baseSlug : `${baseSlug}-${randomUUID().slice(0, 6)}`;
+          const [collision] = await tx
+            .select({ id: churchesTable.id })
+            .from(churchesTable)
+            .where(and(eq(churchesTable.slug, slug), ne(churchesTable.id, church.id)))
+            .limit(1);
+          if (collision) {
+            const error = new Error("Church profile link already in use.");
+            Object.assign(error, { code: "23505", constraint: "churches_slug_unique" });
+            throw error;
+          }
+        }
+        const [savedChurch] = await tx
+          .update(churchesTable)
+          .set({
+            ...churchUpdate,
+            ...(customization ? { ministryCustomization: customization } : {}),
+            ...(onboardingCompleted ? { onboardingCompletedAt: new Date() } : {}),
+            ...(slug ? { slug } : {}),
+          })
+          .where(eq(churchesTable.id, church.id))
+          .returning();
+        if (savedChurch && (parsed.data.adminName !== undefined || parsed.data.adminEmail !== undefined)) {
+          await tx
+            .update(churchAdminsTable)
+            .set({
+              name: savedChurch.adminName,
+              email: savedChurch.adminEmail,
+            })
+            .where(and(eq(churchAdminsTable.churchId, church.id), eq(churchAdminsTable.role, "owner")));
+        }
+        return [savedChurch];
+      });
+      break;
+    } catch (error) {
+      const cause = error && typeof error === "object" && "cause" in error ? error.cause : error;
+      const slugCollision =
+        cause &&
+        typeof cause === "object" &&
+        "code" in cause &&
+        cause.code === "23505" &&
+        "constraint" in cause &&
+        cause.constraint === "churches_slug_unique";
+      if (!baseSlug || !slugCollision || attempt === 4) throw error;
     }
-    return [savedChurch];
-  });
+  }
 
   if (!updated) {
     res.status(404).json({ error: "Church not found" });

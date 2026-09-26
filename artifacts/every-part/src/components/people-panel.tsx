@@ -313,7 +313,7 @@ function CsvImportDialog({
                   <div key={row.row} className="flex gap-3 border-b px-3 py-2 text-sm last:border-b-0">
                     <span className="w-10 shrink-0 text-muted-foreground">Row {row.row}</span>
                     <span className="min-w-0 flex-1 truncate">
-                      {row.person.firstName || "—"} {row.person.lastName}
+                      {`${row.person.firstName || "—"} ${row.person.lastName}`}
                       {row.person.email ? ` · ${row.person.email}` : ""}
                     </span>
                     {row.error && <span className="text-destructive">{row.error}</span>}
@@ -722,7 +722,7 @@ export function PeoplePanel() {
           <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">
-                Link ready for {latestInvite.firstName} {latestInvite.lastName}
+                {`Link ready for ${latestInvite.firstName} ${latestInvite.lastName}`}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Share it directly or open a pre-addressed email. This link expires in 30 days.
@@ -742,7 +742,7 @@ export function PeoplePanel() {
         <div>
           <h2 className="font-serif text-2xl font-medium">Add people</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {people?.length ?? 0} {people?.length === 1 ? "person" : "people"} added by your church
+            {`${people?.length ?? 0} ${people?.length === 1 ? "person" : "people"} added by your church`}
           </p>
         </div>
       </div>
@@ -772,7 +772,7 @@ export function PeoplePanel() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-3">
                       <h3 className="font-serif text-xl font-medium">
-                        {person.firstName} {person.lastName}
+                        {`${person.firstName} ${person.lastName}`}
                       </h3>
                       <Badge variant="outline" className={status.className}>
                         {person.profileId || person.inviteStatus === "completed" ? (

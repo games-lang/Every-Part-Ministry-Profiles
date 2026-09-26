@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { UserButton } from "@clerk/react";
 import { Compass, CreditCard, LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck } from "lucide-react";
@@ -20,9 +20,26 @@ const navItems = [
 
 export function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
+  const accountButtonRef = useRef<HTMLDivElement>(null);
   const { data: health } = useHealthCheck();
   const { data: adminAccess } = useGetAppAdminAccess();
   const { data: church } = useGetMyChurch();
+
+  useEffect(() => {
+    const container = accountButtonRef.current;
+    if (!container) return;
+    // Clerk owns this image's alt and can emit "'s logo" for an unnamed account.
+    const ensureAvatarAlt = () => {
+      const avatar = container.querySelector("img");
+      if (avatar && (!avatar.alt.trim() || avatar.alt.trim() === "'s logo")) {
+        avatar.alt = "Church logo";
+      }
+    };
+    ensureAvatarAlt();
+    const observer = new MutationObserver(ensureAvatarAlt);
+    observer.observe(container, { childList: true, subtree: true, attributes: true, attributeFilter: ["alt"] });
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="ep-shell flex min-h-[100dvh] flex-col">
@@ -87,6 +104,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 Preview Assessment <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
+            <div ref={accountButtonRef}>
             <UserButton 
               appearance={{
                 elements: {
@@ -106,6 +124,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 }
               }}
             />
+            </div>
           </div>
         </div>
       </header>
@@ -117,7 +136,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <footer className="mt-auto py-6 border-t border-border/50 text-center">
         <div className="container mx-auto flex items-center justify-between px-4 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Every Part</p>
+          <p>{`© ${new Date().getFullYear()} Every Part`}</p>
           <div className="flex items-center gap-4">
             <Link href="/about-early-access" className="hover:text-foreground hover:underline">
               About Early Access

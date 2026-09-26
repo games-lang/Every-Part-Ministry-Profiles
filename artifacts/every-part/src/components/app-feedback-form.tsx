@@ -98,8 +98,7 @@ export function AppFeedbackForm({ sourcePage, className = "" }: AppFeedbackFormP
         </div>
         <div>
           <label htmlFor={`${sourcePage}-feedback-email`} className="text-sm font-medium text-foreground">
-            Email for a reply{" "}
-            <span className="font-normal text-muted-foreground">(optional)</span>
+            {"Email for a reply (optional)"}
           </label>
           <input
             id={`${sourcePage}-feedback-email`}

@@ -339,7 +339,7 @@ export function AppFeedbackInbox() {
               <div>
                 <p className="font-semibold text-foreground">Feedback inbox</p>
                 <p className="text-sm text-muted-foreground">
-                  Showing {filteredItems.length} of {items.length} {items.length === 1 ? "item" : "items"}
+                  {`Showing ${filteredItems.length} of ${items.length} ${items.length === 1 ? "item" : "items"}`}
                 </p>
               </div>
             </div>
