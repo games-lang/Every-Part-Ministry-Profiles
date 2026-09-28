@@ -791,3 +791,67 @@
   outline: 2px solid hsl(var(--ring));
   outline-offset: -2px;
 }
+
+@media (max-width: 639px) {
+  .assessment-flow :where(h1, h2, h3, h4, p, label) {
+    overflow-wrap: anywhere;
+  }
+  .assessment-flow :where(button, [role="combobox"], [role="checkbox"], input:not([type="file"]), textarea) {
+    min-height: 44px;
+  }
+  .assessment-flow button {
+    min-width: 44px;
+    height: auto;
+    white-space: normal;
+  }
+  .assessment-flow [role="checkbox"] {
+    min-width: 44px;
+  }
+  .assessment-flow :where(input, textarea) {
+    font-size: 16px;
+    scroll-margin-bottom: 9rem;
+  }
+  .assessment-flow .assessment-progress [role="listitem"] > span {
+    display: none;
+  }
+  .assessment-flow .assessment-progress [role="list"] {
+    gap: .25rem;
+  }
+  .assessment-flow .assessment-step-options,
+  .assessment-flow .assessment-reflection-options {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .assessment-flow :is(.assessment-step-options, .assessment-reflection-options) button {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+  .assessment-flow .assessment-mobile-nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    padding-bottom: max(.75rem, env(safe-area-inset-bottom));
+  }
+  .assessment-flow .assessment-mobile-nav > button {
+    flex: 1;
+    min-width: 0;
+  }
+  .assessment-flow:has(input:focus, textarea:focus) .assessment-mobile-nav {
+    position: static;
+  }
+  .assessment-select-content {
+    max-width: calc(100vw - 24px);
+  }
+  .assessment-select-content [role="option"] {
+    min-height: 44px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .assessment-confirm-dialog > button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

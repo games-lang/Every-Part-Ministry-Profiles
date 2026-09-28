@@ -54,6 +54,7 @@ import { personalitySummarySentence } from "@/lib/personality-prose";
 import { profileSubmissionError } from "@/lib/profile-submission-error";
 import { ProfileParts } from "@/components/profile-parts";
 import { ProfilePhotoUploader } from "@/components/profile-photo-uploader";
+import { AssessmentConfirmDialog } from "@/components/assessment-confirm-dialog";
 import { draftFormState, useIntegratedAttempt, type DraftForm } from "@/hooks/use-integrated-attempt";
 import { IntegratedConflict, IntegratedReflections, isOptionalReflection } from "@/components/integrated-reflections";
 import { resolveIntegratedResumeStep } from "@/lib/integrated-step-progress";
@@ -1262,6 +1263,15 @@ function TextField({
 }) {
   const context = useContext(AssessmentConfigurationContext);
   if (!fieldIsEnabled(name, context)) return null;
+  const contactInput = name === "basicInformation.email" ? {
+    type: "email", autoComplete: "email", inputMode: "email" as const,
+  } : name === "basicInformation.phone" ? {
+    type: "tel", autoComplete: "tel", inputMode: "tel" as const,
+  } : name === "basicInformation.firstName" ? {
+    type: "text", autoComplete: "given-name",
+  } : name === "basicInformation.lastName" ? {
+    type: "text", autoComplete: "family-name",
+  } : { type: "text" };
   return (
     <FormField
       control={form.control}
@@ -1282,6 +1292,7 @@ function TextField({
               />
             ) : (
               <Input
+                {...contactInput}
                 name={field.name}
                 value={String(field.value ?? "")}
                 onChange={field.onChange}
@@ -1320,7 +1331,7 @@ function SelectField({
           {description && <FormDescription>{description}</FormDescription>}
           <Select value={field.value as string} onValueChange={field.onChange}>
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="min-w-0">
                 <SelectValue placeholder="Select an option" />
               </SelectTrigger>
             </FormControl>
@@ -1368,7 +1379,7 @@ function MultiSelect({
               return (
                 <label
                   key={option}
-                  className={`flex gap-3 rounded-lg border p-3 text-sm ${disabled ? "opacity-50" : "cursor-pointer hover:bg-muted/40"}`}
+                  className={`flex min-w-0 items-center gap-3 rounded-lg border p-3 text-sm [overflow-wrap:anywhere] ${disabled ? "opacity-50" : "cursor-pointer hover:bg-muted/40"}`}
                 >
                   <Checkbox
                     checked={selected}
@@ -1598,6 +1609,7 @@ export default function Assessment() {
     },
   });
   const [started, setStarted] = useState(false);
+  const [draftDialog, setDraftDialog] = useState<"fresh" | "classic" | null>(null);
   const [checkingFormat, setCheckingFormat] = useState(false);
   const [formatError, setFormatError] = useState("");
   const [stepIndex, setStepIndex] = useState(0);
@@ -1787,11 +1799,11 @@ export default function Assessment() {
       try { localStorage.removeItem(prestartKey); } catch { /* Private browsing may deny storage. */ }
     }
   };
-  const discardDraft = async (chooseClassic = false) => {
+  const discardDraft = async (chooseClassic = false): Promise<boolean> => {
     setCheckingFormat(true);
     setFormatError("");
     try {
-      if (!await integrated.discard()) return;
+      if (!await integrated.discard()) return false;
       clearPrestart();
       // A completed discard must not revive an older pre-start backup while
       // the hook and form state settle in the same browser session.
@@ -1809,8 +1821,10 @@ export default function Assessment() {
         const fresh = await refetchChurch();
         if (!fresh.data || fresh.isError) setFormatError("Unable to check the current assessment format.");
       }
+      return true;
     } catch {
       setFormatError("Unable to check the current assessment format.");
+      return false;
     } finally {
       setCheckingFormat(false);
     }
@@ -1886,6 +1900,31 @@ export default function Assessment() {
     integratedPreferences: "Availability",
     integratedOptional: "Optional experiences",
     integratedReview: "Review",
+  };
+  const reviewSummary = (key: string): string => {
+    const details = form.getValues();
+    const join = (values: (string | null | undefined)[]) =>
+      values.filter(Boolean).join(" · ") || "No details added yet";
+    switch (key) {
+      case "aboutYou":
+        return join([details.basicInformation.firstName, details.basicInformation.lastName, details.basicInformation.email]);
+      case "skillsExperience":
+        return join([details.occupation, details.skills.education, details.skills.uniqueSkills]);
+      case "integratedPilot":
+        return `${coreQuestions.filter(question => integratedAnswers[question.id] !== undefined).length} of ${coreQuestions.length} reflections answered`;
+      case "integratedOptional":
+        return `${optionalQuestions.filter(question => integratedAnswers[question.id] !== undefined).length} of ${optionalQuestions.length} optional reflections answered`;
+      case "passionsInterests":
+        return join([...details.passions, ...details.interests]);
+      case "spiritualHealth":
+        return `${Object.values(details.spiritualHealth).filter(Boolean).length} reflections added`;
+      case "connectionAvailability":
+        return join([details.servingFrequency, details.availabilityDetails.commitment, ...details.availability]);
+      case "integratedPreferences":
+        return join(Object.values(details.preferences));
+      default:
+        return "Review your answers";
+    }
   };
   const configuredMinistryQuestionCount = configuration?.ministryQuestionCount;
   const ministryQuestionsPerApproach =
@@ -2700,10 +2739,10 @@ export default function Assessment() {
     return (
       <div
         style={assessmentStyle}
-        className={`assessment-flow pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-screen grid place-items-center bg-muted/20 p-4`}
+        className={`assessment-flow pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] grid place-items-center bg-muted/20 p-4`}
       >
-        <Card className="max-w-xl text-center">
-          <CardContent className="p-10 space-y-6">
+        <Card className="w-full min-w-0 max-w-xl text-center">
+          <CardContent className="space-y-6 p-5 sm:p-10">
             {churchLogo ? (
               <img
                 src={churchLogo}
@@ -2723,7 +2762,7 @@ export default function Assessment() {
                 {church.name}
               </p>
               <p className="mt-4 text-sm font-medium text-primary">Ready when you are</p>
-              <h1 className="font-serif text-4xl">Your Ministry Profile</h1>
+              <h1 className="font-serif text-3xl sm:text-4xl">Your Ministry Profile</h1>
             </div>
             <p className="text-muted-foreground">
               We all have a part in the Body of Christ—and every part matters.
@@ -2756,6 +2795,7 @@ export default function Assessment() {
             {(integrated.error || integrated.storageError) && <p role="alert" className="text-sm text-destructive">{integrated.error || integrated.storageError}</p>}
             {integrated.hasDraft && <p className="text-sm">A private adult draft is saved in this browser. Resume with its original questions and church settings.</p>}
             <Button
+              className="w-full whitespace-normal sm:w-auto"
               disabled={integrated.discarding || (!integrated.hasDraft && !!(churchError || formatError)) || (integrated.hasDraft && !integratedAttempt)}
               onClick={async () => {
                 if (!integratedAttempt) {
@@ -2781,21 +2821,32 @@ export default function Assessment() {
             >
               {integratedAttempt ? "Resume saved profile" : "Begin"} <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
-            {!integrated.hasDraft && (churchError || formatError) && <Button variant="outline" onClick={() => { setFormatError(""); void refetchChurch(); }}>Retry checking format</Button>}
-            {integrated.hasDraft && !integratedAttempt && <Button variant="outline" onClick={() => void integrated.load()}>Retry loading draft</Button>}
-            {integrated.hasDraft && <div className="flex flex-wrap justify-center gap-3">
-              <Button variant="outline" disabled={integratedSaving || integrated.discarding} onClick={async () => {
-                if (!window.confirm("Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted.")) return;
-                await discardDraft();
-              }}>Discard draft and start fresh</Button>
-              <Button variant="ghost" disabled={integratedSaving || integrated.discarding} onClick={async () => {
-                if (!window.confirm("Discard this saved draft and use the standard adult assessment instead? Your draft answers will not transfer.")) return;
-                await discardDraft(true);
-              }}>Use standard assessment instead</Button>
+            {!integrated.hasDraft && (churchError || formatError) && <Button className="w-full whitespace-normal sm:w-auto" variant="outline" onClick={() => { setFormatError(""); void refetchChurch(); }}>Retry checking format</Button>}
+            {integrated.hasDraft && !integratedAttempt && <Button className="w-full whitespace-normal sm:w-auto" variant="outline" onClick={() => void integrated.load()}>Retry loading draft</Button>}
+            {integrated.hasDraft && <div className="flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+              <Button className="whitespace-normal" variant="outline" disabled={integratedSaving || integrated.discarding} onClick={() => setDraftDialog("fresh")}>Discard draft and start fresh</Button>
+              <Button className="whitespace-normal" variant="ghost" disabled={integratedSaving || integrated.discarding} onClick={() => setDraftDialog("classic")}>Use standard assessment instead</Button>
             </div>}
-            {!integrated.hasDraft && church.integratedAssessmentPilotEnabled !== false && <Button variant="ghost" onClick={() => {
+            {!integrated.hasDraft && church.integratedAssessmentPilotEnabled !== false && <Button className="w-full whitespace-normal sm:w-auto" variant="ghost" onClick={() => {
               setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0); setStarted(true);
             }}>Use standard assessment instead</Button>}
+            <AssessmentConfirmDialog
+              open={draftDialog !== null}
+              onOpenChange={(open) => { if (!open) setDraftDialog(null); }}
+              title={draftDialog === "classic" ? "Use the standard assessment instead?" : "Discard your saved draft?"}
+              description={draftDialog === "classic"
+                ? "Discard this saved draft and use the standard adult assessment instead? Your draft answers will not transfer."
+                : "Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted."}
+              confirmLabel={draftDialog === "classic" ? "Discard and use standard" : "Discard draft and start fresh"}
+              pending={integrated.discarding || checkingFormat}
+              error={integrated.error || undefined}
+              onConfirm={() => {
+                if (draftDialog === null) return;
+                void discardDraft(draftDialog === "classic").then(discarded => {
+                  if (discarded) setDraftDialog(null);
+                });
+              }}
+            />
           </CardContent>
         </Card>
       </div>
@@ -2862,7 +2913,7 @@ export default function Assessment() {
       className={`assessment-flow pathway-theme ${integratedPilotEnabled ? "pathway-theme-integrated" : "pathway-theme-adult"} min-h-[100dvh] bg-muted/20`}
     >
       <header className="sticky top-0 z-10 border-b border-border/80 bg-background/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4">
+         <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:py-4">
           <div className="flex min-w-0 items-center gap-3">
             {churchLogo && (
               <img
@@ -2879,13 +2930,14 @@ export default function Assessment() {
         </div>
         <div className="mx-auto max-w-3xl px-4 pb-3">
           <ProfileParts
+            className="assessment-progress"
             parts={stepKeys.map((key) => ({ label: progressLabels[key] ?? key }))}
             current={stepIndex + 1}
             label="Assessment progress"
           />
         </div>
       </header>
-      <main className="mx-auto max-w-3xl p-4 md:p-10">
+       <main className="mx-auto min-w-0 max-w-3xl p-4 md:p-10">
         <AssessmentConfigurationContext.Provider
           value={{ configuration: configuration!, step: currentStep, integrated: integratedPilotEnabled }}
         >
@@ -2905,8 +2957,8 @@ export default function Assessment() {
                 <Button type="button" variant="ghost" disabled={submitting || integratedSaving} onClick={() => setStarted(false)}>Draft options / start over</Button>
               </section>}
               <fieldset disabled={submitting || integrated.loading} className="min-w-0">
-              <Card>
-                <CardContent className="p-6 md:p-10 space-y-8">
+               <Card className="min-w-0">
+                 <CardContent className="space-y-8 p-4 sm:p-6 md:p-10">
                   {currentStep === "aboutYou" && (
                     <>
                       <Heading description="Start with how your church can reach you. Everything else on this page is optional.">
@@ -3038,7 +3090,7 @@ export default function Assessment() {
                                   )}
                                 />
                                 {languageFields.length > 1 && (
-                                  <Button
+                                   <Button
                                     type="button"
                                     variant="ghost"
                                     size="icon"
@@ -3050,7 +3102,7 @@ export default function Assessment() {
                                 )}
                               </div>
                             ))}
-                            <Button
+                             <Button
                               type="button"
                               variant="outline"
                               size="sm"
@@ -3125,7 +3177,7 @@ export default function Assessment() {
                           <p className="text-sm leading-6 text-muted-foreground">
                             Before we begin the reflection, please confirm a few details.
                           </p>
-                          <div className="space-y-5 rounded-xl border p-5 bg-card shadow-sm">
+                           <div className="space-y-5 rounded-xl border bg-card p-4 shadow-sm sm:p-5">
                              <div className="flex items-start gap-3">
                                <Checkbox id="integrated-adult" checked={adultConfirmed} onCheckedChange={(c) => setAdultConfirmed(c === true)} />
                                <div className="space-y-1">
@@ -3171,7 +3223,7 @@ export default function Assessment() {
                         </div>
                       ) : (
                         <div className="space-y-8">
-                          <div className="sticky top-0 z-10 flex justify-between items-center bg-card/95 backdrop-blur p-4 rounded-xl border shadow-sm">
+                           <div className="flex items-center justify-between rounded-xl border bg-card/95 p-4 shadow-sm backdrop-blur sm:sticky sm:top-0 sm:z-10">
                             <p className="text-sm font-medium">
                               {`Question ${currentRound + 1} of ${roundCount} · ${coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} answered`}
                             </p>
@@ -3204,6 +3256,21 @@ export default function Assessment() {
                     </Heading>
                     <p className="text-sm">{`${coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of ${coreQuestions.length} core reflections have a response. N/A and skipped answers are not scored. Optional experiences may be left unanswered.`}</p>
                     <p className="text-sm text-muted-foreground">Your draft uses the church settings and question wording saved when you started, even if the church has changed its settings since then.</p>
+                    <div className="space-y-3 sm:hidden" aria-label="Review your answers">
+                      {stepKeys.slice(0, -1).map((key, index) => (
+                        <div key={key} className="flex min-w-0 items-start justify-between gap-3 rounded-xl border p-3 sm:p-4">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-medium">{progressLabels[key] ?? key}</h4>
+                            <p className="mt-1 text-sm text-muted-foreground [overflow-wrap:anywhere]">{reviewSummary(key)}</p>
+                          </div>
+                          <Button type="button" variant="outline" className="min-h-11 shrink-0" aria-label={`Edit ${progressLabels[key] ?? key}`} onClick={() => {
+                            setStepIndex(index);
+                            if (key === "integratedPilot") setIntegratedQuestionIndex(0);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}>Edit</Button>
+                        </div>
+                      ))}
+                    </div>
                   </>}
                   {currentStep === "apest" && (
                     <>
@@ -3278,7 +3345,7 @@ export default function Assessment() {
                                           aria-describedby={
                                             unanswered ? errorId : undefined
                                           }
-                                          className="mt-3 flex flex-wrap gap-2 outline-none"
+                                           className="assessment-step-options mt-3 flex flex-wrap gap-2 outline-none"
                                         >
                                           {RESPONSE_OPTIONS.map(
                                             (option, optionIndex) => (
@@ -3387,7 +3454,7 @@ export default function Assessment() {
                                           aria-describedby={
                                             unanswered ? errorId : undefined
                                           }
-                                          className="mt-3 flex flex-wrap gap-2 outline-none"
+                                           className="assessment-step-options mt-3 flex flex-wrap gap-2 outline-none"
                                         >
                                           {RESPONSE_OPTIONS.map(
                                             (option, optionIndex) => (
@@ -3537,7 +3604,7 @@ export default function Assessment() {
                                           aria-describedby={
                                             unanswered ? errorId : undefined
                                           }
-                                          className="mt-3 flex flex-wrap gap-2 outline-none"
+                                           className="assessment-step-options mt-3 flex flex-wrap gap-2 outline-none"
                                         >
                                           {RESPONSE_OPTIONS.map(
                                             (option, optionIndex) => (
@@ -3702,7 +3769,7 @@ export default function Assessment() {
                                                   ? "default"
                                                   : "outline"
                                               }
-                                              className="h-auto min-h-10 w-full min-w-0 whitespace-normal break-words px-2 py-2 text-xs leading-4"
+                                               className="h-auto min-h-11 w-full min-w-0 whitespace-normal break-words px-2 py-2 text-xs leading-4 sm:min-h-10"
                                               onClick={() =>
                                                 field.onChange(optionIndex + 1)
                                               }
@@ -3873,7 +3940,7 @@ export default function Assessment() {
                                           ? "default"
                                           : "outline"
                                       }
-                                      className="rounded-full w-10 h-10 p-0"
+                                       className="h-11 w-11 rounded-full p-0 sm:h-10 sm:w-10"
                                       onClick={() => field.onChange(level)}
                                     >
                                       {level}
@@ -4055,7 +4122,7 @@ export default function Assessment() {
                   )}
                 </CardContent>
               </Card>
-              <div className="flex justify-between mt-6">
+               <div className="assessment-mobile-nav -mx-4 mt-6 flex justify-between gap-3 border-t border-border/70 bg-background/95 px-4 py-3 backdrop-blur sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                 <Button
                   type="button"
                   variant="ghost"

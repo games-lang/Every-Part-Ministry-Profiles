@@ -1,0 +1,29 @@
+# Replit Prompt — Mobile Assessment Polish Pass (paste into Replit)
+
+## Context
+Every Part's adult assessment is primarily taken on phones. Run a dedicated mobile polish pass over the participant-facing assessment flow. Do NOT touch the admin dashboard (desktop-first is fine there), scoring logic, Leader View, billing, or saved data shapes.
+
+## Scope
+The full participant flow on small screens (test at 360px and 390px widths):
+- Public assessment landing page (format badge, time estimate, Begin / Resume / Discard)
+- All 7 integrated steps: About you, Skills & experience, Reflections, Passions, Spiritual health, Availability & Serving Rhythm, Review
+- The classic 9-step flow (same fixes apply)
+- Draft resume prompt and discard dialog
+
+## What to fix
+1. **Touch targets**: all buttons, radio options, and checkboxes must be at least 44px tall. Reflection question option rows are the most likely offenders — make the whole row tappable.
+2. **No horizontal overflow**: nothing should scroll sideways at 360px. Check long gift/skill names, the progress indicator, and step headers.
+3. **Step navigation**: Back / Continue buttons must be reachable without scrolling past content on short screens — keep them visible or sticky where sensible.
+4. **Text inputs**: reflection textareas and text fields must not be obscured by the on-screen keyboard; use appropriate input types (`email`, `tel`) and `autocomplete` attributes on contact fields.
+5. **Progress indicator**: must remain legible and uncluttered at 360px — step labels may truncate or collapse to "Step X of 7" on narrow screens.
+6. **Photo upload**: the profile photo step must work from a phone camera/gallery without layout breakage.
+7. **Review step**: answers summary must wrap cleanly; edit affordances must be tappable.
+8. **Dialogs**: the discard-draft confirm and any other dialogs must fit small screens, trap focus, and be dismissible.
+
+## Do NOT change
+- Desktop layout, admin dashboard, scoring, billing, data shapes, or copy wording (unless a label is truncated and unreadable on mobile — then shorten minimally and flag it).
+
+## Done when
+- Walk the full integrated assessment start-to-finish in a 360px viewport with zero horizontal scroll, all touch targets ≥44px, and no console errors.
+- Repeat the smoke pass (landing → begin → 2 steps → review) at 390px and on the classic flow.
+- Summarize what changed, with before/after notes on anything visible, and flag anything you were unsure about.

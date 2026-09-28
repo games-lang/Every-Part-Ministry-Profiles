@@ -1,5 +1,7 @@
+import { useState } from "react";
 import type { IntegratedAnswers, IntegratedQuestionView } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
+import { AssessmentConfirmDialog } from "@/components/assessment-confirm-dialog";
 import type { Attempt, DraftConflict } from "@/hooks/use-integrated-attempt";
 
 export const INTEGRATED_ROUND_SIZE = 8;
@@ -37,7 +39,7 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
       return <fieldset id={`integrated-question-${question.id}`} key={question.id} className="space-y-4">
         <legend id={questionLabelId} className="text-lg font-serif leading-relaxed">{offset + index + 1}. {questionText}</legend>
         {model?.instructions && <p className="text-sm text-muted-foreground">{model.instructions}</p>}
-        <div className="flex flex-wrap gap-2" role="group" aria-labelledby={questionLabelId}>
+        <div className="assessment-reflection-options flex flex-wrap gap-2" role="group" aria-labelledby={questionLabelId}>
           {([1, 2, 3, 4, 5, "na", "skip"] as const).map((value) => {
             const label = value === "skip"
               ? "Skip"
@@ -45,7 +47,7 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
                 ? NA_LABEL
                 : responseLabel(value);
             return <Button key={value} type="button" variant={answers[question.id] === value ? "default" : "outline"}
-              className="h-auto min-h-11 whitespace-normal text-left" aria-pressed={answers[question.id] === value}
+              className="h-auto min-h-11 min-w-0 whitespace-normal break-words text-left" aria-pressed={answers[question.id] === value}
               onClick={() => onAnswer(question.id, value)}>{label}</Button>;
           })}
         </div>
@@ -59,6 +61,7 @@ export function IntegratedConflict({ conflict, answers, onResolve }: {
   answers: IntegratedAnswers;
   onResolve: (choice: "local" | "server") => void;
 }) {
+  const [confirmServer, setConfirmServer] = useState(false);
   const server = conflict.server;
   return <section role="alert" className="space-y-4 rounded-xl border border-destructive/40 p-4">
     <h3 className="font-semibold">Two copies of your draft need your review</h3>
@@ -79,12 +82,18 @@ export function IntegratedConflict({ conflict, answers, onResolve }: {
           <pre className="whitespace-pre-wrap break-all">{JSON.stringify(server.formState, null, 2)}</pre>
         </div>
       </details>
-      <div className="flex flex-wrap gap-3">
+       <div className="flex flex-wrap gap-3">
         <Button type="button" onClick={() => onResolve("local")}>Keep my local copy and retry</Button>
-        <Button type="button" variant="outline" onClick={() => {
-          if (window.confirm("Use the server’s answers and form progress instead of the copy currently on this screen?")) onResolve("server");
-        }}>Use the server copy</Button>
+         <Button type="button" variant="outline" onClick={() => setConfirmServer(true)}>Use the server copy</Button>
       </div>
+       <AssessmentConfirmDialog
+         open={confirmServer}
+         onOpenChange={setConfirmServer}
+         title="Use the server copy?"
+         description="Use the server’s answers and form progress instead of the copy currently on this screen?"
+         confirmLabel="Use the server copy"
+         onConfirm={() => { setConfirmServer(false); onResolve("server"); }}
+       />
     </>}
   </section>;
 }

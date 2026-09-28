@@ -87,22 +87,22 @@ export function ProfilePhotoUploader({
     if (inputRef.current) inputRef.current.value = "";
   };
 
-  return <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-muted/20 p-4">
+  return <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border/60 bg-muted/20 p-4 sm:flex-nowrap">
     <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 font-semibold text-primary">
       {preview ? <img src={preview} alt="" className="h-full w-full object-cover" /> : <span>{initials(name)}</span>}
     </div>
-    <div className="min-w-0 flex-1">
+    <div className="min-w-0 flex-1 break-words">
       <p className="font-medium">Profile photo <span className="font-normal text-muted-foreground">(optional)</span></p>
       <p className="mt-1 text-xs text-muted-foreground">PNG, JPG, or WebP, up to 5 MB.</p>
       {uploading && <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Uploading {progress}%</div>}
       {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
     </div>
     <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={(event) => void replace(event.target.files?.[0])} />
-    <div className="flex shrink-0 gap-2">
-      <Button type="button" variant="outline" size="sm" disabled={disabled || uploading} onClick={() => inputRef.current?.click()}>
+    <div className="flex w-full shrink-0 gap-2 sm:w-auto">
+      <Button type="button" variant="outline" size="sm" className="min-h-11 flex-1 sm:min-h-8 sm:flex-none" disabled={disabled || uploading} onClick={() => inputRef.current?.click()}>
         <Camera className="mr-1.5 h-4 w-4" />{value || preview ? "Replace" : "Add"}
       </Button>
-      {(value || preview) && <Button type="button" variant="ghost" size="icon" aria-label="Remove profile photo" disabled={disabled || uploading} onClick={remove}><Trash2 className="h-4 w-4" /></Button>}
+      {(value || preview) && <Button type="button" variant="ghost" size="icon" className="min-h-11 min-w-11 sm:min-h-9 sm:min-w-9" aria-label="Remove profile photo" disabled={disabled || uploading} onClick={remove}><Trash2 className="h-4 w-4" /></Button>}
     </div>
   </div>;
 }
