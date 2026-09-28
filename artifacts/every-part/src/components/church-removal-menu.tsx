@@ -113,7 +113,7 @@ export function ChurchRemovalMenu({
     );
   };
 
-  const hasLinkedProfile = target.kind === "person";
+  const hasLinkedProfile = target.kind === "profile" || target.profileId != null;
 
   return (
     <>
@@ -171,18 +171,19 @@ export function ChurchRemovalMenu({
             </DialogDescription>
           </DialogHeader>
           <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-            {hasLinkedProfile ? (
+            {target.kind === "person" ? (
               <>
                 <li>The invitation and person record</li>
-                <li>Any linked completed profile and its reflection responses and results</li>
-                <li>Any team assignment, scheduled shifts, pastor notes, private journey, and profile photo</li>
+                {hasLinkedProfile && <li>The linked completed profile and its reflection responses and results</li>}
               </>
             ) : (
               <>
                 <li>The completed profile and its reflection responses and results</li>
                 <li>Any linked invitation and person record</li>
-                <li>Any team assignment, scheduled shifts, pastor notes, private journey, and profile photo</li>
               </>
+            )}
+            {hasLinkedProfile && (
+              <li>Its team assignment, scheduled shifts, pastor notes, and profile photo; its private journey only if no other profile shares it</li>
             )}
           </ul>
           {mutationError && (

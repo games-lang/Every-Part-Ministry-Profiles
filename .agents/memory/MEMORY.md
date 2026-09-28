@@ -39,5 +39,5 @@
 - [Integrated adult default rollout](integrated-default-rollout.md) — old false flags mixed defaults and choices; never repeat the pre-launch bulk flip after opt-outs exist.
 - [Integrated estimate bank alignment](integrated-estimate-bank-alignment.md) — keep the compact client count index aligned with the server bank; estimate only questions active for the selected flow.
 - [Integrated draft discard](integrated-draft-discard.md) — revoke the anonymous server draft before clearing its browser keys, then refresh church format for any new start.
-- [Profile removal cache boundaries](profile-removal-cache-boundaries.md) — update usage on confirmed deletion without refetching the detail that was just removed.
+- [Profile removal integrity](profile-removal-cache-boundaries.md) — preserve shared journeys; update usage on deletion without refetching removed details.
 - [Web SSR test JSX mode](web-ssr-test-jsx.md) — run direct TSX rendering tests with the test JSX override, not the Vite-oriented web tsconfig.

@@ -313,7 +313,7 @@ export default function ProfilesList() {
       </div>
 
       {activeTab === "people" ? (
-        <PeoplePanel />
+        <PeoplePanel canRemove={canRemove} />
       ) : activeTab === "directory" ? (
         <div className="space-y-6 animate-in fade-in duration-300">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">

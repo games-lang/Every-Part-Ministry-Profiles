@@ -90,18 +90,6 @@ async function removeProfileRecords(
       ),
     );
 
-  if (profile.journeyId) {
-    // Journey entries are owned by the journey and cascade with its removal.
-    await tx
-      .delete(ministryJourneysTable)
-      .where(
-        and(
-          eq(ministryJourneysTable.id, profile.journeyId),
-          eq(ministryJourneysTable.churchId, churchId),
-        ),
-      );
-  }
-
   await tx
     .delete(ministryProfilesTable)
     .where(
@@ -110,6 +98,24 @@ async function removeProfileRecords(
         eq(ministryProfilesTable.churchId, churchId),
       ),
     );
+  if (profile.journeyId) {
+    // Keep a shared journey and its entries intact for any surviving profile.
+    const [remaining] = await tx
+      .select({ id: ministryProfilesTable.id })
+      .from(ministryProfilesTable)
+      .where(eq(ministryProfilesTable.journeyId, profile.journeyId))
+      .limit(1);
+    if (!remaining) {
+      await tx
+        .delete(ministryJourneysTable)
+        .where(
+          and(
+            eq(ministryJourneysTable.id, profile.journeyId),
+            eq(ministryJourneysTable.churchId, churchId),
+          ),
+        );
+    }
+  }
   await tx.insert(churchRemovalAuditTable).values({
     churchId,
     subjectName,

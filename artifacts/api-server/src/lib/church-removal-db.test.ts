@@ -85,6 +85,23 @@ test("church removals delete related data, deny cross-tenant IDs, and audit the 
       interests: [],
       availability: [],
     }).returning();
+    const [remainingProfile] = await db.insert(ministryProfilesTable).values({
+      churchId: church.id,
+      journeyId: journey.id,
+      firstName: "Still",
+      lastName: "Here",
+      email: "remaining-profile@example.invalid",
+      passions: [],
+      interests: [],
+      availability: [],
+    }).returning();
+    const [remainingPerson] = await db.insert(ministryPeopleTable).values({
+      churchId: church.id,
+      profileId: remainingProfile.id,
+      firstName: "Still",
+      lastName: "Here",
+      inviteExpiresAt: new Date(now.getTime() + 86400_000),
+    }).returning();
     // Deliberately no ministry_people row: completed directory-only profiles
     // must still be directly removable by profile ID.
     await db.insert(ministryJourneyEntriesTable).values({
@@ -143,7 +160,21 @@ test("church removals delete related data, deny cross-tenant IDs, and audit the 
     assert.equal((await db.select().from(ministryTeamSchedulesTable)
       .where(eq(ministryTeamSchedulesTable.profileId, profile.id))).length, 0);
     assert.equal((await db.select().from(ministryJourneyEntriesTable)
-      .where(eq(ministryJourneyEntriesTable.journeyId, journey.id))).length, 0);
+      .where(eq(ministryJourneyEntriesTable.journeyId, journey.id))).length, 1,
+      "a shared journey's entries must remain for the surviving profile");
+    assert.equal((await db.select().from(ministryJourneysTable)
+      .where(eq(ministryJourneysTable.id, journey.id))).length, 1);
+    assert.equal((await db.select().from(ministryProfilesTable)
+      .where(eq(ministryProfilesTable.id, remainingProfile.id))).length, 1);
+    assert.equal((await db.select().from(ministryPeopleTable)
+      .where(eq(ministryPeopleTable.id, remainingPerson.id))).length, 1);
+
+    assert.equal(await db.transaction(tx =>
+      removeChurchPerson(tx, church.id, remainingPerson.id, actorClerkUserId, actorName),
+    ), true);
+    assert.equal((await db.select().from(ministryJourneyEntriesTable)
+      .where(eq(ministryJourneyEntriesTable.journeyId, journey.id))).length, 0,
+      "the journey is removed after its last profile is removed");
     assert.equal((await db.select().from(ministryJourneysTable)
       .where(eq(ministryJourneysTable.id, journey.id))).length, 0);
     const [remainingTeam] = await db.select().from(ministryTeamsTable)
@@ -156,13 +187,13 @@ test("church removals delete related data, deny cross-tenant IDs, and audit the 
 
     const audit = await db.select().from(churchRemovalAuditTable)
       .where(eq(churchRemovalAuditTable.churchId, church.id));
-    assert.equal(audit.length, 2);
+    assert.equal(audit.length, 3);
     assert.ok(audit.every(entry =>
       entry.actorClerkUserId === actorClerkUserId && entry.actorName === actorName,
     ), "the durable audit records actor identity and name");
     assert.deepEqual(
       audit.map(entry => entry.kind).sort(),
-      ["person", "profile"],
+      ["person", "person", "profile"],
     );
     assert.ok(audit.every(entry => entry.removedAt instanceof Date));
   } finally {

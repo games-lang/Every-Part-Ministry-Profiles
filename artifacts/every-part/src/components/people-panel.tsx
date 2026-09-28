@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   getListPeopleQueryKey,
   type MinistryPerson,
@@ -47,6 +47,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { buildInviteUrl } from "@/lib/invite-url";
+import { ChurchRemovalMenu } from "@/components/church-removal-menu";
 
 type PersonForm = {
   firstName: string;
@@ -554,8 +555,9 @@ function InviteActions({
   );
 }
 
-export function PeoplePanel() {
+export function PeoplePanel({ canRemove }: { canRemove: boolean }) {
   const queryClient = useQueryClient();
+  const addPersonButtonRef = useRef<HTMLButtonElement>(null);
   const { data: church } = useGetMyChurch();
   const { data: people, isLoading, isError } = useListPeople();
   const createPerson = useCreatePerson();
@@ -686,7 +688,7 @@ export function PeoplePanel() {
               <FileSpreadsheet className="mr-2 h-4 w-4" />
               Import CSV
             </Button>
-            <Button onClick={() => setOpen(true)} className="shrink-0">
+            <Button ref={addPersonButtonRef} onClick={() => setOpen(true)} className="shrink-0">
               <UserPlus className="mr-2 h-4 w-4" />
               Add person
             </Button>
@@ -807,14 +809,23 @@ export function PeoplePanel() {
                         : `Invite expires ${new Date(person.inviteExpiresAt).toLocaleDateString()}.`}
                     </p>
                   </div>
-                  {church?.slug && (
-                    <InviteActions
-                      person={person}
-                      churchSlug={church.slug}
-                      onRenew={() => renew(person)}
-                      isRenewing={createInvite.isPending && createInvite.variables?.id === person.id}
-                    />
-                  )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {church?.slug && (
+                      <InviteActions
+                        person={person}
+                        churchSlug={church.slug}
+                        onRenew={() => renew(person)}
+                        isRenewing={createInvite.isPending && createInvite.variables?.id === person.id}
+                      />
+                    )}
+                    {canRemove && (
+                      <ChurchRemovalMenu
+                        target={{ kind: "person", id: person.id, name: `${person.firstName} ${person.lastName}`, profileId: person.profileId }}
+                        focusFallbackRef={addPersonButtonRef}
+                        onRemoved={() => setLatestInvite((current) => current?.id === person.id ? null : current)}
+                      />
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             );
