@@ -1633,6 +1633,7 @@ export default function Assessment() {
   const [adultConfirmed, setAdultConfirmed] = useState(false);
   const [celibacyEligible, setCelibacyEligible] = useState(false);
   const [optionalExperienceOptIn, setOptionalExperienceOptIn] = useState(false);
+  const [showQuestionIndex, setShowQuestionIndex] = useState(false);
   const [integratedRound, setIntegratedRound] = useState(0);
   const [integratedQuestionIndex, setIntegratedQuestionIndex] = useState(0);
   const resumeQuestion = useRef<number | null>(null);
@@ -1760,6 +1761,11 @@ export default function Assessment() {
     Math.max(0, coreQuestions.length - 1),
   ) / INTEGRATED_ROUND_SIZE) * INTEGRATED_ROUND_SIZE;
   const roundQuestions = coreQuestions.slice(currentRound, currentRound + INTEGRATED_ROUND_SIZE);
+  const halfwayQuestion = Math.ceil(coreQuestions.length / 2);
+  const halfwayPageStart = Math.min(
+    Math.ceil(halfwayQuestion / INTEGRATED_ROUND_SIZE) * INTEGRATED_ROUND_SIZE,
+    Math.max(0, Math.floor((coreQuestions.length - 1) / INTEGRATED_ROUND_SIZE) * INTEGRATED_ROUND_SIZE),
+  );
 
   const legacyAssessmentSections = ["apest", "spiritualGifts", "naturalStrengths", "personalityStrengths"] as const;
 
@@ -1899,7 +1905,11 @@ export default function Assessment() {
     if (!started || integrated.loading || resumeQuestion.current === null || currentStep !== "integratedPilot") return;
     const question = coreQuestions[resumeQuestion.current];
     resumeQuestion.current = null;
-    if (question) requestAnimationFrame(() => document.getElementById(`integrated-question-${question.id}`)?.scrollIntoView({ block: "center" }));
+    if (question) requestAnimationFrame(() => {
+      const target = document.getElementById(`integrated-question-${question.id}`);
+      target?.scrollIntoView({ block: "center" });
+      target?.focus({ preventScroll: true });
+    });
   }, [started, integrated.loading, currentStep]);
   const progressLabels: Record<string, string> = {
     aboutYou: "About you",
@@ -3251,7 +3261,7 @@ export default function Assessment() {
                           </div>
                           {reflectionValidationError && <p role="alert" className="text-destructive">{reflectionValidationError}</p>}
                           {currentRound === 0 && <p className="text-sm font-medium">Answer from what you actually do, not what you wish you did.</p>}
-                          {currentStepProgress >= Math.ceil(coreQuestions.length / 2) && currentRound < Math.ceil(coreQuestions.length / 2) && currentRound + INTEGRATED_ROUND_SIZE >= Math.ceil(coreQuestions.length / 2) &&
+                          {coreQuestions.length > 0 && currentStepProgress >= halfwayQuestion && currentRound === halfwayPageStart &&
                             <p role="status" className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">You’re halfway through the reflections. Take a breath and keep answering honestly.</p>}
                           {firstBipolarIndex >= currentRound && firstBipolarIndex < currentRound + roundQuestions.length && <>
                             <IntegratedReflections attempt={integratedAttempt} questions={roundQuestions.slice(0, firstBipolarIndex - currentRound)}
@@ -3287,10 +3297,16 @@ export default function Assessment() {
                     </Heading>
                     <p className="text-sm">{`${coreQuestions.filter(q => integratedAnswers[q.id] !== undefined).length} of ${coreQuestions.length} core reflections have a response. Skipped / not sure answers are not scored. Optional experiences may be left unanswered.`}</p>
                     <p className="text-sm text-muted-foreground">Your draft uses the church settings and question wording saved when you started, even if the church has changed its settings since then.</p>
-                    {coreQuestions.length > 0 && <details className="rounded-xl border p-4">
-                      <summary className="flex min-h-11 cursor-pointer items-center font-medium">Jump to a reflection question</summary>
+                    {coreQuestions.length > 0 && <section className="rounded-xl border p-4" aria-label="Reflection question index">
+                      <Button type="button" variant="ghost" className="min-h-11 w-full justify-start px-0 text-left"
+                        aria-controls="integrated-question-index"
+                        aria-expanded={showQuestionIndex}
+                        onClick={() => setShowQuestionIndex(open => !open)}>
+                        Jump to a reflection question
+                      </Button>
+                      <div id="integrated-question-index" hidden={!showQuestionIndex}>
                       <p className="mb-4 mt-2 text-sm text-muted-foreground">Filled numbers have a response. Outlined numbers still need a choice.</p>
-                      <ol className="grid grid-cols-4 gap-2 sm:grid-cols-8" aria-label="Reflection question index">
+                      <ol className="grid grid-cols-4 gap-2 sm:grid-cols-8" aria-label="Reflection questions">
                         {coreQuestions.map((question, index) => {
                           const answered = integratedAnswers[question.id] !== undefined;
                           return <li key={question.id}>
@@ -3306,7 +3322,8 @@ export default function Assessment() {
                           </li>;
                         })}
                       </ol>
-                    </details>}
+                      </div>
+                    </section>}
                     <div className="space-y-3 sm:hidden" aria-label="Review your answers">
                       {stepKeys.slice(0, -1).map((key, index) => (
                         <div key={key} className="flex min-w-0 items-start justify-between gap-3 rounded-xl border p-3 sm:p-4">

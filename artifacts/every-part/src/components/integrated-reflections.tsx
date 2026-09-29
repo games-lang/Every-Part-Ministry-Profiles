@@ -29,7 +29,7 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
         if (value === 4) return `Usually: ${poles[1]}`;
         return `Definitely: ${poles[1]}`;
       };
-      return <fieldset id={`integrated-question-${question.id}`} key={question.id} className="space-y-4">
+      return <fieldset id={`integrated-question-${question.id}`} key={question.id} tabIndex={-1} className="scroll-mt-48 space-y-4 focus:outline-none">
         <legend id={questionLabelId} className="text-lg font-serif leading-relaxed">{offset + index + 1}. {question.text}</legend>
         {model?.instructions && <p className="text-sm text-muted-foreground">{model.instructions}</p>}
         <div className="assessment-reflection-options flex flex-wrap gap-2" role="group" aria-labelledby={questionLabelId}>
