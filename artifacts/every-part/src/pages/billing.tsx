@@ -56,6 +56,11 @@ export default function BillingPage() {
         The plan capacities below are for the future; AI credit limits still
         apply. No payment account is required, and we will provide clear notice
         before paid subscriptions become available.
+        <p className="mt-2">
+          <Link href="/help/plans-and-limits" className="font-semibold text-primary underline underline-offset-4 hover:text-primary/80">
+            Understand plans, usage, and profile limits
+          </Link>
+        </p>
       </div>
 
       <Card className="border-primary/20 bg-primary/[.035] shadow-sm">

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -1074,6 +1075,11 @@ export default function ChurchSetup() {
               </a>
             </Button>
           </div>
+          <p className="mt-3 text-sm">
+            <Link href="/help/set-up-your-church" className="font-medium text-primary underline underline-offset-4 hover:text-primary/80">
+              Help with church setup and sharing your assessment
+            </Link>
+          </p>
         </CardContent>
       </Card>
 

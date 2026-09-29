@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { UserButton } from "@clerk/react";
-import { Compass, CreditCard, LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck } from "lucide-react";
+import { Compass, CreditCard, LayoutDashboard, Settings, Users, ArrowRight, UsersRound, ShieldCheck, CircleHelp } from "lucide-react";
 import { useGetAppAdminAccess, useGetMyChurch, useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ const navItems = [
   { href: "/leadership-profile", label: "My Leadership", icon: Compass },
   { href: "/church-setup", label: "Church Setup", icon: Settings },
   { href: "/billing", label: "Plan & usage", icon: CreditCard },
+  { href: "/help", label: "Help", icon: CircleHelp },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {

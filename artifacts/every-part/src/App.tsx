@@ -24,6 +24,7 @@ import Dashboard from '@/pages/dashboard';
 import LeadershipProfilePage from '@/pages/leadership-profile';
 import ChurchSetup from '@/pages/church-setup';
 import BillingPage from '@/pages/billing';
+import HelpPage from '@/pages/help';
 import ChurchOnboarding from '@/pages/church-onboarding';
 import ProfilesList from '@/pages/profiles-list';
 import ProfileDetail from '@/pages/profile-detail';
@@ -341,6 +342,12 @@ function ClerkProviderWithRoutes() {
               </Route>
               <Route path="/billing">
                 <AuthenticatedRoute component={BillingPage} />
+              </Route>
+              <Route path="/help/:slug">
+                <AuthenticatedRoute component={HelpPage} />
+              </Route>
+              <Route path="/help">
+                <AuthenticatedRoute component={HelpPage} />
               </Route>
               <Route path="/leadership-profile">
                 <AuthenticatedRoute component={LeadershipProfilePage} />

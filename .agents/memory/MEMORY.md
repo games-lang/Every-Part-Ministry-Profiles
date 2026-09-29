@@ -41,3 +41,4 @@
 - [Integrated draft discard](integrated-draft-discard.md) — revoke the anonymous server draft before clearing its browser keys, then refresh church format for any new start.
 - [Profile removal integrity](profile-removal-cache-boundaries.md) — preserve shared journeys; update usage on deletion without refetching removed details.
 - [Web SSR test JSX mode](web-ssr-test-jsx.md) — run direct TSX rendering tests with the test JSX override, not the Vite-oriented web tsconfig.
+- [Pnpm workspace relinking](pnpm-workspace-relinking.md) — after a filtered dependency add, a full frozen install may be needed to repair stale library symlinks before API builds.

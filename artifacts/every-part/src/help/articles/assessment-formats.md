@@ -1,0 +1,5 @@
+## Integrated or classic adult assessment?
+
+The integrated adult assessment is the default. In [Church Setup](/church-setup), use **Assessment Setup** to choose the classic adult format instead and adjust the enabled sections and spiritual gifts. The participant's landing page shows an integrated-format badge when that format is active; estimated completion time reflects the church's settings.
+
+Changing the church's choice affects **new** assessments. A draft already started keeps its original questions and format, and completed profiles retain their submitted wording and answers. If a participant sees a different format than expected, ask whether they are resuming an existing draft. They can discard an unfinished adult integrated draft to start fresh with the church's current setting, but doing so loses the draft answers.
