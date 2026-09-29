@@ -58,7 +58,7 @@
   "coreQuestions": [
     {
       "id": "EP-I-01",
-      "text": "I guide people in choosing how to begin serving a community where no such effort is established.",
+      "text": "I guide people in starting community service where none exists.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -204,25 +204,8 @@
       ]
     },
     {
-      "id": "EP-I-07",
-      "text": "I notice when a group's actions conflict with the Christian commitments it says it follows.",
-      "responseModel": "reflectionLikert",
-      "maps": [
-        {
-          "category": "APEST",
-          "construct": "Prophet",
-          "weight": 1
-        },
-        {
-          "category": "Strength",
-          "construct": "Discernment",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-70",
-      "text": "When work needs to begin, I prefer to strengthen an existing effort or create the first movement.",
+      "text": "I prefer supporting existing work or initiating new work.",
       "responseModel": "personalityBipolar",
       "poles": [
         "Support",
@@ -321,7 +304,7 @@
     },
     {
       "id": "EP-I-19",
-      "text": "I adapt how I explain a group's activities so a newcomer with different language or customs can take part.",
+      "text": "I explain group activities in ways a newcomer can understand.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -390,28 +373,6 @@
       ]
     },
     {
-      "id": "EP-I-47",
-      "text": "When someone asks about Christian faith, I listen to what they want to understand before sharing my response.",
-      "responseModel": "reflectionLikert",
-      "maps": [
-        {
-          "category": "APEST",
-          "construct": "Evangelist",
-          "weight": 1
-        },
-        {
-          "category": "Gift",
-          "construct": "Evangelism",
-          "weight": 1
-        },
-        {
-          "category": "Strength",
-          "construct": "Listening",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-76",
       "text": "When developing an idea, I prefer focused time alone or brainstorming with other people.",
       "responseModel": "personalityBipolar",
@@ -456,7 +417,7 @@
     },
     {
       "id": "EP-I-78",
-      "text": "Responsibility feels healthiest when I can own a task or when I can work through it with others.",
+      "text": "I prefer owning a task or working through it with others.",
       "responseModel": "personalityBipolar",
       "poles": [
         "Independent",
@@ -1035,7 +996,7 @@
     },
     {
       "id": "EP-I-61A",
-      "text": "When a group faces uncertainty, I encourage its next step by expressing trust in God's care without promising an outcome.",
+      "text": "When outcomes are uncertain, I trust God's care and encourage a next step.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1086,40 +1047,6 @@
           "category": "Strength",
           "construct": "Discernment",
           "weight": 0.5
-        }
-      ]
-    },
-    {
-      "id": "EP-I-11",
-      "text": "I recognize an early sign that a teaching about faith could lead people toward a harmful choice.",
-      "responseModel": "reflectionLikert",
-      "maps": [
-        {
-          "category": "APEST",
-          "construct": "Prophet",
-          "weight": 1
-        },
-        {
-          "category": "Strength",
-          "construct": "Discernment",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-12",
-      "text": "When a group's Christian commitments to care for people are overlooked, I ask the group to address the neglected need.",
-      "responseModel": "reflectionLikert",
-      "maps": [
-        {
-          "category": "APEST",
-          "construct": "Prophet",
-          "weight": 1
-        },
-        {
-          "category": "Strength",
-          "construct": "Advocacy and justice",
-          "weight": 1
         }
       ]
     },
@@ -1300,7 +1227,7 @@
     },
     {
       "id": "EP-I-68",
-      "text": "I naturally ask what needs attention now or what this could become.",
+      "text": "I notice immediate details or broader possibilities.",
       "responseModel": "personalityBipolar",
       "poles": [
         "Detail",
@@ -1410,7 +1337,7 @@
     },
     {
       "id": "EP-I-34",
-      "text": "I adapt a design to make a useful object suited to a group's activity.",
+      "text": "I adapt designs to make useful objects.",
       "responseModel": "reflectionLikert",
       "maps": [
         {

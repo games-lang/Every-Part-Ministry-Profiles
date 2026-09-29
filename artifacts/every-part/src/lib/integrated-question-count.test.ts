@@ -52,7 +52,13 @@ test("integrated count tracks the real bank under default and custom church choi
   ).length;
   assert.equal(exports.integratedQuestionCount(configuration, gifts), expected(false));
   assert.equal(exports.integratedQuestionCount(configuration, gifts, true), expected(true));
-  assert.equal(expected(false), 80);
+  assert.equal(bank.coreQuestions.length, 79);
+  const personalityQuestions = bank.coreQuestions.filter((q: any) => q.responseModel === "personalityBipolar");
+  assert.equal(personalityQuestions.length, 21);
+  for (const construct of new Set(personalityQuestions.flatMap((q: any) => q.maps.map((m: any) => m.construct)))) {
+    assert.equal(personalityQuestions.filter((q: any) => q.maps.some((m: any) => m.construct === construct)).length, 3, construct);
+  }
+  assert.equal(expected(false), 76);
   for (const key of ["apest", "spiritualGifts", "naturalStrengths", "personalityStrengths"] as const) {
     const without = { ...configuration, sections: { ...configuration.sections, [key]: false } };
     const count = bank.coreQuestions.filter((q: any) => q.maps.some((m: any) => {

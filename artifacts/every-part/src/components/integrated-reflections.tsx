@@ -6,7 +6,6 @@ import type { Attempt, DraftConflict } from "@/hooks/use-integrated-attempt";
 
 export const INTEGRATED_ROUND_SIZE = 8;
 export const isOptionalReflection = (question: IntegratedQuestionView) => question.responseModel === "specialExperienceLikert";
-const NA_LABEL = "N/A — Not sure / I have not had the opportunity";
 
 export function IntegratedReflections({ attempt, questions, answers, offset = 0, onAnswer }: {
   attempt: Attempt;
@@ -20,13 +19,7 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
     {questions.map((question, index) => {
       const model = models[question.responseModel];
       const questionLabelId = `integrated-question-title-${question.id}`;
-      const isLegacySocialEnergyQuestion = question.id === "EP-I-58";
-      const questionText = isLegacySocialEnergyQuestion
-        ? "After a busy week, which usually helps you recover your energy?"
-        : question.text;
-      const poles = isLegacySocialEnergyQuestion
-        ? ["Quiet time by myself", "Time with other people"] as const
-        : question.poles;
+      const poles = question.poles;
       const anchors = model?.anchors ?? [];
       const responseLabel = (value: 1 | 2 | 3 | 4 | 5) => {
         if (!poles) return anchors[value - 1] ?? String(value);
@@ -37,17 +30,14 @@ export function IntegratedReflections({ attempt, questions, answers, offset = 0,
         return `Definitely: ${poles[1]}`;
       };
       return <fieldset id={`integrated-question-${question.id}`} key={question.id} className="space-y-4">
-        <legend id={questionLabelId} className="text-lg font-serif leading-relaxed">{offset + index + 1}. {questionText}</legend>
+        <legend id={questionLabelId} className="text-lg font-serif leading-relaxed">{offset + index + 1}. {question.text}</legend>
         {model?.instructions && <p className="text-sm text-muted-foreground">{model.instructions}</p>}
         <div className="assessment-reflection-options flex flex-wrap gap-2" role="group" aria-labelledby={questionLabelId}>
-          {([1, 2, 3, 4, 5, "na", "skip"] as const).map((value) => {
-            const label = value === "skip"
-              ? "Skip"
-              : value === "na"
-                ? NA_LABEL
-                : responseLabel(value);
-            return <Button key={value} type="button" variant={answers[question.id] === value ? "default" : "outline"}
-              className="h-auto min-h-11 min-w-0 whitespace-normal break-words text-left" aria-pressed={answers[question.id] === value}
+          {([1, 2, 3, 4, 5, "skip"] as const).map((value) => {
+            const label = value === "skip" ? "Skip / not sure" : responseLabel(value);
+            const selected = answers[question.id] === value || (value === "skip" && answers[question.id] === "na");
+            return <Button key={value} type="button" variant={selected ? "default" : "outline"}
+              className="h-auto min-h-11 min-w-0 whitespace-normal break-words text-left" aria-pressed={selected}
               onClick={() => onAnswer(question.id, value)}>{label}</Button>;
           })}
         </div>

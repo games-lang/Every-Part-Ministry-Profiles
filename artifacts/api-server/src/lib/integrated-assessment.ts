@@ -1,4 +1,5 @@
 import bankJson from "./integrated-bank.json" with { type: "json" };
+import { randomBytes } from "node:crypto";
 import type { AssessmentConfiguration } from "./assessment-configuration.ts";
 
 export const BANK_VERSION = "adult-integrated-83-v1";
@@ -37,6 +38,63 @@ function deepFreeze<T>(value: T): T {
   return value;
 }
 export const INTEGRATED_BANK = deepFreeze(bankJson);
+export type RandomSource = () => number;
+const secureRandom: RandomSource = () => randomBytes(4).readUInt32BE(0) / 0x1_0000_0000;
+
+function shuffle<T>(items: T[], random: RandomSource): T[] {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index--) {
+    const value = random();
+    if (!Number.isFinite(value) || value < 0 || value >= 1) {
+      throw new RangeError("Random source must return a finite number in [0, 1).");
+    }
+    const swapIndex = Math.floor(value * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
+/** Randomize fresh attempts while rotating among constructs and keeping the
+ * bipolar personality inventory together. This only changes presentation order;
+ * question identities and scoring mappings remain untouched. */
+export function orderIntegratedQuestions(questions: Question[], random: RandomSource = secureRandom): Question[] {
+  const bipolar: Question[] = [];
+  const optional: Question[] = [];
+  const groups = new Map<string, Question[]>();
+  for (const question of questions) {
+    if (question.responseModel === "personalityBipolar") {
+      bipolar.push(question);
+      continue;
+    }
+    if (!question.maps.length) {
+      optional.push(question);
+      continue;
+    }
+    const primaryMap = question.maps.find(map => map.category !== "Personality") ?? question.maps[0];
+    const key = `${primaryMap.category}:${primaryMap.construct}`;
+    const group = groups.get(key) ?? [];
+    group.push(question);
+    groups.set(key, group);
+  }
+
+  const shuffledGroups = shuffle([...groups.values()].map(group => shuffle(group, random)), random);
+  const interleaved: Question[] = [];
+  for (let round = 0; shuffledGroups.some(group => group.length > round); round++) {
+    for (const group of shuffledGroups) {
+      if (group[round]) interleaved.push(group[round]);
+    }
+  }
+
+  const bipolarBlock = shuffle(bipolar, random);
+  const insertionPoint = Math.floor(interleaved.length / 2);
+  return [
+    ...interleaved.slice(0, insertionPoint),
+    ...bipolarBlock,
+    ...interleaved.slice(insertionPoint),
+    ...shuffle(optional, random),
+  ];
+}
+
 const sectionKeys = { APEST: "apest", Gift: "spiritualGifts", Strength: "naturalStrengths", Personality: "personalityStrengths" } as const;
 const subsectionNames: Record<string, string> = {
   Apostle: "builder", Prophet: "insight", Evangelist: "connector", Shepherd: "caregiver", Teacher: "teacher",
@@ -63,7 +121,7 @@ export function createIntegratedSnapshot(input: {
   enabledGifts: string[];
   celibacyEligible: boolean;
   optionalExperienceOptIn: boolean;
-}, now = new Date()): IntegratedSnapshot {
+}, now = new Date(), random: RandomSource = secureRandom): IntegratedSnapshot {
   const mapEnabled = (map: Question["maps"][number]) => {
     const { sectionKey, subsectionKey } = constructKeys(map.category, map.construct);
     if (!input.configuration.sections[sectionKey]) return false;
@@ -78,7 +136,7 @@ export function createIntegratedSnapshot(input: {
   const optional = input.optionalExperienceOptIn && input.configuration.sections.spiritualGifts
     ? (INTEGRATED_BANK.optionalQuestions as Question[]).filter(q => input.enabledGifts.includes(q.construct!))
     : [];
-  const questions = [...core, ...optional];
+  const questions = orderIntegratedQuestions([...core, ...optional], random);
   return structuredClone({
     bankVersion: BANK_VERSION, scoringVersion: SCORING_VERSION, startedAt: now.toISOString(),
     adultConfirmed: true, celibacyEligible: input.celibacyEligible,
