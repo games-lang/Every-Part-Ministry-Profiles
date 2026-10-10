@@ -3,6 +3,12 @@ name: Youth profile safety
 description: Durable privacy, routing, and interpretation boundaries for profiles completed by minors.
 ---
 
+Under-13 profiles are out of scope at launch.
+
+**Why:** The user explicitly defined the launch scope.
+
+**How to apply:** Public launch documentation must not imply under-13 profiles are available. Do not remove existing youth implementation merely to align launch copy.
+
 Youth profile pathways must be enforced from exact age at the server boundary, not only through frontend navigation. Any pathway override requires an authenticated administrator of the same church and must remain auditable.
 
 **Why:** Minor profiles use different consent, privacy, and interpretation boundaries than adult Ministry Profiles. A direct URL or crafted request must not turn a child submission into an adult record that can enter adult matching or team workflows.

@@ -343,12 +343,8 @@ function ClerkProviderWithRoutes() {
               <Route path="/billing">
                 <AuthenticatedRoute component={BillingPage} />
               </Route>
-              <Route path="/help/:slug">
-                <AuthenticatedRoute component={HelpPage} />
-              </Route>
-              <Route path="/help">
-                <AuthenticatedRoute component={HelpPage} />
-              </Route>
+              <Route path="/help/:slug" component={HelpPage} />
+              <Route path="/help" component={HelpPage} />
               <Route path="/leadership-profile">
                 <AuthenticatedRoute component={LeadershipProfilePage} />
               </Route>

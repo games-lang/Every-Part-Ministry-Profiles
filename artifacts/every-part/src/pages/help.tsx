@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import ReactMarkdown from "react-markdown";
+import { Show } from "@clerk/react";
+import { Shell } from "@/components/layout/Shell";
+import { PublicLayout } from "@/components/public-layout";
 import {
   ArrowLeft,
   ArrowRight,
@@ -12,6 +15,17 @@ import {
 import { HELP_SECTIONS, type HelpArticle } from "@/help/articles";
 
 const allArticles = HELP_SECTIONS.flatMap((section) => section.articles);
+
+function HelpLayout({ children, title }: { children: ReactNode; title: string }) {
+  return <>
+    <Show when="signed-in"><Shell>{children}</Shell></Show>
+    <Show when="signed-out">
+      <PublicLayout title={title} description="Practical answers about Every Part, Ministry Profiles, and helping people find a place to serve.">
+        {children}
+      </PublicLayout>
+    </Show>
+  </>;
+}
 const articleBySlug = new Map(allArticles.map((article) => [article.slug, article]));
 
 function articlePath(slug: string) {
@@ -220,10 +234,16 @@ export default function HelpPage() {
   }
 
   return (
+    <HelpLayout title={article ? `${article.title} | Help Center | Every Part` : "Help Center | Every Part"}>
     <div className="min-h-[100dvh] bg-background">
        <div className="container mx-auto max-w-7xl px-4 pb-36 pt-7 sm:px-6 sm:pb-16 sm:pt-10 lg:px-8">
         <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/dashboard" data-testid="link-help-dashboard" className="rounded-sm hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Dashboard</Link>
+          <Show when="signed-in">
+            <Link href="/dashboard" data-testid="link-help-dashboard" className="rounded-sm hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Dashboard</Link>
+          </Show>
+          <Show when="signed-out">
+            <Link href="/" data-testid="link-help-home" className="rounded-sm hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Home</Link>
+          </Show>
           <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
           {isIndex ? (
             <span aria-current="page" className="font-medium text-foreground">Help Center</span>
@@ -378,5 +398,6 @@ export default function HelpPage() {
         )}
       </div>
     </div>
+    </HelpLayout>
   );
 }

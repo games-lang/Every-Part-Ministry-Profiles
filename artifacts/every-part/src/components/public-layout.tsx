@@ -96,6 +96,7 @@ export function PublicHeader() {
           <Link href="/for-churches" className={`landing-focus landing-link rounded-md px-1 py-2 ${location === '/for-churches' ? 'text-secondary' : ''}`}>For Churches</Link>
           <Link href="/why-every-part" className={`landing-focus landing-link rounded-md px-1 py-2 ${location === '/why-every-part' ? 'text-secondary' : ''}`}>Why Every Part</Link>
           <Link href="/pricing" className={`landing-focus landing-link rounded-md px-1 py-2 ${location === '/pricing' ? 'text-secondary' : ''}`} data-testid="link-home-pricing">Pricing</Link>
+          <Link href="/help" className={`landing-focus landing-link rounded-md px-1 py-2 ${location === '/help' || location.startsWith('/help/') ? 'text-secondary' : ''}`} data-testid="link-home-help">Help</Link>
           <Link href="/sign-in" className="landing-focus landing-link rounded-md px-1 py-2">Leader sign in</Link>
           <Link href="/sign-up" className="landing-focus ml-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-primary-foreground transition hover:-translate-y-0.5 hover:bg-accent">
             Try Every Part <ArrowUpRight className="h-4 w-4" />
@@ -121,6 +122,7 @@ export function PublicHeader() {
             <Link href="/for-churches" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">For Churches</Link>
             <Link href="/why-every-part" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Why Every Part</Link>
             <Link href="/pricing" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-home-mobile-pricing">Pricing</Link>
+            <Link href="/help" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted" data-testid="link-home-mobile-help">Help</Link>
             <Link href="/sign-in" onClick={closeMenu} className="landing-focus rounded-lg px-3 py-3 font-medium hover:bg-muted">Leader sign in</Link>
             <Link href="/sign-up" onClick={closeMenu} className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground">Try Every Part <ArrowRight className="h-4 w-4" /></Link>
           </div>
@@ -145,6 +147,7 @@ export function PublicFooter() {
           <Link href="/for-churches" className="landing-focus landing-link rounded-md">For Churches</Link>
           <Link href="/why-every-part" className="landing-focus landing-link rounded-md">Why Every Part</Link>
           <Link href="/pricing" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-pricing">Pricing</Link>
+          <Link href="/help" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-help">Help</Link>
           <Link href="/about-early-access" className="landing-focus landing-link rounded-md">About Early Access</Link>
           <Link href="/sign-in" className="landing-focus landing-link rounded-md">Leader sign in</Link>
           <Link href="/privacy" className="landing-focus landing-link rounded-md" data-testid="link-home-footer-privacy">Privacy Policy</Link>
