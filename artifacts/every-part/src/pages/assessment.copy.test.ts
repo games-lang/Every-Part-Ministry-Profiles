@@ -10,5 +10,5 @@ test("integrated participant copy retains the exact agreed wording", () => {
   assert.ok(assessment.includes("This is a starting point, not a verdict — these themes are meant to spark a conversation with your ministry leader, not to define you."));
   assert.ok(assessment.includes("These reflections are optional and unscored. They are conversation starters, not proof of a gift. Let them spark honest reflection — there is no score attached."));
   assert.ok(assessment.includes("Pastoral self-reflection only — never pass/fail or scored. Share only what you are comfortable sharing."));
-  assert.match(assessment, /<strong>A few quick preferences<\/strong> — For the next set, pick the side that feels more like you\. There are no right answers, and these simply add texture to your profile\./);
+  assert.match(assessment, /<strong>A few quick preferences<\/strong> — The next \{bipolarQuestionCount\} questions compare two ways you might naturally work or relate\. Choose the side that fits your usual experience; neither is better\./);
 });

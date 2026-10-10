@@ -1,5 +1,5 @@
 {
-  "bankVersion": "adult-integrated-83-v1",
+  "bankVersion": "adult-integrated-83-v2",
   "scoringVersion": "independent-weighted-mean-v1",
   "responseModels": {
     "reflectionLikert": {
@@ -85,7 +85,7 @@
     },
     {
       "id": "EP-I-02",
-      "text": "I turn an idea for a new way of serving a community into steps that people can use to establish it.",
+      "text": "I turn a new idea for serving a community into steps people can follow.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -167,7 +167,7 @@
     },
     {
       "id": "EP-I-05",
-      "text": "I guide a group toward its first shared action when it is beginning a new effort to serve people.",
+      "text": "I guide a group toward its first shared action when starting a new effort to serve.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -221,7 +221,7 @@
     },
     {
       "id": "EP-I-10",
-      "text": "I identify who is being left out of a group's activity so their exclusion can be addressed.",
+      "text": "I notice who is being left out of a group's activities.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -271,7 +271,7 @@
     },
     {
       "id": "EP-I-18",
-      "text": "I adapt the help I offer in a different culture or community after learning how local people understand the need.",
+      "text": "I adapt my help to fit how local people understand the need.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -390,7 +390,7 @@
     },
     {
       "id": "EP-I-50",
-      "text": "When a person I support spiritually withdraws, I carry out an agreed check-in to learn what care they need.",
+      "text": "When someone I support spiritually withdraws, I check in to learn what care they need.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -433,7 +433,7 @@
     },
     {
       "id": "EP-I-08",
-      "text": "When a group's use of Christian teaching could harm someone, I raise the concern in a way the group can consider.",
+      "text": "When a group's teaching could harm someone, I raise the concern respectfully.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -488,7 +488,7 @@
     },
     {
       "id": "EP-I-17",
-      "text": "When someone is exploring Christian faith, I listen to the questions they hesitate to ask so we can explore them together.",
+      "text": "I listen for the unspoken questions of someone exploring Christian faith.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -536,18 +536,25 @@
       ]
     },
     {
-      "id": "EP-I-29",
-      "text": "I study a faith topic carefully and explain what I learned in an order another person can follow.",
+      "id": "EP-I-29A",
+      "text": "I study a faith topic carefully until I understand it well.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Knowledge",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-29B",
+      "text": "I explain what I've learned in an order others can follow.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
           "category": "APEST",
           "construct": "Teacher",
-          "weight": 1
-        },
-        {
-          "category": "Gift",
-          "construct": "Knowledge",
           "weight": 1
         },
         {
@@ -564,7 +571,7 @@
     },
     {
       "id": "EP-I-30",
-      "text": "I use an example, story, or picture to help another person understand a message from Scripture or faith.",
+      "text": "I use examples or stories to help someone understand a teaching from Scripture.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -591,7 +598,7 @@
     },
     {
       "id": "EP-I-31",
-      "text": "I ask questions to learn where someone is confused before I explain a Scripture idea more.",
+      "text": "Before explaining a Scripture idea, I ask questions to find where someone is confused.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -618,7 +625,7 @@
     },
     {
       "id": "EP-I-32",
-      "text": "I communicate what I have learned from Scripture so another person can examine the meaning with me.",
+      "text": "I share what I've learned from Scripture and invite others to explore its meaning.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -640,7 +647,7 @@
     },
     {
       "id": "EP-I-53",
-      "text": "After explaining a faith idea, I invite the person to describe what they understood so I can clarify my explanation.",
+      "text": "After explaining a faith idea, I check what the person understood and clarify as needed.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -662,7 +669,7 @@
     },
     {
       "id": "EP-I-49",
-      "text": "I share a short part of my faith story when it fits a real conversation, without pressuring the other person.",
+      "text": "I share part of my faith story when it fits the conversation, without pressuring anyone.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -711,7 +718,7 @@
     },
     {
       "id": "EP-I-55",
-      "text": "Before a gathering, I think through practical details that help a new person know where to go and what to expect.",
+      "text": "Before a gathering, I plan details so newcomers know where to go and what to expect.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -728,7 +735,7 @@
     },
     {
       "id": "EP-I-56",
-      "text": "I notice who has not yet been included in a conversation and help make space for them to take part.",
+      "text": "I notice who hasn't joined a conversation and help include them.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -818,7 +825,7 @@
     },
     {
       "id": "EP-I-21",
-      "text": "After someone shares a difficult time in their faith, I carry out the follow-up care I agreed to offer.",
+      "text": "When someone shares a difficult time, I follow through on the care I offered.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -845,7 +852,7 @@
     },
     {
       "id": "EP-I-22",
-      "text": "I help someone I support in their faith choose a next step suited to their present stage of growth.",
+      "text": "I help someone I mentor in faith choose a next step that fits where they are.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -867,7 +874,7 @@
     },
     {
       "id": "EP-I-23",
-      "text": "I remain available for spiritual support to a person whose distress continues over time.",
+      "text": "I stay available to support someone whose distress continues over time.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -894,7 +901,7 @@
     },
     {
       "id": "EP-I-24",
-      "text": "I provide practical help that a person in distress says would support them.",
+      "text": "I give the practical help a person in distress asks for.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -915,15 +922,22 @@
       ]
     },
     {
-      "id": "EP-I-25",
-      "text": "I continue praying for another person's need because I trust God's care, even when no change is visible.",
+      "id": "EP-I-25A",
+      "text": "I keep praying for others' needs even when nothing changes.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
           "category": "Gift",
           "construct": "Intercession",
           "weight": 1
-        },
+        }
+      ]
+    },
+    {
+      "id": "EP-I-25B",
+      "text": "I trust God's care even when I see no visible change.",
+      "responseModel": "reflectionLikert",
+      "maps": [
         {
           "category": "Gift",
           "construct": "Faith",
@@ -974,7 +988,7 @@
     },
     {
       "id": "EP-I-57",
-      "text": "I complete a practical task such as setting up, cleaning, or carrying supplies so others can do their part.",
+      "text": "I do practical setup tasks so others can focus on their part.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -995,15 +1009,22 @@
       ]
     },
     {
-      "id": "EP-I-61A",
-      "text": "When outcomes are uncertain, I trust God's care and encourage a next step.",
+      "id": "EP-I-61B",
+      "text": "When outcomes are uncertain, I trust God's care.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
           "category": "Gift",
           "construct": "Faith",
           "weight": 1
-        },
+        }
+      ]
+    },
+    {
+      "id": "EP-I-61C",
+      "text": "When outcomes are uncertain, I encourage others toward a next step.",
+      "responseModel": "reflectionLikert",
+      "maps": [
         {
           "category": "Gift",
           "construct": "Exhortation / Encouragement",
@@ -1013,7 +1034,7 @@
     },
     {
       "id": "EP-I-06",
-      "text": "When a group faces a problem with several possible solutions, I compare how each would affect its longer-term goal.",
+      "text": "When a group faces a problem, I compare solutions by their long-term impact.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1030,7 +1051,7 @@
     },
     {
       "id": "EP-I-09",
-      "text": "Before offering guidance from my faith, I listen to the person's situation so the guidance fits the details they share.",
+      "text": "Before giving faith-based guidance, I listen so it fits the person's situation.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1068,7 +1089,7 @@
     },
     {
       "id": "EP-I-13",
-      "text": "I point out a repeated practice that unfairly burdens people and conflicts with our Christian commitment to care for them.",
+      "text": "I point out repeated practices that unfairly burden people.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1085,7 +1106,7 @@
     },
     {
       "id": "EP-I-14",
-      "text": "Before a group decides, I examine how its choice fits the biblical teaching it is trying to follow.",
+      "text": "Before a group decides, I check its choice against biblical teaching.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1122,15 +1143,10 @@
       ]
     },
     {
-      "id": "EP-I-27",
-      "text": "When people face an uncertain outcome, I pray for them and take the next available action while trusting God's care.",
+      "id": "EP-I-27A",
+      "text": "When people face an uncertain outcome, I pray for them.",
       "responseModel": "reflectionLikert",
       "maps": [
-        {
-          "category": "Gift",
-          "construct": "Faith",
-          "weight": 1
-        },
         {
           "category": "Gift",
           "construct": "Intercession",
@@ -1139,8 +1155,20 @@
       ]
     },
     {
+      "id": "EP-I-27B",
+      "text": "When outcomes are uncertain, I take the next step trusting God's care.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Faith",
+          "weight": 1
+        }
+      ]
+    },
+    {
       "id": "EP-I-33",
-      "text": "I apply a teaching from my faith to a practical choice in a way that takes account of the facts and people affected.",
+      "text": "I apply my faith's teaching to practical decisions, weighing the facts and people affected.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1173,7 +1201,7 @@
     },
     {
       "id": "EP-I-45",
-      "text": "When a new effort to serve people stalls, I work out a way past the obstacle that still supports its longer-term purpose.",
+      "text": "When a new effort stalls, I find a way past the obstacle that keeps its purpose intact.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1200,7 +1228,7 @@
     },
     {
       "id": "EP-I-46",
-      "text": "For a new effort to serve people, I organize its stages and limited resources around what must happen first to reach its longer-term purpose.",
+      "text": "For a new effort, I sequence the stages and budget limited resources toward what matters most.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1243,7 +1271,7 @@
     },
     {
       "id": "EP-I-48",
-      "text": "I help a person exploring Christian faith plan steps for their own learning that fit the questions they want to explore.",
+      "text": "I help a person exploring faith plan learning steps around their own questions.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1265,7 +1293,7 @@
     },
     {
       "id": "EP-I-52",
-      "text": "As someone learns a role serving others, I keep the support commitments I have made for their spiritual growth.",
+      "text": "As someone learns a serving role, I follow through on my commitments to support their growth.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1292,7 +1320,7 @@
     },
     {
       "id": "EP-I-60A",
-      "text": "When a practical plan breaks down, I identify the main problem and try a different workable approach.",
+      "text": "When a plan breaks down, I find the main problem and try a different approach.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1320,7 +1348,7 @@
     },
     {
       "id": "EP-I-62A",
-      "text": "I plan what resources I can share regularly while meeting the responsibilities already entrusted to me.",
+      "text": "I plan my regular giving around the responsibilities I already carry.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1380,7 +1408,7 @@
     },
     {
       "id": "EP-I-36",
-      "text": "I repair an item that a group needs so it can be used again in the group's work.",
+      "text": "I repair items a group needs so they can be used again.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1402,7 +1430,7 @@
     },
     {
       "id": "EP-I-37",
-      "text": "As an unmarried person, I freely choose to remain unmarried in this season so I can devote myself to serving God.",
+      "text": "As an unmarried person, I gladly remain single to devote myself to serving God.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1430,7 +1458,7 @@
     },
     {
       "id": "EP-I-38",
-      "text": "As an unmarried person, I have found sustained contentment in an unmarried life devoted to serving God.",
+      "text": "As an unmarried person, I am content in a single life devoted to serving God.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1442,7 +1470,7 @@
     },
     {
       "id": "EP-I-39",
-      "text": "As an unmarried person, I keep my freely chosen commitment to unmarried service even when others expect me to marry.",
+      "text": "I keep my commitment to remain unmarried for God's service, even when others expect me to marry.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1487,7 +1515,7 @@
     },
     {
       "id": "EP-I-41",
-      "text": "When I could choose more for myself, I choose a simpler option so I can give the difference to meet a need.",
+      "text": "When I could spend more on myself, I choose the simpler option and give the difference.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1520,7 +1548,7 @@
     },
     {
       "id": "EP-I-42",
-      "text": "I sustain a voluntarily simpler way of living because it frees me to serve others.",
+      "text": "I choose a simpler lifestyle because it frees me to serve others.",
       "responseModel": "reflectionLikert",
       "maps": [
         {
@@ -1582,7 +1610,7 @@
   "optionalQuestions": [
     {
       "id": "EP-ESD-01",
-      "text": "I have experienced prayer connected with healing in a way I believe may have helped another person.",
+      "text": "I have seen prayer connected with healing that I believe helped someone.",
       "responseModel": "specialExperienceLikert",
       "kind": "experience-evidence-unscored",
       "construct": "Healing",
@@ -1598,7 +1626,7 @@
     },
     {
       "id": "EP-ESD-03",
-      "text": "When I pray for healing, I remain humble about the outcome and respectful of the person.",
+      "text": "When I pray for healing, I stay humble about the outcome.",
       "responseModel": "specialExperienceLikert",
       "kind": "context-only",
       "construct": "Healing",
@@ -1606,7 +1634,7 @@
     },
     {
       "id": "EP-ESD-04",
-      "text": "I have experienced an interpretation of tongues that I believe was helpful to a gathered community.",
+      "text": "I have experienced an interpretation of tongues that helped those gathered.",
       "responseModel": "specialExperienceLikert",
       "kind": "experience-evidence-unscored",
       "construct": "Interpretation of Tongues",
@@ -1622,7 +1650,7 @@
     },
     {
       "id": "EP-ESD-06",
-      "text": "I approach interpretation of tongues with humility and care for the gathered community.",
+      "text": "I approach interpretation of tongues with humility and care for others.",
       "responseModel": "specialExperienceLikert",
       "kind": "context-only",
       "construct": "Interpretation of Tongues",
@@ -1630,7 +1658,7 @@
     },
     {
       "id": "EP-ESD-07",
-      "text": "I have experienced an extraordinary answer to prayer in a situation involving me.",
+      "text": "I have experienced an extraordinary answer to prayer in my own life.",
       "responseModel": "specialExperienceLikert",
       "kind": "experience-evidence-unscored",
       "construct": "Miracles",
@@ -1646,7 +1674,7 @@
     },
     {
       "id": "EP-ESD-09",
-      "text": "I can pray expectantly while remaining humble about what will happen.",
+      "text": "I pray expectantly while staying humble about the outcome.",
       "responseModel": "specialExperienceLikert",
       "kind": "context-only",
       "construct": "Miracles",
@@ -1654,7 +1682,7 @@
     },
     {
       "id": "EP-ESD-10",
-      "text": "I have shared an impression I believed God was prompting for another person's encouragement or direction.",
+      "text": "I have shared an impression I believed God gave for someone's encouragement or direction.",
       "responseModel": "specialExperienceLikert",
       "kind": "experience-evidence-unscored",
       "construct": "Prophecy",
@@ -1670,7 +1698,7 @@
     },
     {
       "id": "EP-ESD-12",
-      "text": "I hold spiritual impressions humbly and remain open to correction.",
+      "text": "I hold spiritual impressions humbly and stay open to correction.",
       "responseModel": "specialExperienceLikert",
       "kind": "context-only",
       "construct": "Prophecy",
@@ -1678,7 +1706,7 @@
     },
     {
       "id": "EP-ESD-13",
-      "text": "I have experienced speaking in tongues or a spiritual utterance that I believe was given by the Holy Spirit.",
+      "text": "I have spoken in tongues in a way I believe was given by the Holy Spirit.",
       "responseModel": "specialExperienceLikert",
       "kind": "experience-evidence-unscored",
       "construct": "Tongues",
@@ -1694,7 +1722,7 @@
     },
     {
       "id": "EP-ESD-15",
-      "text": "I practice tongues with care for the gathered community and its shared discernment.",
+      "text": "I practice tongues with care for others and their discernment.",
       "responseModel": "specialExperienceLikert",
       "kind": "context-only",
       "construct": "Tongues",

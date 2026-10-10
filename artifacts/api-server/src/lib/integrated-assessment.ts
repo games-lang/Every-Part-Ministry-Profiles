@@ -2,7 +2,10 @@ import bankJson from "./integrated-bank.json" with { type: "json" };
 import { randomBytes } from "node:crypto";
 import type { AssessmentConfiguration } from "./assessment-configuration.ts";
 
-export const BANK_VERSION = "adult-integrated-83-v1";
+export const BANK_VERSION = bankJson.bankVersion;
+// Wording and split-item revisions retain the same scoring contract. Old
+// attempts must continue scoring their own frozen questions, never today's bank.
+const SUPPORTED_BANK_VERSIONS = new Set(["adult-integrated-83-v1", BANK_VERSION]);
 export const SCORING_VERSION = "independent-weighted-mean-v1";
 export type Category = "APEST" | "Gift" | "Strength" | "Personality";
 export type Answer = 1 | 2 | 3 | 4 | 5 | "na" | "skip";
@@ -163,7 +166,7 @@ export function answersError(value: unknown, snapshot: IntegratedSnapshot, compl
 }
 
 export function scoreIntegratedAssessment(snapshot: IntegratedSnapshot, answers: Answers, completedAt = new Date()) {
-  if (snapshot.bankVersion !== BANK_VERSION || snapshot.scoringVersion !== SCORING_VERSION) {
+  if (!SUPPORTED_BANK_VERSIONS.has(snapshot.bankVersion) || snapshot.scoringVersion !== SCORING_VERSION) {
     throw new Error("This frozen assessment scoring version is not supported by this server.");
   }
   const error = answersError(answers, snapshot);
@@ -232,7 +235,7 @@ export function integratedSignals(value: unknown) {
   const result = value as IntegratedResult;
   if (
     result.version !== "integrated-assessment-v1" ||
-    result.bankVersion !== BANK_VERSION ||
+    !SUPPORTED_BANK_VERSIONS.has(result.bankVersion) ||
     result.scoringVersion !== SCORING_VERSION ||
     !Array.isArray(result.constructs)
   ) return empty;

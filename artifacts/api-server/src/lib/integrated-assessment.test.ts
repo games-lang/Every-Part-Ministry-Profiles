@@ -7,6 +7,7 @@ import {
   answersError, constructKeys, createIntegratedSnapshot, INTEGRATED_BANK, integratedSignals,
   scoreIntegratedAssessment, type Answers, type Category,
 } from "./integrated-assessment.ts";
+import { approvedRewrites, approvedSplits } from "./test-fixtures/integrated-editorial.ts";
 
 const makeSnapshot = (overrides: Partial<Parameters<typeof createIntegratedSnapshot>[0]> = {}) => createIntegratedSnapshot({
   configuration: defaultAssessmentConfiguration(), customization: {},
@@ -20,7 +21,7 @@ const seededRandom = (seed: number) => () => {
 const allAnswers = (value: 1 | 2 | 3 | 4 | 5 = 5): Answers =>
   Object.fromEntries(makeSnapshot().questions.map(q => [q.id, value]));
 
-test("runtime bank preserves approved order, mappings and scoring with the corrected social-energy wording", () => {
+test("runtime bank preserves the approved editorial wording, order, mappings and weights", () => {
   const source = JSON.parse(readFileSync(new URL("../../../../reports/final-integrated-question-bank.json", import.meta.url), "utf8"));
   const curatedPromptOverrides: Record<string, string> = {
     "EP-I-01": "I guide people in starting community service where none exists.",
@@ -32,15 +33,26 @@ test("runtime bank preserves approved order, mappings and scoring with the corre
     "EP-I-70": "I prefer supporting existing work or initiating new work.",
     "EP-I-78": "I prefer owning a task or working through it with others.",
   };
-  assert.equal(INTEGRATED_BANK.coreQuestions.length, 79);
+  assert.equal(INTEGRATED_BANK.coreQuestions.length, 83);
   assert.equal(INTEGRATED_BANK.optionalQuestions.length, 15);
+  assert.equal(INTEGRATED_BANK.bankVersion, "adult-integrated-83-v2");
+  assert.equal(INTEGRATED_BANK.scoringVersion, "independent-weighted-mean-v1");
+  assert.equal(Object.keys(approvedRewrites).length, 46);
+  const allIds = [...INTEGRATED_BANK.coreQuestions, ...INTEGRATED_BANK.optionalQuestions].map(q => q.id);
+  assert.equal(new Set(allIds).size, allIds.length);
   const curatedCoreIds = new Set(INTEGRATED_BANK.coreQuestions.map(q => q.id));
   assert.deepEqual(INTEGRATED_BANK.coreQuestions.map(q => q.id),
-    source.stablePresentationOrder.filter((id: string) => curatedCoreIds.has(id)));
+    source.stablePresentationOrder.flatMap((id: string) => approvedSplits[id]?.map(q => q.id) ?? [id])
+      .filter((id: string) => curatedCoreIds.has(id)));
   assert.deepEqual(INTEGRATED_BANK.optionalQuestions.map(q => q.id), source.stableOptionalPresentationOrder);
   for (const question of INTEGRATED_BANK.coreQuestions) {
+    const split = Object.values(approvedSplits).flat().find(q => q.id === question.id);
+    if (split) {
+      assert.deepEqual(question, split);
+      continue;
+    }
     const approved = source.coreQuestions.find((q: { id: string }) => q.id === question.id);
-    assert.equal(question.text, curatedPromptOverrides[question.id] ?? approved.text);
+    assert.equal(question.text, approvedRewrites[question.id] ?? curatedPromptOverrides[question.id] ?? approved.text);
     assert.equal(question.responseModel, approved.responseModel);
     assert.deepEqual(question.maps, approved.maps.map(([category, construct, weight]: [string, string, number]) => ({
       category: category === "Spiritual Gift" ? "Gift" : category, construct, weight,
@@ -51,12 +63,21 @@ test("runtime bank preserves approved order, mappings and scoring with the corre
   }
   for (const question of INTEGRATED_BANK.optionalQuestions) {
     const approved = source.optionalSpecialExperienceModule.items.find((q: { id: string }) => q.id === question.id);
-    assert.equal(question.text, approved.text);
+    assert.equal(question.text, approvedRewrites[question.id] ?? approved.text);
     assert.equal(question.construct, approved.construct);
     assert.equal(question.kind, approved.kind);
     assert.deepEqual(question.maps, []);
   }
   assert.equal(INTEGRATED_BANK.coreQuestions.filter(q => q.responseModel === "personalityBipolar").length, 21);
+  for (const [removedId, split] of Object.entries(approvedSplits)) {
+    assert.ok(!allIds.includes(removedId));
+    const original = source.coreQuestions.find((q: { id: string }) => q.id === removedId);
+    const originalMaps = original.maps.map(([category, construct, weight]: [string, string, number]) => ({
+      category: category === "Spiritual Gift" ? "Gift" : category, construct, weight,
+    }));
+    const canonical = (maps: unknown[]) => maps.map(map => JSON.stringify(map)).sort();
+    assert.deepEqual(canonical(split.flatMap(q => q.maps)), canonical(originalMaps), removedId);
+  }
   assert.throws(() => { INTEGRATED_BANK.coreQuestions[0].text = "changed"; }, TypeError);
 });
 
@@ -171,7 +192,7 @@ test("shared items retain active links but never produce disabled hidden scores"
 
 test("gift toggles, opt-in and participant Celibacy eligibility independently filter questions", () => {
   const snapshot = makeSnapshot({ celibacyEligible: false, optionalExperienceOptIn: false });
-  assert.equal(snapshot.questions.length, 76);
+  assert.equal(snapshot.questions.length, 80);
   assert.ok(!snapshot.questions.some(q => q.maps.some(m => m.construct === "Celibacy")));
   const onlyProphecy = makeSnapshot({ enabledGifts: ["Prophecy"] });
   assert.deepEqual(onlyProphecy.questions.filter(q => !q.maps.length).map(q => q.construct), ["Prophecy", "Prophecy", "Prophecy"]);
@@ -210,6 +231,53 @@ test("snapshot is independent of mutable church configuration and runtime edits"
   assert.equal(snapshot.assessmentConfiguration.sections.apest, true);
   snapshot.questions[0].text = "local test copy";
   assert.notEqual(INTEGRATED_BANK.coreQuestions[0].text, "local test copy");
+});
+
+test("frozen v1 drafts validate and finish using their original IDs and maps; both versions retain result signals", () => {
+  const source = JSON.parse(readFileSync(new URL("../../../../reports/final-integrated-question-bank.json", import.meta.url), "utf8"));
+  const current = makeSnapshot();
+  const legacy = structuredClone(current);
+  legacy.bankVersion = "adult-integrated-83-v1";
+  // Reconstruct the four compound questions in a frozen pre-editorial draft.
+  legacy.questions = current.questions.filter(q => !Object.values(approvedSplits).flat().some(split => split.id === q.id));
+  for (const id of Object.keys(approvedSplits)) {
+    const original = source.coreQuestions.find((q: { id: string }) => q.id === id);
+    legacy.questions.push({
+      id, text: original.text, responseModel: original.responseModel,
+      maps: original.maps.map(([category, construct, weight]: [string, string, number]) => ({
+        category: category === "Spiritual Gift" ? "Gift" : category, construct, weight,
+      })),
+    });
+  }
+  legacy.questionIds = legacy.questions.map(q => q.id);
+  assert.equal(legacy.questions.length, current.questions.length - 4);
+  const oldAnswers: Answers = Object.fromEntries(legacy.questions.map((q, index) => [q.id, (index % 5 + 1) as 1 | 2 | 3 | 4 | 5]));
+  const newAnswers: Answers = {};
+  for (const q of current.questions) {
+    const parent = Object.entries(approvedSplits).find(([, children]) => children.some(child => child.id === q.id))?.[0];
+    newAnswers[q.id] = oldAnswers[parent ?? q.id];
+  }
+  assert.equal(answersError(oldAnswers, legacy, true), null);
+  assert.ok(answersError(oldAnswers, current, true), "old IDs cannot be submitted into a new attempt");
+  const partial = { ...oldAnswers };
+  delete partial["EP-I-25"];
+  assert.ok(answersError(partial, legacy, true), "missing old core items still block final submission");
+  const before = structuredClone(legacy);
+  const oldResult = scoreIntegratedAssessment(legacy, oldAnswers);
+  const newResult = scoreIntegratedAssessment(current, newAnswers);
+  assert.deepEqual(legacy, before, "scoring must not migrate or mutate a frozen draft");
+  assert.equal(oldResult.bankVersion, "adult-integrated-83-v1");
+  assert.equal(newResult.bankVersion, "adult-integrated-83-v2");
+  const canonicalConstructs = (result: typeof oldResult) => [...result.constructs]
+    .sort((a, b) => `${a.category}:${a.construct}`.localeCompare(`${b.category}:${b.construct}`));
+  assert.deepEqual(canonicalConstructs(oldResult), canonicalConstructs(newResult),
+    "matching answers preserve every count, weight, mean, evidence level and eligibility");
+  const canonicalSignals = (result: typeof oldResult) => Object.fromEntries(
+    Object.entries(integratedSignals(result)!).map(([key, values]) => [key, [...values].sort()]));
+  assert.deepEqual(canonicalSignals(oldResult), canonicalSignals(newResult));
+  assert.ok(integratedSignals(scoreIntegratedAssessment(legacy,
+    Object.fromEntries(legacy.questions.map(q => [q.id, 5])) as Answers))!.spiritualGifts.length > 0);
+  assert.throws(() => scoreIntegratedAssessment({ ...legacy, bankVersion: "unsupported-version" }, oldAnswers), /not supported/);
 });
 
 test("invalid IDs, choices and incomplete core reject, explicit skipped core permits completion", () => {

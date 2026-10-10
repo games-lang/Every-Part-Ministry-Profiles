@@ -46,7 +46,7 @@ test("reflection renderer uses exact server text, anchors and poles, without con
   assert.match(html, /Usually: Interactive/);
   assert.match(html, /role="group" aria-labelledby="integrated-question-title-two"/);
   assert.match(html, /id="integrated-question-title-two"[^>]*>2\. The approved bipolar reflection\./);
-  assert.match(html, /N\/A — Not sure \/ I have not had the opportunity/);
+  assert.match(html, /Skip \/ not sure/);
   assert.doesNotMatch(html, /left pole/);
   assert.doesNotMatch(html, /1 — Reflective/);
   assert.doesNotMatch(html, /5 — Interactive/);
@@ -54,7 +54,7 @@ test("reflection renderer uses exact server text, anchors and poles, without con
   assert.doesNotMatch(html, /Hidden gift tag/);
 });
 
-test("a frozen social-energy draft renders the corrected question and concrete choices", () => {
+test("a frozen social-energy draft renders its original question and poles unchanged", () => {
   const html = renderToStaticMarkup(React.createElement(exported.IntegratedReflections, {
     attempt,
     questions: [{
@@ -67,14 +67,14 @@ test("a frozen social-energy draft renders the corrected question and concrete c
     onAnswer() {},
   }));
 
-  assert.match(html, /After a busy week, which usually helps you recover your energy\?/);
-  assert.match(html, /Definitely: Quiet time by myself/);
-  assert.match(html, /Usually: Time with other people/);
-  assert.match(html, /N\/A — Not sure \/ I have not had the opportunity/);
-  assert.doesNotMatch(html, /Reflective|Interactive/);
+  assert.match(html, /After a busy week, I usually recover energy more through quiet time or through being with people\./);
+  assert.match(html, /Definitely: Reflective/);
+  assert.match(html, /Usually: Interactive/);
+  assert.match(html, /Skip \/ not sure/);
+  assert.doesNotMatch(html, /Quiet time by myself|Time with other people/);
 });
 
-test("the final optional reflection has an untruncated accessible question and standardized N/A", () => {
+test("the final optional reflection has an untruncated accessible question and preserves old N/A as skip", () => {
   const longPrompt = "I can share what I experienced in my own words and seek wise guidance when something is unclear.";
   const html = renderToStaticMarkup(React.createElement(exported.IntegratedReflections, {
     attempt,
@@ -83,7 +83,7 @@ test("the final optional reflection has an untruncated accessible question and s
   }));
   assert.match(html, /id="integrated-question-title-last-question"[^>]*>1\. I can share what I experienced in my own words and seek wise guidance when something is unclear\./);
   assert.match(html, /role="group" aria-labelledby="integrated-question-title-last-question"/);
-  assert.match(html, /N\/A — Not sure \/ I have not had the opportunity/);
+  assert.match(html, /Skip \/ not sure/);
   assert.match(html, /aria-pressed="true"/);
 });
 

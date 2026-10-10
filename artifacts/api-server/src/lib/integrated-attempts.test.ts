@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { randomBytes, randomUUID } from "node:crypto";
+import type { IntegratedSnapshot } from "./integrated-assessment.ts";
+import { approvedSplits } from "./test-fixtures/integrated-editorial.ts";
 
 // Explicit opt-in: this integration test creates and removes its own isolated
 // development tenant, never uses real participant/church records or starts HTTP.
@@ -67,6 +69,7 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
     const { attemptId, token } = start.body;
     assert.equal(token.length, 43);
     assert.equal(start.body.questions.length, 95);
+    assert.equal(start.body.bankVersion, "adult-integrated-83-v2");
     assert.equal(start.body.questions.some((q: any) => q.maps || q.construct || q.kind), false);
     assert.equal(start.body.snapshot.questions, undefined);
     assert.equal(start.body.snapshot.adultConfirmed, true);
@@ -162,6 +165,52 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
     assert.equal((await call(attemptRouter, "get", draftPath, { params: { attemptId }, token })).statusCode, 410);
     assert.equal((await call(profilesRouter, "post", "/profiles", { body: { ...profileBody, integratedAttempt: credentials } })).statusCode, 410);
     await db.update(churchesTable).set({ integratedAssessmentPilotEnabled: true }).where(eq(churchesTable.id, church.id));
+    // A persisted pre-editorial draft resumes and submits its original compound
+    // IDs, even though fresh starts use the new split items and version.
+    const legacySnapshot = structuredClone(stored.snapshot) as IntegratedSnapshot;
+    legacySnapshot.bankVersion = "adult-integrated-83-v1";
+    const oldText: Record<string, string> = {
+      "EP-I-29": "I study a faith topic carefully and explain what I learned in an order another person can follow.",
+      "EP-I-25": "I continue praying for another person's need because I trust God's care, even when no change is visible.",
+      "EP-I-61A": "When outcomes are uncertain, I trust God's care and encourage a next step.",
+      "EP-I-27": "When people face an uncertain outcome, I pray for them and take the next available action while trusting God's care.",
+    };
+    const splitIds = new Set(Object.values(approvedSplits).flat().map(q => q.id));
+    legacySnapshot.questions = legacySnapshot.questions.filter(q => !splitIds.has(q.id));
+    legacySnapshot.questions.push(...Object.entries(approvedSplits).map(([id, children]) => ({
+      id, text: oldText[id], responseModel: "reflectionLikert", maps: children.flatMap(q => q.maps),
+    })));
+    legacySnapshot.questionIds = legacySnapshot.questions.map(q => q.id);
+    const legacyToken = randomBytes(32).toString("base64url");
+    const [legacyAttempt] = await db.insert(integratedAttemptsTable).values({
+      churchId: church.id, tokenHash: hashToken(legacyToken), sourceHash: stored.sourceHash,
+      snapshot: legacySnapshot, expiresAt: new Date(Date.now() + 86400_000),
+    }).returning();
+    const legacyResume = await call(attemptRouter, "get", draftPath, {
+      params: { attemptId: legacyAttempt.id }, token: legacyToken,
+    });
+    assert.equal(legacyResume.statusCode, 200);
+    assert.equal(legacyResume.body.bankVersion, "adult-integrated-83-v1");
+    assert.equal(legacyResume.body.questions.find((q: any) => q.id === "EP-I-25").text, oldText["EP-I-25"]);
+    assert.ok(!legacyResume.body.questions.some((q: any) => splitIds.has(q.id)));
+    const legacyAnswers = Object.fromEntries(legacySnapshot.questions.map(q => [q.id, 5]));
+    const partialLegacyAnswers = { ...legacyAnswers };
+    delete partialLegacyAnswers["EP-I-25"];
+    const saveLegacy = (revision: number, answers: Record<string, number>) => call(attemptRouter, "patch", draftPath, {
+      params: { attemptId: legacyAttempt.id }, token: legacyToken,
+      body: { revision, answers, formState: progress },
+    });
+    assert.equal((await saveLegacy(0, partialLegacyAnswers)).statusCode, 200);
+    const submitLegacy = (revision: number) => call(profilesRouter, "post", "/profiles", {
+      body: { ...profileBody, integratedAttempt: { attemptId: legacyAttempt.id, token: legacyToken, revision } },
+    });
+    assert.equal((await submitLegacy(1)).statusCode, 400, "incomplete v1 drafts cannot create half-scored profiles");
+    assert.equal((await saveLegacy(1, legacyAnswers)).statusCode, 200);
+    const legacyComplete = await submitLegacy(2);
+    assert.equal(legacyComplete.statusCode, 201, JSON.stringify(legacyComplete.body));
+    assert.equal(legacyComplete.body.integratedAssessment.bankVersion, "adult-integrated-83-v1");
+    assert.deepEqual(legacyComplete.body.integratedAssessment.answers, legacyAnswers);
+    assert.ok(legacyComplete.body.integratedAssessment.constructs.length > 0);
     // Synthetic expired-free records exercise the persisted per-source bound.
     await db.insert(integratedAttemptsTable).values(Array.from({ length: 99 }, () => ({
       churchId: church.id, tokenHash: hashToken(randomBytes(32).toString("base64url")),

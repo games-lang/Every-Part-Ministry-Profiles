@@ -42,6 +42,25 @@ test("reads canonical independent means; does not re-score or truncate gift resu
   assert.deepEqual(profile, before);
 });
 
+test("both approved bank versions preserve historical and new result interpretation", () => {
+  const original = fixture([construct("Gift", "Faith"), construct("APEST", "Teacher")]);
+  const revised = structuredClone(original);
+  revised.integratedAssessment.bankVersion = "adult-integrated-83-v2";
+  const before = integratedResults(original, yes, yes)!;
+  const after = integratedResults(revised, yes, yes)!;
+  assert.equal(after.valid, true);
+  assert.deepEqual(after.constructs, before.constructs);
+  for (const category of ["APEST", "Gift", "Strength", "Personality"] as const) {
+    assert.deepEqual(after.signals(category), before.signals(category));
+    assert.deepEqual(after.scored(category), before.scored(category));
+  }
+  assert.deepEqual(after.conversations, before.conversations);
+  assert.equal(integratedResults({
+    ...revised,
+    integratedAssessment: { ...revised.integratedAssessment, bankVersion: ["adult-integrated-83-v2"] },
+  }, yes, yes)!.valid, false, "version acceptance must remain strict, not coerce malformed values");
+});
+
 test("insufficient, N/A and missing evidence never become zero, midpoint, or a legacy result", () => {
   const result = integratedResults(fixture([
     construct("APEST", "Teacher", null, 2),

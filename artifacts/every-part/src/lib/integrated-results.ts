@@ -54,7 +54,8 @@ export function integratedResults(profile: unknown, sectionEnabled: Gate, subsec
     return Boolean(key) && subsectionEnabled(section, key) && savedSubsections[`${section}.${key}`] !== false && snapshotSubsections[`${section}.${key}`] !== false;
   };
   const valid = envelope.version === "integrated-assessment-v1" &&
-    envelope.bankVersion === "adult-integrated-83-v1" &&
+    typeof envelope.bankVersion === "string" &&
+    ["adult-integrated-83-v1", "adult-integrated-83-v2"].includes(envelope.bankVersion) &&
     envelope.scoringVersion === "independent-weighted-mean-v1" && Array.isArray(envelope.constructs);
   const constructs: IntegratedConstruct[] = valid ? (envelope.constructs as unknown[]).flatMap(value => {
     const item = record(value);
