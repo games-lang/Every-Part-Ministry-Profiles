@@ -498,7 +498,6 @@ export default function ChurchSetup() {
   const updateChurch = useUpdateMyChurch();
   const updateBranding = useUpdateMyChurch();
   const updateDiscoverCode = useUpdateMyChurch();
-  const updateIntegratedPilot = useUpdateMyChurch();
   const addAdmin = useAddChurchAdmin();
   const removeAdmin = useRemoveChurchAdmin();
   const queryClient = useQueryClient();
@@ -509,8 +508,6 @@ export default function ChurchSetup() {
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [adminEmailDraft, setAdminEmailDraft] = useState("");
   const [discoverCodeDraft, setDiscoverCodeDraft] = useState("");
-  const [classicAdultAssessment, setClassicAdultAssessment] = useState(false);
-  const [pilotSaveError, setPilotSaveError] = useState("");
   const [spiritualGiftsExpanded, setSpiritualGiftsExpanded] = useState(false);
   const [assessmentSectionsExpanded, setAssessmentSectionsExpanded] = useState<Record<string, boolean>>({});
   const [setupTab, setSetupTab] = useState<"church" | "assessment">("church");
@@ -545,8 +542,6 @@ export default function ChurchSetup() {
   useEffect(() => {
     if (church && initializedForId.current !== church.id) {
       initializedForId.current = church.id;
-
-      setClassicAdultAssessment(church.integratedAssessmentPilotEnabled === false);
 
       const mergedSections = { ...DEFAULT_SECTIONS, ...(church.assessmentConfiguration?.sections || {}) };
       const mergedSubsections = { ...DEFAULT_SUBSECTIONS, ...(church.assessmentConfiguration?.subsections || {}) };
@@ -687,34 +682,6 @@ export default function ChurchSetup() {
         onError: () => {
           toast({
             title: "Could not save Discover code",
-            description: "Please try again.",
-            variant: "destructive",
-          });
-        },
-      },
-    );
-  };
-
-  const saveIntegratedPilot = () => {
-    setPilotSaveError("");
-    updateIntegratedPilot.mutate(
-      { data: { integratedAssessmentPilotEnabled: !classicAdultAssessment } },
-      {
-        onSuccess: (updatedChurch) => {
-          queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
-          void queryClient.invalidateQueries({ queryKey: getGetPublicChurchQueryKey(updatedChurch.slug) });
-          setClassicAdultAssessment(updatedChurch.integratedAssessmentPilotEnabled === false);
-          toast({
-            title: "Adult assessment setting saved",
-            description: updatedChurch.integratedAssessmentPilotEnabled === false
-              ? "New adult assessments use the classic format. Existing integrated drafts can still resume and finish."
-              : "New adult assessments use the integrated format. Existing drafts can still resume and finish.",
-          });
-        },
-        onError: () => {
-          setPilotSaveError("The adult assessment setting was not saved. Your selection is still shown; retry to apply it.");
-          toast({
-            title: "Could not save adult assessment setting",
             description: "Please try again.",
             variant: "destructive",
           });
@@ -895,7 +862,7 @@ export default function ChurchSetup() {
   const assessmentEstimate = estimateAssessmentTime(
     assessmentConfiguration,
     form.watch("enabledSpiritualGifts"),
-    classicAdultAssessment ? "classic" : "integrated",
+    "integrated",
   );
   const enabledSectionCount = Object.values(assessmentConfiguration.sections).filter(Boolean).length;
   const enabledGiftCount = form.watch("enabledSpiritualGifts").length;
@@ -1496,42 +1463,6 @@ export default function ChurchSetup() {
               </CardContent>
             </Card>
           )}
-
-          <Card id="integrated-pilot-editor" className="church-setup-section-card border-border/60 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-xl font-serif">Adult assessment format</CardTitle>
-              <CardDescription>
-                The integrated reflection is the default for adults. You can choose the classic adult assessment for new starts. Youth pathways are unchanged.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-primary/20 bg-primary/5 p-4">
-                <div className="space-y-1">
-                  <Label htmlFor="adult-integrated-pilot" className="text-sm font-medium">Use the classic adult assessment instead</Label>
-                  <p className="text-xs text-muted-foreground">Only new starts use this setting. Changing formats never changes an existing integrated draft’s questions or prevents completion.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Switch
-                    id="adult-integrated-pilot"
-                    checked={classicAdultAssessment}
-                    onCheckedChange={setClassicAdultAssessment}
-                    disabled={updateIntegratedPilot.isPending}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={saveIntegratedPilot}
-                    disabled={updateIntegratedPilot.isPending || classicAdultAssessment === (church?.integratedAssessmentPilotEnabled === false)}
-                  >
-                    {updateIntegratedPilot.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Save assessment setting
-                  </Button>
-                </div>
-              </div>
-              {pilotSaveError && <p role="alert" className="text-sm text-destructive">{pilotSaveError}</p>}
-            </CardContent>
-          </Card>
 
           <Card id="adult-assessment-editor" className="church-setup-section-card border-border/60 shadow-sm">
             <CardHeader>

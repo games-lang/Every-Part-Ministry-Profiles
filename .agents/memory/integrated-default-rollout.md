@@ -3,8 +3,8 @@ name: Integrated adult assessment default rollout
 description: Why the pre-launch pilot flag needs a one-time transition rather than only changing a UI fallback.
 ---
 
-The previous stored `false` value was also the automatic default, so it could not distinguish a deliberate choice of classic from a church that never touched the setting. For this pre-launch switch, existing church flags were moved to integrated while `false` remains the explicit opt-out going forward.
+New adult starts must now use integrated, regardless of the stored pilot flag. The user asked to hide classic, not delete it: retain classic banks, flow and scoring for later re-exposure, along with original-format in-flight assessments and historical results.
 
-**Why:** A UI-only default change leaves all old churches on classic, because the database populated the old default as a real `false`. There is no reliable way to recover prior intentions from that flag alone.
+**Why:** The user chose integrated as the only new-start format while explicitly requiring stored flags and saved data to remain unchanged. The previous stored `false` value once represented both an automatic default and later an explicit classic opt-out; neither should gate new integrated starts now.
 
-**How to apply:** If modifying the adult format toggle again, distinguish new explicit classic selections from the pre-launch false/default population; do not repeat a bulk rewrite of false values after churches can opt out. Draft snapshots and saved results must not be rewritten when the church default changes.
+**How to apply:** Remove all participant classic-selection and fallback paths, not just the setup toggle. Check the server's start gate too. Never bulk-rewrite stored flags or draft/result snapshots. Preserve the original flow of an already-running assessment; only fresh starts use integrated.

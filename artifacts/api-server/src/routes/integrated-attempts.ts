@@ -43,7 +43,7 @@ router.post("/churches/:churchId/integrated-attempts", async (req, res) => {
       // Serialize starts for a source and church, including across API processes.
       await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${sourceHash}))`);
       const [church] = await tx.select().from(churchesTable).where(eq(churchesTable.id, churchId)).for("update").limit(1);
-      if (!church || church.integratedAssessmentPilotEnabled === false) throw new IntegratedAttemptError(404, "The integrated adult assessment is not available for new assessments at this church.");
+      if (!church) throw new IntegratedAttemptError(404, "The integrated adult assessment is not available for new assessments at this church.");
       const [sourceUsage] = await tx.select({ total: count() }).from(integratedAttemptsTable).where(and(eq(integratedAttemptsTable.sourceHash, sourceHash), gt(integratedAttemptsTable.createdAt, new Date(Date.now() - 3600_000))));
       const [churchUsage] = await tx.select({ total: count() }).from(integratedAttemptsTable).where(and(eq(integratedAttemptsTable.churchId, churchId), eq(integratedAttemptsTable.status, "draft"), gt(integratedAttemptsTable.expiresAt, new Date())));
       // Church participants often share a public network (or a deployment proxy).

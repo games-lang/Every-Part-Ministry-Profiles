@@ -1609,7 +1609,7 @@ export default function Assessment() {
     },
   });
   const [started, setStarted] = useState(false);
-  const [draftDialog, setDraftDialog] = useState<"fresh" | "classic" | null>(null);
+  const [draftDialog, setDraftDialog] = useState<"fresh" | null>(null);
   const [checkingFormat, setCheckingFormat] = useState(false);
   const [formatError, setFormatError] = useState("");
   const [stepIndex, setStepIndex] = useState(0);
@@ -1627,7 +1627,6 @@ export default function Assessment() {
   const submissionStarted = useRef(false);
   const initializedGiftConfig = useRef<string | null>(null);
   const form = useForm<Values>({ defaultValues });
-  const [legacyChosen, setLegacyChosen] = useState(false);
   const [flowAtStart, setFlowAtStart] = useState<"integrated" | "classic" | null>(null);
   const prestartRestoredFor = useRef<number | null>(null);
   const [adultConfirmed, setAdultConfirmed] = useState(false);
@@ -1739,9 +1738,10 @@ export default function Assessment() {
       !(isMarried && gift === "Celibacy"),
   );
 
+  // New starts are integrated regardless of the stored pilot flag. An adult
+  // assessment already running in classic keeps its original flow.
   const integratedPilotEnabled = !!integratedAttempt || integrated.hasDraft ||
-    (started && flowAtStart === "integrated") ||
-    (started && flowAtStart === "classic" ? false : !legacyChosen && church?.integratedAssessmentPilotEnabled !== false);
+    !(started && flowAtStart === "classic");
   const assessmentEstimate = configuration && enabledGifts
     ? estimateAssessmentTime(
         configuration,
@@ -1805,7 +1805,7 @@ export default function Assessment() {
       try { localStorage.removeItem(prestartKey); } catch { /* Private browsing may deny storage. */ }
     }
   };
-  const discardDraft = async (chooseClassic = false): Promise<boolean> => {
+  const discardDraft = async (): Promise<boolean> => {
     setCheckingFormat(true);
     setFormatError("");
     try {
@@ -1818,15 +1818,12 @@ export default function Assessment() {
       setProfilePhotoPath(null);
       setIntegratedRound(0);
       setStepIndex(0);
-      setLegacyChosen(chooseClassic);
-      setFlowAtStart(chooseClassic ? "classic" : null);
-      setStarted(chooseClassic);
-      if (!chooseClassic) {
-        // The old draft kept its frozen format; a new start must use the
-        // church's setting as saved now, not the setting cached for that draft.
-        const fresh = await refetchChurch();
-        if (!fresh.data || fresh.isError) setFormatError("Unable to check the current assessment format.");
-      }
+      setFlowAtStart(null);
+      setStarted(false);
+      // Preserve the existing discard/refresh boundary, including fresh
+      // assessment content settings, without changing any stored format flag.
+      const fresh = await refetchChurch();
+      if (!fresh.data || fresh.isError) setFormatError("Unable to check the current assessment format.");
       return true;
     } catch {
       setFormatError("Unable to check the current assessment format.");
@@ -2832,8 +2829,7 @@ export default function Assessment() {
                       setFormatError("Unable to check the current assessment format.");
                       return;
                     }
-                    setLegacyChosen(false);
-                    setFlowAtStart(fresh.data.integratedAssessmentPilotEnabled === false ? "classic" : "integrated");
+                    setFlowAtStart("integrated");
                   } catch {
                     setFormatError("Unable to check the current assessment format.");
                     return;
@@ -2851,24 +2847,18 @@ export default function Assessment() {
             {integrated.hasDraft && !integratedAttempt && <Button className="w-full whitespace-normal sm:w-auto" variant="outline" onClick={() => void integrated.load()}>Retry loading draft</Button>}
             {integrated.hasDraft && <div className="flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
               <Button className="whitespace-normal" variant="outline" disabled={integratedSaving || integrated.discarding} onClick={() => setDraftDialog("fresh")}>Discard draft and start fresh</Button>
-              <Button className="whitespace-normal" variant="ghost" disabled={integratedSaving || integrated.discarding} onClick={() => setDraftDialog("classic")}>Use standard assessment instead</Button>
             </div>}
-            {!integrated.hasDraft && church.integratedAssessmentPilotEnabled !== false && <Button className="w-full whitespace-normal sm:w-auto" variant="ghost" onClick={() => {
-              setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0); setStarted(true);
-            }}>Use standard assessment instead</Button>}
             <AssessmentConfirmDialog
               open={draftDialog !== null}
               onOpenChange={(open) => { if (!open) setDraftDialog(null); }}
-              title={draftDialog === "classic" ? "Use the standard assessment instead?" : "Discard your saved draft?"}
-              description={draftDialog === "classic"
-                ? "Discard this saved draft and use the standard adult assessment instead? Your draft answers will not transfer."
-                : "Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted."}
-              confirmLabel={draftDialog === "classic" ? "Discard and use standard" : "Discard draft and start fresh"}
+              title="Discard your saved draft?"
+              description="Discard this device’s saved draft and unsaved answers? This cannot be undone. The old draft will not be submitted."
+              confirmLabel="Discard draft and start fresh"
               pending={integrated.discarding || checkingFormat}
               error={integrated.error || undefined}
               onConfirm={() => {
                 if (draftDialog === null) return;
-                void discardDraft(draftDialog === "classic").then(discarded => {
+                void discardDraft().then(discarded => {
                   if (discarded) setDraftDialog(null);
                 });
               }}
@@ -3248,9 +3238,6 @@ export default function Assessment() {
                           >
                             {integrated.starting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Start Reflection"}
                           </Button>
-                          {!integrated.hasDraft && <Button type="button" variant="ghost" disabled={integrated.starting} onClick={() => {
-                            clearPrestart(); setLegacyChosen(true); setFlowAtStart("classic"); setStepIndex(0);
-                          }}>Use the standard adult assessment instead</Button>}
                         </div>
                       ) : (
                         <div className="space-y-8">

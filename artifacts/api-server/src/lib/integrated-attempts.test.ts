@@ -103,7 +103,11 @@ test("adult pilot draft and final-submit contract, tenant isolation, atomicity a
       integratedAssessmentPilotEnabled: false, assessmentConfiguration: defaultAssessmentConfiguration(),
       ministryCustomization: { ...defaultMinistryCustomization(), spiritualGiftsLabel: "New future wording" },
     }).where(eq(churchesTable.id, church.id));
-    assert.equal((await call(attemptRouter, "post", startPath, { body: startBody })).statusCode, 404);
+    const freshStart = await call(attemptRouter, "post", startPath, { body: startBody });
+    assert.equal(freshStart.statusCode, 201, "stored classic flags no longer block new integrated starts");
+    assert.equal(freshStart.body.bankVersion, start.body.bankVersion);
+    const [unchangedChurch] = await db.select().from(churchesTable).where(eq(churchesTable.id, church.id));
+    assert.equal(unchangedChurch.integratedAssessmentPilotEnabled, false, "starting integrated must not rewrite the stored flag");
     const resumed = await call(attemptRouter, "get", draftPath, { params: { attemptId }, token });
     assert.equal(resumed.statusCode, 200);
     assert.equal(resumed.body.token, undefined);
