@@ -1817,6 +1817,7 @@ export default function Assessment() {
       form.reset(defaultValues);
       setProfilePhotoPath(null);
       setIntegratedRound(0);
+      setIntegratedQuestionIndex(0);
       setStepIndex(0);
       setFlowAtStart(null);
       setStarted(false);
