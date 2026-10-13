@@ -9,6 +9,8 @@
 - [Church team assignments](church-team-assignments.md) — profiles have one pastor-led current team; scheduling is a separate pastor-managed activity with tenant integrity.
 - [Youth profile safety](youth-profile-safety.md) — minor pathways require server-enforced age routing, guardian consent, private leader access, and strict separation from adult AI/team flows.
 - [Development database migration workflow](db-migration-workflow.md) — use tracked SQL migrations; Drizzle push can block on named-schema prompts without a TTY.
+- [Database concurrency tests](database-concurrency-tests.md) — use independent bounded connections; same-client promises serialize and do not test real cross-worker limits.
+- [Security header compatibility](security-header-compatibility.md) — protect frontend HTML separately from API; current production needs scoped Replit, eval, worker, and style exceptions.
 - [Church tradition customization](church-tradition-customization.md) — tradition supplies optional wording defaults; church choices remain authoritative and are snapshotted per profile.
 - [Clerk signed-in route behavior](clerk-signed-in-route-behavior.md) — never render Clerk SignIn while a session is active; show an in-app continuation instead of triggering an automatic redirect.
 - [Clerk query cache hydration](clerk-query-cache-hydration.md) — initial signed-out-to-signed-in hydration must not clear active protected queries; clear only on sign-out or user switching.

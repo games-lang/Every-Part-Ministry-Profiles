@@ -98,6 +98,14 @@ export function clerkProxyMiddleware(): RequestHandler {
       // assets) and body-less responses stream through without buffering.
       proxyRes: (proxyRes, req, res) => {
         const headers = { ...proxyRes.headers };
+        // writeHead must not overwrite the application's security headers.
+        for (const name of [
+          "Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options",
+          "Referrer-Policy", "Permissions-Policy",
+        ]) {
+          const value = res.getHeader(name);
+          if (value !== undefined) headers[name.toLowerCase()] = String(value);
+        }
         // Transfer-Encoding/Connection are hop-by-hop (RFC 7230 §6.1).
         delete headers['transfer-encoding'];
         delete headers['connection'];

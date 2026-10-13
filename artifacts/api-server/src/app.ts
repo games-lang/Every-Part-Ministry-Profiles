@@ -5,6 +5,7 @@ import { clerkMiddleware } from "@clerk/express";
 import { publishableKeyFromHost } from "@clerk/shared/keys";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import securityHeaders from "../../../config/security-headers.json";
 import {
   CLERK_PROXY_PATH,
   clerkProxyMiddleware,
@@ -26,17 +27,12 @@ function corsOrigin(origin: string | undefined, cb: (err: Error | null, allow?: 
 }
 
 const app: Express = express();
-  app.use((req, res, next) => {
-      const path = req.path || "";
-      if (
-            path === "/sign-in" || path.startsWith("/sign-in/") ||
-            path.startsWith("/profile") ||
-            path === "/discover" || path.startsWith("/discover/")
-          ) {
-            res.setHeader("Content-Security-Policy", "frame-ancestors 'none'");
-            res.setHeader("X-Frame-Options", "DENY");
-      }
-      next();
+app.set("trust proxy", 1);
+app.use((_req, res, next) => {
+  for (const [name, value] of Object.entries(securityHeaders)) {
+    res.setHeader(name, value);
+  }
+  next();
   });
 
   

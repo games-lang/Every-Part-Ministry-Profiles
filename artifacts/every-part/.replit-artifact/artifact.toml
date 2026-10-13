@@ -16,12 +16,7 @@ run = "pnpm --filter @workspace/every-part run dev"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/every-part", "run", "build" ]
-serve = "static"
-publicDir = "artifacts/every-part/dist/public"
-
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
+run = ["node", "artifacts/every-part/serve.mjs"]
 
 [services.env]
 PORT = "25186"
