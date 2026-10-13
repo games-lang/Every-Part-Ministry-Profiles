@@ -20,6 +20,7 @@ import { personalitySummarySentence } from "@/lib/personality-prose";
 import { CoordinatorAsk } from "@/components/coordinator-ask";
 import { toast } from "@/hooks/use-toast";
 import { ProfileSchedule } from "@/components/profile-schedule";
+import { ProfileTeams } from "@/components/profile-teams";
 import { ProfileHelper } from "@/components/profile-helper";
 import { ProfileAvatar } from "@/components/profile-photo-uploader";
 import { ChurchProfileBranding } from "@/components/church-profile-branding";
@@ -571,6 +572,8 @@ export default function ProfileDetail() {
         {basic?.phone && <a className="flex items-center gap-2 rounded-sm hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`tel:${basic.phone}`} aria-label={`Call ${profile.memberName}`}><Phone className="h-4 w-4"/>{basic.phone}</a>}
      </div>
    </header>
+
+   {!isPrinting && profile.profileType === "adult" && <ProfileTeams teamId={profile.teamId} />}
 
    {profile.profileType === 'discover' ? (
      <DiscoverProfileView profile={profile} />

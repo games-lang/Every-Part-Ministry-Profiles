@@ -6,6 +6,7 @@ import {
 } from "./assessment-configuration.ts";
 import { SUPPORTED_SPIRITUAL_GIFT_NAMES } from "./spiritual-gifts.ts";
 import { adultProfilesOnly } from "./youth-profiles.ts";
+import { focusSignalScore, signalTeamTemplate } from "./team-suggestion-templates.ts";
 
 const ADVISORY =
   "These are starting points for pastoral discernment, not placement decisions. Review the full profiles and talk with people before creating a team or inviting anyone to serve.";
@@ -215,7 +216,7 @@ function toSafeProfile(profile: MinistryProfile): SafeProfile {
   };
 }
 
-function buildSignals(profiles: SafeProfile[]): Signal[] {
+function buildSignals(profiles: SafeProfile[], focus?: string): Signal[] {
   const byKey = new Map<string, Signal>();
   for (const profile of profiles) {
     for (const signal of profile.signals) {
@@ -230,13 +231,13 @@ function buildSignals(profiles: SafeProfile[]): Signal[] {
       byKey.set(signal.key, current);
     }
   }
-  return [...byKey.values()]
+  return prioritizeByFocus([...byKey.values()]
     .filter((signal) => signal.profileIds.length > 0)
     .sort(
       (a, b) =>
         b.profileIds.length - a.profileIds.length ||
         a.label.localeCompare(b.label),
-    )
+    ), focus)
     .slice(0, MAX_SIGNALS);
 }
 
@@ -261,6 +262,7 @@ function parseAiResponse(value: unknown, validKeys: Set<string>): AiSuggestion[]
 
 async function suggestWithOpenAi(
   signals: Signal[],
+  preferredSignalKeys: string[] = [],
 ): Promise<AiSuggestion[]> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey || !signals.length) return [];
@@ -312,11 +314,12 @@ async function suggestWithOpenAi(
           {
             role: "system",
             content:
-              "Group canonical church ministry signals into up to four practical team themes. Return only supplied signal keys. Never create names, descriptions, reasons, or new labels. Do not infer protected traits, spiritual maturity, divine calling, willingness, availability, or certainty.",
+              "Group canonical church ministry signals into up to four practical team themes. Prioritize preferredSignalKeys when supplied. Return only supplied signal keys. Never create names, descriptions, reasons, or new labels. Do not infer protected traits, spiritual maturity, divine calling, willingness, availability, or certainty.",
           },
           {
             role: "user",
             content: JSON.stringify({
+              preferredSignalKeys,
               availableSignals: signals.map(({ key, label, profileIds }) => ({
                 key,
                 label,
@@ -341,42 +344,34 @@ async function suggestWithOpenAi(
 }
 
 function fallbackSuggestions(signals: Signal[]): AiSuggestion[] {
-  return signals.slice(0, MAX_SUGGESTIONS).map((signal) => ({
+  const seenThemes = new Set<string>();
+  return signals.filter((signal) => {
+    const name = signalTeamTemplate(signal.label).name;
+    if (seenThemes.has(name)) return false;
+    seenThemes.add(name);
+    return true;
+  }).slice(0, MAX_SUGGESTIONS).map((signal) => ({
     signalKeys: [signal.key],
   }));
 }
 
-function signalText(signals: Signal[]): { name: string; purpose: string } {
-  const labels = signals.map((signal) => signal.label).slice(0, 2);
-  const joined = labels.join(" & ");
+function signalText(signals: Signal[], focus?: string): { name: string; purpose: string } {
+  const templates = [...new Map(signals.map((signal) => {
+    const template = signalTeamTemplate(signal.label);
+    return [template.name, template] as const;
+  })).values()].slice(0, 2);
+  const requestedFocus = cleanText(focus, 100);
   return {
-    name: `${joined} Team`.slice(0, 120),
-    purpose: `A team that could explore serving around ${labels
-      .map((label) => label.toLowerCase())
-      .join(" and ")} and the people connected to it.`.slice(0, 320),
+    name: `${templates.map((template) => template.name.replace(/ Team$/, "")).join(" & ")} Team`.slice(0, 120),
+    purpose: `${templates[0]?.purpose ?? ""}${requestedFocus ? ` Discuss how this could support your focus: “${requestedFocus}”.` : ""}`.slice(0, 320),
   };
 }
 
-function focusTerms(focus: string | undefined): Set<string> {
-  return new Set(
-    cleanText(focus, 240)
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, " ")
-      .split(/\s+/)
-      .filter((term) => term.length > 2),
-  );
-}
-
 function prioritizeByFocus(signals: Signal[], focus: string | undefined): Signal[] {
-  const requested = focusTerms(focus);
-  if (!requested.size) return signals;
+  const requested = cleanText(focus, 240);
+  if (!requested) return signals;
   return [...signals].sort((a, b) => {
-    const score = (signal: Signal) =>
-      signal.label
-        .toLowerCase()
-        .split(/[^a-z0-9]+/)
-        .filter((term) => requested.has(term)).length;
-    return score(b) - score(a);
+    return focusSignalScore(b.label, requested) - focusSignalScore(a.label, requested);
   });
 }
 
@@ -389,6 +384,7 @@ function materializeSuggestions(
   signals: Signal[],
   profiles: SafeProfile[],
   existingTeamNames: string[] = [],
+  focus?: string,
 ): TeamSuggestionResult["suggestions"] {
   const signalByKey = new Map(signals.map((signal) => [signal.key, signal]));
   const profilesById = new Map(profiles.map((profile) => [profile.id, profile]));
@@ -419,7 +415,7 @@ function materializeSuggestions(
           isAssigned: profile.teamId !== null,
         };
       });
-    const text = signalText(selectedSignals);
+    const text = signalText(selectedSignals, focus);
     return {
       id: `suggestion-${index + 1}`,
       name: text.name,
@@ -427,7 +423,10 @@ function materializeSuggestions(
       supportingSignals: selectedSignals.map((signal) => `${signal.label} (${signal.profileIds.length})`),
       candidates,
     };
-  }).filter((suggestion) => !existing.has(normalizedTeamName(suggestion.name)));
+  }).filter((suggestion, index, all) =>
+    !existing.has(normalizedTeamName(suggestion.name)) &&
+    all.findIndex((other) => normalizedTeamName(other.name) === normalizedTeamName(suggestion.name)) === index
+  );
 }
 
 export async function generateTeamSuggestions(
@@ -436,7 +435,7 @@ export async function generateTeamSuggestions(
   existingTeamNames: string[] = [],
 ): Promise<TeamSuggestionResult> {
   const safeProfiles = adultProfilesOnly(profiles).map(toSafeProfile);
-  const signals = prioritizeByFocus(buildSignals(safeProfiles), criteria.focus);
+  const signals = buildSignals(safeProfiles, criteria.focus);
   if (!safeProfiles.length) {
     return {
       suggestions: [],
@@ -454,20 +453,37 @@ export async function generateTeamSuggestions(
     };
   }
   const aiSignals = signals.filter((signal) => signal.profileIds.length >= 2);
-  const aiSuggestions = await suggestWithOpenAi(aiSignals);
-  const suggestions = aiSuggestions.length ? aiSuggestions : fallbackSuggestions(signals);
+  const focusedSignals = signals.filter((signal) => focusSignalScore(signal.label, cleanText(criteria.focus, 240)) > 0);
+  const preferredSignalKeys = aiSignals.filter((signal) => focusedSignals.includes(signal)).map((signal) => signal.key);
+  const aiSuggestions = await suggestWithOpenAi(aiSignals, preferredSignalKeys);
+  let suggestions = aiSuggestions.length ? aiSuggestions : fallbackSuggestions(signals);
+  if (aiSuggestions.length && focusedSignals.length) {
+    // Ensure the requested local focus still has an effect if the model ignores
+    // canonical preferences. Do not broaden evidence or invent candidate IDs.
+    const key = focusedSignals[0].key;
+    const focused = suggestions.filter((suggestion) => suggestion.signalKeys.includes(key));
+    suggestions = [
+      ...(focused.length ? focused : [{ signalKeys: [key] }]),
+      ...suggestions.filter((suggestion) => !suggestion.signalKeys.includes(key)),
+    ].slice(0, MAX_SUGGESTIONS);
+  }
   return {
     suggestions: materializeSuggestions(
       suggestions,
       signals,
       safeProfiles,
       existingTeamNames,
+      criteria.focus,
     ),
-    summary: aiSuggestions.length
+    summary: (criteria.focus?.trim()
+      ? focusedSignals.length
+        ? "Your focus prioritized related profile signals. "
+        : "No shared signals directly matched your focus; these ideas explore other reflected strengths. "
+      : "") + (aiSuggestions.length
       ? "AI grouped shared ministry signals into possible team themes. The supporting reasons below are calculated from the submitted profiles."
       : process.env.OPENAI_API_KEY
         ? "AI was temporarily unavailable, so these starter ideas use the most common shared ministry signals."
-        : "AI assistance is not currently available, so these starter ideas use the most common shared ministry signals.",
+        : "AI assistance is not currently available, so these starter ideas use shared ministry signals."),
     advisory: ADVISORY,
     usedAi: aiSuggestions.length > 0,
   };

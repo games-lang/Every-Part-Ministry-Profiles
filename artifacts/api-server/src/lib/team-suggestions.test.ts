@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { MinistryProfile } from "@workspace/db";
-import { teamSuggestionInternals } from "./team-suggestions.ts";
+import { generateTeamSuggestions, teamSuggestionInternals } from "./team-suggestions.ts";
 
 function profile(overrides: Partial<MinistryProfile> = {}): MinistryProfile {
   return {
@@ -149,6 +149,68 @@ test("hostile model prose is ignored because only known signal keys are accepted
 
   assert.deepEqual(parsed, [{ signalKeys: ["interest:hospitality"] }]);
   assert.doesNotMatch(JSON.stringify(parsed), /Ignore safeguards|hostile model text/);
+});
+
+test("local focus synonyms prioritize welcoming, family and prayer signals without fabricating evidence", () => {
+  const signals = [
+    { key: "ministry-tendency:caring", label: "Caring for people over time", profileIds: [1, 2] },
+    { key: "interest:hospitality", label: "Hospitality", profileIds: [1] },
+    { key: "passion:families", label: "Families", profileIds: [2] },
+    { key: "gift:intercession", label: "Intercession", profileIds: [3] },
+  ];
+  for (const [focus, expected] of [
+    ["welcoming newcomers", "interest:hospitality"],
+    ["serving parents", "passion:families"],
+    ["prayer", "gift:intercession"],
+  ]) {
+    const ranked = teamSuggestionInternals.prioritizeByFocus(signals, focus);
+    assert.equal(ranked[0].key, expected);
+    assert.deepEqual(new Set(ranked.map((signal) => signal.key)), new Set(signals.map((signal) => signal.key)));
+  }
+  assert.deepEqual(signals.map((signal) => signal.key), ["ministry-tendency:caring", "interest:hospitality", "passion:families", "gift:intercession"]);
+});
+
+test("focus is applied before the eighteen-signal limit so less-common reflected needs remain reachable", () => {
+  const safe = teamSuggestionInternals.toSafeProfile(profile());
+  safe.signals = [
+    ...Array.from({ length: 22 }, (_, index) => ({ key: `signal:${index}`, label: `Shared theme ${index}` })),
+    { key: "interest:prayer", label: "Prayer" },
+  ];
+  const signals = teamSuggestionInternals.buildSignals([safe], "prayer");
+  assert.equal(signals.length, 18);
+  assert.equal(signals[0].key, "interest:prayer");
+});
+
+test("fallback templates use natural titles, concrete purposes and local focus context", () => {
+  const safe = teamSuggestionInternals.toSafeProfile(profile());
+  const signals = teamSuggestionInternals.buildSignals([safe]);
+  const care = signals.find((signal) => signal.label === "Caring for people over time")!;
+  const [suggestion] = teamSuggestionInternals.materializeSuggestions(
+    [{ signalKeys: [care.key] }], signals, [safe], [], "supporting people after a loss",
+  );
+  assert.equal(suggestion.name, "Pastoral Care Team");
+  assert.match(suggestion.purpose, /visits, listening conversations, practical care/);
+  assert.match(suggestion.purpose, /supporting people after a loss/);
+  assert.ok(suggestion.purpose.length <= 320);
+  assert.deepEqual(suggestion.candidates[0].reasons, ["Reflected Caring for people over time."]);
+  assert.deepEqual(teamSuggestionInternals.materializeSuggestions(
+    [{ signalKeys: [care.key] }], signals, [safe], ["  pastoral care team  "],
+  ), []);
+});
+
+test("focus affects generated fallback ideas while names stay unique and candidates stay evidence-based", async (t) => {
+  // No external calls, even if a provider is configured in this environment.
+  t.mock.method(globalThis, "fetch", async () => { throw new Error("Provider unavailable in test"); });
+  const profiles = [profile(), profile({ id: 2, firstName: "Jordan" })];
+  const result = await generateTeamSuggestions(profiles, { focus: "welcoming newcomers" });
+  assert.equal(result.usedAi, false);
+  assert.equal(result.suggestions[0].name, "Hospitality Team");
+  assert.match(result.suggestions[0].purpose, /welcoming newcomers/);
+  assert.match(result.summary, /focus prioritized related profile signals/);
+  assert.equal(new Set(result.suggestions.map((suggestion) => suggestion.name)).size, result.suggestions.length);
+  assert.ok(result.suggestions.every((suggestion) => suggestion.candidates.every((candidate) => [1, 2].includes(candidate.id))));
+  const unmatched = await generateTeamSuggestions(profiles, { focus: "an unsupported unique request" });
+  assert.match(unmatched.summary, /No shared signals directly matched/);
 });
 
 test("team suggestions fail closed for unsupported integrated bank, scoring and envelope versions", () => {

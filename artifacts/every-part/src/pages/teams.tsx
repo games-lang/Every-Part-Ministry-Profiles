@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getGetDashboardSummaryQueryKey,
+  getGetProfileQueryKey,
   getListProfilesQueryKey,
   getListTeamsQueryKey,
   type MinistryTeam,
@@ -139,7 +140,7 @@ function TeamEditor({
           <DialogTitle>{team ? "Edit team" : "Create a team"}</DialogTitle>
           <DialogDescription>
             {editor?.mode === "create" && editor.initial
-              ? "Review this AI-generated starting point before creating the team."
+              ? "Review this suggested starting point before creating the team."
               : "Give pastors a clear place to organize people serving together."}
           </DialogDescription>
         </DialogHeader>
@@ -336,7 +337,7 @@ function TeamSuggestions({
             className="mt-2 bg-background/80"
           />
           <p className="mt-2 text-xs text-muted-foreground">
-            This guides the brainstorm; it does not change which profiles the church can review.
+            Prioritizes related profile signals when available, with or without AI. Your focus text is not sent to AI.
           </p>
         </div>
 
@@ -434,6 +435,7 @@ function TeamMemberPicker({
           await Promise.all([
             queryClient.invalidateQueries({ queryKey: getListTeamsQueryKey() }),
             queryClient.invalidateQueries({ queryKey: getListProfilesQueryKey() }),
+            queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey(selectedProfile.id) }),
             queryClient.invalidateQueries({
               queryKey: getGetDashboardSummaryQueryKey(),
             }),
@@ -571,6 +573,7 @@ function TeamCard({
   return (
     <>
       <Card
+        id={`team-${team.id}`}
         className={`border-border/60 shadow-sm ${
           team.isArchived ? "bg-muted/30" : ""
         }`}
@@ -681,6 +684,19 @@ export default function Teams() {
   const activeTeams = teams?.filter((team) => !team.isArchived) ?? [];
   const archivedTeams = teams?.filter((team) => team.isArchived) ?? [];
   const teamNames = new Map(teams?.map((team) => [team.id, team.name]) ?? []);
+
+  useEffect(() => {
+    if (isLoading || !teams) return;
+    const scrollToTeam = () => {
+      const id = window.location.hash.slice(1);
+      if (/^team-\d+$/.test(id)) {
+        document.getElementById(id)?.scrollIntoView({ block: "start" });
+      }
+    };
+    scrollToTeam();
+    window.addEventListener("hashchange", scrollToTeam);
+    return () => window.removeEventListener("hashchange", scrollToTeam);
+  }, [isLoading, teams]);
 
   return (
     <div className="container mx-auto max-w-6xl space-y-8 px-4 py-8">

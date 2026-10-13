@@ -120,8 +120,7 @@ export function PartFinderAssistant() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          className="h-13 rounded-full border border-primary-foreground/15 px-5 shadow-xl shadow-primary/20 transition hover:-translate-y-0.5"
-          style={{ position: "fixed", bottom: "1.25rem", right: "1.25rem", zIndex: 1000 }}
+          className="h-10 shrink-0 rounded-xl px-3 text-sm"
           aria-label="Open PartFinder"
           data-testid="button-open-partfinder"
         >
