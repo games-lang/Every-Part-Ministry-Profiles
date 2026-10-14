@@ -7,7 +7,7 @@ import {
 import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { churchesTable, db } from "@workspace/db";
-import { requireUserId } from "../lib/auth";
+import { requireChurchLeader, requireUserId } from "../lib/auth";
 import { getOrCreateChurch } from "../lib/churches";
 import { ObjectStorageService } from "../lib/objectStorage";
 
@@ -26,6 +26,7 @@ router.post("/storage/uploads/request-url", async (req, res): Promise<void> => {
 
   try {
     const church = await getOrCreateChurch(userId);
+    if (!await requireChurchLeader(userId, church.id, res)) return;
     const uploadURL = await storage.getChurchLogoUploadURL(church.id);
     res.json(
       RequestUploadUrlResponse.parse({

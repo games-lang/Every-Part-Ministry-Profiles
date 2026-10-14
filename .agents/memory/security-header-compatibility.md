@@ -20,3 +20,9 @@ Production-browser checks found existing Replit-injected scripts at i.replit.com
 **Why:** Blocking these produced CSP violations on the existing production landing page. The precise source of eval was not isolated; do not assume it is Clerk.
 
 **How to apply:** Tighten these exceptions only after tracing their dependencies and verifying public and auth pages in a browser. Test pending policies with browser-local response interception on the real production origin when production Clerk cannot initialize on an unregistered staging host; do not publish just to test.
+
+Development Clerk domains do not cover the frontend API origin used by a live key.
+
+**Why:** Promoting the app to a live Clerk key exposed a missing custom production frontend API origin and broke sign-in despite earlier development-key checks.
+
+**How to apply:** Verify the actual live-key frontend API origin in script and connection allowlists, plus Clerk image/frame origins when needed. Preserve development entries; passing a development sign-in screen is not proof of production CSP compatibility.

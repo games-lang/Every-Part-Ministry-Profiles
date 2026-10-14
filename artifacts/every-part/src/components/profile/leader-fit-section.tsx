@@ -77,7 +77,7 @@ export function LeaderFitSection({ ministryFit }: { ministryFit: MinistryFit }) 
   return (
     <div className="space-y-7 rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-sm">
       <div>
-        <h3 className="text-lg font-serif font-medium mb-2">Ministry Fit</h3>
+        <h3 className="text-lg font-serif font-medium mb-2">Formation Fit</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
           These are reasons to begin a prayerful conversation, not assignments,
           declarations of calling, or judgments about readiness.

@@ -118,6 +118,7 @@ export class ObjectStorageService {
     const size = Number(metadata.size || 0);
     const contentType = String(metadata.contentType || "");
     if (
+      !Number.isSafeInteger(size) ||
       size < 1 ||
       size > 5 * 1024 * 1024 ||
       !["image/png", "image/jpeg", "image/webp"].includes(contentType)
@@ -165,6 +166,7 @@ export class ObjectStorageService {
     const size = Number(metadata.size || 0);
     const contentType = String(metadata.contentType || "");
     if (
+      !Number.isSafeInteger(size) ||
       size < 1 ||
       size > 5 * 1024 * 1024 ||
       !["image/png", "image/jpeg", "image/webp"].includes(contentType)

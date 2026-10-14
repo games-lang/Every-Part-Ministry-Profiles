@@ -262,7 +262,7 @@ export function LeaderMinistryProfile({
                 <h3 className="text-lg font-serif font-medium mb-3">Capacity & Availability</h3>
                 <p className="text-foreground/90 leading-relaxed mb-6">{participantSynthesis.season}</p>
                 <div className="rounded-xl bg-muted/40 p-4 text-sm text-muted-foreground border border-border/50 italic">
-                  Note: A healthy ministry fit considers not only what they could do, but what they can faithfully and sustainably carry in their current season.
+                  Note: A healthy formation fit considers not only what they could do, but what they can faithfully and sustainably carry in their current season.
                 </div>
               </div>
             )}

@@ -65,3 +65,18 @@ test("CSP pins framing to self and prohibits inline scripts while allowing obser
   assert.match(policy, /worker-src 'self' blob:/);
   assert.match(policy, /style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com/);
 });
+
+test("production Clerk is allowed alongside development Clerk without widening other origins", () => {
+  const directives = new Map(securityHeaders["Content-Security-Policy"]
+    .split("; ").map((directive) => {
+      const [name, ...sources] = directive.split(" ");
+      return [name, sources];
+    }));
+  for (const name of ["script-src", "connect-src", "frame-src", "img-src"]) {
+    assert.ok(directives.get(name).includes("https://clerk.everypart.church"), name);
+  }
+  for (const name of ["script-src", "connect-src"]) {
+    assert.ok(directives.get(name).includes("https://*.clerk.accounts.dev"), name);
+  }
+  assert.deepEqual(directives.get("frame-ancestors"), ["'self'"]);
+});

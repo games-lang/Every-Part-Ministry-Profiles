@@ -48,7 +48,7 @@ const HELP_OPTIONS: Array<{
   value: PartFinderHelpPreference;
   label: string;
 }> = [
-  { value: "find-volunteers", label: "Find volunteers" },
+  { value: "find-volunteers", label: "Help people find their part" },
   { value: "delegate", label: "Delegate more effectively" },
   { value: "develop-leaders", label: "Develop leaders" },
   { value: "notice-overlooked-people", label: "Notice people I may be overlooking" },

@@ -85,7 +85,7 @@ function FeedbackCard({
                 {statusOptions.find((option) => option.value === item.status)?.label}
               </span>
               <span className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-                {item.category.replaceAll("-", " ")}
+                {item.category === "ministry-matching" ? "Formation fit" : item.category.replaceAll("-", " ")}
               </span>
             </div>
             <CardDescription className="mt-1">
@@ -141,7 +141,7 @@ function FeedbackCard({
               className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm capitalize text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
             >
               {["bug", "confusing-ux", "feature-request", "ministry-profile", "part-finder", "church-setup", "member-experience", "pastor-dashboard", "ministry-matching", "privacy-permissions", "other"].map((value) => (
-                <option key={value} value={value}>{value.replaceAll("-", " ")}</option>
+                <option key={value} value={value}>{value === "ministry-matching" ? "Formation fit" : value.replaceAll("-", " ")}</option>
               ))}
             </select>
           </div>

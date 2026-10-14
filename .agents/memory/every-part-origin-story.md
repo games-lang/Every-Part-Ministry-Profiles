@@ -12,3 +12,9 @@ Position Every Part as a way to see people across language, culture, age, and ba
 **Why:** The user supplied this as the canonical story and asked that it shape the overall feel and explanation of the product.
 
 **How to apply:** Use this framing in public marketing, onboarding, and product explanations. Emphasize that every person has a meaningful part in the Body of Christ while preserving prayer, relationship, discernment, and healthy timing.
+
+User-facing terminology uses “Formation Fit” and “Help people find their part,” not “Ministry Fit,” “Find volunteers,” or “ministry matching” category labels.
+
+**Why:** The user requested these terms across app, public, SEO, and email copy, as a wording-only change.
+
+**How to apply:** Keep new copy consistent with these terms. Editorial label changes alone must not rename stored values, schemas, or routes.

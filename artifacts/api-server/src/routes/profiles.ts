@@ -803,6 +803,7 @@ router.get("/profiles/:id/photo", async (req, res): Promise<void> => {
     return;
   }
   const church = await getOrCreateChurch(userId);
+  if (!await requireChurchLeader(userId, church.id, res)) return;
   const [profile] = await db
     .select({
       profilePhotoPath: ministryProfilesTable.profilePhotoPath,
@@ -826,7 +827,7 @@ router.get("/profiles/:id/photo", async (req, res): Promise<void> => {
     const response = await storage.downloadObject(file, contentType);
     res.status(response.status);
     response.headers.forEach((value, key) => res.setHeader(key, value));
-    res.setHeader("Cache-Control", "private, max-age=300");
+    res.setHeader("Cache-Control", "private, no-store");
     if (!response.body) {
       res.end();
       return;
