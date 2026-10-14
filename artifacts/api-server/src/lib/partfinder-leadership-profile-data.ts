@@ -79,6 +79,38 @@ type LeadershipProfileRecord = {
   updatedAt: Date;
 };
 
+type PersonalizationProfile = LeadershipProfileData & {
+  configured: boolean;
+  personalizationEnabled: boolean;
+};
+
+// Saved text stays local for matching; never include these terms in AI requests.
+export function leadershipMatchingPreferences(profile: PersonalizationProfile) {
+  if (!profile.configured || !profile.personalizationEnabled) return {};
+  return {
+    preferenceTerms: [profile.delegationNeeds, profile.strengthenAreas, ...profile.priorities]
+      .map((value) => value.trim()).filter(Boolean),
+    leadershipFocus: [profile.strengthenAreas, ...profile.priorities]
+      .map((value) => value.trim()).filter(Boolean).join(" "),
+  };
+}
+
+export function leadershipGuidanceInstructions(profile: PersonalizationProfile) {
+  const enabled = profile.configured && profile.personalizationEnabled;
+  return {
+    styleInstruction: enabled && profile.coachingStyle === "direct"
+      ? "Be clear and concise. Respectfully name overlooked possibilities without shaming or overstating certainty."
+      : enabled && profile.coachingStyle === "encouraging"
+        ? "Lead with encouragement and support while still offering practical next steps."
+        : "Balance encouragement with respectful questions and overlooked possibilities.",
+    lengthInstruction: enabled && profile.responseLength === "brief"
+      ? "Keep the answer brief, usually under 120 words."
+      : enabled && profile.responseLength === "detailed"
+        ? "Give a structured, detailed answer when useful, usually under 500 words."
+        : "Give a focused answer with enough context to act, usually under 250 words.",
+  };
+}
+
 export function leadershipProfileResponse(
   record: LeadershipProfileRecord | undefined,
 ) {

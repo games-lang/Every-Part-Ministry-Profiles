@@ -6,6 +6,7 @@ import {
   hasDuplicateAvailabilityChoices,
   profilesForChurch,
 } from "./volunteer-matching.ts";
+import { leadershipMatchingPreferences, leadershipProfileResponse } from "./partfinder-leadership-profile-data.ts";
 
 function profile(
   overrides: Partial<MinistryProfile> = {},
@@ -79,6 +80,70 @@ const criteria = {
   ministryArea: "Children",
   availability: ["Sunday morning"],
 };
+
+test("leadership preferences lift evidence-backed ties only and stay out of AI payloads", async () => {
+  const originalFetch = globalThis.fetch;
+  const payloads: string[] = [];
+  globalThis.fetch = async (_input, init) => {
+    payloads.push(String(init?.body));
+    return new Response("{}", { status: 503 });
+  };
+  try {
+    await withOpenAiKey(async () => {
+      const people = [
+        profile({ id: 1, interests: ["Teaching"], passions: [], uniqueSkills: null, previousMinistryExperience: null, naturalStrengths: null }),
+        profile({ id: 2, interests: ["Teaching"], passions: ["Hospitality"], uniqueSkills: null, previousMinistryExperience: null, naturalStrengths: null }),
+        profile({ id: 3, interests: ["Hospitality"], passions: [], availability: [], uniqueSkills: null, previousMinistryExperience: null, naturalStrengths: null }),
+        profile({ id: 4, interests: ["Teaching"], passions: ["Teaching"], uniqueSkills: null, previousMinistryExperience: null, naturalStrengths: null }),
+      ];
+      const need = { roleDescription: "Teaching" };
+      const baseline = await findVolunteerMatches(people, need, 10);
+      const saved = leadershipProfileResponse({
+        profile: { delegationNeeds: "welcome newcomers SECRET_LOCAL_ONLY" },
+        personalizationEnabled: true, updatedAt: new Date(),
+      });
+      const active = await findVolunteerMatches(people, { ...need, ...leadershipMatchingPreferences(saved) }, 10);
+      assert.deepEqual(active.candidates.map(({ id }) => id), [4, 2, 1]);
+      assert.ok(!active.candidates.some(({ id }) => id === 3));
+      const boosted = active.candidates.find(({ id }) => id === 2)!;
+      assert.equal(boosted.score, baseline.candidates.find(({ id }) => id === 2)!.score + 3);
+      assert.ok(boosted.reasons.includes("Connects with an area you marked in My Leadership."));
+      for (const off of [{ ...saved, configured: false }, { ...saved, personalizationEnabled: false }]) {
+        assert.deepEqual(await findVolunteerMatches(people, { ...need, ...leadershipMatchingPreferences(off) }, 10), baseline);
+      }
+      assert.deepEqual(await findVolunteerMatches(people, { ...need, preferenceTerms: ["astronomy"] }, 10), baseline);
+      for (const payload of payloads) {
+        assert.doesNotMatch(payload, /SECRET_LOCAL_ONLY|preferenceTerms|welcome newcomers/);
+      }
+    });
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("AI ranking is personalized locally; unmatched preferences preserve its exact output", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (_input, init) => {
+    assert.doesNotMatch(String(init?.body), /LOCAL_ONLY|preferenceTerms|welcome guests/);
+    return Response.json({ choices: [{ message: {
+      content: JSON.stringify({ rankings: [{ id: 1, score: 50 }, { id: 2, score: 50 }] }),
+    } }] });
+  };
+  try {
+    await withOpenAiKey(async () => {
+      const people = [
+        profile({ id: 1, passions: [] }),
+        profile({ id: 2, passions: ["Hospitality"] }),
+      ];
+      const baseline = await findVolunteerMatches(people, { roleDescription: "Teaching" }, 10);
+      assert.equal(baseline.usedAi, true);
+      const active = await findVolunteerMatches(people, { roleDescription: "Teaching", preferenceTerms: ["welcome guests LOCAL_ONLY"] }, 10);
+      assert.equal(active.usedAi, true);
+      assert.deepEqual(active.candidates.map(({ id }) => id), [2, 1]);
+      assert.equal(active.candidates[0].score, baseline.candidates[1].score + 3);
+      const unmatched = await findVolunteerMatches(people, { roleDescription: "Teaching", preferenceTerms: ["LOCAL_ONLY astronomy"] }, 10);
+      assert.deepEqual(unmatched, baseline);
+    });
+  } finally { globalThis.fetch = originalFetch; }
+});
 
 function withOpenAiKey<T>(callback: () => Promise<T>): Promise<T> {
   const previous = process.env.OPENAI_API_KEY;

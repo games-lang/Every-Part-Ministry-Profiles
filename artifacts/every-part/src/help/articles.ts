@@ -39,6 +39,7 @@ export const HELP_SECTIONS = [
     ["follow-up-conversation", "Have the follow-up conversation"],
   ]),
   section("Managing people and teams", [
+    ["my-leadership-profile", "My Leadership and PartFinder"],
     ["people-directory", "The People directory"],
     ["teams-and-removal", "Teams and removing a person"],
   ]),

@@ -20,6 +20,8 @@ import { getOrCreateChurch } from "../lib/churches";
 import { teamResponse } from "../lib/teams";
 import { generateTeamSuggestions } from "../lib/team-suggestions";
 import { adultProfilesOnly } from "../lib/youth-profiles";
+import { getLeadershipProfile, leadershipProfileResponse } from "../lib/partfinder-leadership-profile";
+import { leadershipMatchingPreferences } from "../lib/partfinder-leadership-profile-data";
 
 const router: IRouter = Router();
 const TEAM_NAME_UNIQUE_CONSTRAINT = "ministry_teams_church_name_unique";
@@ -167,9 +169,10 @@ router.post("/teams/suggestions", async (req, res): Promise<void> => {
     .select({ name: ministryTeamsTable.name })
     .from(ministryTeamsTable)
     .where(eq(ministryTeamsTable.churchId, church.id));
+  const leadershipProfile = leadershipProfileResponse(await getLeadershipProfile(church.id, userId));
   const result = await generateTeamSuggestions(
     adultProfilesOnly(profiles),
-    parsed.data,
+    { ...parsed.data, leadershipFocus: leadershipMatchingPreferences(leadershipProfile).leadershipFocus },
     existingTeams.map((team) => team.name),
   );
   req.log.info(

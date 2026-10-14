@@ -83,7 +83,7 @@ export type TeamSuggestionResult = {
   usedAi: boolean;
 };
 
-type TeamSuggestionCriteria = { focus?: string };
+export type TeamSuggestionCriteria = { focus?: string; leadershipFocus?: string };
 
 function objectRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -216,7 +216,7 @@ function toSafeProfile(profile: MinistryProfile): SafeProfile {
   };
 }
 
-function buildSignals(profiles: SafeProfile[], focus?: string): Signal[] {
+function buildSignals(profiles: SafeProfile[], focus?: string, leadershipFocus?: string): Signal[] {
   const byKey = new Map<string, Signal>();
   for (const profile of profiles) {
     for (const signal of profile.signals) {
@@ -237,7 +237,7 @@ function buildSignals(profiles: SafeProfile[], focus?: string): Signal[] {
       (a, b) =>
         b.profileIds.length - a.profileIds.length ||
         a.label.localeCompare(b.label),
-    ), focus)
+    ), focus, leadershipFocus)
     .slice(0, MAX_SIGNALS);
 }
 
@@ -367,11 +367,13 @@ function signalText(signals: Signal[], focus?: string): { name: string; purpose:
   };
 }
 
-function prioritizeByFocus(signals: Signal[], focus: string | undefined): Signal[] {
+function prioritizeByFocus(signals: Signal[], focus: string | undefined, leadershipFocus?: string): Signal[] {
   const requested = cleanText(focus, 240);
-  if (!requested) return signals;
+  const leadership = leadershipFocus?.trim() ?? "";
+  if (!requested && !leadership) return signals;
   return [...signals].sort((a, b) => {
-    return focusSignalScore(b.label, requested) - focusSignalScore(a.label, requested);
+    return focusSignalScore(b.label, requested) - focusSignalScore(a.label, requested) ||
+      focusSignalScore(b.label, leadership) - focusSignalScore(a.label, leadership);
   });
 }
 
@@ -435,7 +437,7 @@ export async function generateTeamSuggestions(
   existingTeamNames: string[] = [],
 ): Promise<TeamSuggestionResult> {
   const safeProfiles = adultProfilesOnly(profiles).map(toSafeProfile);
-  const signals = buildSignals(safeProfiles, criteria.focus);
+  const signals = buildSignals(safeProfiles, criteria.focus, criteria.leadershipFocus);
   if (!safeProfiles.length) {
     return {
       suggestions: [],
@@ -454,7 +456,8 @@ export async function generateTeamSuggestions(
   }
   const aiSignals = signals.filter((signal) => signal.profileIds.length >= 2);
   const focusedSignals = signals.filter((signal) => focusSignalScore(signal.label, cleanText(criteria.focus, 240)) > 0);
-  const preferredSignalKeys = aiSignals.filter((signal) => focusedSignals.includes(signal)).map((signal) => signal.key);
+  const leadershipSignals = signals.filter((signal) => focusSignalScore(signal.label, criteria.leadershipFocus ?? "") > 0);
+  const preferredSignalKeys = aiSignals.filter((signal) => focusedSignals.includes(signal) || leadershipSignals.includes(signal)).map((signal) => signal.key);
   const aiSuggestions = await suggestWithOpenAi(aiSignals, preferredSignalKeys);
   let suggestions = aiSuggestions.length ? aiSuggestions : fallbackSuggestions(signals);
   if (aiSuggestions.length && focusedSignals.length) {
@@ -467,14 +470,23 @@ export async function generateTeamSuggestions(
       ...suggestions.filter((suggestion) => !suggestion.signalKeys.includes(key)),
     ].slice(0, MAX_SUGGESTIONS);
   }
+  if (criteria.leadershipFocus?.trim() && leadershipSignals.length) {
+    // Guarantee both local preferences are represented, explicit request first.
+    // Only verified canonical keys reach AI; saved leadership text stays local.
+    const keys = [...new Set([focusedSignals[0]?.key, leadershipSignals[0].key].filter((key): key is string => Boolean(key)))];
+    const preferred = keys.map((key) =>
+      suggestions.find((suggestion) => suggestion.signalKeys.includes(key)) ?? { signalKeys: [key] }
+    );
+    suggestions = [...new Set([...preferred, ...suggestions])].slice(0, MAX_SUGGESTIONS);
+  }
+  const materialized = materializeSuggestions(
+    suggestions, signals, safeProfiles, existingTeamNames, criteria.focus,
+  );
+  const leadershipApplied = leadershipSignals.some((signal) =>
+    materialized.some((suggestion) => suggestion.supportingSignals.includes(`${signal.label} (${signal.profileIds.length})`))
+  );
   return {
-    suggestions: materializeSuggestions(
-      suggestions,
-      signals,
-      safeProfiles,
-      existingTeamNames,
-      criteria.focus,
-    ),
+    suggestions: materialized,
     summary: (criteria.focus?.trim()
       ? focusedSignals.length
         ? "Your focus prioritized related profile signals. "
@@ -483,7 +495,12 @@ export async function generateTeamSuggestions(
       ? "AI grouped shared ministry signals into possible team themes. The supporting reasons below are calculated from the submitted profiles."
       : process.env.OPENAI_API_KEY
         ? "AI was temporarily unavailable, so these starter ideas use the most common shared ministry signals."
-        : "AI assistance is not currently available, so these starter ideas use shared ministry signals."),
+        : "AI assistance is not currently available, so these starter ideas use shared ministry signals.") +
+      (criteria.leadershipFocus?.trim()
+        ? leadershipApplied
+          ? " Shaped by your My Leadership priorities."
+          : " No shared signals directly matched your My Leadership priorities."
+        : ""),
     advisory: ADVISORY,
     usedAi: aiSuggestions.length > 0,
   };

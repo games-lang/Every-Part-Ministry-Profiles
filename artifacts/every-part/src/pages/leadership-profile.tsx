@@ -495,6 +495,10 @@ export default function LeadershipProfilePage() {
                 <Sparkles className="mt-1 h-4 w-4 shrink-0" />
                 Church data and leadership preferences remain separate.
               </p>
+              <p className="flex gap-2 sm:col-span-2">
+                <ShieldCheck className="mt-1 h-4 w-4 shrink-0" />
+                What you write here is shared with the AI assistant to personalize guidance — please avoid sensitive personal details about other people.
+              </p>
             </div>
           </div>
         </CardContent>

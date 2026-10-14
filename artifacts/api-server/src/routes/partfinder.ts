@@ -20,6 +20,8 @@ import {
   getLeadershipProfile,
   leadershipProfileResponse,
 } from "../lib/partfinder-leadership-profile";
+import { leadershipGuidanceInstructions, leadershipMatchingPreferences } from "../lib/partfinder-leadership-profile-data";
+import { LEADERSHIP_MATCH_REASON } from "../lib/volunteer-matching";
 import {
   AiCreditsExceededError,
   reserveAiCredits,
@@ -163,18 +165,7 @@ async function guidanceAnswer(
           helpPreferences: leadershipProfile.helpPreferences,
         }
       : null;
-  const styleInstruction =
-    leadershipProfile.coachingStyle === "direct"
-      ? "Be clear and concise. Respectfully name overlooked possibilities without shaming or overstating certainty."
-      : leadershipProfile.coachingStyle === "encouraging"
-        ? "Lead with encouragement and support while still offering practical next steps."
-        : "Balance encouragement with respectful questions and overlooked possibilities.";
-  const lengthInstruction =
-    leadershipProfile.responseLength === "brief"
-      ? "Keep the answer brief, usually under 120 words."
-      : leadershipProfile.responseLength === "detailed"
-        ? "Give a structured, detailed answer when useful, usually under 500 words."
-        : "Give a focused answer with enough context to act, usually under 250 words.";
+  const { styleInstruction, lengthInstruction } = leadershipGuidanceInstructions(leadershipProfile);
   const completion = await openai.chat.completions.create({
     model: "gpt-5.6-luna",
     max_completion_tokens: 1800,
@@ -289,7 +280,10 @@ router.post("/assistant/partfinder", async (req, res): Promise<void> => {
   if (FIND_PEOPLE_PATTERN.test(question)) {
     const matches = await findVolunteerMatches(
       profiles,
-      criteriaFor(question, profiles),
+      {
+        ...criteriaFor(question, profiles),
+        preferenceTerms: leadershipMatchingPreferences(leadershipProfile).preferenceTerms,
+      },
       church.id,
     );
     const recommendations = matches.candidates.slice(0, 6).map((candidate) => ({
@@ -310,7 +304,7 @@ router.post("/assistant/partfinder", async (req, res): Promise<void> => {
       ChatWithPartFinderResponse.parse({
         mode: "find-people",
         answer: recommendations.length
-          ? `${matches.summary} I found ${recommendations.length} profile${recommendations.length === 1 ? "" : "s"} with relevant, verified signals worth exploring together.`
+          ? `${matches.summary} I found ${recommendations.length} profile${recommendations.length === 1 ? "" : "s"} with relevant, verified signals worth exploring together.${recommendations.some((candidate) => candidate.reasons.includes(LEADERSHIP_MATCH_REASON)) ? " Your leadership profile helped prioritize these results." : ""}`
           : matches.summary,
         recommendations,
         advisory,

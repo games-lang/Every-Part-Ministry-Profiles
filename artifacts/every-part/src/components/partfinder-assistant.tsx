@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import {
   useChatWithPartFinder,
+  useGetPartFinderLeadershipProfile,
+  getGetPartFinderLeadershipProfileQueryKey,
   type PartFinderRecommendation,
 } from "@workspace/api-client-react";
 import { Link } from "wouter";
@@ -65,6 +67,9 @@ export function PartFinderAssistant() {
   const [error, setError] = useState<string | null>(null);
   const conversationRef = useRef<HTMLDivElement>(null);
   const partFinder = useChatWithPartFinder();
+  const { data: leadershipProfile } = useGetPartFinderLeadershipProfile({
+    query: { queryKey: getGetPartFinderLeadershipProfileQueryKey(), enabled: open, staleTime: 0 },
+  });
 
   useEffect(() => {
     const node = conversationRef.current;
@@ -144,6 +149,15 @@ export function PartFinderAssistant() {
             </span>
             <div>
               <DialogTitle className="font-serif text-xl">PartFinder</DialogTitle>
+              {leadershipProfile?.configured && (
+                <Link href="/leadership-profile" onClick={() => setOpen(false)}
+                  className="block text-xs text-muted-foreground hover:text-primary hover:underline"
+                  data-testid="link-partfinder-personalization">
+                  {leadershipProfile.personalizationEnabled
+                    ? "Personalized by your My Leadership profile"
+                    : "Personalization paused"}
+                </Link>
+              )}
               <DialogDescription className="mt-1 text-primary-foreground/75">
                 Pastoral formation support for your church
               </DialogDescription>

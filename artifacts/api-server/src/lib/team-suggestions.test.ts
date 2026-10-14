@@ -2,6 +2,73 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type { MinistryProfile } from "@workspace/db";
 import { generateTeamSuggestions, teamSuggestionInternals } from "./team-suggestions.ts";
+import { leadershipMatchingPreferences, leadershipProfileResponse } from "./partfinder-leadership-profile-data.ts";
+
+test("leadership focus works locally, explicit focus wins, and paused is unchanged", async () => {
+  const originalFetch = globalThis.fetch;
+  const payloads: string[] = [];
+  globalThis.fetch = async (_input, init) => {
+    payloads.push(String(init?.body));
+    return new Response("{}", { status: 503 });
+  };
+  try {
+    const people = [profile(), profile({ id: 2 })];
+    const saved = leadershipProfileResponse({
+      profile: { strengthenAreas: "pastoral support SECRET_TEAM_LOCAL", priorities: ["care"] },
+      personalizationEnabled: true, updatedAt: new Date(),
+    });
+    const prefs = leadershipMatchingPreferences(saved);
+    const baseline = await generateTeamSuggestions(people, {});
+    const active = await generateTeamSuggestions(people, { leadershipFocus: prefs.leadershipFocus });
+    assert.equal(active.suggestions[0].name, "Pastoral Care Team");
+    assert.match(active.summary, /Shaped by your My Leadership priorities\./);
+    const explicit = await generateTeamSuggestions(people, { focus: "welcome guests", leadershipFocus: prefs.leadershipFocus });
+    assert.equal(explicit.suggestions[0].name, "Hospitality Team");
+    assert.ok(explicit.suggestions.some((suggestion) => suggestion.name === "Pastoral Care Team"));
+    for (const off of [{ ...saved, configured: false }, { ...saved, personalizationEnabled: false }]) {
+      assert.deepEqual(await generateTeamSuggestions(people, { leadershipFocus: leadershipMatchingPreferences(off).leadershipFocus }), baseline);
+    }
+    const noMatch = await generateTeamSuggestions(people, { focus: "astronomy", leadershipFocus: "astronomy" });
+    assert.doesNotMatch(noMatch.summary, /Shaped by/);
+    assert.match(noMatch.summary, /No shared signals directly matched your focus/);
+    assert.match(noMatch.summary, /No shared signals directly matched your My Leadership priorities/);
+    for (const payload of payloads) assert.doesNotMatch(payload, /SECRET_TEAM_LOCAL|pastoral support|leadershipFocus/);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("explicit and leadership focus stay effective when AI ignores canonical preferences", async () => {
+  const originalFetch = globalThis.fetch;
+  const originalKey = process.env.OPENAI_API_KEY;
+  process.env.OPENAI_API_KEY = "test-key";
+  let called = false;
+  globalThis.fetch = async (_input, init) => {
+    called = true;
+    const payload = String(init?.body);
+    assert.doesNotMatch(payload, /PRIVATE_LEADERSHIP|pastoral support|welcome guests|leadershipFocus/);
+    assert.match(payload, /preferredSignalKeys/);
+    return Response.json({ choices: [{ message: { content: JSON.stringify({
+      suggestions: [{ signalKeys: ["strength:organizing"] }],
+    }) } }] });
+  };
+  try {
+    const result = await generateTeamSuggestions([profile(), profile({ id: 2 })], {
+      focus: "welcome guests",
+      leadershipFocus: "pastoral support PRIVATE_LEADERSHIP",
+    });
+    assert.equal(called, true);
+    assert.equal(result.usedAi, true);
+    assert.equal(result.suggestions[0].name, "Hospitality Team");
+    assert.equal(result.suggestions[1].name, "Pastoral Care Team");
+    assert.match(result.summary, /Shaped by your My Leadership priorities\./);
+    assert.ok(result.suggestions.every((suggestion) =>
+      suggestion.candidates.every((candidate) => [1, 2].includes(candidate.id))
+    ));
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = originalKey;
+  }
+});
 
 function profile(overrides: Partial<MinistryProfile> = {}): MinistryProfile {
   return {

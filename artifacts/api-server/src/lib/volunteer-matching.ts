@@ -1,6 +1,9 @@
 import type { MinistryProfile } from "@workspace/db";
 import { integratedSignals } from "./integrated-assessment.ts";
 import { adultProfilesOnly } from "./youth-profiles.ts";
+import { focusSignalScore } from "./team-suggestion-templates.ts";
+
+export const LEADERSHIP_MATCH_REASON = "Connects with an area you marked in My Leadership.";
 
 const ADVISORY =
   "These suggestions are conversation starters, not placement decisions. Review each full profile, pray, and talk with the person before inviting them to serve.";
@@ -27,6 +30,8 @@ export type MatchCriteria = {
   ministryArea?: string;
   preferredExperience?: string;
   availability?: string[];
+  /** Local-only preferences. Explicitly excluded from the AI request. */
+  preferenceTerms?: string[];
 };
 
 type MatchLevel = "Strong fit" | "Potential fit" | "Worth exploring";
@@ -349,7 +354,12 @@ async function rankWithOpenAi(
           {
             role: "user",
             content: JSON.stringify({
-              ministryNeed: criteria,
+              ministryNeed: {
+                roleDescription: criteria.roleDescription,
+                ministryArea: criteria.ministryArea,
+                preferredExperience: criteria.preferredExperience,
+                availability: criteria.availability,
+              },
               candidates: candidates.map((candidate) => ({
                 id: candidate.id,
                 interests: candidate.interests,
@@ -420,6 +430,26 @@ export async function findVolunteerMatches(
   }
 
   const byId = new Map(deterministic.map((candidate) => [candidate.id, candidate]));
+  // Apply only after real evidence established eligibility. Three points cannot
+  // overturn an evidence gap greater than three, and never changes AI input.
+  function personalize(candidates: VolunteerMatchResult["candidates"]) {
+    const focus = criteria.preferenceTerms?.join(" ").trim();
+    if (!focus) return candidates;
+    let boosted = false;
+    const personalized = candidates.map((candidate) => {
+      const evidence = byId.get(candidate.id)!;
+      const labels = [
+        ...evidence.interests, ...evidence.passions, ...evidence.ministryTendencies,
+        ...evidence.spiritualGifts, ...evidence.strengths,
+      ];
+      if (!labels.some((label) => focusSignalScore(label, focus) > 0)) return candidate;
+      boosted = true;
+      return publicCandidate(evidence, candidate.score + 3, [
+        ...candidate.reasons.slice(0, 3), LEADERSHIP_MATCH_REASON,
+      ]);
+    });
+    return boosted ? personalized.sort((a, b) => b.score - a.score) : candidates;
+  }
   const ai = await rankWithOpenAi(deterministic, criteria);
   if (ai) {
     const candidates = ai.rankings
@@ -436,7 +466,7 @@ export async function findVolunteerMatches(
       .filter((candidate): candidate is NonNullable<typeof candidate> => Boolean(candidate));
     if (candidates.length) {
       return {
-        candidates,
+        candidates: personalize(candidates),
         summary:
           "AI compared the role with structured profile signals, while every reason shown below comes from verified profile evidence.",
         advisory: ADVISORY,
@@ -446,9 +476,9 @@ export async function findVolunteerMatches(
   }
 
   return {
-    candidates: deterministic
-      .slice(0, MAX_RESULTS)
-      .map((candidate) => publicCandidate(candidate, candidate.score, candidate.reasons)),
+    candidates: personalize(deterministic
+      .map((candidate) => publicCandidate(candidate, candidate.score, candidate.reasons)))
+      .slice(0, MAX_RESULTS),
     summary:
       "AI matching was temporarily unavailable, so these suggestions use profile overlap and availability.",
     advisory: ADVISORY,
