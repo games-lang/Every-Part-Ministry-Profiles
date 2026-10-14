@@ -43,6 +43,14 @@ Church leaders can create an account, complete church setup, share a unique Mini
 
 _Populate as you build — explicit user instructions worth remembering across sessions._
 
+## Email
+
+- Participant completion emails use Resend and contain only a thank-you, notice that the church leader will follow up, and the private `/journey/:token` link. Never include assessment results or scoring data.
+- `RESEND_API_KEY`: add as a Replit Secret when ready. Jeremy will add this key and verify `everypart.church` in Resend separately. Until the key exists, delivery logs a skip and safely does nothing.
+- `COMPLETION_EMAIL_FROM`: sender address; defaults to `Every Part <noreply@everypart.church>`.
+- `APP_URL`: recommended canonical frontend origin for production, e.g. `https://everypart.church`; otherwise links use the request's protocol and host. Replies go to the completing church's `adminEmail`.
+- Delivery is a best-effort background task after the profile is committed. A failed or timed-out email must never make submission fail. No retry queue or new database tables are used.
+
 ## Gotchas
 
 - Run API code generation after every change to `lib/api-spec/openapi.yaml`.

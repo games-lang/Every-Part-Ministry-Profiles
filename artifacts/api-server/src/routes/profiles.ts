@@ -28,6 +28,7 @@ import {
 } from "@workspace/db";
 import { requireChurchLeader, requireUserId } from "../lib/auth";
 import { churchBranding, getOrCreateChurch } from "../lib/churches";
+import { queueProfileCompletionEmail } from "../lib/completion-email";
 import { profileListItem, profileResponse } from "../lib/profiles";
 import {
   findVolunteerMatches,
@@ -525,6 +526,7 @@ router.post("/profiles", async (req, res): Promise<void> => {
     // a false failure that encourages another submission.
     req.log.error({ profileId: created.id }, "Unable to update journey after completed profile");
   }
+  queueProfileCompletionEmail({ request: req, profile: created, church, journeyAccessToken: journey.accessToken });
   res
     .status(201)
     .json(CreateProfileResponse.parse(profileResponse(created, churchBranding(church))));

@@ -43,6 +43,7 @@ import {
 } from "../lib/profile-limits";
 import { ObjectStorageService } from "../lib/objectStorage";
 import { churchBranding } from "../lib/churches";
+import { queueProfileCompletionEmail } from "../lib/completion-email";
 
 const router: IRouter = Router();
 const storage = new ObjectStorageService();
@@ -183,7 +184,12 @@ router.post("/youth-profiles", async (req, res): Promise<void> => {
     if (respondToProfileLimit(error, res)) return;
     throw error;
   }
-  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  try {
+    await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  } catch {
+    req.log.error({ profileId: created.id }, "Unable to update journey after completed profile");
+  }
+  queueProfileCompletionEmail({ request: req, profile: created, church, journeyAccessToken: journey.accessToken });
   res.status(201).json(SubmitDiscoverProfileResponse.parse({
     resultToken: created.resultToken,
     journeyToken: journey.accessToken,
@@ -328,7 +334,12 @@ router.post("/explore-profiles", async (req, res): Promise<void> => {
     if (respondToProfileLimit(error, res)) return;
     throw error;
   }
-  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  try {
+    await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  } catch {
+    req.log.error({ profileId: created.id }, "Unable to update journey after completed profile");
+  }
+  queueProfileCompletionEmail({ request: req, profile: created, church, journeyAccessToken: journey.accessToken });
   res.status(201).json(SubmitExploreProfileResponse.parse({
     resultToken: created.resultToken,
     journeyToken: journey.accessToken,
@@ -466,7 +477,12 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
     if (respondToProfileLimit(error, res)) return;
     throw error;
   }
-  await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  try {
+    await updateJourneyAfterProfile(created.journeyId!, created.profileType, created.completedAt);
+  } catch {
+    req.log.error({ profileId: created.id }, "Unable to update journey after completed profile");
+  }
+  queueProfileCompletionEmail({ request: req, profile: created, church, journeyAccessToken: journey.accessToken });
   res.status(201).json(SubmitDevelopProfileResponse.parse({
     resultToken: created.resultToken,
     journeyToken: journey.accessToken,
