@@ -59,6 +59,10 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
     }
 
     const pathway = calculatePathway(calculatedAge);
+    if (calculatedAge < 13 && church?.under13ProfilesEnabled !== true) {
+      setError("Discover and Explore aren't available yet. Please check with your church leader about a future release.");
+      return;
+    }
 
     if (pathway === "develop" && !isLoaded) {
       setError("Checking sign-in. Please try again.");
@@ -236,8 +240,8 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
             </div>
             
             <div className="space-y-2">
-               {overrideLink("discover", "Discover (Ages 6–8)", 8)}
-               {overrideLink("explore", "Explore (Ages 9–12)", 12)}
+               {church.under13ProfilesEnabled === true && overrideLink("discover", "Discover (Ages 6–8)", 8)}
+               {church.under13ProfilesEnabled === true && overrideLink("explore", "Explore (Ages 9–12)", 12)}
                {overrideLink("develop", "Develop (Ages 13–17)", 16)}
               {overrideLink("adult", "Adult (Age 18+)", 18)}
             </div>

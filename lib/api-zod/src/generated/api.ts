@@ -823,6 +823,7 @@ export const getMyChurchResponseMinistryCustomizationMinistryInterestsLabelMax =
 
 
 export const GetMyChurchResponse = zod.object({
+  "under13ProfilesEnabled": zod.boolean().optional().describe('Server-owned launch availability for Discover and Explore.'),
   "integratedAssessmentPilotEnabled": zod.boolean().default(getMyChurchResponseIntegratedAssessmentPilotEnabledDefault),
   "id": zod.int(),
   "name": zod.string(),
@@ -1210,6 +1211,7 @@ export const updateMyChurchResponseMinistryCustomizationMinistryInterestsLabelMa
 
 
 export const UpdateMyChurchResponse = zod.object({
+  "under13ProfilesEnabled": zod.boolean().optional().describe('Server-owned launch availability for Discover and Explore.'),
   "integratedAssessmentPilotEnabled": zod.boolean().default(updateMyChurchResponseIntegratedAssessmentPilotEnabledDefault),
   "id": zod.int(),
   "name": zod.string(),
@@ -1473,6 +1475,7 @@ export const getPublicChurchResponseMinistryCustomizationMinistryInterestsLabelM
 
 
 export const GetPublicChurchResponse = zod.object({
+  "under13ProfilesEnabled": zod.boolean().optional().describe('Server-owned launch availability for Discover and Explore.'),
   "id": zod.int().optional(),
   "integratedAssessmentPilotEnabled": zod.boolean().default(getPublicChurchResponseIntegratedAssessmentPilotEnabledDefault),
   "name": zod.string(),
@@ -1779,6 +1782,7 @@ export const getDashboardSummaryResponseRecentProfilesItemAgeMax = 120;
 
 export const GetDashboardSummaryResponse = zod.object({
   "church": zod.object({
+  "under13ProfilesEnabled": zod.boolean().optional().describe('Server-owned launch availability for Discover and Explore.'),
   "integratedAssessmentPilotEnabled": zod.boolean().default(getDashboardSummaryResponseChurchIntegratedAssessmentPilotEnabledDefault),
   "id": zod.int(),
   "name": zod.string(),

@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import {
   assessmentConfiguration,
   defaultAssessmentConfiguration,
+  UNDER_13_PROFILES_ENABLED,
 } from "./assessment-configuration";
 import {
   defaultMinistryCustomization,
@@ -130,6 +131,7 @@ export function churchResponse(
     address: church.address,
     website: church.website,
     discoverHallwayCode: church.discoverHallwayCode,
+    under13ProfilesEnabled: UNDER_13_PROFILES_ENABLED,
     adminName: church.adminName,
     adminEmail: church.adminEmail,
     profileUrl: `/profile/${church.slug}`,

@@ -1,12 +1,9 @@
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import {
-  Bot,
+  Compass,
   ExternalLink,
   LoaderCircle,
-  Puzzle,
-  Search,
   Send,
-  Sparkles,
   UserRound,
 } from "lucide-react";
 import {
@@ -130,8 +127,7 @@ export function PartFinderAssistant() {
           data-testid="button-open-partfinder"
         >
           <span className="relative mr-2">
-            <Puzzle className="h-5 w-5" />
-            <Search className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-primary" />
+            <Compass className="h-5 w-5" />
           </span>
           Ask PartFinder
         </Button>
@@ -144,8 +140,7 @@ export function PartFinderAssistant() {
         <DialogHeader className="border-b border-border/70 bg-primary px-5 py-5 pr-12 text-left text-primary-foreground">
           <div className="flex items-center gap-3">
             <span className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
-              <Puzzle className="h-6 w-6" />
-              <Sparkles className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-card p-0.5 text-accent" />
+              <Compass className="h-6 w-6" />
             </span>
             <div>
               <DialogTitle className="font-serif text-xl">PartFinder</DialogTitle>
@@ -186,7 +181,7 @@ export function PartFinderAssistant() {
                     aria-hidden="true"
                   >
                     {message.role === "assistant" ? (
-                      <Bot className="h-4 w-4" />
+                      <Compass className="h-4 w-4" />
                     ) : (
                       <UserRound className="h-4 w-4" />
                     )}

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldPath } from "react-hook-form";
 import { Link } from "wouter";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
   getGetMyChurchQueryKey,
@@ -514,7 +513,6 @@ export default function ChurchSetup() {
   const [editingYouthProfile, setEditingYouthProfile] = useState<"discover" | "explore" | "develop" | null>(null);
 
   const form = useForm<ChurchFormValues>({
-    resolver: zodResolver(churchFormSchema),
     defaultValues: {
       name: "",
       adminName: "",
@@ -584,6 +582,25 @@ export default function ChurchSetup() {
   );
 
   const onSubmit = (data: ChurchFormValues) => {
+    // The installed resolver cannot translate this Zod version's errors.
+    // Convert safe-parse issues into ordinary inline errors, not a thrown error.
+    form.clearErrors();
+    const parsed = churchFormSchema.safeParse(data);
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        form.setError(issue.path.join(".") as FieldPath<ChurchFormValues>, {
+          type: "validation",
+          message: issue.message,
+        });
+      }
+      const firstField = parsed.error.issues[0]?.path.join(".") as FieldPath<ChurchFormValues> | undefined;
+      if (firstField) {
+        setSetupTab(firstField.startsWith("assessmentConfiguration") || firstField.startsWith("ministryCustomization") ? "assessment" : "church");
+        window.requestAnimationFrame(() => form.setFocus(firstField));
+      }
+      return;
+    }
+    data = parsed.data;
     // Nullify empty strings
     const payload = {
       ...data,
@@ -604,6 +621,15 @@ export default function ChurchSetup() {
       { data: payload },
       {
         onSuccess: (updatedChurch) => {
+          // Save the submitted values as the baseline without losing edits made
+          // while the request was in flight.
+          const currentValues = form.getValues();
+          form.reset(data);
+          for (const key of Object.keys(data) as Array<keyof ChurchFormValues>) {
+            if (JSON.stringify(currentValues[key]) !== JSON.stringify(data[key])) {
+              form.setValue(key, currentValues[key], { shouldDirty: true });
+            }
+          }
           toast({
             title: "Church details updated",
             description: "Your settings have been saved successfully.",
@@ -800,6 +826,13 @@ export default function ChurchSetup() {
       {
         onSuccess: (updatedChurch) => {
           queryClient.setQueryData(getGetMyChurchQueryKey(), updatedChurch);
+          for (const field of ["primaryColor", "accentColor"] as const) {
+            const current = form.getValues(field);
+            form.resetField(field, { defaultValue: updatedChurch[field] });
+            if (current !== updatedChurch[field]) {
+              form.setValue(field, current, { shouldDirty: true });
+            }
+          }
           void queryClient.invalidateQueries({
             queryKey: getGetPublicChurchQueryKey(updatedChurch.slug),
           });
@@ -993,21 +1026,21 @@ export default function ChurchSetup() {
               <TabsTrigger
                 id="setup-tab-church"
                 value="church"
-                className="church-setup-tab-trigger h-auto min-h-16 flex-col items-start gap-1 px-4 py-3 text-left sm:items-center sm:text-center"
+                className="church-setup-tab-trigger h-auto min-h-16 min-w-0 whitespace-normal flex-col items-start gap-1 px-4 py-3 text-left sm:items-center sm:text-center"
               >
                 <span>Church Setup</span>
-                <span className="church-setup-tab-subtitle text-xs font-normal text-muted-foreground">
+                <span className="church-setup-tab-subtitle min-w-0 whitespace-normal text-xs font-normal text-muted-foreground">
                   Details, access, and sharing
                 </span>
               </TabsTrigger>
               <TabsTrigger
                 id="setup-tab-assessment"
                 value="assessment"
-                className="church-setup-tab-trigger h-auto min-h-16 flex-col items-start gap-1 px-4 py-3 text-left sm:items-center sm:text-center"
+                className="church-setup-tab-trigger h-auto min-h-16 min-w-0 whitespace-normal flex-col items-start gap-1 px-4 py-3 text-left sm:items-center sm:text-center"
               >
                 <span>Assessment Setup</span>
-                <span className="church-setup-tab-subtitle text-xs font-normal text-muted-foreground">
-                  Questions and reflection
+                <span className="church-setup-tab-subtitle min-w-0 whitespace-normal text-xs font-normal text-muted-foreground">
+                  Tradition, content, and experiences
                 </span>
               </TabsTrigger>
             </TabsList>
@@ -1020,6 +1053,88 @@ export default function ChurchSetup() {
               className="space-y-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
             <div className={setupTab === "church" ? "space-y-8" : "hidden"}>
+          <Card className="border-border/60 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-xl font-serif">Basic Information</CardTitle>
+              <CardDescription>
+                This information is displayed on your public assessment landing page.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Church Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Grace City Church" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid sm:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="adminName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Administrator Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="adminEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormDescription>Where assessment notifications are sent.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="website"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address (Optional)</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
       <Card className="church-setup-link-card border-primary/20 bg-primary/5 shadow-none">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-medium text-primary">Your Assessment Link</CardTitle>
@@ -1050,6 +1165,7 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
+      {church.under13ProfilesEnabled === true && (
       <Card className="church-setup-section-card border-border/60 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-serif text-xl">
@@ -1103,6 +1219,7 @@ export default function ChurchSetup() {
           </p>
         </CardContent>
       </Card>
+      )}
 
       <Card className="church-setup-section-card border-border/60 shadow-sm">
         <CardHeader>
@@ -1187,7 +1304,6 @@ export default function ChurchSetup() {
         </CardContent>
       </Card>
 
-      <ChurchRemovalHistory />
 
       </div>
 
@@ -1401,7 +1517,7 @@ export default function ChurchSetup() {
                 ["discover", "Discover", "Ages 6–8", "Child-friendly discovery with guardian approval"],
                 ["explore", "Explore", "Ages 9–12", "Guided exploration with guardian approval"],
                 ["develop", "Develop", "Ages 13–17", "Teen reflection with guardian approval"],
-              ] as const).map(([key, name, ages, description]) => (
+              ] as const).filter(([key]) => church.under13ProfilesEnabled === true || (key !== "discover" && key !== "explore")).map(([key, name, ages, description]) => (
                 <div key={key} className="rounded-xl border border-border/60 p-4">
                   <p className="font-medium">{name}</p>
                   <p className="text-xs text-muted-foreground">{ages}</p>
@@ -1420,7 +1536,7 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
-          {editingYouthProfile && youthProfiles?.[editingYouthProfile] && (
+          {editingYouthProfile && (church.under13ProfilesEnabled === true || editingYouthProfile === "develop") && youthProfiles?.[editingYouthProfile] && (
             <Card id="youth-profile-editor" className="church-setup-section-card border-primary/30 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-xl font-serif">
@@ -2042,92 +2158,13 @@ export default function ChurchSetup() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-xl font-serif">Basic Information</CardTitle>
-              <CardDescription>
-                This information is displayed on your public assessment landing page.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Church Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Grace City Church" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid sm:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="adminName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Administrator Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="adminEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" {...field} />
-                      </FormControl>
-                      <FormDescription>Where assessment notifications are sent.</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="website"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Website (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address (Optional)</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+      <ChurchRemovalHistory />
       </div>
             </div>
           </Tabs>
-          <div className="church-setup-savebar rounded-xl border px-6 py-4">
+          {form.formState.isDirty && (
+          <div className="church-setup-savebar sticky bottom-4 z-20 rounded-xl border bg-background px-6 py-4 shadow-lg" data-testid="church-setup-unsaved-bar">
+            <p className="text-sm font-medium">You have unsaved changes</p>
             <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
               Changes apply to new member assessments. Completed profiles keep the settings and answers they were created with.
             </p>
@@ -2139,6 +2176,7 @@ export default function ChurchSetup() {
               )}
             </Button>
           </div>
+          )}
         </form>
       </Form>
     </div>

@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { UNDER_13_PROFILES_ENABLED, UNDER_13_UNAVAILABLE_MESSAGE } from "../lib/assessment-configuration";
 import { getAuth } from "@clerk/express";
 import { and, desc, eq } from "drizzle-orm";
 import {
@@ -115,6 +116,10 @@ router.post("/profiles", async (req, res): Promise<void> => {
   if (!parsed.success) {
     req.log.warn({ errors: parsed.error.message }, "Invalid Ministry Profile");
     res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  if (!UNDER_13_PROFILES_ENABLED && parsed.data.age < 13) {
+    res.status(403).json({ error: UNDER_13_UNAVAILABLE_MESSAGE });
     return;
   }
 

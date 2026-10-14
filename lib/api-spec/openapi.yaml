@@ -2157,6 +2157,9 @@ components:
       type: object
       required: [id, name, slug, profileUrl, adminName, adminEmail, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, onboardingCompletedAt, earlyAccessStatus, earlyAccessStartDate, foundingChurch, billingPlan, billingStatus, billingCurrentPeriodEnd, discoverHallwayCode]
       properties:
+        under13ProfilesEnabled:
+          type: boolean
+          description: Server-owned launch availability for Discover and Explore.
         integratedAssessmentPilotEnabled: { type: boolean, default: true }
         id: { type: integer }
         name: { type: string }
@@ -2305,6 +2308,9 @@ components:
       type: object
       required: [name, slug, profileUrl, enabledSpiritualGifts, primaryColor, accentColor, assessmentConfiguration, ministryCustomization, discoverAccessAvailable]
       properties:
+        under13ProfilesEnabled:
+          type: boolean
+          description: Server-owned launch availability for Discover and Explore.
         id: { type: integer }
         integratedAssessmentPilotEnabled: { type: boolean, default: true }
         name: { type: string }

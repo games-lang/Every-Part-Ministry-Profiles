@@ -10,6 +10,8 @@ import type { MinistryCustomization } from './ministryCustomization';
 import type { SpiritualGiftName } from './spiritualGiftName';
 
 export interface PublicChurch {
+  /** Server-owned launch availability for Discover and Explore. */
+  under13ProfilesEnabled?: boolean;
   id?: number;
   integratedAssessmentPilotEnabled?: boolean;
   name: string;

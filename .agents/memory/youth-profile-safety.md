@@ -3,11 +3,11 @@ name: Youth profile safety
 description: Durable privacy, routing, and interpretation boundaries for profiles completed by minors.
 ---
 
-Under-13 profiles are out of scope at launch.
+Under-13 profiles are out of scope at launch. Discover (6–8) and Explore (9–12) must be hidden and unavailable for new participant starts and submissions; Adult and guardian-approved Develop remain available.
 
 **Why:** The user explicitly defined the launch scope.
 
-**How to apply:** Public launch documentation must not imply under-13 profiles are available. Do not remove existing youth implementation merely to align launch copy.
+**How to apply:** Public launch documentation must not imply under-13 profiles are available. Preserve their code, configuration, data, and historical results. Use one server-owned launch decision for setup visibility, participant routing, and submission refusal, including administrator overrides.
 
 Youth profile pathways must be enforced from exact age at the server boundary, not only through frontend navigation. Any pathway override requires an authenticated administrator of the same church and must remain auditable.
 

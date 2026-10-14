@@ -33,7 +33,7 @@ import {
   slugifyChurchName,
   validateEnabledSpiritualGifts,
 } from "../lib/churches";
-import { assessmentConfiguration } from "../lib/assessment-configuration";
+import { assessmentConfiguration, UNDER_13_PROFILES_ENABLED, UNDER_13_UNAVAILABLE_MESSAGE } from "../lib/assessment-configuration";
 import { ministryCustomization } from "../lib/ministry-customization";
 import { matchesDiscoverHallwayCode } from "../lib/youth-profiles";
 import {
@@ -386,6 +386,10 @@ router.get("/churches/:slug/admin-access", async (req, res): Promise<void> => {
 });
 
 router.post("/churches/:slug/discover-access", async (req, res): Promise<void> => {
+  if (!UNDER_13_PROFILES_ENABLED) {
+    res.status(403).json({ error: UNDER_13_UNAVAILABLE_MESSAGE });
+    return;
+  }
   const params = VerifyDiscoverAccessParams.safeParse(req.params);
   if (!params.success) {
     res.status(401).json({ error: "Missing or incorrect hallway code" });
@@ -492,6 +496,7 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
     GetPublicChurchResponse.parse({
       id: church.id,
       integratedAssessmentPilotEnabled: church.integratedAssessmentPilotEnabled,
+      under13ProfilesEnabled: UNDER_13_PROFILES_ENABLED,
       name: church.name,
       slug: church.slug,
       logoUrl: church.logoUrl
@@ -500,7 +505,7 @@ router.get("/churches/:slug", async (req, res): Promise<void> => {
       primaryColor: church.primaryColor,
       accentColor: church.accentColor,
       profileUrl: `/profile/${church.slug}`,
-       discoverAccessAvailable: Boolean(church.discoverHallwayCode),
+       discoverAccessAvailable: UNDER_13_PROFILES_ENABLED && Boolean(church.discoverHallwayCode),
        enabledSpiritualGifts: enabledSpiritualGifts ?? activeSpiritualGifts(null)!,
        assessmentConfiguration: configuration,
         ministryCustomization: customization,

@@ -1,4 +1,5 @@
 import { getAuth } from "@clerk/express";
+import { UNDER_13_PROFILES_ENABLED, UNDER_13_UNAVAILABLE_MESSAGE } from "../lib/assessment-configuration";
 import { Router, type IRouter } from "express";
 import { and, eq } from "drizzle-orm";
 import {
@@ -87,6 +88,10 @@ function optionalUserId(req: Parameters<typeof getAuth>[0]): string | null {
 }
 
 router.post("/youth-profiles", async (req, res): Promise<void> => {
+  if (!UNDER_13_PROFILES_ENABLED) {
+    res.status(403).json({ error: UNDER_13_UNAVAILABLE_MESSAGE });
+    return;
+  }
   const userId = optionalUserId(req);
   if (!userId && !isDiscoverHallwayCode(req.body?.hallwayCode)) {
       res.status(401).json({ error: "Unauthorized" });
@@ -232,6 +237,10 @@ router.get("/youth-profiles/:id/result", async (req, res): Promise<void> => {
 });
 
 router.post("/explore-profiles", async (req, res): Promise<void> => {
+  if (!UNDER_13_PROFILES_ENABLED) {
+    res.status(403).json({ error: UNDER_13_UNAVAILABLE_MESSAGE });
+    return;
+  }
   const userId = optionalUserId(req);
   let authorizedHallwayChurch: typeof churchesTable.$inferSelect | undefined;
   if (!userId) {
@@ -403,6 +412,10 @@ router.post("/develop-profiles", async (req, res): Promise<void> => {
         ? parsed.error.message
         : generated.error?.message ?? "Invalid Develop profile",
     });
+    return;
+  }
+  if (!UNDER_13_PROFILES_ENABLED && parsed.data.age < 13) {
+    res.status(403).json({ error: UNDER_13_UNAVAILABLE_MESSAGE });
     return;
   }
   const [church] = await db.select().from(churchesTable)

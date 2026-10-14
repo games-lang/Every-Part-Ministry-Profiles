@@ -1,4 +1,5 @@
 import { useAuth } from "@clerk/react";
+import { Under13Unavailable } from "@/components/under13-unavailable";
 import { useLocation, Link } from "wouter";
 import { useState } from "react";
 import {
@@ -39,7 +40,11 @@ export default function DiscoverGate({
     church?.discoverAccessAvailable === true &&
     acceptedAccess?.slug === params.slug;
 
-  if (isLoaded && isSignedIn === true) {
+  if (!churchLoading && church?.under13ProfilesEnabled !== true) {
+    return <Under13Unavailable slug={params.slug} />;
+  }
+
+  if (!churchLoading && church?.under13ProfilesEnabled === true && isLoaded && isSignedIn === true) {
     return <Page params={params} />;
   }
 

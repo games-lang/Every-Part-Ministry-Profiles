@@ -878,6 +878,8 @@ export interface MinistryCustomization {
 }
 
 export interface Church {
+  /** Server-owned launch availability for Discover and Explore. */
+  under13ProfilesEnabled?: boolean;
   integratedAssessmentPilotEnabled?: boolean;
   id: number;
   name: string;
@@ -1017,6 +1019,8 @@ export interface DiscoverAccessResponse {
 }
 
 export interface PublicChurch {
+  /** Server-owned launch availability for Discover and Explore. */
+  under13ProfilesEnabled?: boolean;
   id?: number;
   integratedAssessmentPilotEnabled?: boolean;
   name: string;

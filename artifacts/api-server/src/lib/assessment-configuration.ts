@@ -1,3 +1,9 @@
+// Launch scope only: preserve all under-13 configuration, answers and results.
+// Re-enable both experiences here when they are ready for a later release.
+export const UNDER_13_PROFILES_ENABLED = false;
+export const UNDER_13_UNAVAILABLE_MESSAGE =
+  "Discover and Explore aren't available yet. Please check with your church leader about a future release.";
+
 export const ASSESSMENT_SECTION_KEYS = [
   "aboutYou",
   "apest",
