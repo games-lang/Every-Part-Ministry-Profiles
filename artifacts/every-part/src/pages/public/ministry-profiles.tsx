@@ -202,7 +202,7 @@ export default function MinistryProfiles() {
           </div>
           <Reveal className="mt-12">
             <div className="rounded-[2rem] bg-secondary px-7 py-12 text-center text-secondary-foreground sm:px-12 sm:py-14">
-              <p className="text-xs font-bold uppercase tracking-[.2em]">Begin with a conversation</p>
+              <p className="text-xs font-bold uppercase tracking-[.2em]">Help people find their part</p>
               <h2 className="mx-auto mt-4 max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-5xl">
                 Help people discover and grow into their part.
               </h2>

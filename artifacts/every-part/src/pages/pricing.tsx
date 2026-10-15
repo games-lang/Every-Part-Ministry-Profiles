@@ -54,7 +54,7 @@ const faqs = [
       "Plan management will be available after Every Part opens for sale.",
   },
   {
-    question: "How do we think about matching?",
+    question: "How do we think about finding someone's part?",
     answer:
       "Every Part is a guide for discernment, not a verdict. Search and filtering help surface places to explore; prayer, relationship, and conversation remain central to deciding what comes next.",
   },

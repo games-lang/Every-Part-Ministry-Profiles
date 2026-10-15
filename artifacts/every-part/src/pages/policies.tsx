@@ -12,7 +12,7 @@ const policyCopy = {
     eyebrow: "Every Part Privacy Policy",
     title: "Privacy, in plain language.",
     description:
-      "Every Part helps churches have better conversations about how people may serve. This first-draft policy explains what information a church may keep in Every Part and how that information is treated.",
+      "Every Part helps churches help every person find their part and keep growing into it. This first-draft policy explains what information a church may keep in Every Part and how that information is treated.",
     updated: "First draft · September 2026",
     icon: LockKeyhole,
     sections: [

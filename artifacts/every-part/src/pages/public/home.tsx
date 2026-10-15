@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <PublicLayout 
       title="Every Part | Every believer has a part"
-      description="Every Part helps churches prayerfully discover how God has shaped their people and prepare for meaningful ministry conversations."
+      description="Every Part helps every believer find their part in the body of Christ and helps pastors develop the people God has given them."
     >
       <section className="relative mx-auto max-w-7xl px-5 pb-24 pt-16 sm:px-8 sm:pb-32 sm:pt-24 lg:pb-36 lg:pt-28">
         <div className="landing-grid pointer-events-none absolute right-[-5rem] top-0 h-[33rem] w-[33rem] opacity-60" aria-hidden="true" />

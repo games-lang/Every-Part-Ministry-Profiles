@@ -85,7 +85,7 @@ export default function Partfinder() {
       <section className="px-5 py-20 sm:px-8 sm:py-28">
         <Reveal>
           <div className="mx-auto max-w-5xl rounded-[2rem] bg-secondary px-7 py-14 text-center text-secondary-foreground sm:px-14 sm:py-16">
-            <p className="text-xs font-bold uppercase tracking-[.2em]">Start with a conversation</p>
+            <p className="text-xs font-bold uppercase tracking-[.2em]">Help people find their part</p>
             <h2 className="mx-auto mt-4 max-w-3xl font-serif text-4xl font-semibold leading-[.98] tracking-[-.065em] sm:text-5xl">
               Find a thoughtful next step for your ministry.
             </h2>

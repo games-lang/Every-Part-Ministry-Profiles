@@ -146,7 +146,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
             {`${church.name} Ministry Profile`}
           </h1>
           <p className="text-muted-foreground leading-relaxed">
-            Every Part helps us have warm, careful conversations about how people may enjoy serving.
+            Every Part helps us see how God has shaped you and help you find your part in the body of Christ.
           </p>
         </div>
 
