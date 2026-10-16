@@ -59,3 +59,19 @@ test("PartFinder uses Compass at all three sizes without badge icons and retains
   assert.match(assistant, /Personalized by your My Leadership profile/);
   assert.match(assistant, /Personalization paused/);
 });
+
+test("tradition selection always marks gifts dirty while labels remain mode-specific", () => {
+  const handler = setup.split("const changeTradition =")[1].split("return (")[0];
+  assert.match(handler, /if \(customizationMode === "tradition"\) \{\s*setCustomizationLabels\(recommendedMinistryLabels\(tradition\)\);\s*\}/);
+  assert.match(handler, /\}\s*form.setValue\(\s*"enabledSpiritualGifts",\s*recommendedSpiritualGifts\(tradition, ALL_GIFT_NAMES\),\s*\{ shouldDirty: true \}/);
+  assert.doesNotMatch(handler, /mutate/);
+  const summary = setup.split('data-testid="tradition-summary"')[1].split('{churchTradition === "other"')[0];
+  assert.match(summary, /\{spiritualGiftsLabel\} · \{ministryInterestsLabel\}/);
+  assert.match(summary, /Starts without:/);
+  assert.match(summary, /Uses the full gift list — you can change this anytime in Assessment Content\./);
+  const onboarding = source("./church-onboarding.tsx");
+  assert.match(onboarding, /recommendedSpiritualGifts\(nextTradition, SPIRITUAL_GIFT_NAMES\)/);
+  assert.doesNotMatch(onboarding, /TRADITION_GIFT_EXCLUSIONS/);
+  const assessment = source("./assessment.tsx");
+  assert.match(assessment, /integratedAttempt\?\.snapshot.ministryCustomization \?\? church\?\.ministryCustomization/);
+});

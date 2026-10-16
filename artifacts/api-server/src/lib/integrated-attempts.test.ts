@@ -4,6 +4,41 @@ import { randomBytes, randomUUID } from "node:crypto";
 import type { IntegratedSnapshot } from "./integrated-assessment.ts";
 import { approvedSplits } from "./test-fixtures/integrated-editorial.ts";
 
+test("integrated public attempt snapshots retain effective labels and the church's editable gift selection", async () => {
+  const { CHURCH_TRADITIONS, MINISTRY_CUSTOMIZATION_MODES, defaultMinistryCustomization, ministryCustomization, recommendedSpiritualGifts } = await import("./ministry-customization.ts");
+  const { defaultAssessmentConfiguration } = await import("./assessment-configuration.ts");
+  const { createIntegratedSnapshot } = await import("./integrated-assessment.ts");
+  const { SUPPORTED_SPIRITUAL_GIFT_NAMES } = await import("./spiritual-gifts.ts");
+  const { publicAttempt } = await import("./integrated-attempts.ts");
+  for (const tradition of CHURCH_TRADITIONS) {
+    for (const mode of MINISTRY_CUSTOMIZATION_MODES) {
+      const customization = ministryCustomization({
+        ...defaultMinistryCustomization(), tradition, mode,
+        customTradition: tradition === "other" ? "Our tradition" : null,
+        spiritualGiftsLabel: "Our gifts", ministryInterestsLabel: "Our serving places",
+      });
+      const enabledGifts = recommendedSpiritualGifts(tradition, SUPPORTED_SPIRITUAL_GIFT_NAMES);
+      const snapshot = createIntegratedSnapshot({
+        configuration: defaultAssessmentConfiguration(), customization, enabledGifts,
+        celibacyEligible: true, optionalExperienceOptIn: true,
+      });
+      const attempt = {
+        id: randomUUID(), revision: 0, expiresAt: new Date(Date.now() + 60_000),
+        status: "draft", profileId: null, snapshot, answers: {}, formState: {},
+      } as Parameters<typeof publicAttempt>[0];
+      assert.deepEqual(publicAttempt(attempt).snapshot.ministryCustomization, customization, `${tradition}/${mode}`);
+      assert.deepEqual(snapshot.enabledSpiritualGifts, enabledGifts);
+      // Admins can restore every gift, regardless of tradition.
+      const restored = createIntegratedSnapshot({
+        configuration: defaultAssessmentConfiguration(), customization,
+        enabledGifts: [...SUPPORTED_SPIRITUAL_GIFT_NAMES],
+        celibacyEligible: true, optionalExperienceOptIn: true,
+      });
+      assert.deepEqual(restored.enabledSpiritualGifts, [...SUPPORTED_SPIRITUAL_GIFT_NAMES]);
+    }
+  }
+});
+
 // Explicit opt-in: this integration test creates and removes its own isolated
 // development tenant, never uses real participant/church records or starts HTTP.
 test("adult pilot draft and final-submit contract, tenant isolation, atomicity and retries", {

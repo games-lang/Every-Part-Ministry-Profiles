@@ -73,8 +73,12 @@ export const DEFAULT_MINISTRY_CUSTOMIZATION: MinistryCustomization = {
 const TRADITION_GIFT_EXCLUSIONS: Partial<
   Record<MinistryCustomizationTradition, string[]>
 > = {
-  // This is a starting point only. Churches can add these gifts back locally.
+  // These reflect mainstream teaching on tongues specifically, as a starting
+  // point only. Churches can add the gifts back locally at any time.
   nazarene: ["Tongues", "Interpretation of Tongues"],
+  baptist: ["Tongues", "Interpretation of Tongues"],
+  presbyterianReformed: ["Tongues", "Interpretation of Tongues"],
+  lutheran: ["Tongues", "Interpretation of Tongues"],
 };
 
 export function recommendedSpiritualGifts(

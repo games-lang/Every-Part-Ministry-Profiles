@@ -985,12 +985,12 @@ export default function ChurchSetup() {
     });
     if (customizationMode === "tradition") {
       setCustomizationLabels(recommendedMinistryLabels(tradition));
-      form.setValue(
-        "enabledSpiritualGifts",
-        recommendedSpiritualGifts(tradition, ALL_GIFT_NAMES),
-        { shouldDirty: true },
-      );
     }
+    form.setValue(
+      "enabledSpiritualGifts",
+      recommendedSpiritualGifts(tradition, ALL_GIFT_NAMES),
+      { shouldDirty: true },
+    );
   };
 
   return (
@@ -1401,6 +1401,20 @@ export default function ChurchSetup() {
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className="space-y-2 rounded-xl border bg-muted/30 p-5 text-sm" data-testid="tradition-summary">
+                <p className="font-medium">
+                  {CHURCH_TRADITIONS.find(({ value }) => value === churchTradition)?.label}
+                </p>
+                <p>
+                  Member-facing labels: {spiritualGiftsLabel} · {ministryInterestsLabel}
+                </p>
+                <p className="text-muted-foreground">
+                  {excludedSpiritualGifts(churchTradition).length
+                    ? `Starts without: ${excludedSpiritualGifts(churchTradition).join(", ")} — you can change this anytime in Assessment Content.`
+                    : "Uses the full gift list — you can change this anytime in Assessment Content."}
+                </p>
               </div>
 
               {churchTradition === "other" && (

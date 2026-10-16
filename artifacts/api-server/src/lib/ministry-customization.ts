@@ -40,6 +40,27 @@ const STANDARD_LABELS = {
   ministryInterestsLabel: "Ministry Interests",
 };
 
+const TRADITION_GIFT_EXCLUSIONS: Partial<Record<ChurchTradition, string[]>> = {
+  // These reflect mainstream teaching on tongues specifically, as a starting
+  // point only. Churches can add the gifts back locally at any time.
+  nazarene: ["Tongues", "Interpretation of Tongues"],
+  baptist: ["Tongues", "Interpretation of Tongues"],
+  presbyterianReformed: ["Tongues", "Interpretation of Tongues"],
+  lutheran: ["Tongues", "Interpretation of Tongues"],
+};
+
+export function recommendedSpiritualGifts(
+  tradition: ChurchTradition,
+  allGiftNames: readonly string[],
+) {
+  const excluded = new Set(TRADITION_GIFT_EXCLUSIONS[tradition] ?? []);
+  return allGiftNames.filter((gift) => !excluded.has(gift));
+}
+
+export function excludedSpiritualGifts(tradition: ChurchTradition) {
+  return TRADITION_GIFT_EXCLUSIONS[tradition] ?? [];
+}
+
 export function recommendedMinistryLabels(
   tradition: ChurchTradition,
 ): Pick<
