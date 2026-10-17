@@ -5,6 +5,14 @@ import { integratedResults, integratedPersonality } from "./integrated-results";
 type SectionEnabled = (section: string) => boolean;
 type SubsectionEnabled = (section: string, subsection: string) => boolean;
 
+export type MinistrySynthesisProfile = Pick<MinistryProfile,
+  "assessmentSections" | "integratedAssessment" | "assessmentConfiguration" |
+  "passions" | "interests" | "servingFrequency" | "availability" | "availabilityDetails"
+> & {
+  basicInformation: Pick<MinistryProfile["basicInformation"], "familySituation" | "transportation">;
+  churchConnection: Partial<MinistryProfile["churchConnection"]>;
+};
+
 const asRecord = (value: unknown) =>
   value && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
@@ -174,7 +182,7 @@ function combineOrientationAndTendency(
 }
 
 export function getMyMinistrySynthesis(
-  profile: MinistryProfile,
+  profile: MinistrySynthesisProfile,
   sectionEnabled: SectionEnabled,
   subsectionEnabled: SubsectionEnabled,
 ) {

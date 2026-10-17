@@ -8,6 +8,7 @@ import {
   type MinistryJourneyEntry,
   type MinistryProfile,
 } from "@workspace/db";
+import { assessmentConfiguration } from "./assessment-configuration";
 
 export const JOURNEY_ENTRY_TYPES = ["check_in", "milestone"] as const;
 export type JourneyEntryType = (typeof JOURNEY_ENTRY_TYPES)[number];
@@ -379,6 +380,45 @@ export function publicJourneyResponse(
     profiles: profiles.map(publicJourneyProfile),
     entries,
     patterns,
+  };
+}
+
+// Private-link participants receive only the inputs needed by their existing
+// member-profile synthesis, never a full profile or coordinator/pastor fields.
+export function journeyFormationProfile(profiles: MinistryProfile[]) {
+  const latest = [...profiles].sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime())[0];
+  if (!latest || latest.profileType !== "adult") return undefined;
+  const sections = {
+    apest: latest.apest, personalityStrengths: latest.personalityStrengths,
+    naturalStrengths: latest.naturalStrengths, spiritualGifts: latest.spiritualGifts,
+  };
+  const integrated = record(latest.integratedAssessment);
+  const snapshot = record(integrated.snapshot);
+  const details = record(latest.availabilityDetails);
+  const pick = (source: Record<string, unknown>, keys: string[]) =>
+    Object.fromEntries(keys.filter(key => source[key] !== undefined).map(key => [key, source[key]]));
+  return {
+    assessmentConfiguration: assessmentConfiguration(latest.assessmentConfigurationSnapshot),
+    assessmentSections: Object.fromEntries(
+      ["apest", "personalityStrengths", "naturalStrengths", "spiritualGifts"].map(key =>
+        [key, pick(record(sections[key as keyof typeof sections]), ["primary", "secondary", "responses", "selected", "topGifts"])]),
+    ),
+    integratedAssessment: latest.integratedAssessment == null ? null : {
+      ...pick(integrated, ["version", "bankVersion", "scoringVersion", "constructs"]),
+      snapshot: pick(snapshot, ["assessmentConfiguration", "enabledSpiritualGifts"]),
+    },
+    passions: latest.passions,
+    interests: latest.interests,
+    servingFrequency: latest.servingFrequency ?? "",
+    availability: latest.availability,
+    basicInformation: {
+      ...(latest.familySituation ? { familySituation: latest.familySituation } : {}),
+      ...(latest.transportation ? { transportation: latest.transportation } : {}),
+    },
+    availabilityDetails: pick(details, [
+      "seasonal", "specialEvents", "retreats", "missionTrips", "projects",
+      "commitment", "responsibility", "durationTheyWillTry", "capacityThisSeason",
+    ]),
   };
 }
 

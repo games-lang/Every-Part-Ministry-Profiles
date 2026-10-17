@@ -1509,7 +1509,35 @@ export const JourneyResponseNextProfileType = {
   develop: 'develop',
 } as const;
 
+/**
+ * @nullable
+ */
+export type JourneyFormationProfileIntegratedAssessment = { [key: string]: unknown } | null;
+
+export type JourneyFormationProfileAssessmentSections = { [key: string]: unknown };
+
+export type JourneyFormationProfileBasicInformation = {
+  familySituation?: string;
+  transportation?: string;
+};
+
+export type JourneyFormationProfileAvailabilityDetails = { [key: string]: unknown };
+
+export interface JourneyFormationProfile {
+  assessmentConfiguration?: AssessmentConfiguration;
+  /** @nullable */
+  integratedAssessment?: JourneyFormationProfileIntegratedAssessment;
+  assessmentSections: JourneyFormationProfileAssessmentSections;
+  passions: string[];
+  interests: string[];
+  servingFrequency: string;
+  availability: string[];
+  basicInformation: JourneyFormationProfileBasicInformation;
+  availabilityDetails: JourneyFormationProfileAvailabilityDetails;
+}
+
 export interface JourneyResponse {
+  formationProfile?: JourneyFormationProfile;
   journeyToken: string;
   currentProfile: JourneyCurrentProfile | null;
   /** @nullable */

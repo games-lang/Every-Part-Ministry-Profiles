@@ -2863,6 +2863,50 @@ export const GetProfileJourneyParams = zod.object({
   "id": zod.coerce.number().int()
 })
 
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountMax = 4;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationPassionsItemMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationPassionsMax = 100;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 export const getProfileJourneyResponseProfilesItemThemesMax = 5;
 
 export const getProfileJourneyResponsePatternsConsistentMax = 5;
@@ -2872,6 +2916,123 @@ export const getProfileJourneyResponsePatternsEmergingMax = 5;
 
 
 export const GetProfileJourneyResponse = zod.object({
+  "formationProfile": zod.object({
+  "assessmentConfiguration": zod.object({
+  "sections": zod.object({
+  "aboutYou": zod.boolean(),
+  "apest": zod.boolean(),
+  "spiritualGifts": zod.boolean(),
+  "passionsInterests": zod.boolean(),
+  "naturalStrengths": zod.boolean(),
+  "personalityStrengths": zod.boolean(),
+  "spiritualHealth": zod.boolean(),
+  "connectionAvailability": zod.boolean()
+}),
+  "subsections": zod.object({
+  "aboutYou.personalInformation": zod.boolean(),
+  "aboutYou.phone": zod.boolean(),
+  "aboutYou.preferredContact": zod.boolean(),
+  "aboutYou.familySituation": zod.boolean(),
+  "aboutYou.transportation": zod.boolean(),
+  "aboutYou.languages": zod.boolean(),
+  "aboutYou.profilePhoto": zod.boolean(),
+  "aboutYou.skillsExperience": zod.boolean(),
+  "aboutYou.lifeExperiences": zod.boolean(),
+  "apest.builder": zod.boolean(),
+  "apest.insight": zod.boolean(),
+  "apest.connector": zod.boolean(),
+  "apest.caregiver": zod.boolean(),
+  "apest.teacher": zod.boolean(),
+  "passionsInterests.passions": zod.boolean(),
+  "passionsInterests.ministryInterests": zod.boolean(),
+  "naturalStrengths.relationalConnection": zod.boolean(),
+  "naturalStrengths.encouragement": zod.boolean(),
+  "naturalStrengths.teachingExplaining": zod.boolean(),
+  "naturalStrengths.listening": zod.boolean(),
+  "naturalStrengths.leadershipInitiative": zod.boolean(),
+  "naturalStrengths.organizing": zod.boolean(),
+  "naturalStrengths.creativeExpression": zod.boolean(),
+  "naturalStrengths.problemSolving": zod.boolean(),
+  "naturalStrengths.practicalHandsOn": zod.boolean(),
+  "naturalStrengths.hospitality": zod.boolean(),
+  "naturalStrengths.compassionCare": zod.boolean(),
+  "naturalStrengths.communicationStorytelling": zod.boolean(),
+  "naturalStrengths.discernment": zod.boolean(),
+  "naturalStrengths.followThrough": zod.boolean(),
+  "naturalStrengths.adaptability": zod.boolean(),
+  "naturalStrengths.mentoringDevelopment": zod.boolean(),
+  "naturalStrengths.strategicThinking": zod.boolean(),
+  "naturalStrengths.advocacyJustice": zod.boolean(),
+  "personalityStrengths.socialEnergy": zod.boolean(),
+  "personalityStrengths.decisionLens": zod.boolean(),
+  "personalityStrengths.planningStyle": zod.boolean(),
+  "personalityStrengths.focusStyle": zod.boolean(),
+  "personalityStrengths.actionStyle": zod.boolean(),
+  "personalityStrengths.pacePreference": zod.boolean(),
+  "personalityStrengths.workStyle": zod.boolean(),
+  "personalityStrengths.ministryPreferences": zod.boolean(),
+  "spiritualHealth.prayer": zod.boolean(),
+  "spiritualHealth.scripture": zod.boolean(),
+  "spiritualHealth.worship": zod.boolean(),
+  "spiritualHealth.relationships": zod.boolean(),
+  "spiritualHealth.community": zod.boolean(),
+  "spiritualHealth.rest": zod.boolean(),
+  "spiritualHealth.motivation": zod.boolean(),
+  "spiritualHealth.wellbeing": zod.boolean(),
+  "spiritualHealth.connection": zod.boolean(),
+  "connectionAvailability.churchConnection": zod.boolean(),
+  "connectionAvailability.availability": zod.boolean()
+}),
+  "spiritualGiftQuestionCount": zod.int().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getProfileJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountMax).default(getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
+  "passions": zod.array(zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationPassionsItemMax)).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsItemMax)).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getProfileJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
+}).optional(),
+  "integratedAssessment": zod.record(zod.string(), zod.unknown()).nullish(),
+  "assessmentSections": zod.record(zod.string(), zod.unknown()),
+  "passions": zod.array(zod.string()),
+  "interests": zod.array(zod.string()),
+  "servingFrequency": zod.string(),
+  "availability": zod.array(zod.string()),
+  "basicInformation": zod.object({
+  "familySituation": zod.string().optional(),
+  "transportation": zod.string().optional()
+}),
+  "availabilityDetails": zod.record(zod.string(), zod.unknown())
+}).optional(),
   "journeyToken": zod.uuid(),
   "currentProfile": zod.union([zod.object({
   "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),
@@ -2915,6 +3076,50 @@ export const GetPublicJourneyParams = zod.object({
   "token": zod.uuid()
 })
 
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountDefault = 3;
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountMax = 4;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountDefault = 3;
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountMax = 4;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationPassionsItemMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationPassionsMax = 100;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsItemMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsMax = 100;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax = 300;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax = 300;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne = 120;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileTitleMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax = 300;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsTitleMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax = 300;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne = 120;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileTitleMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax = 300;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax = 80;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax = 300;
+
+export const getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne = 120;
+
 export const getPublicJourneyResponseProfilesItemThemesMax = 5;
 
 export const getPublicJourneyResponsePatternsConsistentMax = 5;
@@ -2924,6 +3129,123 @@ export const getPublicJourneyResponsePatternsEmergingMax = 5;
 
 
 export const GetPublicJourneyResponse = zod.object({
+  "formationProfile": zod.object({
+  "assessmentConfiguration": zod.object({
+  "sections": zod.object({
+  "aboutYou": zod.boolean(),
+  "apest": zod.boolean(),
+  "spiritualGifts": zod.boolean(),
+  "passionsInterests": zod.boolean(),
+  "naturalStrengths": zod.boolean(),
+  "personalityStrengths": zod.boolean(),
+  "spiritualHealth": zod.boolean(),
+  "connectionAvailability": zod.boolean()
+}),
+  "subsections": zod.object({
+  "aboutYou.personalInformation": zod.boolean(),
+  "aboutYou.phone": zod.boolean(),
+  "aboutYou.preferredContact": zod.boolean(),
+  "aboutYou.familySituation": zod.boolean(),
+  "aboutYou.transportation": zod.boolean(),
+  "aboutYou.languages": zod.boolean(),
+  "aboutYou.profilePhoto": zod.boolean(),
+  "aboutYou.skillsExperience": zod.boolean(),
+  "aboutYou.lifeExperiences": zod.boolean(),
+  "apest.builder": zod.boolean(),
+  "apest.insight": zod.boolean(),
+  "apest.connector": zod.boolean(),
+  "apest.caregiver": zod.boolean(),
+  "apest.teacher": zod.boolean(),
+  "passionsInterests.passions": zod.boolean(),
+  "passionsInterests.ministryInterests": zod.boolean(),
+  "naturalStrengths.relationalConnection": zod.boolean(),
+  "naturalStrengths.encouragement": zod.boolean(),
+  "naturalStrengths.teachingExplaining": zod.boolean(),
+  "naturalStrengths.listening": zod.boolean(),
+  "naturalStrengths.leadershipInitiative": zod.boolean(),
+  "naturalStrengths.organizing": zod.boolean(),
+  "naturalStrengths.creativeExpression": zod.boolean(),
+  "naturalStrengths.problemSolving": zod.boolean(),
+  "naturalStrengths.practicalHandsOn": zod.boolean(),
+  "naturalStrengths.hospitality": zod.boolean(),
+  "naturalStrengths.compassionCare": zod.boolean(),
+  "naturalStrengths.communicationStorytelling": zod.boolean(),
+  "naturalStrengths.discernment": zod.boolean(),
+  "naturalStrengths.followThrough": zod.boolean(),
+  "naturalStrengths.adaptability": zod.boolean(),
+  "naturalStrengths.mentoringDevelopment": zod.boolean(),
+  "naturalStrengths.strategicThinking": zod.boolean(),
+  "naturalStrengths.advocacyJustice": zod.boolean(),
+  "personalityStrengths.socialEnergy": zod.boolean(),
+  "personalityStrengths.decisionLens": zod.boolean(),
+  "personalityStrengths.planningStyle": zod.boolean(),
+  "personalityStrengths.focusStyle": zod.boolean(),
+  "personalityStrengths.actionStyle": zod.boolean(),
+  "personalityStrengths.pacePreference": zod.boolean(),
+  "personalityStrengths.workStyle": zod.boolean(),
+  "personalityStrengths.ministryPreferences": zod.boolean(),
+  "spiritualHealth.prayer": zod.boolean(),
+  "spiritualHealth.scripture": zod.boolean(),
+  "spiritualHealth.worship": zod.boolean(),
+  "spiritualHealth.relationships": zod.boolean(),
+  "spiritualHealth.community": zod.boolean(),
+  "spiritualHealth.rest": zod.boolean(),
+  "spiritualHealth.motivation": zod.boolean(),
+  "spiritualHealth.wellbeing": zod.boolean(),
+  "spiritualHealth.connection": zod.boolean(),
+  "connectionAvailability.churchConnection": zod.boolean(),
+  "connectionAvailability.availability": zod.boolean()
+}),
+  "spiritualGiftQuestionCount": zod.int().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountMax).default(getPublicJourneyResponseFormationProfileAssessmentConfigurationSpiritualGiftQuestionCountDefault).describe('Number of reflection questions asked for each enabled spiritual gift in new adult assessments.'),
+  "ministryQuestionCount": zod.int().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountMax).default(getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryQuestionCountDefault).describe('Number of How You Minister reflection questions asked for each enabled ministry approach in new adult assessments.'),
+  "passions": zod.array(zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationPassionsItemMax)).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationPassionsMax),
+  "ministryInterests": zod.array(zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsItemMax)).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationMinistryInterestsMax),
+  "youthProfiles": zod.object({
+  "version": zod.literal(1),
+  "discover": zod.object({
+  "profileTitle": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsTitleMax),
+  "description": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDiscoverChoiceLabelsMaxOne))
+}),
+  "explore": zod.object({
+  "profileTitle": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsTitleMax),
+  "description": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesExploreChoiceLabelsMaxOne))
+}),
+  "develop": zod.object({
+  "profileTitle": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileTitleMax),
+  "profileDescription": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopProfileDescriptionMax),
+  "sections": zod.record(zod.string(), zod.object({
+  "enabled": zod.boolean(),
+  "title": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsTitleMax),
+  "description": zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopSectionsDescriptionMax)
+})),
+  "choiceLabels": zod.record(zod.string(), zod.string().min(1).max(getPublicJourneyResponseFormationProfileAssessmentConfigurationYouthProfilesDevelopChoiceLabelsMaxOne))
+})
+}).optional()
+}).optional(),
+  "integratedAssessment": zod.record(zod.string(), zod.unknown()).nullish(),
+  "assessmentSections": zod.record(zod.string(), zod.unknown()),
+  "passions": zod.array(zod.string()),
+  "interests": zod.array(zod.string()),
+  "servingFrequency": zod.string(),
+  "availability": zod.array(zod.string()),
+  "basicInformation": zod.object({
+  "familySituation": zod.string().optional(),
+  "transportation": zod.string().optional()
+}),
+  "availabilityDetails": zod.record(zod.string(), zod.unknown())
+}).optional(),
   "journeyToken": zod.uuid(),
   "currentProfile": zod.union([zod.object({
   "profileType": zod.enum(['adult', 'discover', 'explore', 'develop']),

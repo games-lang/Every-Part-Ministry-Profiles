@@ -31,6 +31,7 @@ import {
   journeyEntries,
   journeyForAccessToken,
   journeyProfiles,
+  journeyFormationProfile,
   profilesForComparison,
   publicJourneyResponse,
 } from "../lib/ministry-journeys";
@@ -52,7 +53,10 @@ router.get("/journeys/:token", async (req, res): Promise<void> => {
     journeyProfiles(journey.id),
     journeyEntries(journey.id),
   ]);
-  res.json(GetPublicJourneyResponse.parse(publicJourneyResponse(journey, profiles, entries)));
+  res.json(GetPublicJourneyResponse.parse({
+    ...publicJourneyResponse(journey, profiles, entries),
+    formationProfile: journeyFormationProfile(profiles),
+  }));
 });
 
 router.get(

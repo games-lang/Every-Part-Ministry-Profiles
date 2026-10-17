@@ -7,11 +7,13 @@
  */
 import type { JourneyCurrentProfile } from './journeyCurrentProfile';
 import type { JourneyEntry } from './journeyEntry';
+import type { JourneyFormationProfile } from './journeyFormationProfile';
 import type { JourneyPatterns } from './journeyPatterns';
 import type { JourneyProfileSummary } from './journeyProfileSummary';
 import type { JourneyResponseNextProfileType } from './journeyResponseNextProfileType';
 
 export interface JourneyResponse {
+  formationProfile?: JourneyFormationProfile;
   journeyToken: string;
   currentProfile: JourneyCurrentProfile | null;
   /** @nullable */

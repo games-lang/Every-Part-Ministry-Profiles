@@ -2823,6 +2823,8 @@ components:
       type: object
       required: [journeyToken, currentProfile, nextProfileType, nextCheckInDate, profiles, entries, patterns]
       properties:
+        formationProfile:
+          $ref: "#/components/schemas/JourneyFormationProfile"
         journeyToken: { type: string, format: uuid }
         currentProfile:
           oneOf:
@@ -2838,6 +2840,32 @@ components:
           items: { $ref: "#/components/schemas/JourneyEntry" }
         patterns:
           $ref: "#/components/schemas/JourneyPatterns"
+    JourneyFormationProfile:
+      type: object
+      additionalProperties: false
+      required: [assessmentSections, passions, interests, servingFrequency, availability, basicInformation, availabilityDetails]
+      properties:
+        assessmentConfiguration:
+          $ref: "#/components/schemas/AssessmentConfiguration"
+        integratedAssessment:
+          type: ["object", "null"]
+          additionalProperties: true
+        assessmentSections:
+          type: object
+          additionalProperties: true
+        passions: { type: array, items: { type: string } }
+        interests: { type: array, items: { type: string } }
+        servingFrequency: { type: string }
+        availability: { type: array, items: { type: string } }
+        basicInformation:
+          type: object
+          additionalProperties: false
+          properties:
+            familySituation: { type: string }
+            transportation: { type: string }
+        availabilityDetails:
+          type: object
+          additionalProperties: true
     JourneyCompareProfile:
       type: object
       required: [id, profileType, profileLabel, completedAt, themes]
