@@ -45,3 +45,4 @@
 - [Web SSR test JSX mode](web-ssr-test-jsx.md) — run direct TSX rendering tests with the test JSX override, not the Vite-oriented web tsconfig.
 - [Pnpm workspace relinking](pnpm-workspace-relinking.md) — after a filtered dependency add, a full frozen install may be needed to repair stale library symlinks before API builds.
 - [Frozen integrated bank compatibility](frozen-integrated-bank-compatibility.md) — keep existing snapshots scoreable when changing integrated question wording or counts.
+- [Production data verification](production-data-verification.md) — public API recovery and preview sign-in do not prove the owner's authenticated production pages work.

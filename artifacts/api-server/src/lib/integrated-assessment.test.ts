@@ -41,9 +41,20 @@ test("runtime bank preserves the approved editorial wording, order, mappings and
   const allIds = [...INTEGRATED_BANK.coreQuestions, ...INTEGRATED_BANK.optionalQuestions].map(q => q.id);
   assert.equal(new Set(allIds).size, allIds.length);
   const curatedCoreIds = new Set(INTEGRATED_BANK.coreQuestions.map(q => q.id));
-  assert.deepEqual(INTEGRATED_BANK.coreQuestions.map(q => q.id),
-    source.stablePresentationOrder.flatMap((id: string) => approvedSplits[id]?.map(q => q.id) ?? [id])
-      .filter((id: string) => curatedCoreIds.has(id)));
+  const originalOrder = source.stablePresentationOrder
+    .flatMap((id: string) => approvedSplits[id]?.map(q => q.id) ?? [id])
+    .filter((id: string) => curatedCoreIds.has(id));
+  const bipolarIds = new Set(INTEGRATED_BANK.coreQuestions
+    .filter(q => q.responseModel === "personalityBipolar").map(q => q.id));
+  assert.deepEqual(INTEGRATED_BANK.coreQuestions.map(q => q.id), [
+    ...originalOrder.filter((id: string) => !bipolarIds.has(id)),
+    ...originalOrder.filter((id: string) => bipolarIds.has(id)),
+  ], "bank groups bipolar items while retaining relative order within each group");
+  const bipolarIndexes = INTEGRATED_BANK.coreQuestions.flatMap((q, index) =>
+    q.responseModel === "personalityBipolar" ? [index] : []);
+  assert.equal(bipolarIndexes.length, 21);
+  assert.equal(bipolarIndexes.at(-1)! - bipolarIndexes[0] + 1, 21,
+    "all 21 bipolar questions must be contiguous in the bank itself");
   assert.deepEqual(INTEGRATED_BANK.optionalQuestions.map(q => q.id), source.stableOptionalPresentationOrder);
   for (const question of INTEGRATED_BANK.coreQuestions) {
     const split = Object.values(approvedSplits).flat().find(q => q.id === question.id);

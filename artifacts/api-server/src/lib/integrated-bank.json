@@ -111,22 +111,6 @@
       ]
     },
     {
-      "id": "EP-I-58",
-      "text": "After a busy week, which usually helps you recover your energy?",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Quiet time by myself",
-        "Time with other people"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Social Energy",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-03",
       "text": "I adjust how I build relationships when people in a community follow customs different from mine.",
       "responseModel": "reflectionLikert",
@@ -188,38 +172,6 @@
       ]
     },
     {
-      "id": "EP-I-67",
-      "text": "When I first look at a situation, I notice immediate details or broader patterns.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Detail",
-        "Big Picture"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Focus Style",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-70",
-      "text": "I prefer supporting existing work or initiating new work.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Support",
-        "Initiate"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Action Style",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-10",
       "text": "I notice who is being left out of a group's activities.",
       "responseModel": "reflectionLikert",
@@ -227,22 +179,6 @@
         {
           "category": "Strength",
           "construct": "Advocacy and justice",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-59",
-      "text": "In a new group, I tend to think privately first or talk through what I notice.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Reflective",
-        "Interactive"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Social Energy",
           "weight": 1
         }
       ]
@@ -282,22 +218,6 @@
         {
           "category": "Strength",
           "construct": "Adaptability",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-61",
-      "text": "When choosing between good options, I first consider the people affected or the most consistent principle.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Relational",
-        "Principled"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Decision Lens",
           "weight": 1
         }
       ]
@@ -357,38 +277,6 @@
       ]
     },
     {
-      "id": "EP-I-72",
-      "text": "In a group task, I prefer to take a supporting role or start a new direction.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Support",
-        "Initiate"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Action Style",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-76",
-      "text": "When developing an idea, I prefer focused time alone or brainstorming with other people.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Independent",
-        "Collaborative"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Work Style",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-50",
       "text": "When someone I support spiritually withdraws, I check in to learn what care they need.",
       "responseModel": "reflectionLikert",
@@ -412,22 +300,6 @@
           "category": "Strength",
           "construct": "Compassion and care",
           "weight": 0.5
-        }
-      ]
-    },
-    {
-      "id": "EP-I-78",
-      "text": "I prefer owning a task or working through it with others.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Independent",
-        "Collaborative"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Work Style",
-          "weight": 1
         }
       ]
     },
@@ -466,22 +338,6 @@
         {
           "category": "Strength",
           "construct": "Communication and storytelling",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-60",
-      "text": "When thinking through an idea, I prefer to reflect alone or exchange thoughts with someone.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Reflective",
-        "Interactive"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Social Energy",
           "weight": 1
         }
       ]
@@ -1072,22 +928,6 @@
       ]
     },
     {
-      "id": "EP-I-62",
-      "text": "A decision feels strongest to me when it protects relationships or when it follows a clear standard.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Relational",
-        "Principled"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Decision Lens",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-13",
       "text": "I point out repeated practices that unfairly burden people.",
       "responseModel": "reflectionLikert",
@@ -1122,22 +962,6 @@
         {
           "category": "Strength",
           "construct": "Discernment",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-63",
-      "text": "When people are affected differently by a choice, I first weigh personal impact or fairness and consistency.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Relational",
-        "Principled"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Decision Lens",
           "weight": 1
         }
       ]
@@ -1179,22 +1003,6 @@
         {
           "category": "Strength",
           "construct": "Discernment",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-65",
-      "text": "If circumstances change, I prefer to adjust as I go or return to a clear plan.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Adaptive",
-        "Settled"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Planning Style",
           "weight": 1
         }
       ]
@@ -1250,22 +1058,6 @@
           "category": "Strength",
           "construct": "Strategic thinking",
           "weight": 0.5
-        }
-      ]
-    },
-    {
-      "id": "EP-I-68",
-      "text": "I notice immediate details or broader possibilities.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Detail",
-        "Big Picture"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Focus Style",
-          "weight": 1
         }
       ]
     },
@@ -1331,22 +1123,6 @@
       ]
     },
     {
-      "id": "EP-I-74",
-      "text": "When several needs appear at once, I prefer a sustainable pace or a fast-moving response.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Steady",
-        "Dynamic"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Pace Preference",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-62A",
       "text": "I plan my regular giving around the responsibilities I already carry.",
       "responseModel": "reflectionLikert",
@@ -1391,22 +1167,6 @@
       ]
     },
     {
-      "id": "EP-I-64",
-      "text": "When beginning a project, I prefer to keep options open or settle the plan early.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Adaptive",
-        "Settled"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Planning Style",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-36",
       "text": "I repair items a group needs so they can be used again.",
       "responseModel": "reflectionLikert",
@@ -1441,22 +1201,6 @@
       ]
     },
     {
-      "id": "EP-I-66",
-      "text": "I feel most comfortable when next steps can stay flexible or are already decided.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Adaptive",
-        "Settled"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Planning Style",
-          "weight": 1
-        }
-      ]
-    },
-    {
       "id": "EP-I-38",
       "text": "As an unmarried person, I am content in a single life devoted to serving God.",
       "responseModel": "reflectionLikert",
@@ -1476,22 +1220,6 @@
         {
           "category": "Gift",
           "construct": "Celibacy",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "id": "EP-I-69",
-      "text": "I prefer to clarify practical steps or connect ideas and possibilities.",
-      "responseModel": "personalityBipolar",
-      "poles": [
-        "Detail",
-        "Big Picture"
-      ],
-      "maps": [
-        {
-          "category": "Personality",
-          "construct": "Focus Style",
           "weight": 1
         }
       ]
@@ -1531,8 +1259,52 @@
       ]
     },
     {
-      "id": "EP-I-71",
-      "text": "I feel most useful when I improve what is already working or turn a new idea into action.",
+      "id": "EP-I-42",
+      "text": "I choose a simpler lifestyle because it frees me to serve others.",
+      "responseModel": "reflectionLikert",
+      "maps": [
+        {
+          "category": "Gift",
+          "construct": "Voluntary Poverty",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-58",
+      "text": "After a busy week, which usually helps you recover your energy?",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Quiet time by myself",
+        "Time with other people"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Social Energy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-67",
+      "text": "When I first look at a situation, I notice immediate details or broader patterns.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Detail",
+        "Big Picture"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Focus Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-70",
+      "text": "I prefer supporting existing work or initiating new work.",
       "responseModel": "personalityBipolar",
       "poles": [
         "Support",
@@ -1547,13 +1319,241 @@
       ]
     },
     {
-      "id": "EP-I-42",
-      "text": "I choose a simpler lifestyle because it frees me to serve others.",
-      "responseModel": "reflectionLikert",
+      "id": "EP-I-59",
+      "text": "In a new group, I tend to think privately first or talk through what I notice.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Reflective",
+        "Interactive"
+      ],
       "maps": [
         {
-          "category": "Gift",
-          "construct": "Voluntary Poverty",
+          "category": "Personality",
+          "construct": "Social Energy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-61",
+      "text": "When choosing between good options, I first consider the people affected or the most consistent principle.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Relational",
+        "Principled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Decision Lens",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-72",
+      "text": "In a group task, I prefer to take a supporting role or start a new direction.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Support",
+        "Initiate"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Action Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-76",
+      "text": "When developing an idea, I prefer focused time alone or brainstorming with other people.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Independent",
+        "Collaborative"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Work Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-78",
+      "text": "I prefer owning a task or working through it with others.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Independent",
+        "Collaborative"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Work Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-60",
+      "text": "When thinking through an idea, I prefer to reflect alone or exchange thoughts with someone.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Reflective",
+        "Interactive"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Social Energy",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-62",
+      "text": "A decision feels strongest to me when it protects relationships or when it follows a clear standard.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Relational",
+        "Principled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Decision Lens",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-63",
+      "text": "When people are affected differently by a choice, I first weigh personal impact or fairness and consistency.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Relational",
+        "Principled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Decision Lens",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-65",
+      "text": "If circumstances change, I prefer to adjust as I go or return to a clear plan.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Adaptive",
+        "Settled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Planning Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-68",
+      "text": "I notice immediate details or broader possibilities.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Detail",
+        "Big Picture"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Focus Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-74",
+      "text": "When several needs appear at once, I prefer a sustainable pace or a fast-moving response.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Steady",
+        "Dynamic"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Pace Preference",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-64",
+      "text": "When beginning a project, I prefer to keep options open or settle the plan early.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Adaptive",
+        "Settled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Planning Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-66",
+      "text": "I feel most comfortable when next steps can stay flexible or are already decided.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Adaptive",
+        "Settled"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Planning Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-69",
+      "text": "I prefer to clarify practical steps or connect ideas and possibilities.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Detail",
+        "Big Picture"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Focus Style",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "EP-I-71",
+      "text": "I feel most useful when I improve what is already working or turn a new idea into action.",
+      "responseModel": "personalityBipolar",
+      "poles": [
+        "Support",
+        "Initiate"
+      ],
+      "maps": [
+        {
+          "category": "Personality",
+          "construct": "Action Style",
           "weight": 1
         }
       ]

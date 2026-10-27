@@ -2733,7 +2733,9 @@ export default function Assessment() {
       <div className="min-h-screen grid place-items-center p-4">
         <Card>
           <CardContent className="p-8">
-            Church not found. <Link href="/">Return home</Link>
+            <p>{churchError?.status === 404 ? "Church not found." : "We couldn’t load this church right now. Please try again in a moment."}</p>
+            {churchError?.status !== 404 && <Button className="mt-4 mr-3" onClick={() => void refetchChurch()}>Try again</Button>}
+            <Link href="/">Return home</Link>
           </CardContent>
         </Card>
       </div>

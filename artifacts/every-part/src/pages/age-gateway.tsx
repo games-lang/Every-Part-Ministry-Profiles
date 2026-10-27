@@ -14,7 +14,7 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
   const [, setLocation] = useLocation();
   const { isLoaded, isSignedIn } = useAuth();
   
-  const { data: church, isLoading: churchLoading } = useGetPublicChurch(slug);
+  const { data: church, isLoading: churchLoading, error: churchError, refetch: refetchChurch } = useGetPublicChurch(slug);
   const { data: adminAccess } = useGetChurchAdminAccess(slug, { 
     query: { 
       enabled: !!isSignedIn && !!slug,
@@ -107,13 +107,19 @@ export default function AgeGateway({ params }: { params: { slug: string } }) {
   }
 
   if (!church) {
+    const notFound = churchError?.status === 404;
     return (
       <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md border-destructive/20 shadow-sm">
           <CardContent className="p-6 text-center">
             <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <h2 className="text-xl font-serif font-medium mb-2">Church not found</h2>
-            <p className="text-muted-foreground">Please check the link and try again.</p>
+            <h2 className="text-xl font-serif font-medium mb-2">
+              {notFound ? "Church not found" : "We couldn’t load this church right now"}
+            </h2>
+            <p className="text-muted-foreground">
+              {notFound ? "Please check the link and try again." : "The link may still be correct. Please try again in a moment."}
+            </p>
+            {!notFound && <Button className="mt-4" onClick={() => void refetchChurch()}>Try again</Button>}
           </CardContent>
         </Card>
       </div>

@@ -1,10 +1,11 @@
-import express, { type Express } from "express";
+import express, { type Express, type ErrorRequestHandler } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import { clerkMiddleware } from "@clerk/express";
 import { publishableKeyFromHost } from "@clerk/shared/keys";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import { dataReadErrorCodes } from "./lib/data-read-error";
 import securityHeaders from "../../../config/security-headers.json";
 import {
   CLERK_PROXY_PATH,
@@ -72,5 +73,15 @@ app.use(
 );
 
 app.use("/api", router);
+
+// Preserve existing error responses, but make wrapped DB failures diagnosable.
+const logDataReadFailure: ErrorRequestHandler = (error, req, _res, next) => {
+  if (req.method === "GET" &&
+      /^\/api\/(?:church|churches\/[^/]+|profiles(?:\/\d+)?|people(?:\/\d+)?)$/.test(req.path)) {
+    req.log.error({ failureCodes: dataReadErrorCodes(error) }, "Church data read failed");
+  }
+  next(error);
+};
+app.use(logDataReadFailure);
 
 export default app;
